@@ -482,6 +482,7 @@ def test_rows_before_a_failure_are_kept_and_the_error_reported(clean_registry, r
         (403, {"Retry-After": "60"}, 60.0),  # GitHub secondary rate limit
         (403, {"x-ratelimit-remaining": "0", "x-ratelimit-reset": "9999999999"}, None),  # primary: wait until reset
         (403, {}, None),  # a real refusal
+        (403, {"_body": "You have exceeded a secondary rate limit."}, 120.0),  # GitHub: body only, no header
         (429, {}, 30.0),
         (500, {}, None),
     ],
@@ -491,7 +492,7 @@ def test_rate_limit_wait(status, headers, wait):
 
     from pipeline.core.http import rate_limit_wait
 
-    got = rate_limit_wait(httpx.Response(status, headers=headers))
+    got = rate_limit_wait(httpx.Response(status, headers=headers, text=headers.pop("_body", "")))
     if headers.get("x-ratelimit-reset"):
         assert got > 1000
     else:

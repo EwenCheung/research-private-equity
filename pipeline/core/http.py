@@ -27,6 +27,8 @@ def rate_limit_wait(r: httpx.Response) -> float | None:
         return float(after)
     if r.headers.get("x-ratelimit-remaining") == "0" and (reset := r.headers.get("x-ratelimit-reset", "")).isdigit():
         return max(1.0, float(reset) - time.time())
+    if r.status_code == 403 and "secondary rate limit" in r.text:  # GitHub sends no header; its docs say wait minutes
+        return 120.0
     return 30.0 if r.status_code == 429 else None  # a plain 403 is a real refusal: don't retry it
 
 

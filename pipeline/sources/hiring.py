@@ -15,6 +15,8 @@ from datetime import UTC, date, datetime
 from functools import cache
 from pathlib import Path
 
+import httpx
+
 from pipeline.core import ROOT, source
 from pipeline.core.http import get
 from pipeline.core.store import latest_as_of
@@ -135,6 +137,24 @@ def ats_postings(company):
 # ---- Wayback history ----
 
 
+def patient_get(url: str, tries: int = 4):
+    """GET that waits out the Internet Archive refusing connections when crawled too fast (minutes, not seconds)."""
+    for attempt in range(tries):
+        try:
+            return get(url, timeout=90)
+        except httpx.TransportError:
+            if attempt == tries - 1:
+                raise
+            time.sleep(60 * (attempt + 1))
+    raise AssertionError("unreachable")
+
+
+def httpx_json(url: str, params: dict) -> list:
+    """The CDX index can also refuse connections under load: same patience as capture pages."""
+    full = str(httpx.URL(url, params=params))
+    return json.loads(patient_get(full).text)
+
+
 def captures(pattern: str, since: str | None) -> list[tuple[str, str]]:
     """(timestamp, original url) of monthly 200-OK captures of a board URL, newer than `since`."""
     params = {
@@ -144,7 +164,7 @@ def captures(pattern: str, since: str | None) -> list[tuple[str, str]]:
         "filter": "statuscode:200",
         "collapse": "timestamp:6",
     }
-    rows = get(CDX, params=params, timeout=90).json()[1:]
+    rows = httpx_json(CDX, params)[1:]
     return [(ts, url) for ts, url in rows if not since or ts[:8] > since.replace("-", "")]
 
 
@@ -216,9 +236,9 @@ def wayback_job_boards(company):
         since = latest_as_of(company.root, "wayback_job_boards", company.slug, pattern=pattern)
         for ts, original in captures(pattern, since):
             page = f"https://web.archive.org/web/{ts}/{original}"
-            time.sleep(1.5)  # be gentle with the Archive
+            time.sleep(5)  # the Archive refuses connections when crawled faster than a few requests a minute
             try:
-                count, posts = parse_capture(original, get(page, timeout=90).text)
+                count, posts = parse_capture(original, patient_get(page).text)
             except ValueError:  # malformed archived JSON: skip this capture
                 continue
             if count is None:

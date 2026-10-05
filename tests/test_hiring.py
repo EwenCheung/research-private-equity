@@ -453,3 +453,21 @@ def test_import_lca_keeps_tracked_employers_annualises_wages_and_never_duplicate
                 "dims": json.loads(r["dims"]),
             },
         )
+
+
+def test_patient_get_waits_out_a_refusing_archive(monkeypatch):
+    calls, waits = [], []
+
+    def flaky(url, **kw):
+        calls.append(url)
+        if len(calls) < 3:
+            raise httpx.ConnectError("refused")
+        return response("ok")
+
+    monkeypatch.setattr(src, "get", flaky)
+    monkeypatch.setattr(src.time, "sleep", waits.append)
+    assert src.patient_get("https://web.archive.org/x").text == "ok"
+    assert waits == [60, 120]  # a minute, then two: the Archive recovers in minutes, not seconds
+    monkeypatch.setattr(src, "get", lambda url, **kw: (_ for _ in ()).throw(httpx.ConnectError("down")))
+    with pytest.raises(httpx.ConnectError):
+        src.patient_get("https://web.archive.org/x", tries=2)

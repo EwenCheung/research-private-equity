@@ -32,8 +32,10 @@ Tiers, from most to least direct:
 - **derived:** computed by us.
 
 **Raw storage is immutable.**
-- Each collector run writes `data/raw/<source>/<YYYYMMDDTHHMMSSZ>.jsonl`, one observation per line.
+- Each collector run writes `data/raw/<source>/<YYYYMMDDTHHMMSSZ>.jsonl.gz`: gzip-compressed, one observation per line.
 - Never edit or delete a raw file. Corrections are new rows.
+- Large corpora keep only the rows we use. For example, the hiring-for-Claude corpus keeps matching postings plus per-company counts,
+  and the H-1B files keep only tracked employers. This keeps repo growth to tens of MB a year.
 
 **Manual and ledger input is a CSV.**
 - Location: `data/manual/<source>.csv` (licensed or vendor data) or `data/ledgers/<page>_<name>.csv` (hand-curated public facts).

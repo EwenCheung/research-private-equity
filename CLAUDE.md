@@ -38,7 +38,7 @@ Outputs are drafts for deal-team review, not investment advice. Use only public 
 - **Shared files.**
   - Core files (`pipeline/core/*`, `app/*`, `frontend/src/components/ChartCard.tsx`) change only in their own `fix(core)` PR.
   - Dependencies change only in their own `chore(deps)` PR.
-  - `docs/ROADMAP.md` is updated only at phase gates, on `main`.
+  - `docs/ROADMAP.md` is updated only on the phase branch `phase/N` (never by implementation branches, never directly on `main`).
 - **Auto-discovery, never shared registries.** These are all picked up automatically:
   - collectors in `pipeline/sources/*.py`;
   - marts in `pipeline/marts/*.py`;

@@ -1,0 +1,36 @@
+[project]
+name = "signal-monitor"
+version = "0.1.0"
+description = "Alt-data monitor for private companies, with provenance on every number"
+requires-python = ">=3.11"
+# Every runtime dependency is declared here, so parallel implementations never edit this file.
+# Adding one later goes through its own chore(deps) PR.
+dependencies = [
+    "anthropic>=0.69",                  # bull/bear/neutral reporters (Phase 4)
+    "beautifulsoup4>=4.12",             # scraping Wayback / HTML pages
+    "fastapi>=0.115",                   # API (Phase 1 web core)
+    "feedparser>=6.0",                  # RSS: Google News, App Store charts
+    "httpx>=0.27",                      # all HTTP collectors
+    "itsdangerous>=2.2",                # signed session cookie
+    "jsonschema[format-nongpl]>=4.23",  # contract validation incl. date/uri formats
+    "lxml>=5.3",                        # HTML/XML parsing backend
+    "openpyxl>=3.1",                    # weekly data_pack.xlsx (Phase 3)
+    "pandas>=2.2",
+    "pyarrow>=17",
+    "python-multipart>=0.0.9",          # login form
+    "pyyaml>=6.0",                      # config/*.yaml
+    "uvicorn[standard]>=0.30",
+]
+
+[dependency-groups]
+dev = ["pytest>=8.3", "ruff>=0.6"]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120

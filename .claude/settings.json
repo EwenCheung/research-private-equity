@@ -1,0 +1,43 @@
+{
+  "extraKnownMarketplaces": {
+    "claude-for-financial-services": {
+      "source": { "source": "github", "repo": "anthropics/financial-services" }
+    },
+    "knowledge-work-plugins": {
+      "source": { "source": "github", "repo": "anthropics/knowledge-work-plugins" }
+    },
+    "claude-plugins-official": {
+      "source": { "source": "github", "repo": "anthropics/claude-plugins-official" }
+    }
+  },
+  "enabledPlugins": {
+    "financial-analysis@claude-for-financial-services": true,
+    "investment-banking@claude-for-financial-services": true,
+    "private-equity@claude-for-financial-services": true,
+    "pitch-agent@claude-for-financial-services": true,
+    "market-researcher@claude-for-financial-services": true,
+    "equity-research@claude-for-financial-services": true,
+    "finance@knowledge-work-plugins": true,
+    "claude-for-financial-advisors@knowledge-work-plugins": true,
+    "data@knowledge-work-plugins": true,
+    "playwright@claude-plugins-official": true
+  },
+  "permissions": {
+    "allow": [
+      "Bash(uv sync:*)",
+      "Bash(uv lock:*)",
+      "Bash(uv run:*)",
+      "Bash(npm ci:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(npm --prefix frontend:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git worktree list:*)",
+      "Bash(gh workflow run:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)"
+    ]
+  }
+}

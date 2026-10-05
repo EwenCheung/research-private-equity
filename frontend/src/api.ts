@@ -15,3 +15,20 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   }
   return res.json();
 }
+
+export interface Company {
+  slug: string;
+  name: string;
+  role: "target" | "peer";
+}
+
+let companiesOnce: Promise<Company[]> | null = null;
+
+/** Target first, then peers; fetched once per page load. Fails soft: no companies just means order-of-appearance colours. */
+export function companies(): Promise<Company[]> {
+  companiesOnce ??= api<Company[]>("/api/companies").catch(() => {
+    companiesOnce = null;
+    return [];
+  });
+  return companiesOnce;
+}

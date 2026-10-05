@@ -317,6 +317,17 @@
     },
     {
       "family": "BlackRock",
+      "fund": "BlackRock Private Investments Fund",
+      "series": "Unspecified",
+      "round_mark_date": "2026-06-30",
+      "round_mark_gap_days": 33,
+      "round_mark": 589.009500195002,
+      "latest_date": "2026-06-30",
+      "latest_mark": 589.009500195002,
+      "change": null
+    },
+    {
+      "family": "BlackRock",
       "fund": "BlackRock Science & Technology Term Trust",
       "series": "Unspecified",
       "round_mark_date": "2026-06-30",
@@ -1670,12 +1681,12 @@
     }
   ],
   "takeaway": [
-    "Since the mark nearest Series H (2026-05-28), 0 of 18 fund lines with a later mark are within 1%, 0 are lower (largest +52%) and 18 higher (largest +127%)."
+    "Since the mark nearest Series H (2026-05-28), 0 of 18 fund lines with a later mark are within 1%, 0 are lower and 18 higher; changes run from +52% to +127%."
   ],
   "assumptions": [
     "Change = latest mark ÷ the fund's mark nearest the last round in the funding ledger − 1, for the same fund and the same preferred series. 'Nearest' is by report date, the earlier one on a tie; the gap in days is shown.",
     "The mark nearest the round can still be weeks before or after it, and the funds' reports predate or postdate Anthropic's announcement.",
-    "129 fund lines have their latest mark as the one nearest the round, so they show no change. 106 lines with a single mark are left out.",
+    "130 fund lines have their latest mark as the one nearest the round, so they show no change. 106 lines with a single mark are left out.",
     "Marks are the funds' own estimates, not transactions. No implied company valuation is derived (the share count is not public)."
   ],
   "badges": [
@@ -1715,5 +1726,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T07:57:04Z"
+  "generated_at": "2026-10-05T08:03:39Z"
 }

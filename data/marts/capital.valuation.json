@@ -1,7 +1,7 @@
 {
   "title": "Valuation at each round, and the multiple of run-rate",
-  "subtitle": "Post-money valuation Anthropic announced; table view shows post-money ÷ the run-rate nearest in time",
-  "kind": "line",
+  "subtitle": "Post-money valuation Anthropic announced at each round (dots, not interpolated); table view shows post-money ÷ the run-rate nearest in time",
+  "kind": "scatter",
   "encoding": {
     "x": {
       "field": "date",
@@ -33,7 +33,7 @@
     },
     {
       "field": "run_rate",
-      "label": "Nearest company-stated run-rate",
+      "label": "Run-rate (company)",
       "format": "usd_compact"
     },
     {
@@ -43,32 +43,32 @@
     },
     {
       "field": "gap_days",
-      "label": "Run-rate date minus round date (days)",
+      "label": "Gap, days (run-rate date − round date)",
       "format": "int"
     },
     {
       "field": "multiple",
-      "label": "Post-money ÷ run-rate",
+      "label": "Multiple",
       "format": "multiple"
     },
     {
       "field": "formula",
-      "label": "Arithmetic",
+      "label": "Formula",
       "format": "text"
     },
     {
       "field": "press_run_rate",
-      "label": "Press run-rate (within 120 days)",
+      "label": "Run-rate (press)",
       "format": "usd_compact"
     },
     {
       "field": "press_gap_days",
-      "label": "Press date minus round date (days)",
+      "label": "Press gap, days",
       "format": "int"
     },
     {
       "field": "press_multiple",
-      "label": "Post-money ÷ press run-rate",
+      "label": "Press multiple",
       "format": "multiple"
     }
   ],
@@ -194,5 +194,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T07:57:04Z"
+  "generated_at": "2026-10-05T08:03:39Z"
 }

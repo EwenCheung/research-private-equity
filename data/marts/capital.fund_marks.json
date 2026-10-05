@@ -3635,6 +3635,17 @@
     {
       "date": "2026-03-31",
       "family": "BlackRock",
+      "fund": "BlackRock Private Investments Fund",
+      "series": "Unspecified",
+      "security": "ANTHROPIC PBC",
+      "shares": 29225.0,
+      "value": 8275643.25,
+      "mark": 283.17,
+      "filed": "2026-05-28"
+    },
+    {
+      "date": "2026-03-31",
+      "family": "BlackRock",
       "fund": "BlackRock Science & Technology Term Trust",
       "series": "Unspecified",
       "security": "ANTHROPIC PBC",
@@ -5483,6 +5494,17 @@
     {
       "date": "2026-06-30",
       "family": "BlackRock",
+      "fund": "BlackRock Private Investments Fund",
+      "series": "Unspecified",
+      "security": "ANTHROPIC PBC",
+      "shares": 33333.0,
+      "value": 19633453.67,
+      "mark": 589.009500195002,
+      "filed": "2026-08-27"
+    },
+    {
+      "date": "2026-06-30",
+      "family": "BlackRock",
       "fund": "BlackRock Science & Technology Term Trust",
       "series": "Unspecified",
       "security": "ANTHROPIC PBC",
@@ -7176,7 +7198,7 @@
     }
   ],
   "takeaway": [
-    "123 funds from 15 fund families have reported holding Anthropic shares; at 2026-07-31, 31 reported marks from $556.98 to $622.94 per share across series (median $589.01)."
+    "124 funds from 15 fund families have reported holding Anthropic shares; at 2026-07-31, 31 reported marks from $556.98 to $622.94 per share across series (median $589.01)."
   ],
   "assumptions": [
     "Mark per share = valUSD ÷ shares as reported in the fund's N-PORT-P. Only the lines naming Anthropic are kept; the funds' other holdings are not stored.",
@@ -7204,5 +7226,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T07:57:04Z"
+  "generated_at": "2026-10-05T08:03:39Z"
 }

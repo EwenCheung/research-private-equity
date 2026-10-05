@@ -5,7 +5,7 @@
   "encoding": {
     "x": {
       "field": "quarter",
-      "type": "temporal",
+      "type": "ordinal",
       "label": "Quarter filed"
     },
     "y": {
@@ -23,8 +23,8 @@
   "columns": [
     {
       "field": "quarter",
-      "label": "Quarter starting",
-      "format": "date"
+      "label": "Quarter filed",
+      "format": "text"
     },
     {
       "field": "kind",
@@ -44,133 +44,133 @@
   ],
   "rows": [
     {
-      "quarter": "2023-01-01",
+      "quarter": "2023 Q1",
       "kind": "New vehicle (Form D)",
       "filings": 1,
       "amount_sold": 0.0
     },
     {
-      "quarter": "2023-04-01",
+      "quarter": "2023 Q2",
       "kind": "New vehicle (Form D)",
       "filings": 4,
       "amount_sold": 8124658.0
     },
     {
-      "quarter": "2023-07-01",
+      "quarter": "2023 Q3",
       "kind": "New vehicle (Form D)",
       "filings": 1,
       "amount_sold": 579796.0
     },
     {
-      "quarter": "2024-01-01",
+      "quarter": "2024 Q1",
       "kind": "Amendment (Form D/A)",
       "filings": 1,
       "amount_sold": null
     },
     {
-      "quarter": "2024-01-01",
+      "quarter": "2024 Q1",
       "kind": "New vehicle (Form D)",
       "filings": 7,
       "amount_sold": 8801318.0
     },
     {
-      "quarter": "2024-04-01",
+      "quarter": "2024 Q2",
       "kind": "Amendment (Form D/A)",
       "filings": 1,
       "amount_sold": null
     },
     {
-      "quarter": "2024-04-01",
+      "quarter": "2024 Q2",
       "kind": "New vehicle (Form D)",
       "filings": 22,
       "amount_sold": 58301231.0
     },
     {
-      "quarter": "2024-07-01",
+      "quarter": "2024 Q3",
       "kind": "Amendment (Form D/A)",
       "filings": 2,
       "amount_sold": null
     },
     {
-      "quarter": "2024-07-01",
+      "quarter": "2024 Q3",
       "kind": "New vehicle (Form D)",
       "filings": 8,
       "amount_sold": 3940481.0
     },
     {
-      "quarter": "2024-10-01",
+      "quarter": "2024 Q4",
       "kind": "New vehicle (Form D)",
       "filings": 8,
       "amount_sold": 928497.0
     },
     {
-      "quarter": "2025-01-01",
+      "quarter": "2025 Q1",
       "kind": "Amendment (Form D/A)",
       "filings": 3,
       "amount_sold": null
     },
     {
-      "quarter": "2025-01-01",
+      "quarter": "2025 Q1",
       "kind": "New vehicle (Form D)",
       "filings": 3,
       "amount_sold": 4830782.0
     },
     {
-      "quarter": "2025-04-01",
+      "quarter": "2025 Q2",
       "kind": "New vehicle (Form D)",
       "filings": 2,
       "amount_sold": 4473407.0
     },
     {
-      "quarter": "2025-07-01",
+      "quarter": "2025 Q3",
       "kind": "New vehicle (Form D)",
       "filings": 6,
       "amount_sold": 7932228.0
     },
     {
-      "quarter": "2025-10-01",
+      "quarter": "2025 Q4",
       "kind": "Amendment (Form D/A)",
       "filings": 7,
       "amount_sold": null
     },
     {
-      "quarter": "2025-10-01",
+      "quarter": "2025 Q4",
       "kind": "New vehicle (Form D)",
       "filings": 3,
       "amount_sold": 3689801.0
     },
     {
-      "quarter": "2026-01-01",
+      "quarter": "2026 Q1",
       "kind": "Amendment (Form D/A)",
       "filings": 2,
       "amount_sold": null
     },
     {
-      "quarter": "2026-01-01",
+      "quarter": "2026 Q1",
       "kind": "New vehicle (Form D)",
       "filings": 13,
       "amount_sold": 37096941.0
     },
     {
-      "quarter": "2026-04-01",
+      "quarter": "2026 Q2",
       "kind": "Amendment (Form D/A)",
       "filings": 1,
       "amount_sold": null
     },
     {
-      "quarter": "2026-04-01",
+      "quarter": "2026 Q2",
       "kind": "New vehicle (Form D)",
       "filings": 13,
       "amount_sold": 34833649.0
     },
     {
-      "quarter": "2026-07-01",
+      "quarter": "2026 Q3",
       "kind": "Amendment (Form D/A)",
       "filings": 11,
       "amount_sold": null
     },
     {
-      "quarter": "2026-07-01",
+      "quarter": "2026 Q3",
       "kind": "New vehicle (Form D)",
       "filings": 2,
       "amount_sold": 8415618.0
@@ -206,5 +206,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T07:57:04Z"
+  "generated_at": "2026-10-05T08:03:39Z"
 }

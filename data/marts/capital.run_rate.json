@@ -1,7 +1,7 @@
 {
   "title": "Anthropic run-rate revenue, as stated",
-  "subtitle": "Annualised revenue in Anthropic's own statements, and in press reports kept as a separate series",
-  "kind": "line",
+  "subtitle": "Each dot is one statement of annualised revenue: Anthropic's own, and press reports kept as a separate series. Nothing is drawn between dots",
+  "kind": "scatter",
   "encoding": {
     "x": {
       "field": "date",
@@ -259,5 +259,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T07:57:04Z"
+  "generated_at": "2026-10-05T08:03:39Z"
 }

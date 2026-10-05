@@ -348,9 +348,9 @@ def test_form_d_counts_complete_quarters_separates_amendments_and_never_calls_a_
     spec = marts.form_d(Ctx(rows, NAMES))
     got = {(r["quarter"], r["kind"]): (r["filings"], r["amount_sold"]) for r in spec["rows"]}
     assert got == {
-        ("2025-07-01", marts.NEW_VEHICLE): (1, 1000.0),
-        ("2026-07-01", marts.NEW_VEHICLE): (1, 1000.0),
-        ("2026-07-01", marts.AMENDMENT): (1, None),
+        ("2025 Q3", marts.NEW_VEHICLE): (1, 1000.0),
+        ("2026 Q3", marts.NEW_VEHICLE): (1, 1000.0),
+        ("2026 Q3", marts.AMENDMENT): (1, None),
     }
     assert (
         spec["takeaway"][0]
@@ -425,6 +425,12 @@ def test_vehicle_units_and_economic_exposure_lines_are_not_shares_of_anthropic()
     assert list(marts.marks(Ctx(rows, NAMES))["fund"]) == ["Fund A"]
 
 
+def test_shares_filed_under_a_private_fund_category_still_count_when_they_are_shares():
+    # BlackRock Private Investments Fund files Anthropic PBC shares (units NS) with issuer category PF: same mark as the direct holders
+    rows = [*holding("x1", "2026-06-30", 4108, 2419651.03, fund="Private", series_id="S9", cat="PF")]
+    assert list(marts.marks(Ctx(rows, NAMES))["fund"]) == ["Private"]
+
+
 @pytest.mark.parametrize(
     ("reg", "family"),
     [("Fidelity Contrafund", "Fidelity"), ("VARIABLE INSURANCE PRODUCTS FUND III", "Fidelity"), ("T. ROWE PRICE BLUE CHIP GROWTH FUND, INC.", "T. Rowe Price"),
@@ -459,7 +465,10 @@ def test_change_since_the_round_uses_the_mark_nearest_it_and_shows_no_change_whe
     a, b = spec["rows"]
     assert (a["fund"], a["round_mark_gap_days"], a["round_mark"], a["latest_mark"]) == ("Fund A", -28, 259.14, 589.0)
     assert a["change"] == pytest.approx(589.0 / 259.14 - 1) and b["fund"] == "Fund B" and b["change"] is None
-    assert "1 of 1 fund lines" not in spec["takeaway"][0] and "1 higher (largest +127%)" in spec["takeaway"][0]
+    assert (
+        "1 of 1 fund lines" not in spec["takeaway"][0]
+        and "1 higher; changes run from +127% to +127%." in spec["takeaway"][0]
+    )
     assert any("1 lines with a single mark are left out" in a_ for a_ in spec["assumptions"])
 
 

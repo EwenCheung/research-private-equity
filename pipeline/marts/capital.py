@@ -222,8 +222,8 @@ def valuation(ctx):
             )
     return {
         "title": "Valuation at each round, and the multiple of run-rate",
-        "subtitle": "Post-money valuation Anthropic announced; table view shows post-money ÷ the run-rate nearest in time",
-        "kind": "line",
+        "subtitle": "Post-money valuation Anthropic announced at each round (dots, not interpolated); table view shows post-money ÷ the run-rate nearest in time",
+        "kind": "scatter",
         "encoding": {
             "x": {"field": "date", "type": "temporal", "label": "Round announced"},
             "y": {
@@ -237,18 +237,18 @@ def valuation(ctx):
             {"field": "date", "label": "Round announced", "format": "date"},
             {"field": "round", "label": "Round", "format": "text"},
             {"field": "post_money", "label": "Post-money", "format": "usd_compact"},
-            {"field": "run_rate", "label": "Nearest company-stated run-rate", "format": "usd_compact"},
+            {"field": "run_rate", "label": "Run-rate (company)", "format": "usd_compact"},
             {"field": "run_rate_date", "label": "Run-rate date", "format": "date"},
-            {"field": "gap_days", "label": "Run-rate date minus round date (days)", "format": "int"},
-            {"field": "multiple", "label": "Post-money ÷ run-rate", "format": "multiple"},
-            {"field": "formula", "label": "Arithmetic", "format": "text"},
+            {"field": "gap_days", "label": "Gap, days (run-rate date − round date)", "format": "int"},
+            {"field": "multiple", "label": "Multiple", "format": "multiple"},
+            {"field": "formula", "label": "Formula", "format": "text"},
             {
                 "field": "press_run_rate",
-                "label": f"Press run-rate (within {PRESS_MAX_GAP_DAYS} days)",
+                "label": "Run-rate (press)",
                 "format": "usd_compact",
             },
-            {"field": "press_gap_days", "label": "Press date minus round date (days)", "format": "int"},
-            {"field": "press_multiple", "label": "Post-money ÷ press run-rate", "format": "multiple"},
+            {"field": "press_gap_days", "label": "Press gap, days", "format": "int"},
+            {"field": "press_multiple", "label": "Press multiple", "format": "multiple"},
         ],
         "rows": rows,
         "takeaway": takeaway,
@@ -314,8 +314,8 @@ def run_rate(ctx):
         )
     return {
         "title": "Anthropic run-rate revenue, as stated",
-        "subtitle": "Annualised revenue in Anthropic's own statements, and in press reports kept as a separate series",
-        "kind": "line",
+        "subtitle": "Each dot is one statement of annualised revenue: Anthropic's own, and press reports kept as a separate series. Nothing is drawn between dots",
+        "kind": "scatter",
         "encoding": {
             "x": {"field": "date", "type": "temporal", "label": "Date the figure describes"},
             "y": {
@@ -383,7 +383,7 @@ def form_d(ctx):
         for r in grouped.itertuples():
             rows.append(
                 {
-                    "quarter": r.quarter,
+                    "quarter": f"{r.quarter[:4]} {quarter_label(r.quarter)[:2]}",  # '2026 Q3': reads without a year tick
                     "kind": r.kind,
                     "filings": int(r.filings),
                     "amount_sold": float(r.amount_sold) if r.kind == NEW_VEHICLE else None,
@@ -405,12 +405,12 @@ def form_d(ctx):
         "subtitle": "Third-party vehicles only (none is Anthropic's own raise): a proxy for secondary-market demand for its shares",
         "kind": "stacked_bar",
         "encoding": {
-            "x": {"field": "quarter", "type": "temporal", "label": "Quarter filed"},
+            "x": {"field": "quarter", "type": "ordinal", "label": "Quarter filed"},
             "y": {"field": "filings", "type": "quantitative", "label": "Form D filings", "format": "int"},
             "color": {"field": "kind", "type": "nominal", "label": "Filing"},
         },
         "columns": [
-            {"field": "quarter", "label": "Quarter starting", "format": "date"},
+            {"field": "quarter", "label": "Quarter filed", "format": "text"},
             {"field": "kind", "label": "Filing", "format": "text"},
             {"field": "filings", "label": "Filings", "format": "int"},
             {"field": "amount_sold", "label": "Amount sold when filed (new vehicles)", "format": "usd_compact"},
@@ -458,15 +458,9 @@ def marks(ctx) -> pd.DataFrame:
         "filed",
     )
     df = latest(df, keys=("adsh", "line", "metric"))
-    # Shares of Anthropic itself: not units of a vehicle that holds it, not 'economic exposure' lines
-    direct = (
-        (df["units_type"] == "NS")
-        & (df["issuer_category"] != "PF")
-        & ~df["name"].str.contains("economic exposure", case=False)
-    )
-    df = df[direct].assign(
-        series_id=lambda d: d["series_id"].fillna(""), issuer_category=lambda d: d["issuer_category"].fillna("")
-    )
+    # Shares of Anthropic itself (units type NS): not units of a vehicle that holds it, not 'economic exposure' lines
+    direct = (df["units_type"] == "NS") & ~df["name"].str.contains("economic exposure", case=False)
+    df = df[direct].assign(series_id=lambda d: d["series_id"].fillna(""))
     keys = ["adsh", "as_of", "fund_family", "fund", "series_id", "security", "filed"]
     wide = df.pivot_table(
         index=keys, columns="metric", values="value", aggfunc="sum"
@@ -569,7 +563,7 @@ def fund_mark_changes(ctx):
             takeaway = [
                 (
                     f"Since the mark nearest {last_round['round']} ({last_round['date']}), {int((moved.abs() < 0.01).sum())} of {len(moved)} fund lines with a later mark are within 1%, "
-                    f"{int((moved <= -0.01).sum())} are lower (largest {moved.min() * 100:+.0f}%) and {int((moved >= 0.01).sum())} higher (largest {moved.max() * 100:+.0f}%)."
+                    f"{int((moved <= -0.01).sum())} are lower and {int((moved >= 0.01).sum())} higher; changes run from {moved.min() * 100:+.0f}% to {moved.max() * 100:+.0f}%."
                 )
             ]
         skipped_note = (
@@ -652,7 +646,7 @@ def amazon(ctx):
         "subtitle": "Convertible notes at estimated fair value and nonvoting preferred stock at the amount Amazon records, from its 10-K and 10-Q",
         "kind": "stacked_bar",
         "encoding": {
-            "x": {"field": "date", "type": "temporal", "label": "Balance-sheet date"},
+            "x": {"field": "date", "type": "ordinal", "label": "Balance-sheet date"},
             "y": {"field": "value", "type": "quantitative", "label": "Amount recorded (USD)", "format": "usd_compact"},
             "color": {"field": "instrument", "type": "nominal", "label": "Instrument"},
         },

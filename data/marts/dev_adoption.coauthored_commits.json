@@ -869,6 +869,7 @@
   ],
   "assumptions": [
     "GitHub's search count is an estimate. The same week has read 8.0M one day and 9.2M the next, so read the trend.",
+    "GitHub flagged 35 of the 84 weeks as incomplete results (its search timed out), so those weeks may read low.",
     "Only public repositories' default branches are indexed; private and enterprise work is invisible.",
     "The trailer is added by Claude Code by default and can be switched off, so this undercounts usage.",
     "Other coding agents add no comparable trailer, so there is no peer series."
@@ -894,5 +895,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T07:26:58Z"
+  "generated_at": "2026-10-05T07:27:23Z"
 }

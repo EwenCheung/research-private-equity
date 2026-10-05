@@ -206,3 +206,18 @@ def test_a_lasting_jump_is_growth_not_a_spike():
     ]
     spec = marts.coding_agent_cli(Ctx(rows, NAMES))
     assert all(r["spike_days"] == 0 for r in spec["rows"])  # a launch-style step up stays in the series
+
+
+def test_commit_chart_counts_the_weeks_github_flagged_incomplete():
+    rows = [
+        obs("github_coauthored_commits", "coauthored_commits", "anthropic", d, v, week_end="x", incomplete=inc)
+        for d, v, inc in (
+            ("2026-08-31", 100, False),
+            ("2026-09-07", 200, True),
+            ("2026-09-14", 300, True),
+            ("2026-09-21", 400, False),
+            ("2026-09-28", 500, False),
+        )
+    ]
+    spec = marts.coauthored_commits(Ctx(rows, NAMES))
+    assert any("flagged 2 of the 5 weeks as incomplete" in a for a in spec["assumptions"])

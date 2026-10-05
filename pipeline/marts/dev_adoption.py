@@ -270,7 +270,8 @@ def coding_agent_cli(ctx):
 
 @mart(id="dev_adoption.coauthored_commits", sources=["github_coauthored_commits"])
 def coauthored_commits(ctx):
-    df = latest(ctx.obs(metric="coauthored_commits", entity="anthropic"), keys=("entity", "as_of"))
+    df = dims(latest(ctx.obs(metric="coauthored_commits", entity="anthropic"), keys=("entity", "as_of")), "incomplete")
+    flagged = int(df["incomplete"].astype(bool).sum()) if len(df) else 0
     df = df.sort_values("as_of").assign(avg=lambda d: d["value"].rolling(4, min_periods=4).mean())
     rows = [{"week": r.as_of, "series": "Weekly count", "commits": int(r.value)} for r in df.itertuples()] + [
         {"week": r.as_of, "series": "4-week average", "commits": int(r.avg)} for r in df.itertuples() if pd.notna(r.avg)
@@ -303,6 +304,7 @@ def coauthored_commits(ctx):
         "takeaway": takeaway,
         "assumptions": [
             "GitHub's search count is an estimate. The same week has read 8.0M one day and 9.2M the next, so read the trend.",
+            f"GitHub flagged {flagged} of the {len(df)} weeks as incomplete results (its search timed out), so those weeks may read low.",
             "Only public repositories' default branches are indexed; private and enterprise work is invisible.",
             "The trailer is added by Claude Code by default and can be switched off, so this undercounts usage.",
             "Other coding agents add no comparable trailer, so there is no peer series.",

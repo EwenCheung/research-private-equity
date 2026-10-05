@@ -1,0 +1,6 @@
+# App Store ids (US storefront) for the consumer app of each company. Cohere has no consumer app.
+anthropic: {appstore: {id: "6473753684", name: Claude}}
+openai: {appstore: {id: "6448311069", name: ChatGPT}}
+google-deepmind: {appstore: {id: "6477489729", name: Gemini}}
+xai: {appstore: {id: "6670324846", name: Grok}}
+mistral: {appstore: {id: "6740410176", name: Le Chat}}

@@ -1,5 +1,5 @@
-# local worktrees (one per implementation)
-.worktrees/
+# local worktrees: .claude/worktrees/ is the standard (the Claude app and `claude --worktree` create them there)
+.claude/worktrees/
 
 # secrets
 .env

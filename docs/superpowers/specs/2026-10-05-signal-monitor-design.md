@@ -249,16 +249,16 @@ From `claude-plugins-official`:
 
 ### Phase 1: Platform (depends on Phase 0)
 **1.1 Data core** (`p1/data-core`)
-- [ ] `pyproject.toml` with every dependency.
+- Uses the dependencies already declared in 0.2 (R4); it never edits `pyproject.toml` or `uv.lock`.
 - [ ] `pipeline/core/*`: schema validation, auto-discovering registry, `collect` and `build` CLIs, freshness, company config loader.
 - [ ] `config/companies/anthropic.yaml` (including peers).
-- [ ] `daily.yml` and `weekly.yml` (collect → build → commit).
+- [ ] `daily.yml` and `weekly.yml` (collect → build → commit). The cron trigger stays off until R2 is decided; `workflow_dispatch` works from day one.
 - [ ] `pipeline/sources/snapshots.py`: raw-only daily capture of App Store top-chart ranks (OpenRouter dropped: its terms forbid scraping).
   Data quality: these can't be backfilled, so their history starts the moment this merges.
 - [ ] `tests/test_core.py`, which rejects rows missing provenance.
 
 **1.2 Web core** (`p1/web-core`), built against the Phase 0 fixtures:
-- [ ] `package.json` with every dependency.
+- [ ] `frontend/package.json` with every JS dependency (the only JS dependency file).
 - [ ] FastAPI `app/server.py`: password session, marts, registry and freshness API, static serving.
 - [ ] React shell: auto-discovered pages, nav, login.
 - [ ] `ChartCard` with every provenance feature.
@@ -414,3 +414,8 @@ Out of scope, by your decisions or because the data is missing:
   - `.github/workflows/ci.yml` runs ruff and pytest on every PR, and on pushes to `main` and `phase/**`.
   - `phase/N+1` is cut from `phase/N` as soon as the phase PR opens, so the next phase's worktrees can start during review.
     Because phase PRs use merge commits, the next phase PR still shows only its own changes.
+- **R15, 2026-10-05: worktree location.**
+  - Worktrees live in `.claude/worktrees/p<N>-<name>`, where the Claude app and `claude --worktree` create them.
+  - The old `.worktrees/` location produced a second, unused worktree for 1.1, so it is retired.
+  - App-made worktrees start on a `claude/...` branch, so the first step is `git switch -c p<N>/<name> origin/phase/<N>`.
+  - One `.env` lives in the repo root, and each worktree links to it.

@@ -1,0 +1,47 @@
+name: weekly
+
+# Collect -> build -> commit data/. This job is the only direct writer to the branch it runs on (design spec, R2),
+# and it only ever stages data/ and reports/.
+# The cron trigger is off until R2 is decided; run it by hand with `gh workflow run weekly.yml`.
+on:
+  workflow_dispatch:
+  # schedule:
+  #   - cron: "43 6 * * 1"
+
+concurrency:
+  group: data-commit  # shared with daily.yml so two data commits never race
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.2.0  # upstream publishes no floating major tag
+      - run: uv sync --locked
+      - id: collect
+        continue-on-error: true  # a failing source is reported below; the other sources and the build still land
+        run: uv run python -m pipeline.collect --cadence weekly
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+      - id: build
+        continue-on-error: true  # raw snapshots can't be backfilled: commit them even if a mart fails
+        run: uv run python -m pipeline.build
+      - name: Commit data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data
+          if [ -d reports ]; then git add -A reports; fi
+          git diff --cached --quiet || git commit -m "chore(data): weekly collect $(date -u +%F)"
+          git pull --rebase  # someone may have pushed since checkout; data/ is only written here
+          git push
+      - if: steps.collect.outcome == 'failure'
+        run: echo "::error::at least one source failed; see the collect step" && exit 1
+      - if: steps.build.outcome == 'failure'
+        run: echo "::error::build failed; see the build step" && exit 1

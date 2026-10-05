@@ -51,47 +51,47 @@
   "rows": [
     {
       "month": "2026-07-01",
-      "entity": "anthropic",
+      "entity": "Anthropic",
       "share": 0.36
     },
     {
       "month": "2026-07-01",
-      "entity": "openai",
+      "entity": "OpenAI",
       "share": 0.52
     },
     {
       "month": "2026-07-01",
-      "entity": "google",
+      "entity": "Google",
       "share": 0.12
     },
     {
       "month": "2026-08-01",
-      "entity": "anthropic",
+      "entity": "Anthropic",
       "share": 0.38
     },
     {
       "month": "2026-08-01",
-      "entity": "openai",
+      "entity": "OpenAI",
       "share": 0.5
     },
     {
       "month": "2026-08-01",
-      "entity": "google",
+      "entity": "Google",
       "share": 0.12
     },
     {
       "month": "2026-09-01",
-      "entity": "anthropic",
+      "entity": "Anthropic",
       "share": 0.41
     },
     {
       "month": "2026-09-01",
-      "entity": "openai",
+      "entity": "OpenAI",
       "share": 0.47
     },
     {
       "month": "2026-09-01",
-      "entity": "google",
+      "entity": "Google",
       "share": 0.12
     }
   ],

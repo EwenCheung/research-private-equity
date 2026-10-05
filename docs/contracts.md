@@ -70,6 +70,13 @@ The schema is `contracts/source.schema.json`. Each source declares:
 Freshness measures **our collection**, not the data date. A quarterly SEC filing can be fresh (we checked yesterday) while its `as_of` is three months old.
 The chart shows both dates.
 
+**Freshness is live.** `build` stores freshness in each mart, but the API recomputes it on every request from `data/registry.json`,
+using the current time. If the pipeline stops, badges turn amber and then red on their own, with no rebuild needed.
+(With fixtures the clock is pinned to the fixture build time, so the Sample page keeps showing every state.)
+
+**`data/registry.json`** is written by every `build`. It is `{generated_at, sources: [...]}`, where each source is its declared metadata
+(section 2) plus `retrieved_at` (latest), `as_of` (latest), `row_count`, and `readable`. `readable` is false when stored rows failed validation.
+
 ## 4. Chart spec (mart): what build writes and ChartCard renders
 The schema is `contracts/chart_spec.schema.json`. Files are written to `data/marts/<page>.<chart>.json`.
 
@@ -140,6 +147,8 @@ def open_roles(ctx):                   # ctx.obs(...) -> pandas DataFrame of obs
             "rows": [...], "takeaway": [...], "assumptions": [...], "badges": []}
 ```
 - The core adds `id`, `page`, `as_of`, `sources` (with freshness), `status` and `generated_at`, then validates and writes the file.
+- `ctx.names` maps each slug to its display name from `config/companies/`. Label series with it ("Anthropic", not "anthropic"),
+  so every chart names companies the same way.
 
 ### Page: `frontend/src/pages/<Page>.tsx`
 ```tsx
@@ -177,7 +186,7 @@ The router loads `import.meta.glob("./pages/*.tsx")`, and the nav is sorted by `
 **CLI** (run from the repo root):
 ```bash
 uv run python -m pipeline.collect [--cadence daily|weekly] [--source ID ...] [--company SLUG]
-uv run python -m pipeline.build                 # raw + manual + ledgers -> data/marts/*.json
+uv run python -m pipeline.build                 # raw + manual + ledgers -> data/marts/*.json + data/registry.json
 uv run python -m pipeline.editions freeze       # Phase 3: reports/YYYY-Www/
 uv run python -m pipeline.analysis              # Phase 4: bull, bear, neutral
 uv run pytest
@@ -187,18 +196,18 @@ uv run pytest
 
 | Route | Returns |
 |---|---|
-| `POST /api/login` `{password}` | Sets a signed cookie (`DASHBOARD_PASSWORD`, `SESSION_SECRET`) |
+| `POST /api/login` `{password}` | Sets a signed cookie (`DASHBOARD_PASSWORD`, `SESSION_SECRET`). `429` after 10 wrong passwords from one IP in 15 minutes |
 | `POST /api/logout` | Clears the cookie |
 | `GET /api/session` | `{authenticated: bool}` |
 | `GET /api/marts` | `[{id, page, title, status, as_of}]` |
-| `GET /api/marts/{id}` | One chart spec |
-| `GET /api/registry` | Sources, with last retrieved time, row count and freshness |
-| `GET /api/freshness` | `{source: {freshness, retrieved_at, as_of}}` |
+| `GET /api/marts/{id}` | One chart spec, with each source's `freshness` recomputed live |
+| `GET /api/registry` | `data/registry.json` sources, with `freshness` recomputed live |
+| `GET /api/freshness` | `{source: {freshness, retrieved_at, as_of}}`, live |
 | `GET /api/editions` | Phase 3: `["2026-W41", ...]` |
 | `GET /api/compare?id=&edition=` | Phase 3: `{current, previous, deltas}` |
 | `GET /api/analysis?edition=` | Phase 4: `{bull, bear, neutral}` |
 
-**Environment:** see `.env.example`.
+**Environment:** see `.env.example`. `DATA_DIR` points the API at the pipeline's `data/` (Render sets `data`). If it's unset, the API serves `tests/fixtures/`.
 
 **Ports:** worktree `n` uses API `8000+n` and Vite `5173+n`.
 - `main` is `n = 0`.
@@ -213,4 +222,5 @@ uv run pytest
 | `marts/*.json` | Seven sample marts covering every UI state: fresh, aging, stale and never; `ok` and `awaiting_data`; API, manual and ledger sources; the `arithmetic` badge; and the line, stacked-bar, bar, table and stat kinds |
 | `observations.jsonl` | API, manual and ledger rows |
 | `sources.json` | Seven source declarations |
+| `registry.json` | The registry `build` would write for those sources; the fixture API reads it with a pinned clock |
 | `ai/bull.json`, `ai/neutral.json` | Reports whose citations match the sample marts |

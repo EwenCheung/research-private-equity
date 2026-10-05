@@ -1,0 +1,161 @@
+"""FastAPI app: password session, read-only marts/registry/freshness API, and the built frontend.
+
+Routes and shapes are defined in docs/contracts.md section 8.
+"""
+
+import hmac
+import json
+import os
+import re
+import time
+from datetime import UTC, datetime
+from pathlib import Path
+
+from fastapi import Depends, FastAPI, HTTPException, Request, Response
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+from itsdangerous import BadSignature, URLSafeTimedSerializer
+from pydantic import BaseModel
+
+from contracts import freshness as freshness_rule
+
+ROOT = Path(__file__).resolve().parent.parent
+FIXTURES = ROOT / "tests" / "fixtures"
+COOKIE = "session"
+SESSION_MAX_AGE = 7 * 24 * 3600
+MART_ID = re.compile(r"^[a-z0-9_]+\.[a-z0-9_]+$")
+LOGIN_FAILURES, LOGIN_WINDOW = 10, 15 * 60  # wrong passwords allowed per client IP per window
+
+
+class Login(BaseModel):
+    password: str
+
+
+def create_app(data_dir: Path | None = None, frontend_dir: Path | None = None) -> FastAPI:
+    """data_dir (or DATA_DIR) is the pipeline's data/: marts/ plus registry.json, written by `pipeline.build`.
+
+    Unset means the Phase 0 fixtures. Their clock is pinned to the registry's generated_at so the Sample page keeps
+    showing every freshness state; with real data, freshness is recomputed against the current time on every request.
+    """
+    data_dir = Path(data_dir or os.environ.get("DATA_DIR") or FIXTURES)
+    pinned_clock = data_dir.resolve() == FIXTURES.resolve()
+    marts_dir, registry_file = data_dir / "marts", data_dir / "registry.json"
+    frontend_dir = Path(frontend_dir or os.environ.get("FRONTEND_DIR") or ROOT / "frontend" / "dist")
+
+    password = os.environ.get("DASHBOARD_PASSWORD", "")
+    secret = os.environ.get("SESSION_SECRET", "")
+    secure_cookie = os.environ.get("COOKIE_SECURE", "") == "1"
+    signer = URLSafeTimedSerializer(secret or "unset", salt="session")
+
+    app = FastAPI(title="Signal Monitor", docs_url=None, redoc_url=None, openapi_url=None)
+
+    def authenticated(request: Request) -> bool:
+        token = request.cookies.get(COOKIE)
+        if not token or not secret:
+            return False
+        try:
+            return signer.loads(token, max_age=SESSION_MAX_AGE).get("ok") is True
+        except BadSignature:
+            return False
+
+    def require_session(request: Request) -> None:
+        if not authenticated(request):
+            raise HTTPException(401, "Sign in required")
+
+    # --- session ---
+    # ponytail: failures are counted in memory per process (Render runs one); use a shared store if it scales out.
+    failures: dict[str, list[float]] = {}
+
+    @app.post("/api/login")
+    def login(body: Login, request: Request, response: Response):
+        if not password or not secret:
+            raise HTTPException(503, "Set DASHBOARD_PASSWORD and SESSION_SECRET to enable sign-in")
+        ip, now = (request.client.host if request.client else "unknown"), time.monotonic()
+        recent = [t for t in failures.get(ip, []) if now - t < LOGIN_WINDOW]
+        if len(recent) >= LOGIN_FAILURES:
+            raise HTTPException(429, "Too many wrong passwords; try again in 15 minutes")
+        if not hmac.compare_digest(body.password.encode(), password.encode()):
+            failures[ip] = [*recent, now]
+            raise HTTPException(401, "Wrong password")
+        failures.pop(ip, None)
+        response.set_cookie(
+            COOKIE,
+            signer.dumps({"ok": True}),
+            max_age=SESSION_MAX_AGE,
+            httponly=True,
+            samesite="lax",
+            secure=secure_cookie,
+        )
+        return {"authenticated": True}
+
+    @app.post("/api/logout")
+    def logout(response: Response):
+        response.delete_cookie(COOKIE)
+        return {"authenticated": False}
+
+    @app.get("/api/session")
+    def session(request: Request):
+        return {"authenticated": authenticated(request)}
+
+    # --- data (all behind the session) ---
+    def load_registry() -> dict[str, dict]:
+        """Sources from registry.json with freshness recomputed now, so a stalled pipeline shows without a rebuild."""
+        if not registry_file.is_file():
+            return {}
+        reg = json.loads(registry_file.read_text())
+        now = datetime.fromisoformat(reg["generated_at"]) if pinned_clock else datetime.now(UTC)
+        return {
+            s["id"]: {
+                **s,
+                "freshness": freshness_rule(
+                    datetime.fromisoformat(s["retrieved_at"]) if s["retrieved_at"] else None, s["sla_days"], now
+                ),
+            }
+            for s in reg["sources"]
+        }
+
+    def live(mart: dict, reg: dict[str, dict]) -> dict:
+        for s in mart["sources"]:
+            if s["source"] in reg:
+                s["freshness"] = reg[s["source"]]["freshness"]
+        return mart
+
+    def load_marts() -> list[dict]:
+        return [json.loads(p.read_text()) for p in sorted(marts_dir.glob("*.json"))]
+
+    @app.get("/api/marts", dependencies=[Depends(require_session)])
+    def list_marts():
+        return [{k: m[k] for k in ("id", "page", "title", "status", "as_of")} for m in load_marts()]
+
+    @app.get("/api/marts/{mart_id}", dependencies=[Depends(require_session)])
+    def get_mart(mart_id: str):
+        path = marts_dir / f"{mart_id}.json"
+        if not MART_ID.match(mart_id) or not path.is_file():  # the pattern also blocks path traversal
+            raise HTTPException(404, "No such chart")
+        return live(json.loads(path.read_text()), load_registry())
+
+    @app.get("/api/freshness", dependencies=[Depends(require_session)])
+    def freshness():
+        return {sid: {k: s[k] for k in ("freshness", "retrieved_at", "as_of")} for sid, s in load_registry().items()}
+
+    @app.get("/api/registry", dependencies=[Depends(require_session)])
+    def registry():
+        return list(load_registry().values())
+
+    # --- built frontend (public: it holds no data, and the login page has to load) ---
+    if (frontend_dir / "index.html").is_file():
+        app.mount("/assets", StaticFiles(directory=frontend_dir / "assets"), name="assets")
+
+        @app.get("/{path:path}", include_in_schema=False)
+        def spa(path: str):
+            if path.startswith("api/"):
+                raise HTTPException(404)
+            target = (frontend_dir / path).resolve()
+            if path and target.is_file() and frontend_dir.resolve() in target.parents:
+                return FileResponse(target)
+            return FileResponse(frontend_dir / "index.html")
+
+    return app
+
+
+app = create_app()

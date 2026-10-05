@@ -25,7 +25,7 @@ Outputs are drafts for deal-team review, not investment advice. Use only public 
 
 ## How work is organised
 - **Phases are layers.** Implementations inside one phase are independent of each other. Each one gets its own branch
-  (`p<N>/<name>`) and worktree (`.worktrees/p<N>-<name>`). Dependencies only flow from one phase to the next.
+  (`p<N>/<name>`) and worktree (`.claude/worktrees/p<N>-<name>`). Dependencies only flow from one phase to the next.
 - **Each implementation is a vertical slice** of one page or function: collectors → marts → page → tests → skill.
 - **Branches.** Create implementation branches from `phase/N`. `phase/N` is cut from `phase/N-1` as soon as that phase's PR opens.
   Merge commits keep each phase PR showing only its own changes.
@@ -38,12 +38,15 @@ Outputs are drafts for deal-team review, not investment advice. Use only public 
 - **Shared files.**
   - Core files (`pipeline/core/*`, `app/*`, `frontend/src/components/ChartCard.tsx`) change only in their own `fix(core)` PR.
   - Dependencies change only in their own `chore(deps)` PR.
-  - `docs/ROADMAP.md` is updated only at phase gates, on `main`.
+  - `docs/ROADMAP.md` is updated only on the phase branch `phase/N` (never by implementation branches, never directly on `main`).
 - **Auto-discovery, never shared registries.** These are all picked up automatically:
   - collectors in `pipeline/sources/*.py`;
   - marts in `pipeline/marts/*.py`;
   - pages in `frontend/src/pages/*.tsx`;
   - metric files in `config/metrics/*.yaml`.
+- **Worktrees live in `.claude/worktrees/`**, where the Claude app and `claude --worktree` create them. Never use another location.
+  - If the app created yours on an auto-named `claude/...` branch, first run `git fetch origin && git switch -c p<N>/<name> origin/phase/<N>`.
+  - Share one `.env`: in the worktree, run `ln -s "$(git rev-parse --path-format=absolute --git-common-dir)/../.env" .env`.
 - **Ports.** Worktree `n` serves the API on `8000+n` and Vite on `5173+n`. `main` is `n = 0`; implementation `P.k` uses `n = k`.
 
 ## Review checkpoint (every implementation)

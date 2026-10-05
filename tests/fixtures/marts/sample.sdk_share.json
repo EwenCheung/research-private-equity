@@ -1,0 +1,117 @@
+{
+  "id": "sample.sdk_share",
+  "page": "sample",
+  "subtitle": "",
+  "badges": [
+    "arithmetic"
+  ],
+  "assumptions": [
+    "Share = package downloads / sum across anthropic, openai, google-genai.",
+    "Fixture data for layout review only; not real figures."
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T06:30:00Z",
+  "title": "Sample: share of AI SDK downloads",
+  "kind": "stacked_bar",
+  "encoding": {
+    "x": {
+      "field": "month",
+      "type": "temporal",
+      "label": "Month"
+    },
+    "y": {
+      "field": "share",
+      "type": "quantitative",
+      "label": "Share of downloads",
+      "format": "pct"
+    },
+    "color": {
+      "field": "entity",
+      "type": "nominal",
+      "label": "SDK"
+    }
+  },
+  "columns": [
+    {
+      "field": "month",
+      "label": "Month",
+      "format": "date"
+    },
+    {
+      "field": "entity",
+      "label": "SDK",
+      "format": "text"
+    },
+    {
+      "field": "share",
+      "label": "Share",
+      "format": "pct"
+    }
+  ],
+  "rows": [
+    {
+      "month": "2026-07-01",
+      "entity": "anthropic",
+      "share": 0.36
+    },
+    {
+      "month": "2026-07-01",
+      "entity": "openai",
+      "share": 0.52
+    },
+    {
+      "month": "2026-07-01",
+      "entity": "google",
+      "share": 0.12
+    },
+    {
+      "month": "2026-08-01",
+      "entity": "anthropic",
+      "share": 0.38
+    },
+    {
+      "month": "2026-08-01",
+      "entity": "openai",
+      "share": 0.5
+    },
+    {
+      "month": "2026-08-01",
+      "entity": "google",
+      "share": 0.12
+    },
+    {
+      "month": "2026-09-01",
+      "entity": "anthropic",
+      "share": 0.41
+    },
+    {
+      "month": "2026-09-01",
+      "entity": "openai",
+      "share": 0.47
+    },
+    {
+      "month": "2026-09-01",
+      "entity": "google",
+      "share": 0.12
+    }
+  ],
+  "takeaway": [
+    "Anthropic's SDK share rose from 36% to 41% over three months.",
+    "Fixture data for layout review only; not real figures."
+  ],
+  "as_of": "2026-09-01",
+  "sources": [
+    {
+      "source": "pypi_downloads",
+      "label": "PyPI downloads (pypistats)",
+      "url": "https://pypistats.org/api/packages/anthropic/overall",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T06:03:02Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ]
+}

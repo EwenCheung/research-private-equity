@@ -1,0 +1,70 @@
+{
+  "edition": "2026-W41",
+  "model": "claude-opus-5-5",
+  "generated_at": "2026-10-05T07:00:00Z",
+  "evidence_as_of": "2026-10-05",
+  "reporter": "bull",
+  "headline": "Fixture: hiring and developer pull both point to expansion",
+  "arguments": [
+    {
+      "claim": "Hiring keeps growing.",
+      "evidence": [
+        {
+          "chart_id": "sample.open_roles",
+          "metric": "open_roles",
+          "value": 640,
+          "as_of": "2026-10-05",
+          "source": "greenhouse_jobs"
+        }
+      ],
+      "strength": "moderate",
+      "invalidated_by": "Open roles fall for two consecutive weeks."
+    },
+    {
+      "claim": "Developer share is rising.",
+      "evidence": [
+        {
+          "chart_id": "sample.sdk_share",
+          "metric": "sdk_download_share",
+          "value": 0.41,
+          "as_of": "2026-09-01",
+          "source": "pypi_downloads"
+        }
+      ],
+      "strength": "strong",
+      "invalidated_by": "Share drops back below 36%."
+    },
+    {
+      "claim": "Consumer spend is climbing.",
+      "evidence": [
+        {
+          "chart_id": "sample.consumer_spend",
+          "metric": "consumer_spend_weekly",
+          "value": 44200000,
+          "as_of": "2026-09-21",
+          "source": "yipit_consumer"
+        }
+      ],
+      "strength": "weak",
+      "invalidated_by": "Two flat weeks in the panel."
+    },
+    {
+      "claim": "Momentum shows in the run-rate ledger.",
+      "evidence": [
+        {
+          "chart_id": "sample.arr_ledger",
+          "metric": "arr_run_rate",
+          "value": 3000000000,
+          "as_of": "2026-08-30",
+          "source": "capital_arr_ledger"
+        }
+      ],
+      "strength": "moderate",
+      "invalidated_by": "No new milestone for two quarters."
+    }
+  ],
+  "valuation": "Fixture text.",
+  "catalysts": [
+    "Fixture catalyst."
+  ]
+}

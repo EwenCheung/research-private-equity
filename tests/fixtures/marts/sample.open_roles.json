@@ -1,0 +1,111 @@
+{
+  "id": "sample.open_roles",
+  "page": "sample",
+  "subtitle": "",
+  "badges": [],
+  "assumptions": [
+    "Fixture data for layout review only; not real figures."
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T06:30:00Z",
+  "title": "Sample: open roles, Anthropic vs OpenAI",
+  "kind": "line",
+  "encoding": {
+    "x": {
+      "field": "as_of",
+      "type": "temporal",
+      "label": "Date"
+    },
+    "y": {
+      "field": "value",
+      "type": "quantitative",
+      "label": "Open roles",
+      "format": "int"
+    },
+    "color": {
+      "field": "entity",
+      "type": "nominal",
+      "label": "Company"
+    }
+  },
+  "columns": [
+    {
+      "field": "as_of",
+      "label": "Date",
+      "format": "date"
+    },
+    {
+      "field": "entity",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "value",
+      "label": "Open roles",
+      "format": "int"
+    }
+  ],
+  "rows": [
+    {
+      "as_of": "2026-09-07",
+      "entity": "anthropic",
+      "value": 612
+    },
+    {
+      "as_of": "2026-09-21",
+      "entity": "anthropic",
+      "value": 627
+    },
+    {
+      "as_of": "2026-10-05",
+      "entity": "anthropic",
+      "value": 640
+    },
+    {
+      "as_of": "2026-09-07",
+      "entity": "openai",
+      "value": 801
+    },
+    {
+      "as_of": "2026-09-21",
+      "entity": "openai",
+      "value": 815
+    },
+    {
+      "as_of": "2026-10-05",
+      "entity": "openai",
+      "value": 828
+    }
+  ],
+  "takeaway": [
+    "Anthropic lists 640 open roles, 188 fewer than OpenAI.",
+    "Fixture data for layout review only; not real figures."
+  ],
+  "as_of": "2026-10-05",
+  "sources": [
+    {
+      "source": "greenhouse_jobs",
+      "label": "Greenhouse job board API",
+      "url": "https://boards-api.greenhouse.io/v1/boards/anthropic/jobs",
+      "method": "api",
+      "tier": "company-stated",
+      "cadence": "daily",
+      "as_of": "2026-10-05",
+      "retrieved_at": "2026-10-05T06:02:11Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "ashby_jobs",
+      "label": "Ashby job board API",
+      "url": "https://api.ashbyhq.com/posting-api/job-board/openai",
+      "method": "api",
+      "tier": "company-stated",
+      "cadence": "daily",
+      "as_of": "2026-10-05",
+      "retrieved_at": "2026-10-05T06:02:40Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ]
+}

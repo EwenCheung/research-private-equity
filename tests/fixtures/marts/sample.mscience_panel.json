@@ -1,0 +1,56 @@
+{
+  "id": "sample.mscience_panel",
+  "page": "sample",
+  "subtitle": "",
+  "badges": [],
+  "assumptions": [
+    "Fixture data for layout review only; not real figures."
+  ],
+  "status": "awaiting_data",
+  "generated_at": "2026-10-05T06:30:00Z",
+  "title": "Sample: M Science panel (awaiting data)",
+  "kind": "line",
+  "encoding": {
+    "x": {
+      "field": "as_of",
+      "type": "temporal",
+      "label": "Date"
+    },
+    "y": {
+      "field": "value",
+      "type": "quantitative",
+      "label": "Value"
+    }
+  },
+  "columns": [
+    {
+      "field": "as_of",
+      "label": "Date",
+      "format": "date"
+    },
+    {
+      "field": "value",
+      "label": "Value",
+      "format": "float"
+    }
+  ],
+  "rows": [],
+  "takeaway": [
+    "Awaiting data: no M Science figures have been entered yet."
+  ],
+  "as_of": null,
+  "sources": [
+    {
+      "source": "mscience_panel",
+      "label": "M Science panel",
+      "url": "urn:mscience:panel",
+      "method": "manual",
+      "tier": "vendor",
+      "cadence": "weekly",
+      "as_of": null,
+      "retrieved_at": null,
+      "freshness": "never",
+      "manual": null
+    }
+  ]
+}

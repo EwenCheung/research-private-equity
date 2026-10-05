@@ -16,11 +16,12 @@ The full design is in [the spec](superpowers/specs/2026-10-05-signal-monitor-des
 | 0.1 | Team environment: shared plugins, CLAUDE.md, README, roadmap, spec | `p0/team-env` | ☑ |
 | 0.2 | Contracts & fixtures: row, chart-spec and AI-report schemas, module interfaces, sample marts | `p0/contracts` | ☑ |
 
-## Phase 1: Platform ◐ (branch `phase/1`)
+## Phase 1: Platform ⧗ (PR `phase/1` → `main`)
 | # | Implementation | Branch | Status |
 |---|---|---|---|
-| 1.1 | Data core: registry, collect/build CLIs, freshness, daily/weekly workflows, snapshot capture | `p1/data-core` | ☐ |
-| 1.2 | Web core: FastAPI, password, React shell, ChartCard, sample page, Render config | `p1/web-core` | ☐ |
+| 1.1 | Data core: registry, collect/build CLIs, freshness, daily/weekly workflows, snapshot capture | `p1/data-core` | ⧗ (#2) |
+| 1.2 | Web core: FastAPI, password, React shell, ChartCard, sample page, Render config | `p1/web-core` | ⧗ (#3) |
+| gate | Integration: live freshness from `data/registry.json`, real-data `DATA_DIR`, login throttle, workflow hardening, worktree standard | `p1/integration` | ⧗ (#4) |
 
 ## Phase 2: Evidence pages ☐
 | # | Implementation | Branch | Status |

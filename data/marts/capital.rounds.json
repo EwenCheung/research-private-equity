@@ -1,0 +1,141 @@
+{
+  "title": "Anthropic funding rounds",
+  "subtitle": "Every round Anthropic announced itself, with the amount, the lead investors and the sentence quoted",
+  "kind": "table",
+  "encoding": {},
+  "columns": [
+    {
+      "field": "date",
+      "label": "Announced",
+      "format": "date"
+    },
+    {
+      "field": "round",
+      "label": "Round",
+      "format": "text"
+    },
+    {
+      "field": "amount",
+      "label": "Raised",
+      "format": "usd_compact"
+    },
+    {
+      "field": "post_money",
+      "label": "Post-money valuation",
+      "format": "usd_compact"
+    },
+    {
+      "field": "led_by",
+      "label": "Led by",
+      "format": "text"
+    },
+    {
+      "field": "quote",
+      "label": "What Anthropic said",
+      "format": "text"
+    },
+    {
+      "field": "link",
+      "label": "Source",
+      "format": "url"
+    }
+  ],
+  "rows": [
+    {
+      "date": "2021-05-28",
+      "round": "Series A",
+      "amount": 124000000.0,
+      "post_money": null,
+      "led_by": "Jaan Tallinn",
+      "quote": "Anthropic, an AI safety and research company, has raised $124 million in a Series A. | The Series A round was led by Jaan Tallinn, technology investor and co-founder of Skype.",
+      "link": "https://www.anthropic.com/news/anthropic-raises-124-million-to-build-more-reliable-general-ai-systems"
+    },
+    {
+      "date": "2022-04-29",
+      "round": "Series B",
+      "amount": 580000000.0,
+      "post_money": null,
+      "led_by": "Sam Bankman-Fried (FTX)",
+      "quote": "Anthropic, an AI safety and research company, has raised $580 million in a Series B. | The Series B round was led by Sam Bankman-Fried, CEO of FTX.",
+      "link": "https://www.anthropic.com/news/anthropic-raises-series-b-to-build-safe-reliable-ai"
+    },
+    {
+      "date": "2023-05-23",
+      "round": "Series C",
+      "amount": 450000000.0,
+      "post_money": null,
+      "led_by": "Spark Capital",
+      "quote": "we have raised $450 million in Series C funding led by Spark Capital with participation from Google, Salesforce Ventures, Sound Ventures, Zoom Ventures, and others.",
+      "link": "https://www.anthropic.com/news/anthropic-series-c"
+    },
+    {
+      "date": "2025-03-03",
+      "round": "Series E",
+      "amount": 3500000000.0,
+      "post_money": 61500000000.0,
+      "led_by": "Lightspeed Venture Partners",
+      "quote": "Anthropic has raised $3.5 billion at a $61.5 billion post-money valuation. The round was led by Lightspeed Venture Partners",
+      "link": "https://www.anthropic.com/news/anthropic-raises-series-e-at-usd61-5b-post-money-valuation"
+    },
+    {
+      "date": "2025-09-02",
+      "round": "Series F",
+      "amount": 13000000000.0,
+      "post_money": 183000000000.0,
+      "led_by": "ICONIQ; co-led by Fidelity Management & Research Company, Lightspeed Venture Partners",
+      "quote": "Anthropic has completed a Series F fundraising of $13 billion led by ICONIQ. This financing values Anthropic at $183 billion post-money. Along with ICONIQ, the round was co-led by Fidelity Management & Research Company and Lightspeed Venture Partners.",
+      "link": "https://www.anthropic.com/news/anthropic-raises-series-f-at-usd183b-post-money-valuation"
+    },
+    {
+      "date": "2026-02-12",
+      "round": "Series G",
+      "amount": 30000000000.0,
+      "post_money": 380000000000.0,
+      "led_by": "GIC, Coatue; co-led by D. E. Shaw Ventures, Dragoneer, Founders Fund, ICONIQ, MGX",
+      "quote": "We have raised $30 billion in Series G funding led by GIC and Coatue, valuing Anthropic at $380 billion post-money. The round was co-led by D. E. Shaw Ventures, Dragoneer, Founders Fund, ICONIQ, and MGX. | This round also includes a portion of the previously announced investments from Microsoft and NVIDIA.",
+      "link": "https://www.anthropic.com/news/anthropic-raises-30-billion-series-g-funding-380-billion-post-money-valuation"
+    },
+    {
+      "date": "2026-05-28",
+      "round": "Series H",
+      "amount": 65000000000.0,
+      "post_money": 965000000000.0,
+      "led_by": "Altimeter Capital, Dragoneer, Greenoaks, Sequoia Capital; co-led by Capital Group, Coatue, D1 Capital Partners, GIC, ICONIQ, XN",
+      "quote": "Anthropic has raised $65 billion in Series H funding led by Altimeter Capital, Dragoneer, Greenoaks, and Sequoia Capital, valuing the company at $965 billion post-money. | The round was co-led by Capital Group, Coatue, D1 Capital Partners, GIC, ICONIQ, and XN. | It also includes $15 billion of previously committed investments from hyperscalers, including $5 billion from Amazon .",
+      "link": "https://www.anthropic.com/news/series-h"
+    }
+  ],
+  "takeaway": [
+    "Anthropic announced 7 funding rounds from 2021 to 2026, $112.7B in all; the latest is Series H on 2026-05-28: $65B at $965B post-money."
+  ],
+  "assumptions": [
+    "Only rounds Anthropic announced on anthropic.com/news. Series A to C announcements state no valuation, so those cells are blank, not zero.",
+    "Series D (reported by the press as led by Menlo Ventures) was never announced by Anthropic. The press pages found say only that it was 'in talks' (CNBC, 2023-12-21) or give a rounded $18 billion with no close date (TechCrunch, 2026-06-23), so it is left out until a dated, citable source is found.",
+    "Series G includes a portion of the Microsoft and NVIDIA investments announced in November 2025; Series H includes $15 billion previously committed by hyperscalers, of which $5 billion from Amazon. Amounts are as Anthropic states them.",
+    "Anthropic confidentially submitted a draft S-1 on 2026-06-01 (anthropic.com/news/confidential-draft-s1-sec). No S-1 is public on EDGAR yet."
+  ],
+  "badges": [],
+  "id": "capital.rounds",
+  "page": "capital",
+  "as_of": "2026-05-28",
+  "sources": [
+    {
+      "source": "capital_funding_rounds",
+      "label": "Anthropic funding rounds, from Anthropic's newsroom (cited ledger)",
+      "url": "https://www.anthropic.com/news",
+      "method": "ledger",
+      "tier": "company-stated",
+      "cadence": "monthly",
+      "as_of": "2026-05-28",
+      "retrieved_at": "2026-10-05T07:48:16Z",
+      "freshness": "fresh",
+      "manual": {
+        "entered_by": "EwenCheung via Claude",
+        "entered_at": "2026-10-05T07:48:16Z",
+        "evidence": "Anthropic, an AI safety and research company, has raised $124 million in a Series A. | The Series A round was led by Jaan Tallinn, technology investor and co-founder of Skype."
+      }
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T07:57:04Z"
+}

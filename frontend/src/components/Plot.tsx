@@ -1,5 +1,6 @@
 import * as Plot from "@observablehq/plot";
 import { useContext, useEffect, useRef, useState } from "react";
+import { companies } from "../api";
 import { fmt, shortDate, toDate } from "../format";
 import { SchemeContext } from "../theme";
 import type { ChartSpec } from "../types";
@@ -41,16 +42,36 @@ function useWidth() {
   return { ref, width };
 }
 
+/** Companies own fixed slots (target first, then peers), so Anthropic is the same colour on every chart.
+ *  Any other series takes the next free slot in order of appearance. */
+export function slotsFor(series: string[], companyNames: string[]): number[] {
+  const fixed = series.map((s) => companyNames.indexOf(s));
+  const taken = new Set(fixed.filter((i) => i >= 0));
+  let next = 0;
+  return fixed.map((i) => {
+    if (i >= 0) return i;
+    while (taken.has(next)) next++;
+    taken.add(next);
+    return next;
+  });
+}
+
 export function useSeriesColors(spec: ChartSpec) {
   const scheme = useContext(SchemeContext);
   const series = seriesOf(spec);
+  const [names, setNames] = useState<string[] | null>(null);
   const [colors, setColors] = useState<string[]>([]);
+  useEffect(() => {
+    companies().then((cs) => setNames(cs.map((c) => c.name)));
+  }, []);
   // Read the tokens after commit, once the theme attribute has been applied.
   useEffect(() => {
+    if (names === null) return;
     const css = getComputedStyle(document.documentElement);
+    const slots = slotsFor(series.length ? series : [""], names);
     // The palette is capped at 8 slots; folding the rest into "Other" is the mart's job, so overflow reads as muted.
-    setColors(Array.from({ length: Math.max(series.length, 1) }, (_, i) => css.getPropertyValue(SLOTS[i] ?? "--idle").trim() || "#898781"));
-  }, [scheme, series.join("|")]); // eslint-disable-line react-hooks/exhaustive-deps
+    setColors(slots.map((i) => css.getPropertyValue(SLOTS[i] ?? "--idle").trim() || "#898781"));
+  }, [scheme, names, series.join("|")]); // eslint-disable-line react-hooks/exhaustive-deps
   return { scheme, series, colors };
 }
 

@@ -62,6 +62,18 @@ def _csv_rows(root: Path, meta: dict) -> list[dict]:
     return rows
 
 
+def latest_as_of(root: Path, source_id: str, entity: str, **dims) -> str | None:
+    """Newest as_of already stored for one entity (and matching dims), so an incremental collector fetches only what's new.
+
+    e.g. latest_as_of(root, "npm_downloads", "anthropic", package="@anthropic-ai/sdk").
+    """
+    rows = _raw_rows(root, source_id)
+    return max(
+        (r["as_of"] for r in rows if r["entity"] == entity and all(r["dims"].get(k) == v for k, v in dims.items())),
+        default=None,
+    )
+
+
 def read_observations(root: Path, meta: dict) -> list[dict]:
     """Every stored observation of one source. ponytail: validates all rows on every read; cache once raw passes ~1M rows."""
     return _csv_rows(root, meta) if meta["method"] in ("manual", "ledger") else _raw_rows(root, meta["id"])

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "source.schema.json",
+  "title": "Source",
+  "description": "Metadata a collector declares next to its code. The registry, freshness badges and the Data & Methods page are built from it.",
+  "type": "object",
+  "required": ["id", "page", "label", "url", "method", "tier", "cadence", "sla_days", "backfillable", "caveats"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "page": { "description": "Page that owns the source.", "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "label": { "description": "Human name shown on charts, e.g. 'Greenhouse job board API'.", "type": "string", "minLength": 1 },
+    "url": {
+      "description": "Endpoint or page, may contain {placeholders} filled from config/identifiers/<page>.yaml.",
+      "type": "string",
+      "pattern": "^(https?://|urn:)"
+    },
+    "method": { "enum": ["api", "scrape", "manual", "ledger"] },
+    "tier": { "enum": ["company-stated", "filing", "platform", "press", "vendor", "derived"] },
+    "cadence": {
+      "description": "How often the source is collected (automated) or expected to be updated (manual/ledger).",
+      "enum": ["daily", "weekly", "monthly", "quarterly"]
+    },
+    "sla_days": {
+      "description": "Freshness SLA on retrieved_at: fresh if age <= sla_days, aging if <= 2x, stale beyond, never if no rows.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "backfillable": {
+      "description": "False means history cannot be recovered later (snapshot-only): the collector must run continuously.",
+      "type": "boolean"
+    },
+    "caveats": { "description": "Known limits a reader must know.", "type": "string" }
+  }
+}

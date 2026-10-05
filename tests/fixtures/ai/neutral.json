@@ -1,0 +1,34 @@
+{
+  "edition": "2026-W41",
+  "model": "claude-opus-5-5",
+  "generated_at": "2026-10-05T07:00:00Z",
+  "evidence_as_of": "2026-10-05",
+  "reporter": "neutral",
+  "headline": "Fixture: growth signals are real, consumer evidence is thin",
+  "debates": [
+    {
+      "topic": "Is hiring momentum durable?",
+      "bull": "Roles keep rising.",
+      "bear": "Peers hire faster.",
+      "verdict": "Rising, but from a lower base than OpenAI.",
+      "evidence_quality": "mixed",
+      "evidence": [
+        {
+          "chart_id": "sample.open_roles",
+          "metric": "open_roles",
+          "value": 640,
+          "as_of": "2026-10-05",
+          "source": "greenhouse_jobs"
+        }
+      ]
+    }
+  ],
+  "net_read": "Fixture net read.",
+  "confidence": "medium",
+  "watch_next": [
+    "Next weekly hiring snapshot."
+  ],
+  "data_gaps": [
+    "M Science panel awaiting data."
+  ]
+}

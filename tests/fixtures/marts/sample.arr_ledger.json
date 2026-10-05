@@ -1,0 +1,107 @@
+{
+  "id": "sample.arr_ledger",
+  "page": "sample",
+  "subtitle": "",
+  "badges": [],
+  "assumptions": [
+    "Fixture data for layout review only; not real figures."
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T06:30:00Z",
+  "title": "Sample: ARR milestone ledger",
+  "kind": "table",
+  "encoding": {
+    "x": {
+      "field": "said_on",
+      "type": "temporal",
+      "label": "Said on"
+    },
+    "y": {
+      "field": "run_rate",
+      "type": "quantitative",
+      "label": "Run-rate",
+      "format": "usd_compact"
+    }
+  },
+  "columns": [
+    {
+      "field": "said_on",
+      "label": "Said on",
+      "format": "date"
+    },
+    {
+      "field": "run_rate",
+      "label": "Run-rate",
+      "format": "usd_compact"
+    },
+    {
+      "field": "tier",
+      "label": "Tier",
+      "format": "text"
+    },
+    {
+      "field": "outlet",
+      "label": "Source",
+      "format": "text"
+    },
+    {
+      "field": "quote",
+      "label": "What was said",
+      "format": "text"
+    },
+    {
+      "field": "url",
+      "label": "Link",
+      "format": "url"
+    }
+  ],
+  "rows": [
+    {
+      "said_on": "2026-01-15",
+      "run_rate": 1000000000,
+      "tier": "press",
+      "outlet": "Example Wire",
+      "quote": "Fixture quote one.",
+      "url": "https://example.com/a"
+    },
+    {
+      "said_on": "2026-04-20",
+      "run_rate": 2000000000,
+      "tier": "company-stated",
+      "outlet": "Example Newsroom",
+      "quote": "Fixture quote two.",
+      "url": "https://example.com/b"
+    },
+    {
+      "said_on": "2026-08-30",
+      "run_rate": 3000000000,
+      "tier": "press",
+      "outlet": "Example Daily",
+      "quote": "Fixture quote three.",
+      "url": "https://example.com/c"
+    }
+  ],
+  "takeaway": [
+    "Three cited milestones; the latest is $3.0B.",
+    "Fixture data for layout review only; not real figures."
+  ],
+  "as_of": "2026-08-30",
+  "sources": [
+    {
+      "source": "capital_arr_ledger",
+      "label": "ARR milestone ledger",
+      "url": "urn:ledger:capital_arr",
+      "method": "ledger",
+      "tier": "press",
+      "cadence": "monthly",
+      "as_of": "2026-08-30",
+      "retrieved_at": "2026-10-01T10:00:00Z",
+      "freshness": "fresh",
+      "manual": {
+        "entered_by": "EwenCheung",
+        "entered_at": "2026-10-01T10:00:00Z",
+        "evidence": "3 cited entries; quotes and links in the table"
+      }
+    }
+  ]
+}

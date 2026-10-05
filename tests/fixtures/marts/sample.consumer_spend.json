@@ -1,0 +1,75 @@
+{
+  "id": "sample.consumer_spend",
+  "page": "sample",
+  "subtitle": "",
+  "badges": [],
+  "assumptions": [
+    "Fixture data for layout review only; not real figures."
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T06:30:00Z",
+  "title": "Sample: consumer spend on Claude (manual entry)",
+  "kind": "line",
+  "encoding": {
+    "x": {
+      "field": "week",
+      "type": "temporal",
+      "label": "Week"
+    },
+    "y": {
+      "field": "value",
+      "type": "quantitative",
+      "label": "Spend",
+      "format": "usd_compact"
+    }
+  },
+  "columns": [
+    {
+      "field": "week",
+      "label": "Week",
+      "format": "date"
+    },
+    {
+      "field": "value",
+      "label": "Spend",
+      "format": "usd_compact"
+    }
+  ],
+  "rows": [
+    {
+      "week": "2026-09-07",
+      "value": 41000000
+    },
+    {
+      "week": "2026-09-14",
+      "value": 43500000
+    },
+    {
+      "week": "2026-09-21",
+      "value": 44200000
+    }
+  ],
+  "takeaway": [
+    "Weekly panel spend rose 8% over three weeks.",
+    "Fixture data for layout review only; not real figures."
+  ],
+  "as_of": "2026-09-21",
+  "sources": [
+    {
+      "source": "yipit_consumer",
+      "label": "YipitData consumer panel",
+      "url": "urn:yipitdata:claude-consumer-weekly",
+      "method": "manual",
+      "tier": "vendor",
+      "cadence": "weekly",
+      "as_of": "2026-09-21",
+      "retrieved_at": "2026-09-24T09:00:00Z",
+      "freshness": "aging",
+      "manual": {
+        "entered_by": "EwenCheung",
+        "entered_at": "2026-09-24T09:00:00Z",
+        "evidence": "Fixture: weekly report p.3 (sample entry)"
+      }
+    }
+  ]
+}

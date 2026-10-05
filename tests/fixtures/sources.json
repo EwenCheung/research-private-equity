@@ -1,0 +1,86 @@
+[
+  {
+    "id": "greenhouse_jobs",
+    "page": "hiring",
+    "label": "Greenhouse job board API",
+    "url": "https://boards-api.greenhouse.io/v1/boards/{board}/jobs",
+    "method": "api",
+    "tier": "company-stated",
+    "cadence": "daily",
+    "sla_days": 2,
+    "backfillable": false,
+    "caveats": "Live postings only; closed roles disappear, so history comes from our own snapshots and the Wayback backfill."
+  },
+  {
+    "id": "ashby_jobs",
+    "page": "hiring",
+    "label": "Ashby job board API",
+    "url": "https://api.ashbyhq.com/posting-api/job-board/{board}",
+    "method": "api",
+    "tier": "company-stated",
+    "cadence": "daily",
+    "sla_days": 2,
+    "backfillable": false,
+    "caveats": "Live postings only."
+  },
+  {
+    "id": "pypi_downloads",
+    "page": "dev_adoption",
+    "label": "PyPI downloads (pypistats)",
+    "url": "https://pypistats.org/api/packages/{package}/overall",
+    "method": "api",
+    "tier": "platform",
+    "cadence": "daily",
+    "sla_days": 2,
+    "backfillable": true,
+    "caveats": "Includes CI and mirror traffic; use for trend and share, not user counts."
+  },
+  {
+    "id": "statuspage_incidents",
+    "page": "product",
+    "label": "Claude status page API",
+    "url": "https://status.claude.com/api/v2/incidents.json",
+    "method": "api",
+    "tier": "company-stated",
+    "cadence": "daily",
+    "sla_days": 2,
+    "backfillable": false,
+    "caveats": "API returns the latest 50 incidents only."
+  },
+  {
+    "id": "yipit_consumer",
+    "page": "licensed_data",
+    "label": "YipitData consumer panel",
+    "url": "urn:yipitdata:claude-consumer-weekly",
+    "method": "manual",
+    "tier": "vendor",
+    "cadence": "weekly",
+    "sla_days": 8,
+    "backfillable": true,
+    "caveats": "Licensed; entered manually from the weekly report."
+  },
+  {
+    "id": "mscience_panel",
+    "page": "licensed_data",
+    "label": "M Science panel",
+    "url": "urn:mscience:panel",
+    "method": "manual",
+    "tier": "vendor",
+    "cadence": "weekly",
+    "sla_days": 8,
+    "backfillable": true,
+    "caveats": "Licensed; placeholder until access is arranged."
+  },
+  {
+    "id": "capital_arr_ledger",
+    "page": "capital",
+    "label": "ARR milestone ledger",
+    "url": "urn:ledger:capital_arr",
+    "method": "ledger",
+    "tier": "press",
+    "cadence": "monthly",
+    "sla_days": 35,
+    "backfillable": true,
+    "caveats": "Hand-curated; each row cites its source and quote."
+  }
+]

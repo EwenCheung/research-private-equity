@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "observation.schema.json",
+  "title": "Observation",
+  "description": "One stored data point. Every number in the system is a row like this, with its provenance.",
+  "type": "object",
+  "required": ["source", "source_url", "method", "as_of", "retrieved_at", "tier", "entity", "metric", "value", "dims"],
+  "additionalProperties": false,
+  "properties": {
+    "source": {
+      "description": "Registry id of the source that produced the row, e.g. greenhouse_jobs.",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "source_url": {
+      "description": "Exact URL fetched, or a urn: for evidence without a URL (e.g. urn:yipitdata:weekly-2026-10-05).",
+      "type": "string",
+      "format": "uri"
+    },
+    "method": {
+      "description": "How the value got here.",
+      "enum": ["api", "scrape", "manual", "ledger"]
+    },
+    "as_of": {
+      "description": "The date the value describes (not when we fetched it).",
+      "type": "string",
+      "format": "date"
+    },
+    "retrieved_at": {
+      "description": "UTC time we fetched it, or the time it was entered for manual/ledger rows.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "tier": {
+      "description": "Reliability tier: company-stated (company's own channel), filing (regulatory), platform (third-party telemetry such as npm or GitHub), press, vendor (licensed alt-data), derived (computed by us).",
+      "enum": ["company-stated", "filing", "platform", "press", "vendor", "derived"]
+    },
+    "entity": {
+      "description": "Company slug from config/companies, e.g. anthropic, openai.",
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "metric": {
+      "description": "Metric id defined in config/metrics/<page>.yaml.",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "value": {
+      "description": "Always a number. Text facts (headlines, job titles) go in dims with value 1 so they can be counted.",
+      "type": "number"
+    },
+    "dims": {
+      "description": "Extra dimensions, e.g. {\"function\": \"research\", \"location\": \"London\"}. Flat, scalar values only.",
+      "type": "object",
+      "additionalProperties": { "type": ["string", "number", "boolean", "null"] }
+    },
+    "entered_by": {
+      "description": "Who entered a manual or ledger row (git user name).",
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence": {
+      "description": "Quote, page reference or file path backing a manual or ledger row.",
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "method": { "enum": ["manual", "ledger"] } } },
+      "then": { "required": ["entered_by", "evidence"] }
+    }
+  ]
+}

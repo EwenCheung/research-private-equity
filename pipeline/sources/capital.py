@@ -1,7 +1,8 @@
 """Capital and valuation: four cited ledgers (funding rounds, run-rate statements, Amazon's filings), SEC Form D filings that
 name Anthropic (all third-party vehicles) and mutual-fund N-PORT holdings of Anthropic shares.
 
-`uv run python -m pipeline.sources.capital` re-fetches every page the ledgers cite and fails if a quote is not word for word there.
+`uv run --env-file .env python -m pipeline.sources.capital` re-fetches every page the ledgers cite (the SEC ones need SEC_USER_AGENT)
+and fails if a quote is not word for word there.
 """
 
 import csv

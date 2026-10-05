@@ -1,0 +1,30 @@
+incident:
+  label: Status-page incident
+  unit: incident (count 1 each)
+  definition: One incident posted on the company's public status page, with the company's own impact rating, first-post time and resolved time.
+  aggregation: sum
+  higher_is: bad
+model_release:
+  label: Model release
+  unit: model (count 1 each)
+  definition: One model named in an Anthropic announcement or API release note, dated by that page.
+  aggregation: sum
+  higher_is: neutral
+api_price_input_usd_mtok:
+  label: API input price
+  unit: USD per million tokens
+  definition: List price for input tokens, from the official pricing table (current) or the launch announcement (older models). Excludes batch, caching and long-context rates.
+  aggregation: last
+  higher_is: neutral
+api_price_output_usd_mtok:
+  label: API output price
+  unit: USD per million tokens
+  definition: List price for output tokens, from the official pricing table (current) or the launch announcement (older models). Excludes batch, caching and long-context rates.
+  aggregation: last
+  higher_is: neutral
+plan_price_usd_month:
+  label: Plan price
+  unit: USD per month
+  definition: Published monthly price of a Claude plan on annual billing, as shown on claude.com/pricing the day retrieved.
+  aggregation: last
+  higher_is: neutral

@@ -359,6 +359,25 @@ def test_form_d_counts_complete_quarters_separates_amendments_and_never_calls_a_
     assert spec["takeaway"][1] == "1 new vehicles filed in Q3 2026, against 1 in Q3 2025."
 
 
+def test_form_d_missing_amounts_stay_blank_instead_of_becoming_zero():
+    rows = [
+        obs(
+            "sec_form_d",
+            "form_d_filing",
+            "2026-03-13",
+            1,
+            tier="filing",
+            adsh="a1",
+            form="D",
+            issuer_class="third_party_vehicle",
+        )
+    ]
+    spec = marts.form_d(Ctx(rows, NAMES))
+    assert spec["rows"] == [
+        {"quarter": "2026 Q1", "kind": marts.NEW_VEHICLE, "filings": 1, "amount_sold": None}
+    ]
+
+
 def holding(
     adsh,
     day,

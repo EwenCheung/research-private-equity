@@ -378,7 +378,9 @@ def form_d(ctx):
         current = period_start(pd.Series([last_collected(ctx)]), "quarter").iloc[0]
         done = df[df["quarter"] < current]
         grouped = (
-            done.groupby(["quarter", "kind"]).agg(filings=("adsh", "size"), amount_sold=("sold", "sum")).reset_index()
+            done.groupby(["quarter", "kind"])
+            .agg(filings=("adsh", "size"), amount_sold=("sold", lambda values: values.sum(min_count=1)))
+            .reset_index()
         )
         for r in grouped.itertuples():
             rows.append(
@@ -386,7 +388,7 @@ def form_d(ctx):
                     "quarter": f"{r.quarter[:4]} {quarter_label(r.quarter)[:2]}",  # '2026 Q3': reads without a year tick
                     "kind": r.kind,
                     "filings": int(r.filings),
-                    "amount_sold": float(r.amount_sold) if r.kind == NEW_VEHICLE else None,
+                    "amount_sold": float(r.amount_sold) if r.kind == NEW_VEHICLE and pd.notna(r.amount_sold) else None,
                 }
             )
         own = int((df["issuer_class"] == "anthropic_own").sum())

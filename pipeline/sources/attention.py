@@ -85,13 +85,24 @@ def wikipedia_pageviews(company):
 
 
 def gdelt_json(params: dict) -> dict:
-    """GDELT asks for one request every 5 seconds and answers with plain text when pushed; wait and retry."""
-    for attempt in range(4):
-        time.sleep(6 if attempt == 0 else 30)
-        r = get(GDELT, params=params, timeout=120)
+    """GDELT asks for one request every 5 seconds, then answers 429 or plain text when pushed. Wait minutes and retry.
+
+    The first request goes after a 6 s pause; each refusal waits 3, 6, 9... minutes (GDELT blocks for a while, not seconds).
+    """
+    why = ""
+    for attempt in range(5):
+        time.sleep(6 if attempt == 0 else 180 * attempt)
+        try:
+            r = get(GDELT, params=params, timeout=120, attempts=1)  # no inner retries: the waiting is decided here
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code != 429:
+                raise
+            why = "429 Too Many Requests"
+            continue
         if r.text.lstrip().startswith("{"):
             return r.json()
-    raise RuntimeError(f"GDELT kept refusing: {r.text[:120]!r}")
+        why = r.text[:120]
+    raise RuntimeError(f"GDELT kept refusing: {why!r}")
 
 
 @source(

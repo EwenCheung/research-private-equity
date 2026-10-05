@@ -75,6 +75,21 @@ def test_gdelt_retries_when_pushed_and_keeps_the_day_total(cos, monkeypatch):
     assert [(r["as_of"], r["value"], r["dims"]["total_articles"]) for r in rows] == [("2026-09-30", 3, 40000)]
 
 
+def test_gdelt_waits_out_a_429_block_with_growing_pauses(monkeypatch):
+    waits, replies = [], iter([429, 429, "ok"])
+
+    def fake_get(url, **kw):
+        r = next(replies)
+        if r == 429:
+            raise httpx.HTTPStatusError("x", request=httpx.Request("GET", url), response=httpx.Response(429))
+        return response(json.dumps({"timeline": []}))
+
+    monkeypatch.setattr(src, "get", fake_get)
+    monkeypatch.setattr(src.time, "sleep", waits.append)
+    assert src.gdelt_json({"query": "x"}) == {"timeline": []}
+    assert waits == [6, 180, 360]  # a short first pause, then three, then six minutes
+
+
 def test_gdelt_gives_up_after_repeated_refusals(cos, monkeypatch):
     monkeypatch.setattr(src, "get", lambda url, **kw: response("Please limit requests"))
     with pytest.raises(RuntimeError, match="kept refusing"):

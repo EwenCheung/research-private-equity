@@ -461,3 +461,38 @@ def test_nan_in_mart_rows_is_written_as_null(clean_registry, root):
     written, errors = build(root=root, now=NOW)
     assert errors == []
     assert json.loads(written[0].read_text())["rows"] == [{"as_of": "2026-10-05", "value": None}]
+
+
+def test_rows_before_a_failure_are_kept_and_the_error_reported(clean_registry, root):
+    def flaky(co):
+        yield {**ROW, "entity": co.slug, "as_of": "2026-10-01"}
+        raise RuntimeError("rate limited")
+
+    registry.source(**META)(flaky)
+    written, errors, _ = collect(root=root, now=NOW)
+    assert [r["as_of"] for r in raw_rows(written["fake_jobs"])] == ["2026-10-01", "2026-10-01"]  # one per company
+    assert errors == [
+        f"fake_jobs/{c}: RuntimeError: rate limited (kept 1 rows collected before it)" for c in ("a", "b")
+    ]
+
+
+@pytest.mark.parametrize(
+    ("status", "headers", "wait"),
+    [
+        (403, {"Retry-After": "60"}, 60.0),  # GitHub secondary rate limit
+        (403, {"x-ratelimit-remaining": "0", "x-ratelimit-reset": "9999999999"}, None),  # primary: wait until reset
+        (403, {}, None),  # a real refusal
+        (429, {}, 30.0),
+        (500, {}, None),
+    ],
+)
+def test_rate_limit_wait(status, headers, wait):
+    import httpx
+
+    from pipeline.core.http import rate_limit_wait
+
+    got = rate_limit_wait(httpx.Response(status, headers=headers))
+    if headers.get("x-ratelimit-reset"):
+        assert got > 1000
+    else:
+        assert got == wait

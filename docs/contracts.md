@@ -135,6 +135,14 @@ def greenhouse_jobs(company):          # called once per company in scope
 ```
 - The core stamps `source`, `method`, `tier` and `retrieved_at`, then validates every row before writing.
 - A collector that raises is reported, and the other sources still run.
+- **Shared HTTP** (`pipeline.core.http`): `get`/`post` retry 429/5xx with backoff and send our user agent.
+  - `github_get` uses `GITHUB_TOKEN`, or else your local `gh auth` login.
+  - `sec_get` sends `SEC_USER_AGENT` and keeps to SEC's 10 requests a second.
+  - `env_key(name, why)` returns an API key.
+- **Missing keys skip, they don't fail.** Raise `SourceUnavailable` (e.g. from `env_key`) when a source can't run here.
+  `collect` reports it once as `SKIP`, not as an error, so a missing optional key never fails the daily job.
+- **Incremental collection.** `pipeline.core.store.latest_as_of(company.root, source_id, entity)` gives the newest stored date.
+  A backfillable source fetches everything the first time, then only what is new; re-fetching a short overlap is fine.
 
 ### Mart: `pipeline/marts/<page>.py`
 ```python
@@ -147,6 +155,13 @@ def open_roles(ctx):                   # ctx.obs(...) -> pandas DataFrame of obs
             "rows": [...], "takeaway": [...], "assumptions": [...], "badges": []}
 ```
 - The core adds `id`, `page`, `as_of`, `sources` (with freshness), `status` and `generated_at`, then validates and writes the file.
+- **Shared helpers** (`pipeline.core.frames`):
+  - `latest()`: one row per key, the newest retrieval. Use it on every snapshot source.
+  - `dims()`: dims as columns.
+  - `roll()`: totals or averages per week, month or quarter.
+  - `drop_partial()`: drops the still-running period.
+  - `num`, `usd`, `pct`, `change`: number formats for takeaways.
+- NaN in rows is written as `null`. The file is always valid JSON.
 - `ctx.names` maps each slug to its display name from `config/companies/`. Label series with it ("Anthropic", not "anthropic"),
   so every chart names companies the same way.
 
@@ -201,6 +216,7 @@ uv run pytest
 | `GET /api/session` | `{authenticated: bool}` |
 | `GET /api/marts` | `[{id, page, title, status, as_of}]` |
 | `GET /api/marts/{id}` | One chart spec, with each source's `freshness` recomputed live |
+| `GET /api/companies` | `[{slug, name, role}]`: targets first, then their peers in config order. Charts give each company a fixed colour |
 | `GET /api/registry` | `data/registry.json` sources, with `freshness` recomputed live |
 | `GET /api/freshness` | `{source: {freshness, retrieved_at, as_of}}`, live |
 | `GET /api/editions` | Phase 3: `["2026-W41", ...]` |

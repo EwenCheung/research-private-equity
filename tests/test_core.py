@@ -420,6 +420,7 @@ def test_latest_as_of_reads_what_is_already_stored(clean_registry, root):
     assert latest_as_of(root, "fake_jobs", "a") == "2026-10-03"
     assert latest_as_of(root, "fake_jobs", "ghost") is None
     assert latest_as_of(root, "never_collected", "a") is None
+    assert latest_as_of(root, "fake_jobs", "a", package="x") is None  # dims filter: no row has that package
 
 
 def test_http_retries_transient_errors_then_succeeds(monkeypatch):

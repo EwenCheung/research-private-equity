@@ -1,0 +1,108 @@
+{
+  "title": "Customer-facing hiring against building",
+  "subtitle": "Go-to-market, support and applied AI roles per research or engineering role",
+  "kind": "bar",
+  "encoding": {
+    "x": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    },
+    "y": {
+      "field": "ratio",
+      "type": "quantitative",
+      "label": "Customer-facing roles per build role",
+      "format": "float"
+    },
+    "color": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    }
+  },
+  "columns": [
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "ratio",
+      "label": "Ratio",
+      "format": "float"
+    },
+    {
+      "field": "customer_facing",
+      "label": "Go-to-market + applied AI roles",
+      "format": "int"
+    },
+    {
+      "field": "build",
+      "label": "Research + engineering & product roles",
+      "format": "int"
+    }
+  ],
+  "rows": [
+    {
+      "company": "OpenAI",
+      "ratio": 2.95,
+      "customer_facing": 398,
+      "build": 135
+    },
+    {
+      "company": "Anthropic",
+      "ratio": 1.06,
+      "customer_facing": 202,
+      "build": 190
+    },
+    {
+      "company": "xAI",
+      "ratio": 0.2,
+      "customer_facing": 12,
+      "build": 60
+    },
+    {
+      "company": "Mistral AI",
+      "ratio": 1.8,
+      "customer_facing": 106,
+      "build": 59
+    },
+    {
+      "company": "Cohere",
+      "ratio": 0.49,
+      "customer_facing": 36,
+      "build": 73
+    }
+  ],
+  "takeaway": [
+    "Anthropic lists 1.1 customer-facing roles for every research or engineering role; peers range from 0.2 to 3.0."
+  ],
+  "assumptions": [
+    "Ratio = (go-to-market & support + applied AI & solutions) ÷ (research & modeling + engineering & product), by the function rules on the function chart.",
+    "A high ratio means more of the hiring is selling and deploying than building. It is a mix indicator, not a quality judgement.",
+    "Counts postings listed on each company's own job board in the weekly snapshot. Boards list roles, not headcount: one posting can fill several seats, and a company can leave roles unlisted.",
+    "Google DeepMind is missing: it posts only on Google's careers site, which has no public API."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "hiring.gtm_to_rd",
+  "page": "hiring",
+  "as_of": "2026-10-05",
+  "sources": [
+    {
+      "source": "ats_postings",
+      "label": "Company job board API: every open posting",
+      "url": "https://boards-api.greenhouse.io/v1/boards/{board}/departments",
+      "method": "api",
+      "tier": "company-stated",
+      "cadence": "weekly",
+      "as_of": "2026-10-05",
+      "retrieved_at": "2026-10-05T04:12:39Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T07:09:16Z"
+}

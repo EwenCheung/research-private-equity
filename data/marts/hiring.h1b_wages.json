@@ -1,0 +1,71 @@
+{
+  "title": "Median offered wage on H-1B applications",
+  "subtitle": "Annualised lower bound of the wage offered, by quarter decided",
+  "kind": "line",
+  "encoding": {
+    "x": {
+      "field": "quarter",
+      "type": "temporal",
+      "label": "Quarter"
+    },
+    "y": {
+      "field": "wage",
+      "type": "quantitative",
+      "label": "Median offered wage (USD)",
+      "format": "usd"
+    },
+    "color": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    }
+  },
+  "columns": [
+    {
+      "field": "quarter",
+      "label": "Quarter starting",
+      "format": "date"
+    },
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "wage",
+      "label": "Median offered wage",
+      "format": "usd"
+    }
+  ],
+  "rows": [],
+  "takeaway": [
+    "Awaiting data: no H-1B filings imported yet. Download a quarterly LCA disclosure file from the Department of Labor and import it (see Data & Methods)."
+  ],
+  "assumptions": [
+    "The wage is the lower bound the employer offered on the application, annualised (hourly ×2080, weekly ×52, bi-weekly ×26, monthly ×12).",
+    "It excludes equity and bonuses, which dominate pay at these companies, so it understates total compensation.",
+    "Entered by hand from the DOL file: each row shows who entered it and the case number."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "hiring.h1b_wages",
+  "page": "hiring",
+  "as_of": null,
+  "sources": [
+    {
+      "source": "hiring_h1b_lca",
+      "label": "DOL H-1B Labor Condition Applications (imported quarterly file)",
+      "url": "https://www.dol.gov/agencies/eta/foreign-labor/performance",
+      "method": "ledger",
+      "tier": "filing",
+      "cadence": "quarterly",
+      "as_of": null,
+      "retrieved_at": null,
+      "freshness": "never",
+      "manual": null
+    }
+  ],
+  "status": "awaiting_data",
+  "generated_at": "2026-10-05T07:09:16Z"
+}

@@ -169,7 +169,7 @@
     {
       "source": "github_mcp_server_repos",
       "label": "GitHub repository search: new repos tagged mcp-server",
-      "url": "https://api.github.com/search/repositories?q=topic%3Amcp-server",
+      "url": "https://github.com/search?type=repositories&q=topic:mcp-server+created:2026-10-01..2026-10-31",
       "method": "api",
       "tier": "platform",
       "cadence": "weekly",
@@ -180,5 +180,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T07:25:28Z"
+  "generated_at": "2026-10-05T08:47:54Z"
 }

@@ -195,7 +195,7 @@
     {
       "source": "sec_form_d",
       "label": "SEC EDGAR Form D filings that name Anthropic",
-      "url": "https://efts.sec.gov/LATEST/search-index?q=%22Anthropic%22&forms=D",
+      "url": "https://www.sec.gov/Archives/edgar/data/2017699/000201769926000002/primary_doc.xml",
       "method": "api",
       "tier": "filing",
       "cadence": "weekly",
@@ -206,5 +206,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T08:03:39Z"
+  "generated_at": "2026-10-05T08:47:54Z"
 }

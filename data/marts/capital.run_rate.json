@@ -228,7 +228,7 @@
     {
       "source": "capital_arr_milestones",
       "label": "Anthropic run-rate revenue statements (cited ledger)",
-      "url": "https://www.anthropic.com/news",
+      "url": "https://www.anthropic.com/news/series-h",
       "method": "ledger",
       "tier": "company-stated",
       "cadence": "monthly",
@@ -238,13 +238,13 @@
       "manual": {
         "entered_by": "EwenCheung via Claude",
         "entered_at": "2026-10-05T07:48:16Z",
-        "evidence": "our run-rate revenue has grown from $87 million at the start of 2024 to over $5 billion in August 2025"
+        "evidence": "our run-rate revenue crossed $47 billion earlier this month."
       }
     },
     {
       "source": "capital_arr_press",
       "label": "Press-reported Anthropic revenue figures (cited ledger)",
-      "url": "https://www.cnbc.com/",
+      "url": "https://www.cnbc.com/2026/08/17/anthropic-says-annualized-revenue-climbed-to-65-billion-in-july.html",
       "method": "ledger",
       "tier": "press",
       "cadence": "monthly",
@@ -254,10 +254,10 @@
       "manual": {
         "entered_by": "EwenCheung via Claude",
         "entered_at": "2026-10-05T07:48:16Z",
-        "evidence": "Anthropic is making about $3 billion in annualized revenue, according to two sources familiar with the matter"
+        "evidence": "annualized revenue run rate hit $65 billion at the end of July, CNBC confirmed on Monday"
       }
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T08:03:39Z"
+  "generated_at": "2026-10-05T08:47:54Z"
 }

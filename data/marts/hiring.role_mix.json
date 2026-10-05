@@ -272,7 +272,7 @@
     {
       "source": "ats_postings",
       "label": "Company job board API: every open posting",
-      "url": "https://boards-api.greenhouse.io/v1/boards/{board}/departments",
+      "url": "https://boards-api.greenhouse.io/v1/boards/anthropic/departments",
       "method": "api",
       "tier": "company-stated",
       "cadence": "weekly",
@@ -283,5 +283,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T07:09:16Z"
+  "generated_at": "2026-10-05T08:47:54Z"
 }

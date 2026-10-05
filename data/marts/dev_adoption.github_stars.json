@@ -96,7 +96,7 @@
     {
       "source": "github_org_stats",
       "label": "GitHub organisation repositories (stars, forks, repos)",
-      "url": "https://api.github.com/orgs/{org}/repos",
+      "url": "https://github.com/anthropics",
       "method": "api",
       "tier": "platform",
       "cadence": "daily",
@@ -107,5 +107,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T07:25:28Z"
+  "generated_at": "2026-10-05T08:47:54Z"
 }

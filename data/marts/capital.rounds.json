@@ -122,7 +122,7 @@
     {
       "source": "capital_funding_rounds",
       "label": "Anthropic funding rounds, from Anthropic's newsroom (cited ledger)",
-      "url": "https://www.anthropic.com/news",
+      "url": "https://www.anthropic.com/news/series-h",
       "method": "ledger",
       "tier": "company-stated",
       "cadence": "monthly",
@@ -132,10 +132,10 @@
       "manual": {
         "entered_by": "EwenCheung via Claude",
         "entered_at": "2026-10-05T07:48:16Z",
-        "evidence": "Anthropic, an AI safety and research company, has raised $124 million in a Series A. | The Series A round was led by Jaan Tallinn, technology investor and co-founder of Skype."
+        "evidence": "Anthropic has raised $65 billion in Series H funding led by Altimeter Capital, Dragoneer, Greenoaks, and Sequoia Capital, valuing the company at $965 billion post-money. | The round was co-led by Capital Group, Coatue, D1 Capital Partners, GIC, ICONIQ, and XN. | It also includes $15 billion of previously committed investments from hyperscalers, including $5 billion from Amazon ."
       }
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T08:03:39Z"
+  "generated_at": "2026-10-05T08:47:54Z"
 }

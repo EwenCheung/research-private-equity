@@ -7215,7 +7215,7 @@
     {
       "source": "sec_nport_marks",
       "label": "SEC EDGAR N-PORT-P: mutual-fund holdings of Anthropic",
-      "url": "https://efts.sec.gov/LATEST/search-index?q=%22Anthropic%22&forms=NPORT-P",
+      "url": "https://www.sec.gov/Archives/edgar/data/1905088/000094040026036464/primary_doc.xml",
       "method": "api",
       "tier": "filing",
       "cadence": "weekly",
@@ -7226,5 +7226,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T08:03:39Z"
+  "generated_at": "2026-10-05T08:47:54Z"
 }

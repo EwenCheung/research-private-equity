@@ -74,7 +74,7 @@
     {
       "source": "usaspending_awards",
       "label": "USAspending.gov awards",
-      "url": "https://api.usaspending.gov/api/v2/search/spending_by_award/",
+      "url": "https://www.usaspending.gov/award/",
       "method": "api",
       "tier": "filing",
       "cadence": "weekly",
@@ -85,5 +85,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T08:04:24Z"
+  "generated_at": "2026-10-05T08:47:54Z"
 }

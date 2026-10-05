@@ -746,7 +746,7 @@
     {
       "source": "ats_open_roles",
       "label": "Company job board API (Greenhouse / Ashby)",
-      "url": "https://boards-api.greenhouse.io/v1/boards/{board}/departments",
+      "url": "https://boards-api.greenhouse.io/v1/boards/anthropic/departments",
       "method": "api",
       "tier": "company-stated",
       "cadence": "daily",
@@ -758,7 +758,7 @@
     {
       "source": "wayback_job_boards",
       "label": "Internet Archive captures of company job boards",
-      "url": "https://web.archive.org/cdx/search/cdx?url={board}",
+      "url": "https://web.archive.org/web/20260923033353/https://jobs.ashbyhq.com/openai",
       "method": "scrape",
       "tier": "company-stated",
       "cadence": "weekly",
@@ -769,5 +769,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T07:09:16Z"
+  "generated_at": "2026-10-05T08:47:54Z"
 }

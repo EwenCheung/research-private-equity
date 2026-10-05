@@ -1487,7 +1487,7 @@
     {
       "source": "npm_downloads",
       "label": "npm registry download counts",
-      "url": "https://api.npmjs.org/downloads/range/{start}:{end}/{package}",
+      "url": "https://api.npmjs.org/downloads/range/2025-09-29:2026-10-04/@anthropic-ai/sdk",
       "method": "api",
       "tier": "platform",
       "cadence": "daily",
@@ -1498,5 +1498,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T07:25:28Z"
+  "generated_at": "2026-10-05T08:47:54Z"
 }

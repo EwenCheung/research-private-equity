@@ -78,7 +78,7 @@
     {
       "source": "vscode_installs",
       "label": "Visual Studio Marketplace install counts",
-      "url": "https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery",
+      "url": "https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code",
       "method": "api",
       "tier": "platform",
       "cadence": "daily",
@@ -89,5 +89,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T07:25:28Z"
+  "generated_at": "2026-10-05T08:47:54Z"
 }

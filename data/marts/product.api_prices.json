@@ -257,7 +257,7 @@
       "manual": {
         "entered_by": "EwenCheung via Claude",
         "entered_at": "2026-10-05T07:36:19Z",
-        "evidence": "are ready to offer Claude more broadly so it can power crucial, cutting-edge use cases at scale"
+        "evidence": "We've launched Claude Sonnet 5.5 (claude-sonnet-5-5)."
       }
     },
     {
@@ -278,5 +278,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T07:36:29Z"
+  "generated_at": "2026-10-05T08:47:54Z"
 }

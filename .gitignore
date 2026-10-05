@@ -1,0 +1,18 @@
+# local worktrees (one per implementation)
+.worktrees/
+
+# secrets
+.env
+
+# python
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+
+# frontend
+node_modules/
+frontend/dist/
+
+# os
+.DS_Store

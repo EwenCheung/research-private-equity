@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-05T03:34:40Z",
+  "generated_at": "2026-10-05T03:38:15Z",
   "sources": [
     {
       "id": "appstore_top_charts",
@@ -14,7 +14,7 @@
       "caveats": "Snapshot of Apple's public top-100 RSS, US iPhone storefront. An app outside the top 100 has no row (not rank 101+). Apple publishes no history, so a missed day is lost.",
       "retrieved_at": "2026-10-05T03:30:15Z",
       "as_of": "2026-10-05",
-      "row_count": 4,
+      "row_count": 8,
       "readable": true
     }
   ]

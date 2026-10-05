@@ -146,6 +146,8 @@ def test_every_ledger_row_is_cited_and_valid(ledgers):
                 sid,
                 r["dims"],
             )
+            # retrieved_at is when the row was typed in, so it can never be later than now
+            assert datetime.fromisoformat(r["retrieved_at"]) <= datetime.now(UTC), (sid, r["dims"])
 
 
 def test_every_priced_model_has_a_release_date_and_prices_come_in_pairs(ledgers):

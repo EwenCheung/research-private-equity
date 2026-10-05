@@ -7,6 +7,8 @@ import hmac
 import json
 import os
 import re
+import time
+from datetime import UTC, datetime
 from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException, Request, Response
@@ -15,29 +17,29 @@ from fastapi.staticfiles import StaticFiles
 from itsdangerous import BadSignature, URLSafeTimedSerializer
 from pydantic import BaseModel
 
+from contracts import freshness as freshness_rule
+
 ROOT = Path(__file__).resolve().parent.parent
 FIXTURES = ROOT / "tests" / "fixtures"
 COOKIE = "session"
 SESSION_MAX_AGE = 7 * 24 * 3600
 MART_ID = re.compile(r"^[a-z0-9_]+\.[a-z0-9_]+$")
+LOGIN_FAILURES, LOGIN_WINDOW = 10, 15 * 60  # wrong passwords allowed per client IP per window
 
 
 class Login(BaseModel):
     password: str
 
 
-def create_app(
-    marts_dir: Path | None = None,
-    sources_file: Path | None = None,
-    observations_file: Path | None = None,
-    frontend_dir: Path | None = None,
-) -> FastAPI:
-    """Paths default from the environment; unset means the Phase 0 fixtures until the data core lands."""
-    marts_dir = Path(marts_dir or os.environ.get("MARTS_DIR") or FIXTURES / "marts")
-    sources_file = Path(sources_file or os.environ.get("SOURCES_FILE") or FIXTURES / "sources.json")
-    observations_file = Path(
-        observations_file or os.environ.get("OBSERVATIONS_FILE") or FIXTURES / "observations.jsonl"
-    )
+def create_app(data_dir: Path | None = None, frontend_dir: Path | None = None) -> FastAPI:
+    """data_dir (or DATA_DIR) is the pipeline's data/: marts/ plus registry.json, written by `pipeline.build`.
+
+    Unset means the Phase 0 fixtures. Their clock is pinned to the registry's generated_at so the Sample page keeps
+    showing every freshness state; with real data, freshness is recomputed against the current time on every request.
+    """
+    data_dir = Path(data_dir or os.environ.get("DATA_DIR") or FIXTURES)
+    pinned_clock = data_dir.resolve() == FIXTURES.resolve()
+    marts_dir, registry_file = data_dir / "marts", data_dir / "registry.json"
     frontend_dir = Path(frontend_dir or os.environ.get("FRONTEND_DIR") or ROOT / "frontend" / "dist")
 
     password = os.environ.get("DASHBOARD_PASSWORD", "")
@@ -61,13 +63,21 @@ def create_app(
             raise HTTPException(401, "Sign in required")
 
     # --- session ---
-    # ponytail: no login rate limit; one shared password behind Render's TLS. Add one if the URL leaks.
+    # ponytail: failures are counted in memory per process (Render runs one); use a shared store if it scales out.
+    failures: dict[str, list[float]] = {}
+
     @app.post("/api/login")
-    def login(body: Login, response: Response):
+    def login(body: Login, request: Request, response: Response):
         if not password or not secret:
             raise HTTPException(503, "Set DASHBOARD_PASSWORD and SESSION_SECRET to enable sign-in")
+        ip, now = (request.client.host if request.client else "unknown"), time.monotonic()
+        recent = [t for t in failures.get(ip, []) if now - t < LOGIN_WINDOW]
+        if len(recent) >= LOGIN_FAILURES:
+            raise HTTPException(429, "Too many wrong passwords; try again in 15 minutes")
         if not hmac.compare_digest(body.password.encode(), password.encode()):
+            failures[ip] = [*recent, now]
             raise HTTPException(401, "Wrong password")
+        failures.pop(ip, None)
         response.set_cookie(
             COOKIE,
             signer.dumps({"ok": True}),
@@ -88,6 +98,28 @@ def create_app(
         return {"authenticated": authenticated(request)}
 
     # --- data (all behind the session) ---
+    def load_registry() -> dict[str, dict]:
+        """Sources from registry.json with freshness recomputed now, so a stalled pipeline shows without a rebuild."""
+        if not registry_file.is_file():
+            return {}
+        reg = json.loads(registry_file.read_text())
+        now = datetime.fromisoformat(reg["generated_at"]) if pinned_clock else datetime.now(UTC)
+        return {
+            s["id"]: {
+                **s,
+                "freshness": freshness_rule(
+                    datetime.fromisoformat(s["retrieved_at"]) if s["retrieved_at"] else None, s["sla_days"], now
+                ),
+            }
+            for s in reg["sources"]
+        }
+
+    def live(mart: dict, reg: dict[str, dict]) -> dict:
+        for s in mart["sources"]:
+            if s["source"] in reg:
+                s["freshness"] = reg[s["source"]]["freshness"]
+        return mart
+
     def load_marts() -> list[dict]:
         return [json.loads(p.read_text()) for p in sorted(marts_dir.glob("*.json"))]
 
@@ -100,43 +132,15 @@ def create_app(
         path = marts_dir / f"{mart_id}.json"
         if not MART_ID.match(mart_id) or not path.is_file():  # the pattern also blocks path traversal
             raise HTTPException(404, "No such chart")
-        return json.loads(path.read_text())
-
-    def source_state() -> dict[str, dict]:
-        """Latest freshness per source, taken from the marts, where the core already applied the SLA rule."""
-        state: dict[str, dict] = {}
-        for mart in load_marts():
-            for s in mart["sources"]:
-                cur = state.get(s["source"])
-                if cur is None or (s["retrieved_at"] or "") > (cur["retrieved_at"] or ""):
-                    state[s["source"]] = {k: s[k] for k in ("freshness", "retrieved_at", "as_of")}
-        return state
+        return live(json.loads(path.read_text()), load_registry())
 
     @app.get("/api/freshness", dependencies=[Depends(require_session)])
     def freshness():
-        return source_state()
+        return {sid: {k: s[k] for k in ("freshness", "retrieved_at", "as_of")} for sid, s in load_registry().items()}
 
     @app.get("/api/registry", dependencies=[Depends(require_session)])
     def registry():
-        sources = json.loads(sources_file.read_text()) if sources_file.is_file() else []
-        counts: dict[str, int] = {}
-        latest: dict[str, str] = {}
-        if observations_file.is_file():
-            for line in observations_file.read_text().splitlines():
-                if line.strip():
-                    o = json.loads(line)
-                    counts[o["source"]] = counts.get(o["source"], 0) + 1
-                    latest[o["source"]] = max(latest.get(o["source"], ""), o["retrieved_at"])
-        state = source_state()
-        return [
-            {
-                **s,
-                "retrieved_at": latest.get(s["id"]) or state.get(s["id"], {}).get("retrieved_at"),
-                "row_count": counts.get(s["id"], 0),
-                "freshness": state.get(s["id"], {}).get("freshness", "never"),
-            }
-            for s in sources
-        ]
+        return list(load_registry().values())
 
     # --- built frontend (public: it holds no data, and the login page has to load) ---
     if (frontend_dir / "index.html").is_file():

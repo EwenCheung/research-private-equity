@@ -1,4 +1,5 @@
 import json
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -85,6 +86,35 @@ def test_registry_lists_sources_with_counts(authed):
     assert reg["greenhouse_jobs"]["retrieved_at"] == "2026-10-05T06:02:11Z"
     assert reg["mscience_panel"]["freshness"] == "never"
     assert reg["mscience_panel"]["row_count"] == 0
+
+
+def test_freshness_is_recomputed_live_from_the_registry(monkeypatch, tmp_path):
+    """A mart built when everything was fresh must turn stale on its own if the pipeline stops."""
+    monkeypatch.setenv("DASHBOARD_PASSWORD", PASSWORD)
+    monkeypatch.setenv("SESSION_SECRET", "test-secret")
+    data = tmp_path / "data"
+    (data / "marts").mkdir(parents=True)
+    mart = json.loads((FIXTURES / "marts" / "sample.open_roles.json").read_text())
+    assert {s["freshness"] for s in mart["sources"]} == {"fresh"}
+    (data / "marts" / "sample.open_roles.json").write_text(json.dumps(mart))
+    long_ago = (datetime.now(UTC) - timedelta(days=10)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    reg = json.loads((FIXTURES / "registry.json").read_text())
+    for s in reg["sources"]:
+        if s["id"] in ("greenhouse_jobs", "ashby_jobs"):
+            s["retrieved_at"] = long_ago
+    (data / "registry.json").write_text(json.dumps(reg))
+    c = TestClient(create_app(data_dir=data, frontend_dir=tmp_path / "none"))
+    c.post("/api/login", json={"password": PASSWORD})
+    body = c.get("/api/marts/sample.open_roles").json()
+    assert {s["freshness"] for s in body["sources"]} == {"stale"}  # sla_days 2, ten days without a collection
+    contracts.validate("chart_spec", body)
+    assert c.get("/api/freshness").json()["greenhouse_jobs"]["freshness"] == "stale"
+
+
+def test_repeated_wrong_passwords_are_throttled(client):
+    for _ in range(10):
+        assert client.post("/api/login", json={"password": "guess"}).status_code == 401
+    assert client.post("/api/login", json={"password": PASSWORD}).status_code == 429
 
 
 def test_serves_built_frontend(monkeypatch, tmp_path):

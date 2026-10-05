@@ -339,3 +339,23 @@ def test_appstore_snapshot_emits_ranks_for_tracked_apps_only(monkeypatch):
 def test_snapshot_source_is_declared_non_backfillable():
     meta = registry.SOURCES["appstore_top_charts"].meta
     assert meta["backfillable"] is False and meta["cadence"] == "daily"
+
+
+def test_appstore_fetch_retries_a_stalled_request(monkeypatch):
+    feed = {"feed": {"entry": [{"id": {"attributes": {"im:id": "9"}}}]}}
+    ok = type("R", (), {"raise_for_status": lambda self: None, "json": lambda self: feed})()
+    calls = []
+
+    def flaky(*a, **k):
+        calls.append(1)
+        if len(calls) < 3:
+            raise snapshots.httpx.ReadTimeout("stalled")
+        return ok
+
+    monkeypatch.setattr(snapshots.httpx, "get", flaky)
+    snapshots._chart.cache_clear()
+    try:
+        assert snapshots._chart() == {"9": 1}
+    finally:
+        snapshots._chart.cache_clear()
+    assert len(calls) == 3

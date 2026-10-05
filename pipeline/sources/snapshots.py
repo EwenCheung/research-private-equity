@@ -13,8 +13,14 @@ CHART_URL = "https://itunes.apple.com/us/rss/topfreeapplications/limit=100/json"
 @cache
 def _chart() -> dict[str, int]:
     """{app id: rank} for today's US top-free iPhone apps. One fetch per run, shared by every company."""
-    r = httpx.get(CHART_URL, timeout=30, follow_redirects=True)
-    r.raise_for_status()
+    for attempt in range(3):  # the 450 KB feed occasionally stalls; a lost day can't be backfilled, so retry
+        try:
+            r = httpx.get(CHART_URL, timeout=60, follow_redirects=True)
+            r.raise_for_status()
+            break
+        except httpx.TransportError:
+            if attempt == 2:
+                raise
     return {e["id"]["attributes"]["im:id"]: i for i, e in enumerate(r.json()["feed"]["entry"], 1)}
 
 

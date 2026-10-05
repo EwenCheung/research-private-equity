@@ -1,0 +1,312 @@
+{
+  "title": "Model Context Protocol SDK downloads",
+  "subtitle": "MCP is Anthropic's open protocol for connecting models to tools; complete months since launch",
+  "kind": "line",
+  "encoding": {
+    "x": {
+      "field": "month",
+      "type": "temporal",
+      "label": "Month"
+    },
+    "y": {
+      "field": "downloads",
+      "type": "quantitative",
+      "label": "Downloads",
+      "format": "int"
+    },
+    "color": {
+      "field": "series",
+      "type": "nominal",
+      "label": "SDK"
+    }
+  },
+  "columns": [
+    {
+      "field": "month",
+      "label": "Month",
+      "format": "date"
+    },
+    {
+      "field": "series",
+      "label": "SDK",
+      "format": "text"
+    },
+    {
+      "field": "downloads",
+      "label": "Downloads",
+      "format": "int"
+    }
+  ],
+  "rows": [
+    {
+      "month": "2024-11-01",
+      "series": "Python (mcp)",
+      "downloads": 14686
+    },
+    {
+      "month": "2024-11-01",
+      "series": "TypeScript (@modelcontextprotocol/sdk)",
+      "downloads": 13822
+    },
+    {
+      "month": "2024-12-01",
+      "series": "Python (mcp)",
+      "downloads": 83364
+    },
+    {
+      "month": "2024-12-01",
+      "series": "TypeScript (@modelcontextprotocol/sdk)",
+      "downloads": 102851
+    },
+    {
+      "month": "2025-01-01",
+      "series": "Python (mcp)",
+      "downloads": 146124
+    },
+    {
+      "month": "2025-01-01",
+      "series": "TypeScript (@modelcontextprotocol/sdk)",
+      "downloads": 176533
+    },
+    {
+      "month": "2025-02-01",
+      "series": "Python (mcp)",
+      "downloads": 317904
+    },
+    {
+      "month": "2025-02-01",
+      "series": "TypeScript (@modelcontextprotocol/sdk)",
+      "downloads": 350914
+    },
+    {
+      "month": "2025-03-01",
+      "series": "Python (mcp)",
+      "downloads": 1506766
+    },
+    {
+      "month": "2025-03-01",
+      "series": "TypeScript (@modelcontextprotocol/sdk)",
+      "downloads": 1874545
+    },
+    {
+      "month": "2025-04-01",
+      "series": "Python (mcp)",
+      "downloads": 3498265
+    },
+    {
+      "month": "2025-04-01",
+      "series": "TypeScript (@modelcontextprotocol/sdk)",
+      "downloads": 4212709
+    },
+    {
+      "month": "2025-05-01",
+      "series": "Python (mcp)",
+      "downloads": 7963886
+    },
+    {
+      "month": "2025-05-01",
+      "series": "TypeScript (@modelcontextprotocol/sdk)",
+      "downloads": 20933359
+    },
+    {
+      "month": "2025-06-01",
+      "series": "Python (mcp)",
+      "downloads": 10806726
+    },
+    {
+      "month": "2025-06-01",
+      "series": "TypeScript (@modelcontextprotocol/sdk)",
+      "downloads": 16837593
+    },
+    {
+      "month": "2025-07-01",
+      "series": "Python (mcp)",
+      "downloads": 17903706
+    },
+    {
+      "month": "2025-07-01",
+      "series": "TypeScript (@modelcontextprotocol/sdk)",
+      "downloads": 21605761
+    },
+    {
+      "month": "2025-08-01",
+      "series": "Python (mcp)",
+      "downloads": 33256163
+    },
+    {
+      "month": "2025-08-01",
+      "series": "TypeScript (@modelcontextprotocol/sdk)",
+      "downloads": 24658353
+    },
+    {
+      "month": "2025-09-01",
+      "series": "Python (mcp)",
+      "downloads": 48385322
+    },
+    {
+      "month": "2025-09-01",
+      "series": "TypeScript (@modelcontextprotocol/sdk)",
+      "downloads": 31258519
+    },
+    {
+      "month": "2025-10-01",
+      "series": "Python (mcp)",
+      "downloads": 49504549
+    },
+    {
+      "month": "2025-10-01",
+      "series": "TypeScript (@modelcontextprotocol/sdk)",
+      "downloads": 33786684
+    },
+    {
+      "month": "2025-11-01",
+      "series": "Python (mcp)",
+      "downloads": 56741083
+    },
+    {
+      "month": "2025-11-01",
+      "series": "TypeScript (@modelcontextprotocol/sdk)",
+      "downloads": 35008987
+    },
+    {
+      "month": "2025-12-01",
+      "series": "Python (mcp)",
+      "downloads": 62183805
+    },
+    {
+      "month": "2025-12-01",
+      "series": "TypeScript (@modelcontextprotocol/sdk)",
+      "downloads": 38516712
+    },
+    {
+      "month": "2026-01-01",
+      "series": "Python (mcp)",
+      "downloads": 68874501
+    },
+    {
+      "month": "2026-01-01",
+      "series": "TypeScript (@modelcontextprotocol/sdk)",
+      "downloads": 50249918
+    },
+    {
+      "month": "2026-02-01",
+      "series": "Python (mcp)",
+      "downloads": 85728360
+    },
+    {
+      "month": "2026-02-01",
+      "series": "TypeScript (@modelcontextprotocol/sdk)",
+      "downloads": 71656771
+    },
+    {
+      "month": "2026-03-01",
+      "series": "Python (mcp)",
+      "downloads": 170886304
+    },
+    {
+      "month": "2026-03-01",
+      "series": "TypeScript (@modelcontextprotocol/sdk)",
+      "downloads": 141911796
+    },
+    {
+      "month": "2026-04-01",
+      "series": "Python (mcp)",
+      "downloads": 241891401
+    },
+    {
+      "month": "2026-04-01",
+      "series": "TypeScript (@modelcontextprotocol/sdk)",
+      "downloads": 140092905
+    },
+    {
+      "month": "2026-05-01",
+      "series": "Python (mcp)",
+      "downloads": 285429112
+    },
+    {
+      "month": "2026-05-01",
+      "series": "TypeScript (@modelcontextprotocol/sdk)",
+      "downloads": 153164130
+    },
+    {
+      "month": "2026-06-01",
+      "series": "Python (mcp)",
+      "downloads": 281302965
+    },
+    {
+      "month": "2026-06-01",
+      "series": "TypeScript (@modelcontextprotocol/sdk)",
+      "downloads": 165176305
+    },
+    {
+      "month": "2026-07-01",
+      "series": "Python (mcp)",
+      "downloads": 319279041
+    },
+    {
+      "month": "2026-07-01",
+      "series": "TypeScript (@modelcontextprotocol/sdk)",
+      "downloads": 198867876
+    },
+    {
+      "month": "2026-08-01",
+      "series": "Python (mcp)",
+      "downloads": 328137373
+    },
+    {
+      "month": "2026-08-01",
+      "series": "TypeScript (@modelcontextprotocol/sdk)",
+      "downloads": 217328148
+    },
+    {
+      "month": "2026-09-01",
+      "series": "Python (mcp)",
+      "downloads": 231738794
+    },
+    {
+      "month": "2026-09-01",
+      "series": "TypeScript (@modelcontextprotocol/sdk)",
+      "downloads": 231910527
+    }
+  ],
+  "takeaway": [
+    "Model Context Protocol SDKs were downloaded 464M times in Sep 2026, +4% on Jun 2026."
+  ],
+  "assumptions": [
+    "Downloads count every install, including CI and mirrors: read them as relative pull, not users.",
+    "Installs pulled in as a dependency of another package count too, so an SDK bundled by popular agent frameworks (google-genai is one) reads higher than its direct use.",
+    "MCP is used by every major AI vendor now, so this measures the protocol's reach, not Claude usage alone."
+  ],
+  "badges": [],
+  "id": "dev_adoption.mcp_sdk_downloads",
+  "page": "dev_adoption",
+  "as_of": "2026-10-04",
+  "sources": [
+    {
+      "source": "pypi_downloads",
+      "label": "PyPI downloads (ClickHouse public PyPI dataset)",
+      "url": "https://sql-clickhouse.clickhouse.com/",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "npm_downloads",
+      "label": "npm registry download counts",
+      "url": "https://api.npmjs.org/downloads/range/{start}:{end}/{package}",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T07:25:28Z"
+}

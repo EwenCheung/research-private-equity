@@ -1,0 +1,257 @@
+{
+  "title": "Anthropic model releases",
+  "subtitle": "Every model announcement, dated by Anthropic's own page, with the sentence quoted",
+  "kind": "table",
+  "encoding": {},
+  "columns": [
+    {
+      "field": "date",
+      "label": "Date",
+      "format": "date"
+    },
+    {
+      "field": "model",
+      "label": "Model",
+      "format": "text"
+    },
+    {
+      "field": "tier",
+      "label": "Tier",
+      "format": "text"
+    },
+    {
+      "field": "quote",
+      "label": "What Anthropic said",
+      "format": "text"
+    },
+    {
+      "field": "link",
+      "label": "Source",
+      "format": "url"
+    }
+  ],
+  "rows": [
+    {
+      "date": "2026-09-28",
+      "model": "Claude Sonnet 5.5",
+      "tier": "Sonnet",
+      "quote": "We've launched Claude Sonnet 5.5 (claude-sonnet-5-5).",
+      "link": "https://platform.claude.com/docs/en/release-notes/overview"
+    },
+    {
+      "date": "2026-09-22",
+      "model": "Claude Opus 5.5",
+      "tier": "Opus",
+      "quote": "We've launched Claude Opus 5.5 (claude-opus-5-5), a model for long-running agentic coding and knowledge work.",
+      "link": "https://platform.claude.com/docs/en/release-notes/overview"
+    },
+    {
+      "date": "2026-09-01",
+      "model": "Claude Fable 5.1",
+      "tier": "Fable",
+      "quote": "We've launched Claude Fable 5.1 (claude-fable-5-1), the successor to Claude Fable 5 for long-running agentic coding, knowledge work, and research, alongside Claude Mythos 5.1 (claude-mythos-5-1) for Project Glasswing participants.",
+      "link": "https://platform.claude.com/docs/en/release-notes/overview"
+    },
+    {
+      "date": "2026-09-01",
+      "model": "Claude Mythos 5.1",
+      "tier": "Mythos",
+      "quote": "We've launched Claude Fable 5.1 (claude-fable-5-1), the successor to Claude Fable 5 for long-running agentic coding, knowledge work, and research, alongside Claude Mythos 5.1 (claude-mythos-5-1) for Project Glasswing participants.",
+      "link": "https://platform.claude.com/docs/en/release-notes/overview"
+    },
+    {
+      "date": "2026-07-24",
+      "model": "Claude Opus 5",
+      "tier": "Opus",
+      "quote": "We've launched Claude Opus 5 (claude-opus-5), a step-change improvement over Claude Opus 4.8.",
+      "link": "https://platform.claude.com/docs/en/release-notes/overview"
+    },
+    {
+      "date": "2026-06-30",
+      "model": "Claude Sonnet 5",
+      "tier": "Sonnet",
+      "quote": "We've launched Claude Sonnet 5 (claude-sonnet-5), the next generation of our Sonnet model family, at introductory pricing of $2 / $10 per MTok (made the standard price on August 10, 2026).",
+      "link": "https://platform.claude.com/docs/en/release-notes/overview"
+    },
+    {
+      "date": "2026-06-09",
+      "model": "Claude Fable 5",
+      "tier": "Fable",
+      "quote": "We've launched Claude Fable 5 (claude-fable-5), our most capable model open to all customers, alongside Claude Mythos 5 (claude-mythos-5) for Project Glasswing participants.",
+      "link": "https://platform.claude.com/docs/en/release-notes/overview"
+    },
+    {
+      "date": "2026-06-09",
+      "model": "Claude Mythos 5",
+      "tier": "Mythos",
+      "quote": "We've launched Claude Fable 5 (claude-fable-5), our most capable model open to all customers, alongside Claude Mythos 5 (claude-mythos-5) for Project Glasswing participants.",
+      "link": "https://platform.claude.com/docs/en/release-notes/overview"
+    },
+    {
+      "date": "2026-05-28",
+      "model": "Claude Opus 4.8",
+      "tier": "Opus",
+      "quote": "We've launched Claude Opus 4.8 (claude-opus-4-8), our most capable model.",
+      "link": "https://platform.claude.com/docs/en/release-notes/overview"
+    },
+    {
+      "date": "2026-04-16",
+      "model": "Claude Opus 4.7",
+      "tier": "Opus",
+      "quote": "We've launched Claude Opus 4.7, our most capable model for complex reasoning and agentic coding, at the same $5 / $25 per MTok pricing as Opus 4.6.",
+      "link": "https://platform.claude.com/docs/en/release-notes/overview"
+    },
+    {
+      "date": "2026-02-17",
+      "model": "Claude Sonnet 4.6",
+      "tier": "Sonnet",
+      "quote": "We've launched Claude Sonnet 4.6, our latest balanced model combining speed and intelligence for everyday tasks.",
+      "link": "https://platform.claude.com/docs/en/release-notes/overview"
+    },
+    {
+      "date": "2026-02-05",
+      "model": "Claude Opus 4.6",
+      "tier": "Opus",
+      "quote": "We've launched Claude Opus 4.6, our most intelligent model for complex agentic tasks and long-horizon work.",
+      "link": "https://platform.claude.com/docs/en/release-notes/overview"
+    },
+    {
+      "date": "2025-11-24",
+      "model": "Claude Opus 4.5",
+      "tier": "Opus",
+      "quote": "We've launched Claude Opus 4.5, our most intelligent model combining maximum capability with practical performance.",
+      "link": "https://platform.claude.com/docs/en/release-notes/overview"
+    },
+    {
+      "date": "2025-10-15",
+      "model": "Claude Haiku 4.5",
+      "tier": "Haiku",
+      "quote": "We've launched Claude Haiku 4.5, our fastest and most intelligent Haiku model with near-frontier performance.",
+      "link": "https://platform.claude.com/docs/en/release-notes/overview"
+    },
+    {
+      "date": "2025-09-29",
+      "model": "Claude Sonnet 4.5",
+      "tier": "Sonnet",
+      "quote": "We've launched Claude Sonnet 4.5, our best model for complex agents and coding, with the highest intelligence across most tasks.",
+      "link": "https://platform.claude.com/docs/en/release-notes/overview"
+    },
+    {
+      "date": "2025-08-05",
+      "model": "Claude Opus 4.1",
+      "tier": "Opus",
+      "quote": "We've launched Claude Opus 4.1, an incremental update to Claude Opus 4 with enhanced capabilities and performance improvements.",
+      "link": "https://platform.claude.com/docs/en/release-notes/overview"
+    },
+    {
+      "date": "2025-05-22",
+      "model": "Claude Opus 4",
+      "tier": "Opus",
+      "quote": "We've launched Claude Opus 4 and Claude Sonnet 4, our latest models with extended thinking capabilities.",
+      "link": "https://platform.claude.com/docs/en/release-notes/overview"
+    },
+    {
+      "date": "2025-05-22",
+      "model": "Claude Sonnet 4",
+      "tier": "Sonnet",
+      "quote": "We've launched Claude Opus 4 and Claude Sonnet 4, our latest models with extended thinking capabilities.",
+      "link": "https://platform.claude.com/docs/en/release-notes/overview"
+    },
+    {
+      "date": "2025-02-24",
+      "model": "Claude 3.7 Sonnet",
+      "tier": "Sonnet",
+      "quote": "Today, we're announcing Claude 3.7 Sonnet 1, our most intelligent model to date and the first hybrid reasoning model on the market.",
+      "link": "https://www.anthropic.com/news/claude-3-7-sonnet"
+    },
+    {
+      "date": "2024-10-22",
+      "model": "Claude 3.5 Haiku",
+      "tier": "Haiku",
+      "quote": "Today, we're announcing an upgraded Claude 3.5 Sonnet, and a new model, Claude 3.5 Haiku.",
+      "link": "https://www.anthropic.com/news/3-5-models-and-computer-use"
+    },
+    {
+      "date": "2024-06-21",
+      "model": "Claude 3.5 Sonnet",
+      "tier": "Sonnet",
+      "quote": "Today, we're launching Claude 3.5 Sonnet—our first release in the forthcoming Claude 3.5 model family.",
+      "link": "https://www.anthropic.com/news/claude-3-5-sonnet"
+    },
+    {
+      "date": "2024-03-04",
+      "model": "Claude 3 Haiku",
+      "tier": "Haiku",
+      "quote": "Today, we're announcing the Claude 3 model family, which sets new industry benchmarks across a wide range of cognitive tasks.",
+      "link": "https://www.anthropic.com/news/claude-3-family"
+    },
+    {
+      "date": "2024-03-04",
+      "model": "Claude 3 Opus",
+      "tier": "Opus",
+      "quote": "Today, we're announcing the Claude 3 model family, which sets new industry benchmarks across a wide range of cognitive tasks.",
+      "link": "https://www.anthropic.com/news/claude-3-family"
+    },
+    {
+      "date": "2024-03-04",
+      "model": "Claude 3 Sonnet",
+      "tier": "Sonnet",
+      "quote": "Today, we're announcing the Claude 3 model family, which sets new industry benchmarks across a wide range of cognitive tasks.",
+      "link": "https://www.anthropic.com/news/claude-3-family"
+    },
+    {
+      "date": "2023-11-21",
+      "model": "Claude 2.1",
+      "tier": "Claude",
+      "quote": "Our latest model, Claude 2.1, is now available over API in our Console and is powering our claude.ai chat experience.",
+      "link": "https://www.anthropic.com/news/claude-2-1"
+    },
+    {
+      "date": "2023-07-11",
+      "model": "Claude 2",
+      "tier": "Claude",
+      "quote": "We are pleased to announce Claude 2, our new model.",
+      "link": "https://www.anthropic.com/news/claude-2"
+    },
+    {
+      "date": "2023-03-14",
+      "model": "Claude",
+      "tier": "Claude",
+      "quote": "are ready to offer Claude more broadly so it can power crucial, cutting-edge use cases at scale",
+      "link": "https://www.anthropic.com/news/introducing-claude"
+    }
+  ],
+  "takeaway": [
+    "Anthropic has announced 27 models since 2023; the latest is Claude Sonnet 5.5 on 2026-09-28, and 15 of them came in the 12 months before."
+  ],
+  "assumptions": [
+    "One row per model. Models announced together (Claude 3, Opus 4 and Sonnet 4, Fable and Mythos) share a date and a quote.",
+    "Mythos models are limited to Project Glasswing participants; they are counted but not open to all customers.",
+    "The Claude 3.5 Sonnet page is dated 21 Jun 2024 (UTC); it was announced the evening of 20 Jun in the US.",
+    "Hand-maintained ledger: each row was checked to quote its page word for word. Add a row when a model ships."
+  ],
+  "badges": [],
+  "id": "product.model_releases",
+  "page": "product",
+  "as_of": "2026-09-28",
+  "sources": [
+    {
+      "source": "product_model_releases",
+      "label": "Anthropic model announcements (cited ledger)",
+      "url": "https://platform.claude.com/docs/en/release-notes/overview",
+      "method": "ledger",
+      "tier": "company-stated",
+      "cadence": "monthly",
+      "as_of": "2026-09-28",
+      "retrieved_at": "2026-10-05T08:00:00Z",
+      "freshness": "fresh",
+      "manual": {
+        "entered_by": "EwenCheung via Claude",
+        "entered_at": "2026-10-05T08:00:00Z",
+        "evidence": "are ready to offer Claude more broadly so it can power crucial, cutting-edge use cases at scale"
+      }
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T07:24:45Z"
+}

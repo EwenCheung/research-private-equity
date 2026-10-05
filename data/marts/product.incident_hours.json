@@ -1,0 +1,248 @@
+{
+  "title": "Hours of major and critical incidents",
+  "subtitle": "Total time from first post to resolved, incidents rated major or critical, by month started",
+  "kind": "bar",
+  "encoding": {
+    "x": {
+      "field": "month",
+      "type": "temporal",
+      "label": "Month"
+    },
+    "y": {
+      "field": "hours",
+      "type": "quantitative",
+      "label": "Hours",
+      "format": "float"
+    }
+  },
+  "columns": [
+    {
+      "field": "month",
+      "label": "Month",
+      "format": "date"
+    },
+    {
+      "field": "hours",
+      "label": "Hours",
+      "format": "float"
+    },
+    {
+      "field": "incidents",
+      "label": "Incidents",
+      "format": "int"
+    }
+  ],
+  "rows": [
+    {
+      "month": "2023-03-01",
+      "hours": 0.0,
+      "incidents": 2
+    },
+    {
+      "month": "2023-06-01",
+      "hours": 0.3,
+      "incidents": 1
+    },
+    {
+      "month": "2023-07-01",
+      "hours": 0.2,
+      "incidents": 1
+    },
+    {
+      "month": "2023-08-01",
+      "hours": 2.9,
+      "incidents": 1
+    },
+    {
+      "month": "2024-01-01",
+      "hours": 0.5,
+      "incidents": 2
+    },
+    {
+      "month": "2024-03-01",
+      "hours": 6.8,
+      "incidents": 3
+    },
+    {
+      "month": "2024-04-01",
+      "hours": 5.1,
+      "incidents": 9
+    },
+    {
+      "month": "2024-05-01",
+      "hours": 1.0,
+      "incidents": 4
+    },
+    {
+      "month": "2024-06-01",
+      "hours": 3.7,
+      "incidents": 5
+    },
+    {
+      "month": "2024-07-01",
+      "hours": 10.3,
+      "incidents": 11
+    },
+    {
+      "month": "2024-08-01",
+      "hours": 47.8,
+      "incidents": 9
+    },
+    {
+      "month": "2024-09-01",
+      "hours": 37.2,
+      "incidents": 11
+    },
+    {
+      "month": "2024-10-01",
+      "hours": 21.2,
+      "incidents": 16
+    },
+    {
+      "month": "2024-11-01",
+      "hours": 45.5,
+      "incidents": 11
+    },
+    {
+      "month": "2024-12-01",
+      "hours": 43.2,
+      "incidents": 3
+    },
+    {
+      "month": "2025-01-01",
+      "hours": 11.5,
+      "incidents": 11
+    },
+    {
+      "month": "2025-02-01",
+      "hours": 15.3,
+      "incidents": 7
+    },
+    {
+      "month": "2025-03-01",
+      "hours": 32.0,
+      "incidents": 12
+    },
+    {
+      "month": "2025-04-01",
+      "hours": 17.7,
+      "incidents": 17
+    },
+    {
+      "month": "2025-05-01",
+      "hours": 19.1,
+      "incidents": 15
+    },
+    {
+      "month": "2025-06-01",
+      "hours": 4.0,
+      "incidents": 4
+    },
+    {
+      "month": "2025-07-01",
+      "hours": 59.4,
+      "incidents": 20
+    },
+    {
+      "month": "2025-08-01",
+      "hours": 84.1,
+      "incidents": 7
+    },
+    {
+      "month": "2025-09-01",
+      "hours": 215.2,
+      "incidents": 5
+    },
+    {
+      "month": "2025-10-01",
+      "hours": 15.9,
+      "incidents": 8
+    },
+    {
+      "month": "2025-11-01",
+      "hours": 16.3,
+      "incidents": 7
+    },
+    {
+      "month": "2025-12-01",
+      "hours": 5.9,
+      "incidents": 8
+    },
+    {
+      "month": "2026-01-01",
+      "hours": 10.0,
+      "incidents": 6
+    },
+    {
+      "month": "2026-02-01",
+      "hours": 21.1,
+      "incidents": 15
+    },
+    {
+      "month": "2026-03-01",
+      "hours": 116.2,
+      "incidents": 21
+    },
+    {
+      "month": "2026-04-01",
+      "hours": 19.1,
+      "incidents": 16
+    },
+    {
+      "month": "2026-05-01",
+      "hours": 39.0,
+      "incidents": 17
+    },
+    {
+      "month": "2026-06-01",
+      "hours": 472.2,
+      "incidents": 10
+    },
+    {
+      "month": "2026-07-01",
+      "hours": 29.8,
+      "incidents": 16
+    },
+    {
+      "month": "2026-08-01",
+      "hours": 12.2,
+      "incidents": 8
+    },
+    {
+      "month": "2026-09-01",
+      "hours": 108.5,
+      "incidents": 8
+    }
+  ],
+  "takeaway": [
+    "Major or critical incidents ran 108.5 hours in Sep 2026; the median one over the last three months took 78 minutes to resolve."
+  ],
+  "assumptions": [
+    "Incidents are the ones the company chose to post, with its own impact rating, so a company that posts more freely looks worse.",
+    "Hours = sum of (resolved time − first post time) for each incident. Incidents can overlap, so hours are not hours of downtime.",
+    "Incidents without a resolved time are left out. A model-specific degradation counts the same as an outage.",
+    "Complete months only."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "product.incident_hours",
+  "page": "product",
+  "as_of": "2026-10-01",
+  "sources": [
+    {
+      "source": "status_incidents",
+      "label": "Public status pages (Anthropic and OpenAI)",
+      "url": "https://{host}/history.json",
+      "method": "api",
+      "tier": "company-stated",
+      "cadence": "daily",
+      "as_of": "2026-10-01",
+      "retrieved_at": "2026-10-05T07:19:13Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T07:24:45Z"
+}

@@ -1,0 +1,80 @@
+{
+  "title": "Reliability against OpenAI, last 14 days",
+  "subtitle": "Incidents each company posted on its own status page",
+  "kind": "stat",
+  "encoding": {
+    "y": {
+      "field": "incidents",
+      "type": "quantitative",
+      "label": "Incidents posted",
+      "format": "int"
+    }
+  },
+  "columns": [
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "incidents",
+      "label": "Incidents",
+      "format": "int"
+    },
+    {
+      "field": "severe",
+      "label": "Major or critical",
+      "format": "int"
+    },
+    {
+      "field": "hours",
+      "label": "Hours (first post to resolved)",
+      "format": "float"
+    }
+  ],
+  "rows": [
+    {
+      "company": "Anthropic",
+      "incidents": 3,
+      "severe": 2,
+      "hours": 10.0
+    },
+    {
+      "company": "OpenAI",
+      "incidents": 12,
+      "severe": 2,
+      "hours": 67.1
+    }
+  ],
+  "takeaway": [
+    "In the last 14 days Anthropic posted 3 incidents (2 major or critical) and OpenAI 12 (2)."
+  ],
+  "assumptions": [
+    "Incidents are the ones the company chose to post, with its own impact rating, so a company that posts more freely looks worse.",
+    "OpenAI's status feed returns only its latest 25 incidents, so a longer comparison is not possible yet; its history builds from our daily collection.",
+    "Google DeepMind, xAI, Mistral and Cohere publish no comparable status feed.",
+    "Informational notices rated 'none' are left out."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "product.status_comparison",
+  "page": "product",
+  "as_of": "2026-10-05",
+  "sources": [
+    {
+      "source": "status_incidents",
+      "label": "Public status pages (Anthropic and OpenAI)",
+      "url": "https://{host}/history.json",
+      "method": "api",
+      "tier": "company-stated",
+      "cadence": "daily",
+      "as_of": "2026-10-05",
+      "retrieved_at": "2026-10-05T07:19:13Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T07:24:45Z"
+}

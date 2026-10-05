@@ -325,7 +325,7 @@ Each implementation covers its page's collectors with backfills, ledgers, marts,
 5. Then I open the implementation PR into `phase/N`, and merge it after your OK.
 
 **Per phase gate.** Once every implementation in the phase is merged:
-1. I serve `main` and you do a quick check that everything works together.
+1. I serve `phase/N` and you do a quick check that everything works together.
 2. Then I open **one phase PR, `phase/N` → `main`**, and merge it only after your OK.
 3. After it merges: tag `phase-N`, mark it ☑ in `docs/ROADMAP.md`, and deploy to Render.
 
@@ -410,4 +410,7 @@ Out of scope, by your decisions or because the data is missing:
 - **R12: N-PORT.** Anthropic's share count isn't public, so an implied valuation can't be computed honestly.
   The page shows fund marks and their % change instead; a valuation only appears with a cited share count.
 - **R13: H-1B LCA.** Each quarterly DOL file is ~79 MB (verified). It is collected quarterly, filtered to tracked employers.
-
+- **R14, 2026-10-05: CI and phase overlap.**
+  - `.github/workflows/ci.yml` runs ruff and pytest on every PR, and on pushes to `main` and `phase/**`.
+  - `phase/N+1` is cut from `phase/N` as soon as the phase PR opens, so the next phase's worktrees can start during review.
+    Because phase PRs use merge commits, the next phase PR still shows only its own changes.

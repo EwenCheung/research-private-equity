@@ -27,7 +27,8 @@ Outputs are drafts for deal-team review, not investment advice. Use only public 
 - **Phases are layers.** Implementations inside one phase are independent of each other. Each one gets its own branch
   (`p<N>/<name>`) and worktree (`.worktrees/p<N>-<name>`). Dependencies only flow from one phase to the next.
 - **Each implementation is a vertical slice** of one page or function: collectors → marts → page → tests → skill.
-- **Branches.** Create implementation branches from `phase/N`, which is cut from `main` once the previous phase has merged.
+- **Branches.** Create implementation branches from `phase/N`. `phase/N` is cut from `phase/N-1` as soon as that phase's PR opens.
+  Merge commits keep each phase PR showing only its own changes.
 - **Ownership rule.** Page implementation `X` only touches its own files:
   - `pipeline/sources/X.py` and `pipeline/marts/X.py`
   - `config/metrics/X.yaml` and `data/ledgers/X_*.csv`

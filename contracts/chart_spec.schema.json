@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "chart_spec.schema.json",
+  "title": "Chart spec (mart)",
+  "description": "What build writes to data/marts/<id>.json and what ChartCard renders. Mart functions return the content fields; core fills id, page, as_of, sources, status and generated_at.",
+  "type": "object",
+  "required": ["id", "page", "title", "kind", "encoding", "columns", "rows", "takeaway", "assumptions", "badges", "as_of", "sources", "status", "generated_at"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "description": "<page>.<chart>", "type": "string", "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*$" },
+    "page": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "title": { "type": "string", "minLength": 1 },
+    "subtitle": { "type": "string" },
+    "kind": { "enum": ["line", "area", "bar", "stacked_bar", "scatter", "table", "stat", "timeline"] },
+    "encoding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "x": { "$ref": "#/$defs/channel" },
+        "y": { "$ref": "#/$defs/channel" },
+        "color": { "$ref": "#/$defs/channel" },
+        "facet": { "$ref": "#/$defs/channel" }
+      }
+    },
+    "columns": {
+      "description": "Table-view and CSV columns, in order. Every row must have every column field.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["field", "label", "format"],
+        "additionalProperties": false,
+        "properties": {
+          "field": { "type": "string" },
+          "label": { "type": "string" },
+          "format": { "enum": ["int", "float", "pct", "usd", "usd_compact", "multiple", "date", "text", "url"] }
+        }
+      }
+    },
+    "rows": { "type": "array", "items": { "type": "object" } },
+    "takeaway": {
+      "description": "One or two plain sentences stating what the chart shows, computed from the rows.",
+      "type": "array",
+      "maxItems": 2,
+      "items": { "type": "string" }
+    },
+    "assumptions": { "description": "Shown under 'Assumptions & detail'.", "type": "array", "items": { "type": "string" } },
+    "badges": {
+      "description": "arithmetic = computed by us, not reported; extrapolation = projects beyond observed data.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "enum": ["arithmetic", "extrapolation"] }
+    },
+    "as_of": { "description": "Latest as_of among the rows; null when awaiting data.", "type": ["string", "null"], "format": "date" },
+    "sources": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/source_ref" } },
+    "status": { "enum": ["ok", "awaiting_data"] },
+    "generated_at": { "type": "string", "format": "date-time" }
+  },
+  "$defs": {
+    "channel": {
+      "type": "object",
+      "required": ["field", "type"],
+      "additionalProperties": false,
+      "properties": {
+        "field": { "type": "string" },
+        "type": { "enum": ["temporal", "quantitative", "nominal", "ordinal"] },
+        "label": { "type": "string" },
+        "format": { "enum": ["int", "float", "pct", "usd", "usd_compact", "multiple", "date", "text"] }
+      }
+    },
+    "source_ref": {
+      "description": "Provenance line for one source feeding the chart.",
+      "type": "object",
+      "required": ["source", "label", "url", "method", "tier", "cadence", "as_of", "retrieved_at", "freshness", "manual"],
+      "additionalProperties": false,
+      "properties": {
+        "source": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "label": { "type": "string" },
+        "url": { "type": "string", "pattern": "^(https?://|urn:)" },
+        "method": { "enum": ["api", "scrape", "manual", "ledger"] },
+        "tier": { "enum": ["company-stated", "filing", "platform", "press", "vendor", "derived"] },
+        "cadence": { "enum": ["daily", "weekly", "monthly", "quarterly"] },
+        "as_of": { "description": "Latest data date this source contributed.", "type": ["string", "null"], "format": "date" },
+        "retrieved_at": { "description": "Latest retrieval or entry time.", "type": ["string", "null"], "format": "date-time" },
+        "freshness": { "enum": ["fresh", "aging", "stale", "never"] },
+        "manual": {
+          "description": "Required (non-null) for manual and ledger sources that have rows.",
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "required": ["entered_by", "entered_at", "evidence"],
+              "additionalProperties": false,
+              "properties": {
+                "entered_by": { "type": "string", "minLength": 1 },
+                "entered_at": { "type": "string", "format": "date-time" },
+                "evidence": { "type": "string", "minLength": 1 }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

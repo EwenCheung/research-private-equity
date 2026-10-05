@@ -48,7 +48,11 @@ def _source_refs(ctx: Ctx, source_ids, now: datetime) -> list[dict]:
         meta = registry.SOURCES[sid].meta
         mine = ctx.df[ctx.df.source == sid]
         used = mine[mine.index.isin(ctx.used)]
-        latest = max(mine.itertuples(), key=lambda r: datetime.fromisoformat(r.retrieved_at), default=None)
+        latest = max(
+            mine.itertuples(),
+            key=lambda r: (datetime.fromisoformat(r.retrieved_at), r.as_of),
+            default=None,
+        )
         retrieved = datetime.fromisoformat(latest.retrieved_at) if latest else None
         manual = None
         if latest and meta["method"] in ("manual", "ledger"):
@@ -57,7 +61,9 @@ def _source_refs(ctx: Ctx, source_ids, now: datetime) -> list[dict]:
             {
                 "source": sid,
                 "label": meta["label"],
-                "url": meta["url"],
+                # Source metadata may be a URL template (for example ``{board}``). Link the chart to the
+                # concrete URL that actually produced a row instead of publishing a known-broken template.
+                "url": latest.source_url if latest else meta["url"],
                 "method": meta["method"],
                 "tier": meta["tier"],
                 "cadence": meta["cadence"],
@@ -102,10 +108,16 @@ def write_registry(root: Path, all_rows: dict[str, list[dict] | None], now: date
     sources = []
     for sid, s in sorted(registry.SOURCES.items()):
         rows = all_rows.get(sid) or []
-        latest = max(rows, key=lambda r: datetime.fromisoformat(r["retrieved_at"]), default=None)
+        latest = max(
+            rows,
+            key=lambda r: (datetime.fromisoformat(r["retrieved_at"]), r["as_of"]),
+            default=None,
+        )
         sources.append(
             {
                 **s.meta,
+                # The registry powers Data & Methods links. Prefer observed provenance to endpoint templates.
+                "url": latest["source_url"] if latest else s.meta["url"],
                 "retrieved_at": _iso(datetime.fromisoformat(latest["retrieved_at"])) if latest else None,
                 "as_of": max(r["as_of"] for r in rows) if rows else None,
                 "row_count": len(rows),

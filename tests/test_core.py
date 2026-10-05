@@ -228,6 +228,7 @@ def test_build_writes_a_valid_mart_with_provenance(clean_registry, root):
         "2026-10-05T06:02:11Z",
         None,
     )
+    assert src["url"] == "https://example.com/a/jobs"
 
 
 @pytest.mark.parametrize(
@@ -269,6 +270,8 @@ def test_build_writes_the_source_registry(clean_registry, root):
         "readable": True,
     }
     assert (src["idle_jobs"]["retrieved_at"], src["idle_jobs"]["row_count"]) == (None, 0)
+    assert fake["url"] == "https://example.com/a/jobs"
+    assert src["idle_jobs"]["url"] == META["url"]
 
 
 def test_ledger_rows_carry_who_and_evidence(clean_registry, root):
@@ -278,14 +281,16 @@ def test_ledger_rows_carry_who_and_evidence(clean_registry, root):
     (root / "data/ledgers").mkdir(parents=True)
     (root / "data/ledgers/product_releases.csv").write_text(
         "as_of,entity,metric,value,dims,source_url,entered_by,retrieved_at,evidence\n"
-        "2026-09-01,a,open_roles,5,,https://example.com/post,EwenCheung,2026-09-02T10:00:00Z,blog post title\n"
+        "2026-09-01,a,open_roles,5,,https://example.com/old,EwenCheung,2026-09-02T10:00:00Z,old blog post\n"
+        "2026-10-01,a,open_roles,6,,https://example.com/new,EwenCheung,2026-09-02T10:00:00Z,new blog post\n"
     )
     spec = build_one(root, NOW)
     assert spec["sources"][0]["manual"] == {
         "entered_by": "EwenCheung",
         "entered_at": "2026-09-02T10:00:00Z",
-        "evidence": "blog post title",
+        "evidence": "new blog post",
     }
+    assert spec["sources"][0]["url"] == "https://example.com/new"
 
 
 def test_csv_row_without_evidence_is_rejected(clean_registry, root):

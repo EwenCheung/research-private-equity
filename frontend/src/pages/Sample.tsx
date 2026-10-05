@@ -1,7 +1,8 @@
 import { ArithmeticBadge, ExtrapolationBadge, FreshnessBadge, ManualBadge } from "../components/Badges";
 import ChartCard from "../components/ChartCard";
 
-export const meta = { title: "Sample", path: "/sample", order: 999 };
+// devOnly: fixture marts exist only in dev, so production builds leave this page out.
+export const meta = { title: "Sample", path: "/sample", order: 999, devOnly: true };
 
 // Every card state the fixtures cover, in the order a reviewer should read them.
 const CHARTS = [

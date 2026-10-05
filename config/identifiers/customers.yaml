@@ -9,20 +9,25 @@
 #   Bare "Claude" is NOT searched: it is mostly a first name (Norfolk Southern, Sarepta, Welltower...), so the Claude term uses
 #   product names. "Mistral" and "Cohere" are also ordinary company names (Mistral Equity Partners, Cohere Health), so they
 #   are searched only next to another AI lab's name. "xAI" also matches the XAI Octagon fund and a few garbled documents
-#   from before xAI existed (since: drops those).
+#   from before xAI existed (since: drops those). ignore: CIKs of filers whose hits were opened and are not the company.
 # usaspending: search = recipient_search_text terms (substring match: "anthropic" also returns PHILANTHROPIC...), then
-#   recipient = patterns the recipient name must match in full. MISTRAL INC (a defence contractor) and COHERE GROUP do not match.
+#   recipient = patterns the recipient name must match in full. Search terms are kept long because short ones match thousands
+#   of unrelated recipients ("xai" = PRAXAIR, "cohere" = COHERENT, "open ai" = OPEN AIR). MISTRAL INC (a defence contractor)
+#   and COHERE GROUP do not match.
 anthropic:
   hn: {Claude: '\bclaude\b', Anthropic: '\banthropic\b'}
   sec:
-    Anthropic: {queries: ['"Anthropic"']}
+    Anthropic:
+      queries: ['"Anthropic"']
+      # EDGAR search ignores case. Every one of the 122 filings found on 2026-10-05 was opened: all but N2OFF name the company.
+      ignore: {'0001789192': 'N2OFF, Inc. writes "anthropic factors" (human-caused emissions), not the company'}
     Claude: {queries: ['"Claude Code"', '"Claude Sonnet"', '"Claude Opus"', '"Claude Haiku"', '"Claude AI"', '"Claude Cowork"']}
   usaspending: {search: [anthropic], recipient: ['ANTHROPIC,? (PBC|INC\.?)']}
 openai:
   hn: {OpenAI: '\bopen ?ai\b', GPT: '\b(?:chatgpt|gpt)\b|\bgpt-?\d'}
   sec:
     OpenAI: {queries: ['"OpenAI"']}
-  usaspending: {search: [openai, open ai], recipient: ['OPEN ?AI( OPCO| GLOBAL| GROUP)?,? ?(LLC|INC\.?|PBC)?']}
+  usaspending: {search: [openai, openai opco, openai global], recipient: ['OPEN ?AI( OPCO| GLOBAL| GROUP)?,? ?(LLC|INC\.?|PBC)?']}
 google-deepmind:
   hn: {Gemini: '(?-i:\bGemini\b)'}
   sec:
@@ -32,14 +37,14 @@ xai:
   hn: {xAI: '(?-i:\bxAI\b)|\bx\.ai\b', Grok: '(?-i:\bGrok\b)'}
   sec:
     xAI: {queries: ['"xAI" -"Octagon"', '"X.AI"'], since: '2023-07-12'}
-  usaspending: {search: [xai, x.ai], recipient: ['(X\.AI|XAI)( CORP\.?| HOLDINGS| LLC| INC\.?)*']}
+  usaspending: {search: [x.ai, xai corp, xai holdings], recipient: ['(X\.AI|XAI)( CORP\.?| HOLDINGS| LLC| INC\.?)*']}
 mistral:
   hn: {Mistral: '\bmistral\b'}
   sec:
     Mistral: {queries: ['"Mistral AI"', '"Mistral" "OpenAI"', '"Mistral" "Anthropic"']}
-  usaspending: {search: [mistral], recipient: ['MISTRAL AI( SAS)?']}
+  usaspending: {search: [mistral ai], recipient: ['MISTRAL AI( SAS)?']}
 cohere:
   hn: {Cohere: '(?-i:\bCohere\b)(?!\s+Health)'}
   sec:
     Cohere: {queries: ['"Cohere" "OpenAI"', '"Cohere" "Anthropic"', '"Cohere" "Mistral"']}
-  usaspending: {search: [cohere], recipient: ['COHERE (INC\.?|TECHNOLOGIES.*|AI.*)']}
+  usaspending: {search: [cohere inc, cohere technologies, cohere ai], recipient: ['COHERE (INC\.?|TECHNOLOGIES.*|AI.*)']}

@@ -142,10 +142,15 @@ def sec_filings_naming(company):
         for query in spec["queries"]:
             for h in efts_hits(query, floor, end):
                 adsh = h["adsh"]
-                if h["file_type"] != h["form"] or adsh in seen or h["file_date"] < floor.isoformat():
-                    continue  # exhibits (certifications name people called Claude), and a filing hit by two queries
-                seen.add(adsh)
                 cik = h["ciks"][0]
+                if (
+                    h["file_type"] != h["form"]
+                    or adsh in seen
+                    or h["file_date"] < floor.isoformat()
+                    or cik in spec.get("ignore", {})
+                ):
+                    continue  # exhibits (certifications name people called Claude), a filing hit by two queries, known non-matches
+                seen.add(adsh)
                 yield {
                     "source_url": f"https://www.sec.gov/Archives/edgar/data/{int(cik)}/{adsh.replace('-', '')}/{quote(h['_id'].split(':')[1])}",
                     "as_of": h["file_date"],

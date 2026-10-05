@@ -1,0 +1,64 @@
+{
+  "id": "sample.headline_open_roles",
+  "page": "sample",
+  "subtitle": "",
+  "badges": [],
+  "assumptions": [
+    "Fixture data for layout review only; not real figures."
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T06:30:00Z",
+  "title": "Sample: open roles today",
+  "kind": "stat",
+  "encoding": {
+    "y": {
+      "field": "value",
+      "type": "quantitative",
+      "label": "Open roles",
+      "format": "int"
+    }
+  },
+  "columns": [
+    {
+      "field": "entity",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "value",
+      "label": "Open roles",
+      "format": "int"
+    },
+    {
+      "field": "change",
+      "label": "Change vs 2 weeks ago",
+      "format": "int"
+    }
+  ],
+  "rows": [
+    {
+      "entity": "anthropic",
+      "value": 640,
+      "change": 13
+    }
+  ],
+  "takeaway": [
+    "640 open roles, up 13 in two weeks.",
+    "Fixture data for layout review only; not real figures."
+  ],
+  "as_of": "2026-10-05",
+  "sources": [
+    {
+      "source": "greenhouse_jobs",
+      "label": "Greenhouse job board API",
+      "url": "https://boards-api.greenhouse.io/v1/boards/anthropic/jobs",
+      "method": "api",
+      "tier": "company-stated",
+      "cadence": "daily",
+      "as_of": "2026-10-05",
+      "retrieved_at": "2026-10-05T06:02:11Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ]
+}

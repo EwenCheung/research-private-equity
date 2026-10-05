@@ -1,0 +1,71 @@
+{
+  "id": "sample.status_incidents",
+  "page": "sample",
+  "subtitle": "",
+  "badges": [],
+  "assumptions": [
+    "Fixture data for layout review only; not real figures."
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T06:30:00Z",
+  "title": "Sample: status-page incidents per week",
+  "kind": "bar",
+  "encoding": {
+    "x": {
+      "field": "week",
+      "type": "temporal",
+      "label": "Week"
+    },
+    "y": {
+      "field": "incidents",
+      "type": "quantitative",
+      "label": "Incidents",
+      "format": "int"
+    }
+  },
+  "columns": [
+    {
+      "field": "week",
+      "label": "Week",
+      "format": "date"
+    },
+    {
+      "field": "incidents",
+      "label": "Incidents",
+      "format": "int"
+    }
+  ],
+  "rows": [
+    {
+      "week": "2026-08-31",
+      "incidents": 3
+    },
+    {
+      "week": "2026-09-07",
+      "incidents": 5
+    },
+    {
+      "week": "2026-09-14",
+      "incidents": 2
+    }
+  ],
+  "takeaway": [
+    "Incidents fell to 2 in the latest collected week.",
+    "Fixture data for layout review only; not real figures."
+  ],
+  "as_of": "2026-09-14",
+  "sources": [
+    {
+      "source": "statuspage_incidents",
+      "label": "Claude status page API",
+      "url": "https://status.claude.com/api/v2/incidents.json",
+      "method": "api",
+      "tier": "company-stated",
+      "cadence": "daily",
+      "as_of": "2026-09-19",
+      "retrieved_at": "2026-09-20T06:00:00Z",
+      "freshness": "stale",
+      "manual": null
+    }
+  ]
+}

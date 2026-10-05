@@ -258,7 +258,12 @@ def federal_awards(ctx):
 # ---- company-stated customer metrics (ledger) ----
 @mart(id="customers.kpi_claims", sources=["customers_kpi_claims"])
 def kpi_claims(ctx):
-    df = dims(ctx.obs(metric="customer_kpi_claim"), "what", "threshold").sort_values(["as_of", "value"])
+    df = ctx.obs(metric="customer_kpi_claim")
+    df = (
+        dims(df, "what", "threshold").sort_values(["as_of", "value"])
+        if len(df)
+        else df.assign(what=None, threshold=None)
+    )
     rows = [
         {
             "date": r.as_of,
@@ -338,31 +343,31 @@ def sector_of(sic) -> str:
     return next((name for name, lo, hi in SECTORS if lo <= code <= hi), "Unmapped SIC")
 
 
-def sec_filings(ctx) -> pd.DataFrame:
-    """One row per (company, filing): the newest collection wins, and a filing hit by two terms (Anthropic and a Claude product) counts once.
+def sec_filings(ctx) -> tuple[pd.DataFrame, str | None]:
+    """(one row per company and filing, start of the last complete quarter).
 
+    The newest collection wins, and a filing hit by two terms (Anthropic and a Claude product) counts once.
     Complete quarters only: the quarter still running on the last collection day is not read at all.
     """
     peek = ctx.df[ctx.df["metric"] == "sec_filing_mention"]
     if peek.empty:
-        return peek
+        return peek, None
     last = date.fromisoformat(last_collected(ctx))
-    running = period_start(pd.Series([last.isoformat()]), "quarter").iloc[0]
-    quarter_end = (pd.Timestamp(running) + pd.offsets.QuarterEnd(0)).date()  # a finished quarter is complete
-    keep = peek if last >= quarter_end else peek[period_start(peek["as_of"], "quarter") < running]
+    running = pd.Period(last, "Q")
+    done = running if last >= running.end_time.date() else running - 1
+    keep = peek[pd.to_datetime(peek["as_of"]).dt.to_period("Q") <= done]
     df = ctx.obs(metric="sec_filing_mention", as_of=keep["as_of"].unique().tolist())
     df = latest(dims(df, "adsh", "cik", "filer", "form", "sic", "term"), keys=("entity", "adsh", "term"))
-    return df.drop_duplicates(["entity", "adsh"]).assign(quarter=lambda d: period_start(d["as_of"], "quarter"))
+    df = df.drop_duplicates(["entity", "adsh"]).assign(quarter=lambda d: period_start(d["as_of"], "quarter"))
+    return df, done.start_time.date().isoformat()
 
 
 @mart(id="customers.sec_filers", sources=SEC)
 def sec_filers(ctx):
-    df = sec_filings(ctx)
+    df, done = sec_filings(ctx)
     rows, takeaway = [], []
     if len(df):
-        quarters = [
-            p.start_time.date().isoformat() for p in pd.period_range(df["quarter"].min(), df["quarter"].max(), freq="Q")
-        ]
+        quarters = [p.start_time.date().isoformat() for p in pd.period_range(df["quarter"].min(), done, freq="Q")]
         counts = df.groupby(["entity", "quarter"])["cik"].nunique()
         for entity in df["entity"].unique():
             rows += [
@@ -407,16 +412,20 @@ def sec_filers(ctx):
 
 @mart(id="customers.sec_sectors", sources=SEC)
 def sec_sectors(ctx):
-    df = sec_filings(ctx)
+    df, last = sec_filings(ctx)
     rows, takeaway = [], []
     window = ""
     if len(df):
-        last = df["quarter"].max()
         first = (pd.Timestamp(last) - pd.DateOffset(months=9)).date().isoformat()  # latest four quarters
         window = f"{quarter_label(first)} to {quarter_label(last)}"
         recent = df[df["quarter"] >= first]
         # one sector per filer: its newest SIC code (a filer's code can change, or be blank on one filing)
-        newest = recent.sort_values("as_of").dropna(subset=["sic"]).drop_duplicates("cik", keep="last").set_index("cik")["sic"]
+        newest = (
+            recent.sort_values("as_of")
+            .dropna(subset=["sic"])
+            .drop_duplicates("cik", keep="last")
+            .set_index("cik")["sic"]
+        )
         recent = recent.assign(sector=recent["cik"].map(newest).map(sector_of))
         a, o = recent[recent["entity"] == "anthropic"], recent[recent["entity"] == "openai"]
         for sector in a["sector"].unique():

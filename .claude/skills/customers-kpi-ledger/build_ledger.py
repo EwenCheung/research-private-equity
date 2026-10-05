@@ -80,7 +80,7 @@ def main() -> int:
         return 1
     OUT.parent.mkdir(parents=True, exist_ok=True)
     with OUT.open("w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, FIELDS)
+        w = csv.DictWriter(f, FIELDS, lineterminator="\n")
         w.writeheader()
         w.writerows(sorted(rows, key=lambda r: (r["as_of"], r["value"])))
     print(f"wrote {len(rows)} rows to {OUT}")

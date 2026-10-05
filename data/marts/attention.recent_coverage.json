@@ -1,0 +1,298 @@
+{
+  "title": "Latest Anthropic headlines",
+  "subtitle": "Google News results for Anthropic, with outlet and link",
+  "kind": "table",
+  "encoding": {},
+  "columns": [
+    {
+      "field": "date",
+      "label": "Date",
+      "format": "date"
+    },
+    {
+      "field": "outlet",
+      "label": "Outlet",
+      "format": "text"
+    },
+    {
+      "field": "headline",
+      "label": "Headline",
+      "format": "text"
+    },
+    {
+      "field": "link",
+      "label": "Link",
+      "format": "url"
+    }
+  ],
+  "rows": [
+    {
+      "date": "2026-10-05",
+      "outlet": "qz.com",
+      "headline": "Sam Altman says AI benefits justify accepting some harm - qz.com",
+      "link": "https://news.google.com/rss/articles/CBMiekFVX3lxTFAtRVI0Q2RodFB0MjdFM3lDdk85cmlQRHp0QlJGQjZpOWpLSXV3NmZrNVlfV2JRVXQxWVNTblpZdnVwNUNaWGdnRHk0ejVoeHZxQWR6bDNtaWRJV3VHeUtNMUVuaXZIaTdCREFRdmdaRzJHZWdZWFpHWHZR?oc=5"
+    },
+    {
+      "date": "2026-10-05",
+      "outlet": "Seeking Alpha",
+      "headline": "Ex-Anthropic researcher Coxon to testify alongside AI giants at NYC hearing (ANTHRO:Private) - Seeking Alpha",
+      "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNVnN0N2tvaDEyYWQtZUJsMDlFQ1BybFZWM000UTlKS1Y4MGRFeUxQRUMtYXJNOS0wYWtzN01Ib3hPTnJtclpxSi1lRjNYT1FsRjZrQW9PTkVCQV9Fa2lRWHZDMU9vSE90X3AweFZWN09wYUVWQ2MtRW94YUZubTlHV3c2aGY2SkRnZktzVGFNY2k3aW9neHpfaEFqNVg2bEFFQlRibVNvb1J5Vk1XWHNsSkFPSQ?oc=5"
+    },
+    {
+      "date": "2026-10-05",
+      "outlet": "Investing.com",
+      "headline": "Former Anthropic researcher to testify at NYC Council AI hearing - report - Investing.com",
+      "link": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxNMDZ5aERyT29qWFlkTV9iVzFnNWg1TkJoOU1BNWVXM1BnaHdfSU5sMWV2LWJSci1HUjl5aVIwbzhGYzFDQXBQZmxZM3JTbEdwRXVNRHlfRlUxYTZKaUNObDVqdFM0UXF5aVpfVE1uS1pqN2RldlNJTUpqaHYzbTZELW1UNTlvTUV2ejVONnZpWmR0T2toZXBrMDhJbzludHlWMDUxVm5fRUN0elNHeXkxSjg0TXZxZl9kTUdFVFdLY2tTSjlQeG4ySQ?oc=5"
+    },
+    {
+      "date": "2026-10-05",
+      "outlet": "Carolina Political Review",
+      "headline": "Anthropic and its IPO (Initial Public Outcry) - Carolina Political Review",
+      "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOWVRWeS1rVVlLbFdjU3hsMHkxLURBMEJuZXVCWDRZZ0N5STRFcEpSS1UtQkFSQ1IxQmJxanBYMjJJX0JHV05sUGxJS2dIZWE1ZTlnWjhQcTVpdzJfbEtnYnlKa1A2WXpHaEpLNDdzMTBpVVFfSjNlZlIyblFfQVg0TU5Rc04yOGVsUng5N2o2dWNNWml0T1Y0OVo3Q1ppcmVZLWJaQ21R?oc=5"
+    },
+    {
+      "date": "2026-10-05",
+      "outlet": "gHacks",
+      "headline": "Anthropic Asks Claude Users to Share Voice Recordings for AI Training With a New Opt-In Setting - gHacks",
+      "link": "https://news.google.com/rss/articles/CBMiygFBVV95cUxQUkFVNGVHSV85aEFHZzZqZUIyaGZSbmZaTUFMbGRBZ1lhd2d2NFJLaFdlUDRvQUJBMGNyajc1bmlrUUxQZTFkNjlnanQxOGFqbWNuSTJ0MmdOYmdnTEh3RFd3WUpsWkdiQ01pZWwycWlvamlrYUJYczF4ZDJsSVRjZ3dENmY2c0hJTXpvMEJIblFuZm5YQVdUeEhhcEh4SEF2dTNSNXFBR0xZVWc4Z3Q5Rm5wVHlfQmV4S19QbG92YU0xVS1URlZqM3RB?oc=5"
+    },
+    {
+      "date": "2026-10-05",
+      "outlet": "Bloomberg.com",
+      "headline": "Watch Chinese AI Labs Catch Up to OpenAI, Anthropic - Bloomberg.com",
+      "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNU0o4cDdQZUJ2aUFrenZtbERaZEI3VU9TQ3FyX3hYQnkxOGNxSjN2bTYySllyTUVyNENGVGtKdVhXMUpERFRWdjU1b0lRampjSnJIdjlNQnNZVTZ3WVBNTGl6UUZaZDVYR0pJdEMzZ3czVXdBT3gySGluQzVaZ0k0V1BpMXZNZw?oc=5"
+    },
+    {
+      "date": "2026-10-05",
+      "outlet": "Washington Examiner",
+      "headline": "Ex-Anthropic employee who quit over safety concerns to testify at NYC council hearing - Washington Examiner",
+      "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxOQkhpZTdlcDVsRHdNcm1mdnhFc2lrUEczZFFtY2lpUVpuQVp2SWZtQm1KQ3hZdDJpRHZMaU5EallkbEpla3pmTUoyZFVNN1pVSko2QWozZGhZTi1TWDhIdm5NaUczbmtwZTh3ejFIT3I3R1ZOY1ZBUTRFYW9zVmxCOGZoQWtJRDBMMWx1aHVIM2tHMndiYjVWM24zMXdfbFRVaHhvNEtTX3FKNTFacFBuQ2ItbjFrNUU?oc=5"
+    },
+    {
+      "date": "2026-10-05",
+      "outlet": "DongA Science",
+      "headline": "Anthropic AI agent uses human scientists as tools, emails 1,500 without instructions - DongA Science",
+      "link": "https://news.google.com/rss/articles/CBMiVEFVX3lxTE9LdXloUjNiNjZqUlZpRjB6S29taEZmR2hLREFoSEkzN2xVVUEyNnZrUGs2YWhVYWRRWkc4d3Q1THBoR000ODQyWnNTaWJfUVlpeGMydg?oc=5"
+    },
+    {
+      "date": "2026-10-05",
+      "outlet": "Firstpost",
+      "headline": "Former Anthropic researcher Jacob Coxon to testify at New York City AI hearing - Firstpost",
+      "link": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPMzBuc1NuRHpoSUc4cFJmTDJieVVZa1g3emIxUUtnSE9jMGRLT0U3aHNmTHFPNTcydERJdldPdktSaHR6OWFFRWZ4d0JSaWVESDVPSzVuR3F1WHNKRDdieW9CbVRmQVBtMWhEd3BWLWw5amxiUTBnUmRKeXd3RHBqWkR3ZGcwMmpwY1lqczFTeWtmLUpiUW9qNW8zQmVwZkJZeGI2dURnSE5qeEgwSkU2eWNqNWVvRjNERHZJdVRILWjSAcYBQVVfeXFMTk9ubE5aX1I0SmlaYXhNbG9NaGhwLXRUQkNGM0YxdzJtUGhwSzlXY2dpSVdaSFVLbWZhd1lFREg1cG56bXotVFZSbHpoUGd6WWlYamY0aEt6WTFkWWtuZ0pFcVk3c2JxLXZERVhsckpWejc2Q3lZV2Jydk5tYkRDcnJmSExuVFZTODJoOHR2OFRhY29hTHpQeWdsMGk2WDctYUxmdU9rNXg2ZXdvUHZqMXJBY1NIM0dsZDJzTEpyelI0UG5aVExB?oc=5"
+    },
+    {
+      "date": "2026-10-05",
+      "outlet": "The Japan Times",
+      "headline": "OpenAI’s Altman says AI benefits warrant accepting some risks - The Japan Times",
+      "link": "https://news.google.com/rss/articles/CBMihwFBVV95cUxNUUUxSjBQdWVYb3p0TnIwN0lYM0NaOVJWd2FGc1RRaWJINm9GaFVWV212RlVFWUJzc29LX2tobjBRcU8yLU9vTHVuN3hMbVZtM1RValAzdHVhSVVoWGZHaUVxM1RKbE84SW5mN19KbDdkRkdrQ3NDQmprN2tkY0NmTl9FaUZVV2s?oc=5"
+    },
+    {
+      "date": "2026-10-05",
+      "outlet": "digitimes",
+      "headline": "Z.ai GLM-5.3 security draws scrutiny as Anthropic flags weak defenses - digitimes",
+      "link": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQdkxHMmFIQmFUODdwYzd0SUpSMUszNHBpZXFHNXQzeks0Umo1MV80dVo3eXptaGItNU9WcVRIMU11Wm1rVWdHenpTSEJROUJNZ2dVb0xTSkw0ekZEbk5oWWd2N1VvRDNkb2RYWWFnQWhsbUlRTXowekdfcUQ3bVlQODhxSUF0Zmc?oc=5"
+    },
+    {
+      "date": "2026-10-05",
+      "outlet": "TradingView",
+      "headline": "Anthropic’s Claude live in India with in-country inference through Amazon Bedrock - TradingView",
+      "link": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxPdDhveHNtY2FScEZ2akM0MV9Wd2JZcjVjamRkSkc4cDNnSUZmQWM2TUlWMjhsUGRXUkQ4TXFrWnlpb1VpYU05eXhYWEQ3UHdRUFhPUndDYlRscWpBbXRZQWRCSmlSSXV4SllUcXhMc2hXNVJQNmJQc19KSEN6dVFWYXBGMXdldmR6TVFQb0JnTHVHeDZuVEMwdFhDTjNuTUsySzFEVUZPU3dLRVllY1AtN28yOE5SeHp5d3djZ3pjQjYtT0dDLUR2clFlUXhWeTJjN1QySg?oc=5"
+    },
+    {
+      "date": "2026-10-05",
+      "outlet": "India Today",
+      "headline": "Anthropic eyes November IPO as filing flags existential AI risks - India Today",
+      "link": "https://news.google.com/rss/articles/CBMiywFBVV95cUxPSVZ0Q2VFUVdpeTZXSEppUTQ0SkdPLXpvUzFVQk81bWk5X3ZPZzhFMDVPMm1PaXFjWElCb2RYX2twRHFqa0tMWmhNcW5vY2hZN2JSUEtoRllKWHVhT2p3dWwxVElFenJzSnpLMXdtTEx2MTdjREtZSTBVS3dkWVRzQk0tRXVaTTdNNVh1SUpWb3N1SW1aY2p3ZGlOeWRzVUl4UFVodnJaVzQ5QXd0UDhIV053OG5KRWdQNDZ0MUhQS2IxcENoSTVRYUpYQdIB0AFBVV95cUxORFFNeVE1MWhLXzJuSlJPRkZiMkpVMlhQaHZwdlVkenB3ODYyN3BnWWFvU3BBcmFQeXk3eTRfVWNFRGhPcDhRcmg0TVFyYVl5QTRPOTJhcDNjdDJZUXEwNnlaZmNBSGdsVWRyVzNPUmJjdjNfYlg5bnY0Ymk5djBRcTlGUGlGUFctbUMyZjkyc0paVDd0d01aZ3VrTDhKbnBHc3hPN0FmdUdfUDc1X29QRFFrelBFbTVReHFZRTdkNFY2YjZTZkVjZkhkRmQtVmJ6?oc=5"
+    },
+    {
+      "date": "2026-10-05",
+      "outlet": "The Times of India",
+      "headline": "Anthropic brings in-country Claude inference to India - The Times of India",
+      "link": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxPVVk1bWVjVGVlU2RIZE5DOWRaTktPNkZnWkZ3ZWd4dU5rNXdMaVc4X3pWWml1MG5iZGdLUV9aMEpXY2ZFWXF4SldEODJXa1FmOFc0NlhmMFFLRWxoMDZkX21FdUJ1a0VTRUduM19aUUFEamhhRnM2SFN0ZmcxNkxfczNIaXN6d3JtcGdjM3JxS2FSZkthZGp2dU1KMjktNnpzVTlPcHZkZVZaNUN5c2Y3dHVEeWJ0eGVoY3RGTFI1X2lhNWtobzFHWjlOWndnbDhUd2FEenl30gHbAUFVX3lxTFB0eU1UZGNRREQxb1drN2lUQVlXSzBzLUwzSFFnRU9GSThMNEdsWVg5MzgtblJnajh1dFpPUHZQZnU4U0xNU3RodTJLXzFXM1pCSk1qS2tkVjhjZW5KVE5Ld0MzX3lTY01uOGNkNFNqS2V5QkhmcGRqckVDeFFwck5pU1FlTGF0Tnl4TFdhNUhaaDMtblJveVVHLUI0UjNSSjFlRjEtZjNVZ0N6MXhnWUJWXzdieW04RUFVNWhEZ1NSVGxuMFBwdS1hNUhMYTg5NktHNVAtOVlacXZOMA?oc=5"
+    },
+    {
+      "date": "2026-10-05",
+      "outlet": "Chosunbiz",
+      "headline": "Altman defends AI risk tolerance, contrasts OpenAI with Anthropic regulation push - CHOSUNBIZ - Chosunbiz",
+      "link": "https://news.google.com/rss/articles/CBMiekFVX3lxTE1pT29EU2NQUG4xOTdTQjEya1Q5LVFQYm5mWlNpS0RQTDBwLXdxNUZYNE9pY2p1VUNBVXNFMDNHb1VoaEExTkFWYmJQOUhtVTRfeFFMaXFMUUtwOVFVd2V3QkRnTkE4d3FkMjVMcGxoR1lzeVBPb25vUEV30gGOAUFVX3lxTFAxSVltNlNLUmMyTW5rYXB2clFxbnRPVWs1NGVMdXVvRUtMNVNyQ19ONEtlWFhjeTZDbUhZWjVCczlQY2RvYkJVckFNX05HZUNxcncxbzhVa2ZSN2hWYlpJZmI5cmxSVllfSmI1R2w2cFlLdmxSTnRPb2VNYTMzc3FBR25SZG9oR1ZWRlp1VUE?oc=5"
+    },
+    {
+      "date": "2026-10-04",
+      "outlet": "Politico",
+      "headline": "Sam Altman to Decoded: ‘The world should accept some bad things happening’ for the benefits of AI - Politico",
+      "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNYWFnWk90ajlEOFlsMktzU0RvSjc1cWpxRW9hb2FyZDBKR1pKanpPUE13TmpvRm5kdzY3NDN3WTZuQXB3bnVodlktZkRnS1JLR0E3NzlMR1k1aWZWUm5XUkIxSzA2Ynp0QzBwRmFZQTZGWjd6WWlOS09qbWZFM1lNYU1fTnlaMmY3?oc=5"
+    },
+    {
+      "date": "2026-10-04",
+      "outlet": "Seeking Alpha",
+      "headline": "OpenAI’s Altman draws regulatory divide with Anthropic over AI risks: Politico (OPENAI:Private) - Seeking Alpha",
+      "link": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQbWFwUXdTZy10VVI0V2VKbG54UGxReWRmbTNxZldVTFdZUWFDaEE1NXdsa0FjYXhuaEFER0plUWVobExwYVJrVXZEUEdwRUZxSElZemlmUExjZV85ajlGSUxCZ0t0U0pqMHRObkZlaWhRY1pyQ3dvQUhqSmpTaGtvekVrMWNrdWJ6SmZEckJERWVYbW5sejF0M2RSN0dGSnBhY3A3Q210MHgxM0hGTUE5VnNfaDdYZw?oc=5"
+    },
+    {
+      "date": "2026-10-04",
+      "outlet": "theatlantic.com",
+      "headline": "AI’s Real Gift to Science - theatlantic.com",
+      "link": "https://news.google.com/rss/articles/CBMiowFBVV95cUxOcW1HZDBHU1JFd1NqX1hLUlJ1ZFZOTDF4N1RSQ3F3OG9DemdIWEE3OUdxRlZhMURtQVQ3ODVBS0ZEY04yeHZTMk9SNkV5S0RzODFwS214QkIxY1pRSlFnWU5NcFA0LVBnNnNGYWlscFpsUkhuYXEwTEZFbU9GajFrb0poakw2MTBnaXI4aFVoakkxTk1OQlFLb1M5MWVFM3ZKNWg0?oc=5"
+    },
+    {
+      "date": "2026-10-04",
+      "outlet": "Fortune",
+      "headline": "Anthropic’s Daniela Amodei says entrepreneurs should go on vacation to test potential cofounders - Fortune",
+      "link": "https://news.google.com/rss/articles/CBMivAFBVV95cUxOTmQySFJZMlVYdFJoNXhEVHQyZVhtVElZR1doTVF3XzNfSnE3OU45N2RPdlFzVmpNdlZMVFAxQjA5aWM3SGFkWVFKNEh2My1sbUx1dXlvcTM2Y0U5elNGazVkSTAyektVU0d2UndOSk0ydXFobVREQ0dzTkp4UXBJZkVTclFNRXVhVDM2Z0p1NDlqaGU2ZUhWYWdsLTZ5QkNLX3pkSjRiU3R1SmpBcFZBVVFKalZsM0poUGdacg?oc=5"
+    },
+    {
+      "date": "2026-10-04",
+      "outlet": "Reuters",
+      "headline": "Former Anthropic researcher Coxon to testify at New York City AI hearing, Bloomberg News reports - Reuters",
+      "link": "https://news.google.com/rss/articles/CBMivgFBVV95cUxORnR5cUVLZE91ckU2X0sxOGNzbjA4SjU4MFhiUXNvb0E4M1FLTldoT3d0b3BDUmU3NFVxOUk1eURXMmhEVExrQTNKT3d2LXY2emNNSUo0Nzd0Vkp0WmxiTDh0MVhhM2h1NnRIZnVnZmRNcmJNNmlCajkxN1U2ZGJBZHlLNEVYanF6c2lBc0pVOHh2a1h4QWs0Yngxc0RYX3pOS2NDUGZRRjRKQmtLbnpxZk5QNjljNjJVSkNQRVNn?oc=5"
+    },
+    {
+      "date": "2026-10-04",
+      "outlet": "Bloomberg.com",
+      "headline": "Ex-Anthropic Researcher Coxon to Testify at NYC Hearing on AI - Bloomberg.com",
+      "link": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQQVVRR3BBcHZWM2JKOWdfSXZZMzdLQ053am4ta2xzSzFULWdoZHlhbnlFNGNMRFhoUGRvX1lCeXprSjRPWVczTkNGVlViN2VwRHoyZHV1cFdlRHpNS0ZUV2FseUNZbS1Xei1wbkJwcjVaY09QWm9GRUV4dExBb1lOZUIzYzhCZFB1Z0lpc2pvSlhCcnJXa2hJNTVYeDkwSnpWeFRLV25qNDhIOHB6ZW9wSVBxOVhsRWtK?oc=5"
+    },
+    {
+      "date": "2026-10-04",
+      "outlet": "The Information",
+      "headline": "Anthropic’s Big Charity Bill for Shareholders - The Information",
+      "link": "https://news.google.com/rss/articles/CBMihwFBVV95cUxOOUtjSXdCS2Q3SkZXM3hHQjZLckwtWTYxV2JpSkZKS2pKTGJJb1c2U0xUR2V4Y21ESGVrSjl3TldXb2RLZlhUTGkzaWQ0a0NRazF2LTFQcmhMZUItWFFMNE91VTJUYVBIbUtRSzV3LXRKRFRsSFlxdTZxdWw2RTBUNlp0SUo5Y1k?oc=5"
+    },
+    {
+      "date": "2026-10-04",
+      "outlet": "Futurism",
+      "headline": "Anthropic Has Been Aggressively Lobbying the Vatican to Consider AI Consciousness - Futurism",
+      "link": "https://news.google.com/rss/articles/CBMie0FVX3lxTE42Y3BtOVJxOWlqTGFfX0dCNmo1OFRHa1hNRDJrOGlCeDJsOXhrcm9FdWhpT0FrZk9zbmZHd3l0UUFsNW1qeEY5bVplRm1UenZsNkZ4R3dNSkFOdlMxR3gwRXBtLUhQeFdURURMWGNJT2lCY3dCbHVzMXRUdw?oc=5"
+    },
+    {
+      "date": "2026-10-04",
+      "outlet": "telegraph.co.uk",
+      "headline": "The world cannot afford an AI bubble right now - telegraph.co.uk",
+      "link": "https://news.google.com/rss/articles/CBMimwFBVV95cUxNcVItd3lvVmowRGU1dW1xWUo1RHU5Rm91eFZPRUw2TGo0RDNLV2VremdJVEtyLTJoUU9EUElyb2FoXzFhV1N1b19qajBhM01XNGszRHF0VV9sWl8tTmhPMGp5bXpGSFNpM3k5U1RZTTZJaW8tYWNMU2RQeG5fbnpCWUE3X3NXekhOV0hwRE1rVnoyWVU2c2pvYWpQUQ?oc=5"
+    },
+    {
+      "date": "2026-10-04",
+      "outlet": "Fox News",
+      "headline": "Tech powerhouse’s regulatory push bears similarities to a notorious Washington strategy - Fox News",
+      "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxOYndMcmhiWEdsRDdPenp6bDVaM3g3dG5JeUJIbXdrMUxRaElhNm5mcnczMzFjSUFTTjB3TzN0elJLamFsME0yMVlxRDhjcVYxWWZwRUwyeDl1Y25Va0FuLU0wc1lDVk5ydGhPWEQzSm9wS1JuTDBpeFUwVm4yZTBfM3VldDhWT0tXc2NUVGdEeE9xbU9hRjM0SjV2RFBUWGdCalNoblhuY3JnbUFXeWFtbG1RSdIBuAFBVV95cUxNZlVKN3YzekhXdklJcVBpdHl0Uy1xVWtFWHozRTNfNVhBMS1uSV92MUx0ZDFGTml0S2lZa0pmaE9tX3lueWQ3SnctRmVIWW9qR251V0hDUmlyREJoal82VmMyaG9jS2FLYndjc2pCOGlSNC1fREljZzVrLWJNbENBSkp1clZsVnQ3bDhua2xkWWRzUUtqaXg5aEluenhHT3g5N21hcEVBX1gxUXBfcTA2Q3EtZFN0ZkVz?oc=5"
+    },
+    {
+      "date": "2026-10-04",
+      "outlet": "Futurism",
+      "headline": "Chinese Hackers Impersonate Anthropic Employee to Extract AI Secrets - Futurism",
+      "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOVGlSM2lMaWg5Ym1HS3gxSXNMaC1raEUyUm5TdkgtOTY4ak5NNm9tMTRydmlRRTFfQ01sOGtLWUpNQ25oVzJrckMwQU5fb3hrQUhDRDhOeFJvamdjNVF4VmRfSk0wS0prZkx0MlNNQjUxdW9jV0hBTTlTWkZOZXZya0Vfc3RMVmtPeHV5dURneFpsWmNSQ1B6LQ?oc=5"
+    },
+    {
+      "date": "2026-10-04",
+      "outlet": "BleepingComputer",
+      "headline": "Anthropic asks Claude users to share voice data for AI model training - BleepingComputer",
+      "link": "https://news.google.com/rss/articles/CBMizAFBVV95cUxNYXdOQkNGN2NyMjVhNDlOZUVRTUdMWkE1OVNsaEtCQUcyS1hzQ2R3UkhLX1A4VjlWX2lOSHZXSjNSQ3NTT0g1M3ZCX0ltWHJSaGhDelJqdjJwbmVKeENqSkFIallKdzdVUWdqR0IwcndOLWhDbjdnbHN2NXFwTk1UczBMNkRoM3NVdllOcUhJUkFDZ3dWM0dfWnV4V19ldVVnS21UbEg3bnhBWV9FNzFHM3ZieWlYTy05aDJfYm9YYzZYdlJUODZBV0ZyTm3SAdIBQVVfeXFMTXhoYkFWNEtHOEVIclNCSlc0X3BsWk8yaGlGLVQyeFRZUm5rX2hNVjZtY0owZFIxZFFqdUxtbXNaQUgyR040UEpYM21Hdi1UTF9DbVJLRjRSa1RxdHA3cXNROFNtZ09ldEwtLWpSNGtJYnFqaVIta3BKdkdacXZqNFRWd0xZR0tLMUpWLVdUSUlhLUtvTUxSdGJEWS0zbEg1UkxPNHFDOURSalhKTHY5RXQ2b2xyNHRjbC1FNEMxcFR4Z1RWQnhyRVA1amZ1NHBqX1N3?oc=5"
+    },
+    {
+      "date": "2026-10-04",
+      "outlet": "DW.com",
+      "headline": "Anthropic report: Is Russia using AI for disinformation in the Central African Republic and elsewhere? - DW.com",
+      "link": "https://news.google.com/rss/articles/CBMizgFBVV95cUxPRmdkdHFFV09tWERfUW9MYlIxN3NRS0NLdkxwdklTUUtzenZZMXNuT012dTU3Z2hFUXpLUFhxMV8zSkhkdllYdnM2bEtTd3c2UzBJRXFJYlJqSGtXTDdmbmkwY2pKX2pZVklMR0pDQ0JBLTRWR2hxZ3V4QVFEaTZLeUJjQ04zbzVQQlk2Y3pzUkdjNmVhUXpqNjFsWU11ejdJbnBfT2RkektIQzVHejlVaTl5SDF6VVUwa29LUHZRQXpLTTNVUmllaGQwTTJUQdIBzgFBVV95cUxOazlNYnZxZmdrTTV4TGdjQUJtLXlzY0M3bm8xWFRwdGhYTDBKR2tQT1NEWlpoeEZJUGI4TTRJakpBc0liSDQtZTNEZmZUZV9kUHNYMmIzM0xsbU9FaERadjFtRDNxVGdOb2Z6M1pmNkZxcUppNzlyMFNpNFdOc0dMQUF0MHR2bTNqYXM2Rk84cVdTdGk5RHY0cXVvX0tObC0tZjdGTm9DNDhEdlFuek03X0pramxKM0YwSnRCUFBxZzVQTG9ucjJYR1NuV1hSUQ?oc=5"
+    },
+    {
+      "date": "2026-10-04",
+      "outlet": "South China Morning Post",
+      "headline": "My Take | Dario Amodei’s American AI imperialism - South China Morning Post",
+      "link": "https://news.google.com/rss/articles/CBMixAFBVV95cUxNam1mdkNzT21NWXlWMTQyOFlwNkQ3X1UxZ1VWdDNQZExRdWs2dW54NWJOZ2gxODRjNnNWV1VXTWp6ZjlnaXFIMlhxdnliRzBmUDVBSXBJX0hBMnRlSFhPVGpuenRfbWpOQUplSUM4Q0Fzel9HbUVlejRNVm5ZaWdyMFBaWUExUlhGUTlIc01kSzBRMU8wRHJWOC1ic0dwc2FUZVVtT3FQUTNWaHI0aDV6cnk3SjhWNXQzNi1zdE5kYXJWRTRD?oc=5"
+    },
+    {
+      "date": "2026-10-04",
+      "outlet": "The Lufkin Daily News",
+      "headline": "Former Anthropic researcher Coxon to testify at New York City AI hearing, Bloomberg News reports - The Lufkin Daily News",
+      "link": "https://news.google.com/rss/articles/CBMioAJBVV95cUxNU056THNLS2Q1MzNaaFFGY2V1a0w5aVRsX0NwSGV4NWRMc29RLTFvWnZlOF9hU09vb3FJNE5LVFJ2Y0VIZnVuVEloOFZLMXBKalZvMTkzY012RDExSFFmWVJsR0w3RFZQMDdUcm9HYUlHZUZKaTRjYWVpWmVIREFtMFc2Tml2Z3I4WUVhSG1xVEMtN1ByRFo0TjgtVG9JUHNNd1lwOFg5bUVva1hhTGNTT1JjZ1BfZHdBdGJDVVVlenBMQUNMclZFd0xDclB0aHMySEtxamF4ZTBvTzIxRWlqcGx2Vno2WlFtSDVLNExSY080WUpKano2SjlpdVo0WEZFQWNkd192QzVrbmFDbUVOb2VVWXJobUFLaWJJemFFRjg?oc=5"
+    },
+    {
+      "date": "2026-10-04",
+      "outlet": "TradingView",
+      "headline": "OpenAI’s Altman draws regulatory divide with Anthropic over AI risks: Politico - TradingView",
+      "link": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxNT3cyVnpsRGRJdDNuLURieDZzTHRGZUJ0YnNTakdiRml4UHprdjJkRXJ6M1V5dGdhVlp6elVXMGJ6N2V4eWNpSU5kMC11dGxqRW80dG5NdkVmeHdfZ1J5Q2p2bVZVOHpXS3NtUkY0WjlhNnc4YTdmcUloaWowT1F1aUVnM1ZCdXFUNm1wZThNLWlPLVFwOHJiYnBmaFZISWh6M1Z5b01pbGZLQmE3cnd2S3VJSi1WaTZKQVo2dXVWbG9kYjRBODFCRTRGSzRRWjktM2VrSG9aYw?oc=5"
+    },
+    {
+      "date": "2026-10-04",
+      "outlet": "TradingView",
+      "headline": "Former Anthropic researcher Coxon to testify at New York City AI hearing, Bloomberg News reports - TradingView",
+      "link": "https://news.google.com/rss/articles/CBMi-AFBVV95cUxNN09lOTFhcnM3M0VZY0NjWFF0VWxlUldKWXZRbGc2Y245c01HWTlHVkcwcFdCd29LVDlaUUZuOHpxUmJvX0drdk1MWGg0amIzTFNCVWlCeEF5OWxfeHlHaEJFdzlybkNLUm4xcENvd3JrdC1rTUxyVmhrQ2ktNUhxbm54RGktQkd5TjRaVk5hWTVuYUVqNDhKc2FsRjdVWF9tMUpOU1FfWEt3VURYOWlYWldCc1ktV3JYaHQ0RVdUaWhfY1NER3hSNE1IeERyZlNxYjMzZE5YQVVsekYzd0VqdlAxOWZqZWxjMktlU1VlaFNQQ3EzamNpYg?oc=5"
+    },
+    {
+      "date": "2026-10-04",
+      "outlet": "Yahoo Finance",
+      "headline": "Broadcom’s Massive $42 Billion Chip-Buying Deal with Anthropic Raises Circular Financing Worries - Yahoo Finance",
+      "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNRXZHU1pUTHFVT2paaHFVOEJ4WnB1d05EbXc3NlBQTE01dV9fMXBtal8xcFdjX0VYTlVFVVE5WHZtYWw2d0k0UDlCSUhxejc4ZUs2Y0ZXRmk3V2oySzVxRGE5UjhJZF9aZDAteDdtOU9mUHdNZEF1UjY2VHRzc1ZSTG8wdWNrc3Z6eE1kTlFyTzh3NzBPUnpYbThzOWE?oc=5"
+    },
+    {
+      "date": "2026-10-04",
+      "outlet": "The News International",
+      "headline": "Could AI be conscious? Why Anthropic is turning to the Vatican - The News International",
+      "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOZ0ZVV0lBb1dsS3htZjdFM2ZleDFsZ0RkZnlUZVM0d0U2RDZMOUxtU1k5OTFjQ05LYUY1N1dQUWlOZGpvUUpNTXZ0TjFRbGFWRjB1aEpQa2ZwdERDWm02YjVQVGpvajhocUd6dUpoRzdMQ2JXb3BxT216UzMxV0ZGOHZnSzdnamREdUhST3Y0c0tGa3puYmVTNmVtYVI0czQzTWxLbkd30gGiAUFVX3lxTE91MWtjZ3pGbjdRZVlFTHhGZk5jMExxLW1rWFUxYUdFaVpVb01LRFlNLXNpVDMzN1dJamZiZGRLSE5HLXpidVVLYlBTM2pPbmlqWjR2cXk2WjZMOWFzRjlsazk3RUl4RHc5VVlSeVdQT1NkaXA4aEMtX0lsbEZLcUlOb3N4Nm1Xc0VCSkRJUzVLTmVpTDI5a3Z4VXFJMTJkUV9MQQ?oc=5"
+    },
+    {
+      "date": "2026-10-04",
+      "outlet": "24/7 Wall St.",
+      "headline": "Broadcom's Massive $42 Billion Chip-Buying Deal with Anthropic Raises Circular Financing Worries - 24/7 Wall St.",
+      "link": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxOZ2lZZFB3ZmpQSGlxanc4a1d0NjE4ZHBqMkRRREFaYUc0MHZfZ0dPLVBBeGtIeFg5UHBKbjdoZ21FeS1YTFVnOG4wQmhDaUdpSnF6MF93ZmhrUEMzWUV3T050eVZ1eHBSRXF1TnJtaWhuUVdRNmYtc09jU1l2VWlsOWEydEJYRlVxa082ZVZWUUVpN0l4eWo3d1JKd0l4ODd2eEJuTmg4bXVYQzNvZHdOd2ctVE85SWJXcUE0aU9ZUmtuUC1RcW9XV3dPUjFWMzBoSTJydQ?oc=5"
+    },
+    {
+      "date": "2026-10-04",
+      "outlet": "Benzinga",
+      "headline": "Consumer Tech (Sep 28-Oct 2): Anthropic Preparing for IPO, Trump Weighs AI Stakes & More - Benzinga",
+      "link": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxQYkNEYzBFNmFkalJJZnItVHU3T0d6bUlIQmJYcEE1dks3UkdVb1lGSmwzQlZzY1dnRktvbTBFVzkyTlVLTDMyRl8xaFhoaVozZXJueHFNdGlGTVFXMmlMTE1icFhGVVZMYXRPTEFaUnhSbTFKczZwR0tGRE5IZFN1b0ZSbVdUZXQzelktUy1Ka1BTbFEyVXJ0cUVfVDRrQ3pSbkUxMjJiX1JGd1hGTV9PZVRNLU9WWGtIWnFqelpYMWJqZ3h0UTl5RDRfTGlLRndBdmxEaGJ2TQ?oc=5"
+    },
+    {
+      "date": "2026-10-04",
+      "outlet": "Indian Television Dot Com",
+      "headline": "Anthropic to invest $100 million to train 10,000 AI engineers by 2027 - Indian Television Dot Com",
+      "link": "https://news.google.com/rss/articles/CBMiowFBVV95cUxOWURkVWJJOTRqbTU5N2FOMGNTWW4xZHM2cEU5b3pITTduUGVUSmdQNUpjWWlFMF9JemVKdTctOUoxdzRTN3lVazJuSjc2UHFFYUZlaEFRZnlOcmJWWmRiOGJFQ2tKWjRHLW95SXlWR2EteE9oYzkxM0k1ckYtUk5HTk8xYno5Z2lsbmpmX01EZE0wbnFnc1ZEMEgybGNWT2tpMlVv?oc=5"
+    },
+    {
+      "date": "2026-10-03",
+      "outlet": "Fox News",
+      "headline": "Former Anthropic security leader warns AI agents are becoming too autonomous for humans to keep them in check - Fox News",
+      "link": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPemJIM1RfS0l6SDBQY29CRUNuNWNVaE9JTEdDdXVueWc4dXo3eUZ4UzA0QVdpcWFydFB1U1BRYVd0V1gxQWhZZU1LTERTMmt3a3FzTm1QbWFTYWY3R0lNc0VLbFFRMnNMU2FKWVloclBLQWR4bDZmRS1GeTE0S2w4a1dvaklkWXhkeVlOUzRfc1cyTFZTVVlMQnhXZTkteUp2M25KSUI0UG54a2tvQkxXT3hkc1ptdXNrcmF30gHAAUFVX3lxTE4wcmtnRFY5cF9KMnFwLTdacndfMi1tVTFyYXotTHdsOGxoYnRpX0NwWnQ4dlRlcjRJd2RMOEtIWTNLRWplcHNLZHU2QUlWQWc0cWhwUkVOUUFYRWxwT3BwTGQ2TW5xTWFvaGtuS01yS0tEQzFjNDVtVkJVd2JyOGRPU1Q2bUhRLVFXcVlrM21nc2xXTjgxSDI2dkFsa19GUEJwYXVYR19uV09qemtxZVktMlk4MjVsMVloRlE1SFVseg?oc=5"
+    },
+    {
+      "date": "2026-10-03",
+      "outlet": "Barchart.com",
+      "headline": "SpaceX Bags Massive AI Compute Deal With Anthropic. What That Means for SPCX Stock. - Barchart.com",
+      "link": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxOVmJyVkNiT2hCdmFVRkVTY2JrN2VPTXVYMkdtbjBoMDNSeXVHMk0xNXJ2S2d5WW1CcGdyeHFDSXVMUldZWkN2VHhfdWhkWnlfUUFrYmM2ajhiSm1uSjFnUkV0NEtrT2prWjdEbEF2NTRDZmR1MVhlVFBDSjBZaFlaby1US3BnemJjSGtjVlprWm5oX1RkZmw0c1JyWU8teG1MMXU4Tl93UmpoUjVUSWdqcnJ0cWxnVG9Fb1FwanFMejQtQWs?oc=5"
+    },
+    {
+      "date": "2026-10-03",
+      "outlet": "Axios",
+      "headline": "OpenAI's Altman: Ascribing religion to models a \"safety issue\" - Axios",
+      "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxORG96X2d2YlZHeXRKVFZMamFsVklneUVYNzBnV3RJdWFndV9ONkdheE9IZktfQXU0dnF1b1BLY0VDb3c3TDk1RmUwaS1DcFJtYWNhVWZ2MTNHS21JbkE0SHVoV2lxMm1RWjNwSmJYZ0tOX054UE1mUTVCWFAxRGhJbDBfcHVWZ1ZHNXpRLW1pbw?oc=5"
+    }
+  ],
+  "takeaway": [
+    "The latest 40 headlines Google News returns for Anthropic, newest first."
+  ],
+  "assumptions": [
+    "About the 100 most recent results Google News gives for the search terms, deduplicated by headline and outlet; the 40 newest are shown.",
+    "Google News keeps no history, so the list is a snapshot from our daily collection. Headlines are shown with their link, not reproduced.",
+    "Search terms match by words, so some results are about the AI industry generally rather than Anthropic."
+  ],
+  "badges": [],
+  "id": "attention.recent_coverage",
+  "page": "attention",
+  "as_of": "2026-10-05",
+  "sources": [
+    {
+      "source": "google_news_headlines",
+      "label": "Google News RSS: latest headlines",
+      "url": "https://news.google.com/rss/search?q={query}",
+      "method": "api",
+      "tier": "press",
+      "cadence": "daily",
+      "as_of": "2026-10-05",
+      "retrieved_at": "2026-10-05T07:01:16Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T07:25:44Z"
+}

@@ -414,3 +414,8 @@ Out of scope, by your decisions or because the data is missing:
   - `.github/workflows/ci.yml` runs ruff and pytest on every PR, and on pushes to `main` and `phase/**`.
   - `phase/N+1` is cut from `phase/N` as soon as the phase PR opens, so the next phase's worktrees can start during review.
     Because phase PRs use merge commits, the next phase PR still shows only its own changes.
+- **R15, 2026-10-05: worktree location.**
+  - Worktrees live in `.claude/worktrees/p<N>-<name>`, where the Claude app and `claude --worktree` create them.
+  - The old `.worktrees/` location produced a second, unused worktree for 1.1, so it is retired.
+  - App-made worktrees start on a `claude/...` branch, so the first step is `git switch -c p<N>/<name> origin/phase/<N>`.
+  - One `.env` lives in the repo root, and each worktree links to it.

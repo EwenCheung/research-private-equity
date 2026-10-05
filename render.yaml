@@ -9,19 +9,20 @@ services:
       uv sync --locked --no-dev
       npm --prefix frontend ci
       npm --prefix frontend run build
-    startCommand: uv run --no-dev uvicorn app.server:app --host 0.0.0.0 --port $PORT
+    # --proxy-headers: client IPs come from Render's proxy, so the login throttle counts per real visitor.
+    startCommand: uv run --no-dev uvicorn app.server:app --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips '*'
     healthCheckPath: /api/session
     autoDeploy: true
     envVars:
       - key: PYTHON_VERSION
-        value: "3.12"
+        value: "3.11"  # matches .python-version
       - key: NODE_VERSION
         value: "22"
       - key: COOKIE_SECURE
         value: "1"
-      # Real data: the committed marts/registry written by the pipeline (fixtures when unset).
-      - key: MARTS_DIR
-        value: data/marts
+      # Real data: data/marts + data/registry.json committed by the pipeline (fixtures when unset).
+      - key: DATA_DIR
+        value: data
       - key: DASHBOARD_PASSWORD
         sync: false
       - key: SESSION_SECRET

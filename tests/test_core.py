@@ -250,6 +250,27 @@ def test_build_with_no_data_is_awaiting_data_and_never_fresh(clean_registry, roo
     assert (spec["sources"][0]["freshness"], spec["sources"][0]["retrieved_at"]) == ("never", None)
 
 
+def test_build_writes_the_source_registry(clean_registry, root):
+    """data/registry.json is what the API recomputes live freshness from, so it must list every declared source."""
+    registry.source(**META)(lambda co: [{**ROW, "entity": co.slug}])
+    registry.source(**{**META, "id": "idle_jobs"})(lambda co: [])
+    collect(root=root, now=NOW)
+    build(root=root, now=NOW)
+    reg = json.loads((root / "data/registry.json").read_text())
+    assert reg["generated_at"] == "2026-10-05T06:02:11Z"
+    src = {s["id"]: s for s in reg["sources"]}
+    assert set(src) == {"fake_jobs", "idle_jobs"}
+    fake = src["fake_jobs"]
+    assert {k: fake[k] for k in ("retrieved_at", "as_of", "row_count", "sla_days", "readable")} == {
+        "retrieved_at": "2026-10-05T06:02:11Z",
+        "as_of": "2026-10-05",
+        "row_count": 2,
+        "sla_days": 2,
+        "readable": True,
+    }
+    assert (src["idle_jobs"]["retrieved_at"], src["idle_jobs"]["row_count"]) == (None, 0)
+
+
 def test_ledger_rows_carry_who_and_evidence(clean_registry, root):
     meta = {**META, "id": "product_releases", "page": "product", "method": "ledger", "tier": "company-stated"}
     registry.source(**meta)(lambda co: [])
@@ -277,6 +298,20 @@ def test_csv_row_without_evidence_is_rejected(clean_registry, root):
     )
     with pytest.raises(ContractError, match=r"yipit_x.csv:2"):
         read_observations(root, meta)
+
+
+def test_marts_get_company_display_names(clean_registry, root):
+    registry.source(**META)(lambda co: [{**ROW, "entity": co.slug}])
+    seen = {}
+
+    def named(ctx):
+        seen.update(ctx.names)
+        return open_roles(ctx)
+
+    registry.mart(id="hiring.open_roles", sources=["fake_jobs"])(named)
+    collect(root=root, now=NOW)
+    build_one(root, NOW)
+    assert seen == {"a": "A", "b": "B"}
 
 
 def test_a_mart_only_sees_its_declared_sources(clean_registry, root):

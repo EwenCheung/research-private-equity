@@ -28,12 +28,36 @@ Status: see [docs/ROADMAP.md](docs/ROADMAP.md). Design: [docs/superpowers/specs]
    | `anthropics/claude-plugins-official` | playwright |
 
 3. Copy `.env.example` to `.env` and fill in only the keys for the phases you work on.
-4. The Python and frontend setup commands are added here as Phase 1 lands.
+4. Install the toolchain. You need [uv](https://docs.astral.sh/uv/) and Node 22:
+   ```bash
+   uv sync
+   ```
+   ```bash
+   npm --prefix frontend ci
+   ```
+
+## Everyday commands
+| What | Command |
+|---|---|
+| Refresh data (all daily sources) | `uv run python -m pipeline.collect --cadence daily` |
+| Rebuild charts and the source registry | `uv run python -m pipeline.build` |
+| Run the tests | `uv run pytest` |
+| Serve the API (needs `.env`) | `uv run uvicorn app.server:app --port 8000 --env-file .env` |
+| Serve the dashboard in dev | `npm --prefix frontend run dev` (opens on port 5173 and proxies `/api` to 8000) |
+| Run the scheduled jobs on GitHub | `gh workflow run daily.yml` · `gh workflow run weekly.yml` |
+
+- The API serves the Phase 0 fixtures unless `DATA_DIR=data` is set. Add that to `.env` to see the real collected data.
+- In worktree `n`, use ports `8000+n` and `5173+n` instead. For example, worktree 2 serves the API with `--port 8002` and runs the dashboard with `API_PORT=8002 WEB_PORT=5175 npm --prefix frontend run dev`.
 
 ## Working on an implementation
 Each roadmap item gets its own branch and worktree, cut from the phase branch, so several can run in parallel without conflicts:
 ```bash
-git fetch origin && git worktree add .worktrees/p2-hiring -b p2/hiring origin/phase/2
+git fetch origin && git worktree add .claude/worktrees/p2-hiring -b p2/hiring origin/phase/2
 ```
+- **Location:** worktrees always live in `.claude/worktrees/`, the same place the Claude app and `claude --worktree` use.
+- **Starting from the Claude app:** if it made the worktree on a `claude/...` branch, switch to the roadmap branch first:
+  `git fetch origin && git switch -c p2/hiring origin/phase/2`.
+- **Secrets:** keep one `.env` in the repo root and link it into each worktree:
+  `ln -s "$(git rev-parse --path-format=absolute --git-common-dir)/../.env" .env`.
 When it's done, open a PR into `phase/2`. Nothing merges straight into `main`: each phase reaches `main` through one `phase/N` PR.
 Read `CLAUDE.md` for the ownership rule, ports, review checkpoints and commit conventions.

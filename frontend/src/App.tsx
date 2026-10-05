@@ -5,14 +5,14 @@ import Login from "./Login";
 import { SchemeContext, useTheme } from "./theme";
 
 interface PageModule {
-  meta: { title: string; path: string; order: number };
+  meta: { title: string; path: string; order: number; devOnly?: boolean };
   default: ComponentType;
 }
 
 // Drop a file in src/pages/ exporting `meta` and a default component; there is no registry to edit.
-const pages = Object.values(import.meta.glob<PageModule>("./pages/*.tsx", { eager: true })).sort(
-  (a, b) => a.meta.order - b.meta.order,
-);
+const pages = Object.values(import.meta.glob<PageModule>("./pages/*.tsx", { eager: true }))
+  .filter((p) => import.meta.env.DEV || !p.meta.devOnly)
+  .sort((a, b) => a.meta.order - b.meta.order);
 
 export default function App() {
   const { authed, logout } = useAuth();
@@ -55,7 +55,21 @@ export default function App() {
             {pages.map(({ meta, default: Page }) => (
               <Route key={meta.path} path={meta.path} element={<Page />} />
             ))}
-            <Route path="*" element={<Navigate to={pages[0].meta.path} replace />} />
+            <Route
+              path="*"
+              element={
+                pages.length ? (
+                  <Navigate to={pages[0].meta.path} replace />
+                ) : (
+                  <div className="awaiting">
+                    <span>
+                      <strong>No pages yet</strong>
+                      Evidence pages appear here as each phase lands.
+                    </span>
+                  </div>
+                )
+              }
+            />
           </Routes>
         </main>
       </div>

@@ -27,7 +27,9 @@ jobs:
         run: uv run python -m pipeline.collect --cadence daily
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      - run: uv run python -m pipeline.build
+      - id: build
+        continue-on-error: true  # raw snapshots can't be backfilled: commit them even if a mart fails
+        run: uv run python -m pipeline.build
       - name: Commit data
         run: |
           git config user.name "github-actions[bot]"
@@ -35,6 +37,9 @@ jobs:
           git add -A data
           if [ -d reports ]; then git add -A reports; fi
           git diff --cached --quiet || git commit -m "chore(data): daily collect $(date -u +%F)"
+          git pull --rebase  # someone may have pushed since checkout; data/ is only written here
           git push
       - if: steps.collect.outcome == 'failure'
         run: echo "::error::at least one source failed; see the collect step" && exit 1
+      - if: steps.build.outcome == 'failure'
+        run: echo "::error::build failed; see the build step" && exit 1

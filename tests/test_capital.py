@@ -373,9 +373,7 @@ def test_form_d_missing_amounts_stay_blank_instead_of_becoming_zero():
         )
     ]
     spec = marts.form_d(Ctx(rows, NAMES))
-    assert spec["rows"] == [
-        {"quarter": "2026 Q1", "kind": marts.NEW_VEHICLE, "filings": 1, "amount_sold": None}
-    ]
+    assert spec["rows"] == [{"quarter": "2026 Q1", "kind": marts.NEW_VEHICLE, "filings": 1, "amount_sold": None}]
 
 
 def holding(

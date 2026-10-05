@@ -432,4 +432,3 @@ Out of scope, by your decisions or because the data is missing:
     Ledger rows compiled by the assistant carry `entered_by = "EwenCheung via Claude"`. OpenAI's status feed holds only its latest 25 incidents, so its history starts when collection began.
   - **Licensed data.** Entry goes through `pipeline.licensed`, which requires non-blank evidence, never overwrites, and stamps who and when. The contract alone accepted whitespace as evidence.
 - **R17: customers and capital are built in separate sessions** (2.5, 2.6) from prompts that carry these lessons. Their PRs go into `phase/2` like the others.
-

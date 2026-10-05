@@ -5,11 +5,12 @@ from datetime import UTC, datetime
 import pytest
 
 from contracts import ContractError, validate
-from pipeline.core import registry
+from pipeline.core import ROOT, registry
 from pipeline.core.build import build
 from pipeline.core.collect import collect
 from pipeline.core.companies import load_companies
 from pipeline.core.store import read_observations
+from pipeline.sources import snapshots
 
 META = {
     "id": "fake_jobs",
@@ -80,8 +81,6 @@ def test_company_config_rejects_unknown_peer(tmp_path):
 
 
 def test_shipped_company_config_loads():
-    from pipeline.core import ROOT
-
     cos = load_companies(ROOT)
     assert cos["anthropic"].role == "target"
     assert set(cos["anthropic"].peers) == {"openai", "google-deepmind", "xai", "mistral", "cohere"}
@@ -305,3 +304,38 @@ def test_duplicate_metric_ids_fail_the_build(clean_registry, root):
     (root / "config/metrics/product.yaml").write_text(spec)
     with pytest.raises(ValueError, match="defined in both"):
         build(root=root, now=NOW)
+
+
+# ---- snapshots ----
+
+
+def test_appstore_snapshot_emits_ranks_for_tracked_apps_only(monkeypatch):
+    feed = {"feed": {"entry": [{"id": {"attributes": {"im:id": i}}} for i in ("111", "6473753684", "222")]}}
+    fake = type("R", (), {"raise_for_status": lambda self: None, "json": lambda self: feed})()
+    monkeypatch.setattr(snapshots.httpx, "get", lambda *a, **k: fake)
+    snapshots._chart.cache_clear()
+    try:
+        cos = load_companies(ROOT)
+        rows = {c: list(snapshots.appstore_top_charts(cos[c])) for c in ("anthropic", "openai", "cohere")}
+    finally:
+        snapshots._chart.cache_clear()
+    [claude] = rows["anthropic"]
+    assert (claude["entity"], claude["metric"], claude["value"]) == ("anthropic", "appstore_rank", 2)
+    assert claude["dims"]["app_name"] == "Claude"
+    assert rows["openai"] == []  # tracked, but not in the chart: no row, never an invented rank
+    assert rows["cohere"] == []  # no app configured
+    validate(
+        "observation",
+        {
+            **claude,
+            "source": "appstore_top_charts",
+            "method": "api",
+            "tier": "platform",
+            "retrieved_at": "2026-10-05T06:02:11Z",
+        },
+    )
+
+
+def test_snapshot_source_is_declared_non_backfillable():
+    meta = registry.SOURCES["appstore_top_charts"].meta
+    assert meta["backfillable"] is False and meta["cadence"] == "daily"

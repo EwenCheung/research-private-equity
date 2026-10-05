@@ -1,0 +1,69 @@
+{
+  "title": "H-1B applications by quarter",
+  "subtitle": "Labor Condition Applications decided, from Department of Labor disclosure files",
+  "kind": "line",
+  "encoding": {
+    "x": {
+      "field": "quarter",
+      "type": "temporal",
+      "label": "Quarter"
+    },
+    "y": {
+      "field": "filings",
+      "type": "quantitative",
+      "label": "Applications",
+      "format": "int"
+    },
+    "color": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    }
+  },
+  "columns": [
+    {
+      "field": "quarter",
+      "label": "Quarter starting",
+      "format": "date"
+    },
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "filings",
+      "label": "Applications",
+      "format": "int"
+    }
+  ],
+  "rows": [],
+  "takeaway": [
+    "Awaiting data: no H-1B filings imported yet. Download a quarterly LCA disclosure file from the Department of Labor and import it (see Data & Methods)."
+  ],
+  "assumptions": [
+    "An LCA is filed before a company sponsors an H-1B worker: it shows intent to hire foreign skilled workers, not hires made.",
+    "Counted by decision date. Google DeepMind files as Google LLC and cannot be separated.",
+    "Entered by hand from the DOL file: each row shows who entered it and the case number."
+  ],
+  "badges": [],
+  "id": "hiring.h1b_filings",
+  "page": "hiring",
+  "as_of": null,
+  "sources": [
+    {
+      "source": "hiring_h1b_lca",
+      "label": "DOL H-1B Labor Condition Applications (imported quarterly file)",
+      "url": "https://www.dol.gov/agencies/eta/foreign-labor/performance",
+      "method": "ledger",
+      "tier": "filing",
+      "cadence": "quarterly",
+      "as_of": null,
+      "retrieved_at": null,
+      "freshness": "never",
+      "manual": null
+    }
+  ],
+  "status": "awaiting_data",
+  "generated_at": "2026-10-05T08:47:54Z"
+}

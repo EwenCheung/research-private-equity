@@ -35,6 +35,8 @@ Outputs are drafts for deal-team review, not investment advice. Use only public 
   - `frontend/src/pages/X.tsx`
   - `tests/test_X.py`
   - `.claude/skills/<its-skill>/`
+  - Data: `data/raw/<its sources>/` and `data/marts/<page>.*.json`. **Never commit `data/registry.json` from an implementation branch.**
+    Every build rewrites it, so parallel branches would conflict; the phase gate rebuilds it once.
 - **Shared files.**
   - Core files (`pipeline/core/*`, `app/*`, `frontend/src/components/ChartCard.tsx`) change only in their own `fix(core)` PR.
   - Dependencies change only in their own `chore(deps)` PR.

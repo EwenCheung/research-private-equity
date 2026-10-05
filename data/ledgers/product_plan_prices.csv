@@ -1,0 +1,6 @@
+as_of,entity,metric,value,dims,source_url,entered_by,retrieved_at,evidence
+2026-10-05,anthropic,plan_price_usd_month,0,"{""plan"": ""Free"", ""billing"": ""annual""}",https://claude.com/pricing,EwenCheung via Claude,2026-10-05T07:36:19Z,Free Try Claude $0 Free for everyone
+2026-10-05,anthropic,plan_price_usd_month,17,"{""plan"": ""Pro"", ""billing"": ""annual""}",https://claude.com/pricing,EwenCheung via Claude,2026-10-05T07:36:19Z,Pro For everyday work $17 Per month with annual subscription discount ($200 billed up front)
+2026-10-05,anthropic,plan_price_usd_month,100,"{""plan"": ""Max"", ""billing"": ""from""}",https://claude.com/pricing,EwenCheung via Claude,2026-10-05T07:36:19Z,Max For people who work with Claude all day From $100 Per month
+2026-10-05,anthropic,plan_price_usd_month,20,"{""plan"": ""Team (standard seat)"", ""billing"": ""annual""}",https://claude.com/pricing,EwenCheung via Claude,2026-10-05T07:36:19Z,"Team plan Standard seat All Claude features, plus more usage than Pro* $20 Per seat / month if billed annually"
+2026-10-05,anthropic,plan_price_usd_month,20,"{""plan"": ""Enterprise"", ""billing"": ""annual, plus usage at API rates""}",https://claude.com/pricing,EwenCheung via Claude,2026-10-05T07:36:19Z,Enterprise plan is built for large businesses operating at scale. Pricing is $20 per seat per month plus usage billed at API rates

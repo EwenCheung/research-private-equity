@@ -18,6 +18,7 @@ from itsdangerous import BadSignature, URLSafeTimedSerializer
 from pydantic import BaseModel
 
 from contracts import freshness as freshness_rule
+from pipeline.core.companies import load_companies
 
 ROOT = Path(__file__).resolve().parent.parent
 FIXTURES = ROOT / "tests" / "fixtures"
@@ -137,6 +138,15 @@ def create_app(data_dir: Path | None = None, frontend_dir: Path | None = None) -
     @app.get("/api/freshness", dependencies=[Depends(require_session)])
     def freshness():
         return {sid: {k: s[k] for k in ("freshness", "retrieved_at", "as_of")} for sid, s in load_registry().items()}
+
+    @app.get("/api/companies", dependencies=[Depends(require_session)])
+    def companies():
+        """Targets first, then each target's peers in config order. The frontend gives each a fixed colour slot."""
+        cos = load_companies(ROOT)
+        order = [c for c in cos.values() if c.role == "target"]
+        order += [cos[p] for t in order for p in t.peers]
+        order += [c for c in cos.values() if c not in order]
+        return [{"slug": c.slug, "name": c.name, "role": c.role} for c in order]
 
     @app.get("/api/registry", dependencies=[Depends(require_session)])
     def registry():

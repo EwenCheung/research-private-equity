@@ -1,0 +1,7 @@
+# Public status pages. atlassian_history: Atlassian Statuspage with a history.json feed (full history).
+# incident_io: incident.io status page serving /api/v2/incidents.json (only the most recent incidents, so history
+# for it starts when we began collecting). Google DeepMind, xAI, Mistral and Cohere publish no comparable status feed.
+anthropic:
+  status: {kind: atlassian_history, host: status.claude.com}
+openai:
+  status: {kind: incident_io, host: status.openai.com}

@@ -1,0 +1,167 @@
+{
+  "title": "Latest Claude incidents",
+  "subtitle": "The 15 most recent posts on status.claude.com",
+  "kind": "table",
+  "encoding": {},
+  "columns": [
+    {
+      "field": "started",
+      "label": "Started",
+      "format": "text"
+    },
+    {
+      "field": "incident",
+      "label": "Incident",
+      "format": "text"
+    },
+    {
+      "field": "impact",
+      "label": "Impact",
+      "format": "text"
+    },
+    {
+      "field": "minutes",
+      "label": "Minutes to resolve",
+      "format": "int"
+    },
+    {
+      "field": "link",
+      "label": "Link",
+      "format": "url"
+    }
+  ],
+  "rows": [
+    {
+      "started": "2026-10-01 16:20 UTC",
+      "incident": "Delayed credits on the Claude Platform",
+      "impact": "minor",
+      "minutes": 376,
+      "link": "https://status.claude.com/incidents/k0h22tsvnydg"
+    },
+    {
+      "started": "2026-09-29 14:21 UTC",
+      "incident": "Elevated errors on claude.ai, Claude Code, Claude Cowork and the Claude API",
+      "impact": "major",
+      "minutes": 126,
+      "link": "https://status.claude.com/incidents/4xvtc2gnq73l"
+    },
+    {
+      "started": "2026-09-22 00:57 UTC",
+      "incident": "Elevated errors for multiple models",
+      "impact": "major",
+      "minutes": 98,
+      "link": "https://status.claude.com/incidents/7g1qpkyz5gxh"
+    },
+    {
+      "started": "2026-09-16 16:18 UTC",
+      "incident": "Issues with Google Play subscriptions",
+      "impact": "none",
+      "minutes": 33,
+      "link": "https://status.claude.com/incidents/t8fpw9vcshl9"
+    },
+    {
+      "started": "2026-09-15 09:48 UTC",
+      "incident": "Intermittent error spikes for Claude Mythos 5.1 and Claude Fable 5.1",
+      "impact": "major",
+      "minutes": 86,
+      "link": "https://status.claude.com/incidents/6304r9jjhj34"
+    },
+    {
+      "started": "2026-09-11 14:19 UTC",
+      "incident": "Elevated errors for Claude Mythos 5.1 and Claude Fable 5.1",
+      "impact": "major",
+      "minutes": 18,
+      "link": "https://status.claude.com/incidents/t33dncr5ydvl"
+    },
+    {
+      "started": "2026-09-10 21:43 UTC",
+      "incident": "Elevated latency on the Claude API for some users",
+      "impact": "minor",
+      "minutes": 101,
+      "link": "https://status.claude.com/incidents/2pt83vlkk7x7"
+    },
+    {
+      "started": "2026-09-10 15:54 UTC",
+      "incident": "Degraded functionality for Claude Cowork on Windows",
+      "impact": "major",
+      "minutes": 5960,
+      "link": "https://status.claude.com/incidents/r1pqn1kb4hvk"
+    },
+    {
+      "started": "2026-09-03 13:26 UTC",
+      "incident": "Elevated errors for multiple models",
+      "impact": "major",
+      "minutes": 177,
+      "link": "https://status.claude.com/incidents/461yvfrzpwtt"
+    },
+    {
+      "started": "2026-09-03 12:37 UTC",
+      "incident": "Elevated errors for Claude Sonnet 5",
+      "impact": "major",
+      "minutes": 19,
+      "link": "https://status.claude.com/incidents/288w7p4hk1l1"
+    },
+    {
+      "started": "2026-09-02 21:17 UTC",
+      "incident": "Elevated errors for Claude Sonnet 5",
+      "impact": "major",
+      "minutes": 27,
+      "link": "https://status.claude.com/incidents/ls6bn1x81m0w"
+    },
+    {
+      "started": "2026-09-01 23:26 UTC",
+      "incident": "Delays in credit purchases",
+      "impact": "minor",
+      "minutes": 118,
+      "link": "https://status.claude.com/incidents/620swtqyn24k"
+    },
+    {
+      "started": "2026-09-01 17:05 UTC",
+      "incident": "Degraded performance on platform.claude.com and Claude for Microsoft Office 365",
+      "impact": "minor",
+      "minutes": 62,
+      "link": "https://status.claude.com/incidents/3g3d55q6vk3h"
+    },
+    {
+      "started": "2026-09-01 16:02 UTC",
+      "incident": "Degraded performance on Claude for Microsoft Office 365",
+      "impact": "minor",
+      "minutes": 20,
+      "link": "https://status.claude.com/incidents/nr3h7bw8b3k3"
+    },
+    {
+      "started": "2026-08-31 19:21 UTC",
+      "incident": "Degraded performance on claude.ai and Claude Code",
+      "impact": "minor",
+      "minutes": 75,
+      "link": "https://status.claude.com/incidents/r82kdk0m7vqh"
+    }
+  ],
+  "takeaway": [
+    "8 of the latest 15 incidents were rated major or critical."
+  ],
+  "assumptions": [
+    "Incidents are the ones the company chose to post, with its own impact rating, so a company that posts more freely looks worse.",
+    "Minutes run from first post to resolved; blank means unresolved or no time posted."
+  ],
+  "badges": [],
+  "id": "product.recent_incidents",
+  "page": "product",
+  "as_of": "2026-10-01",
+  "sources": [
+    {
+      "source": "status_incidents",
+      "label": "Public status pages (Anthropic and OpenAI)",
+      "url": "https://status.openai.com/incidents/01M45E0JFFJZ6EQ3BWYPW74R2Z",
+      "method": "api",
+      "tier": "company-stated",
+      "cadence": "daily",
+      "as_of": "2026-10-01",
+      "retrieved_at": "2026-10-05T07:19:13Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T08:47:54Z"
+}

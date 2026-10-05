@@ -1,6 +1,7 @@
 """build CLI: raw + manual + ledgers -> data/marts/<page>.<chart>.json, every mart validated as a chart spec."""
 
 import json
+import math
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
@@ -47,7 +48,11 @@ def _source_refs(ctx: Ctx, source_ids, now: datetime) -> list[dict]:
         meta = registry.SOURCES[sid].meta
         mine = ctx.df[ctx.df.source == sid]
         used = mine[mine.index.isin(ctx.used)]
-        latest = max(mine.itertuples(), key=lambda r: datetime.fromisoformat(r.retrieved_at), default=None)
+        latest = max(
+            mine.itertuples(),
+            key=lambda r: (datetime.fromisoformat(r.retrieved_at), r.as_of),
+            default=None,
+        )
         retrieved = datetime.fromisoformat(latest.retrieved_at) if latest else None
         manual = None
         if latest and meta["method"] in ("manual", "ledger"):
@@ -56,7 +61,9 @@ def _source_refs(ctx: Ctx, source_ids, now: datetime) -> list[dict]:
             {
                 "source": sid,
                 "label": meta["label"],
-                "url": meta["url"],
+                # Source metadata may be a URL template (for example ``{board}``). Link the chart to the
+                # concrete URL that actually produced a row instead of publishing a known-broken template.
+                "url": latest.source_url if latest else meta["url"],
                 "method": meta["method"],
                 "tier": meta["tier"],
                 "cadence": meta["cadence"],
@@ -75,6 +82,10 @@ def build_mart(m: registry.Mart, all_rows: dict[str, list[dict]], now: datetime,
         raise ValueError(f"mart {m.id} declares unknown sources {missing}")
     ctx = Ctx([r for s in m.sources for r in all_rows[s]], names)
     spec = dict(m.fn(ctx))
+    # NaN is not JSON: browsers reject the whole file. A missing value is null.
+    spec["rows"] = [
+        {k: None if isinstance(v, float) and math.isnan(v) else v for k, v in r.items()} for r in spec.get("rows", [])
+    ]
     used = ctx.df.loc[sorted(ctx.used)]
     empty = not spec.get("rows")
     spec |= {
@@ -97,10 +108,16 @@ def write_registry(root: Path, all_rows: dict[str, list[dict] | None], now: date
     sources = []
     for sid, s in sorted(registry.SOURCES.items()):
         rows = all_rows.get(sid) or []
-        latest = max(rows, key=lambda r: datetime.fromisoformat(r["retrieved_at"]), default=None)
+        latest = max(
+            rows,
+            key=lambda r: (datetime.fromisoformat(r["retrieved_at"]), r["as_of"]),
+            default=None,
+        )
         sources.append(
             {
                 **s.meta,
+                # The registry powers Data & Methods links. Prefer observed provenance to endpoint templates.
+                "url": latest["source_url"] if latest else s.meta["url"],
                 "retrieved_at": _iso(datetime.fromisoformat(latest["retrieved_at"])) if latest else None,
                 "as_of": max(r["as_of"] for r in rows) if rows else None,
                 "row_count": len(rows),
@@ -134,7 +151,7 @@ def build(*, root: Path = ROOT, now: datetime | None = None) -> tuple[list[Path]
             spec = build_mart(m, all_rows, now, names)
             out = root / "data" / "marts" / f"{m.id}.json"
             out.parent.mkdir(parents=True, exist_ok=True)
-            out.write_text(json.dumps(spec, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+            out.write_text(json.dumps(spec, indent=2, ensure_ascii=False, allow_nan=False) + "\n", encoding="utf-8")
             written.append(out)
         except Exception as e:  # noqa: BLE001 - one broken mart must not stop the others
             errors.append(f"{m.id}: {type(e).__name__}: {e}")

@@ -1,0 +1,541 @@
+{
+  "title": "Claude status incidents per month",
+  "subtitle": "Incidents posted on status.claude.com, by the impact Anthropic assigned, complete months",
+  "kind": "stacked_bar",
+  "encoding": {
+    "x": {
+      "field": "month",
+      "type": "temporal",
+      "label": "Month"
+    },
+    "y": {
+      "field": "incidents",
+      "type": "quantitative",
+      "label": "Incidents",
+      "format": "int"
+    },
+    "color": {
+      "field": "impact",
+      "type": "nominal",
+      "label": "Impact"
+    }
+  },
+  "columns": [
+    {
+      "field": "month",
+      "label": "Month",
+      "format": "date"
+    },
+    {
+      "field": "impact",
+      "label": "Impact",
+      "format": "text"
+    },
+    {
+      "field": "incidents",
+      "label": "Incidents",
+      "format": "int"
+    }
+  ],
+  "rows": [
+    {
+      "month": "2023-03-01",
+      "impact": "Critical",
+      "incidents": 2
+    },
+    {
+      "month": "2023-06-01",
+      "impact": "Minor",
+      "incidents": 2
+    },
+    {
+      "month": "2023-06-01",
+      "impact": "Critical",
+      "incidents": 1
+    },
+    {
+      "month": "2023-07-01",
+      "impact": "Minor",
+      "incidents": 2
+    },
+    {
+      "month": "2023-07-01",
+      "impact": "Critical",
+      "incidents": 1
+    },
+    {
+      "month": "2023-08-01",
+      "impact": "Minor",
+      "incidents": 1
+    },
+    {
+      "month": "2023-08-01",
+      "impact": "Major",
+      "incidents": 1
+    },
+    {
+      "month": "2023-10-01",
+      "impact": "Minor",
+      "incidents": 2
+    },
+    {
+      "month": "2023-11-01",
+      "impact": "Minor",
+      "incidents": 3
+    },
+    {
+      "month": "2024-01-01",
+      "impact": "Minor",
+      "incidents": 1
+    },
+    {
+      "month": "2024-01-01",
+      "impact": "Major",
+      "incidents": 2
+    },
+    {
+      "month": "2024-02-01",
+      "impact": "Minor",
+      "incidents": 1
+    },
+    {
+      "month": "2024-03-01",
+      "impact": "Minor",
+      "incidents": 12
+    },
+    {
+      "month": "2024-03-01",
+      "impact": "Major",
+      "incidents": 3
+    },
+    {
+      "month": "2024-04-01",
+      "impact": "Minor",
+      "incidents": 4
+    },
+    {
+      "month": "2024-04-01",
+      "impact": "Major",
+      "incidents": 9
+    },
+    {
+      "month": "2024-05-01",
+      "impact": "Minor",
+      "incidents": 1
+    },
+    {
+      "month": "2024-05-01",
+      "impact": "Major",
+      "incidents": 4
+    },
+    {
+      "month": "2024-06-01",
+      "impact": "Minor",
+      "incidents": 7
+    },
+    {
+      "month": "2024-06-01",
+      "impact": "Major",
+      "incidents": 4
+    },
+    {
+      "month": "2024-06-01",
+      "impact": "Critical",
+      "incidents": 1
+    },
+    {
+      "month": "2024-07-01",
+      "impact": "Minor",
+      "incidents": 6
+    },
+    {
+      "month": "2024-07-01",
+      "impact": "Major",
+      "incidents": 11
+    },
+    {
+      "month": "2024-08-01",
+      "impact": "Minor",
+      "incidents": 6
+    },
+    {
+      "month": "2024-08-01",
+      "impact": "Major",
+      "incidents": 9
+    },
+    {
+      "month": "2024-09-01",
+      "impact": "Minor",
+      "incidents": 8
+    },
+    {
+      "month": "2024-09-01",
+      "impact": "Major",
+      "incidents": 9
+    },
+    {
+      "month": "2024-09-01",
+      "impact": "Critical",
+      "incidents": 2
+    },
+    {
+      "month": "2024-10-01",
+      "impact": "Minor",
+      "incidents": 6
+    },
+    {
+      "month": "2024-10-01",
+      "impact": "Major",
+      "incidents": 16
+    },
+    {
+      "month": "2024-11-01",
+      "impact": "Minor",
+      "incidents": 12
+    },
+    {
+      "month": "2024-11-01",
+      "impact": "Major",
+      "incidents": 9
+    },
+    {
+      "month": "2024-11-01",
+      "impact": "Critical",
+      "incidents": 2
+    },
+    {
+      "month": "2024-12-01",
+      "impact": "Minor",
+      "incidents": 3
+    },
+    {
+      "month": "2024-12-01",
+      "impact": "Major",
+      "incidents": 3
+    },
+    {
+      "month": "2025-01-01",
+      "impact": "Major",
+      "incidents": 10
+    },
+    {
+      "month": "2025-01-01",
+      "impact": "Critical",
+      "incidents": 1
+    },
+    {
+      "month": "2025-02-01",
+      "impact": "Minor",
+      "incidents": 9
+    },
+    {
+      "month": "2025-02-01",
+      "impact": "Major",
+      "incidents": 7
+    },
+    {
+      "month": "2025-03-01",
+      "impact": "Minor",
+      "incidents": 6
+    },
+    {
+      "month": "2025-03-01",
+      "impact": "Major",
+      "incidents": 5
+    },
+    {
+      "month": "2025-03-01",
+      "impact": "Critical",
+      "incidents": 7
+    },
+    {
+      "month": "2025-04-01",
+      "impact": "Minor",
+      "incidents": 8
+    },
+    {
+      "month": "2025-04-01",
+      "impact": "Major",
+      "incidents": 16
+    },
+    {
+      "month": "2025-04-01",
+      "impact": "Critical",
+      "incidents": 1
+    },
+    {
+      "month": "2025-05-01",
+      "impact": "Minor",
+      "incidents": 18
+    },
+    {
+      "month": "2025-05-01",
+      "impact": "Major",
+      "incidents": 13
+    },
+    {
+      "month": "2025-05-01",
+      "impact": "Critical",
+      "incidents": 2
+    },
+    {
+      "month": "2025-06-01",
+      "impact": "Minor",
+      "incidents": 14
+    },
+    {
+      "month": "2025-06-01",
+      "impact": "Major",
+      "incidents": 3
+    },
+    {
+      "month": "2025-06-01",
+      "impact": "Critical",
+      "incidents": 1
+    },
+    {
+      "month": "2025-07-01",
+      "impact": "Minor",
+      "incidents": 23
+    },
+    {
+      "month": "2025-07-01",
+      "impact": "Major",
+      "incidents": 17
+    },
+    {
+      "month": "2025-07-01",
+      "impact": "Critical",
+      "incidents": 3
+    },
+    {
+      "month": "2025-08-01",
+      "impact": "Minor",
+      "incidents": 29
+    },
+    {
+      "month": "2025-08-01",
+      "impact": "Major",
+      "incidents": 6
+    },
+    {
+      "month": "2025-08-01",
+      "impact": "Critical",
+      "incidents": 1
+    },
+    {
+      "month": "2025-09-01",
+      "impact": "Minor",
+      "incidents": 28
+    },
+    {
+      "month": "2025-09-01",
+      "impact": "Major",
+      "incidents": 4
+    },
+    {
+      "month": "2025-09-01",
+      "impact": "Critical",
+      "incidents": 1
+    },
+    {
+      "month": "2025-10-01",
+      "impact": "Minor",
+      "incidents": 10
+    },
+    {
+      "month": "2025-10-01",
+      "impact": "Major",
+      "incidents": 7
+    },
+    {
+      "month": "2025-10-01",
+      "impact": "Critical",
+      "incidents": 1
+    },
+    {
+      "month": "2025-11-01",
+      "impact": "Minor",
+      "incidents": 14
+    },
+    {
+      "month": "2025-11-01",
+      "impact": "Major",
+      "incidents": 6
+    },
+    {
+      "month": "2025-11-01",
+      "impact": "Critical",
+      "incidents": 1
+    },
+    {
+      "month": "2025-12-01",
+      "impact": "Minor",
+      "incidents": 11
+    },
+    {
+      "month": "2025-12-01",
+      "impact": "Major",
+      "incidents": 5
+    },
+    {
+      "month": "2025-12-01",
+      "impact": "Critical",
+      "incidents": 3
+    },
+    {
+      "month": "2026-01-01",
+      "impact": "Minor",
+      "incidents": 20
+    },
+    {
+      "month": "2026-01-01",
+      "impact": "Major",
+      "incidents": 5
+    },
+    {
+      "month": "2026-01-01",
+      "impact": "Critical",
+      "incidents": 1
+    },
+    {
+      "month": "2026-02-01",
+      "impact": "Minor",
+      "incidents": 38
+    },
+    {
+      "month": "2026-02-01",
+      "impact": "Major",
+      "incidents": 13
+    },
+    {
+      "month": "2026-02-01",
+      "impact": "Critical",
+      "incidents": 2
+    },
+    {
+      "month": "2026-03-01",
+      "impact": "Minor",
+      "incidents": 29
+    },
+    {
+      "month": "2026-03-01",
+      "impact": "Major",
+      "incidents": 19
+    },
+    {
+      "month": "2026-03-01",
+      "impact": "Critical",
+      "incidents": 2
+    },
+    {
+      "month": "2026-04-01",
+      "impact": "Minor",
+      "incidents": 25
+    },
+    {
+      "month": "2026-04-01",
+      "impact": "Major",
+      "incidents": 11
+    },
+    {
+      "month": "2026-04-01",
+      "impact": "Critical",
+      "incidents": 5
+    },
+    {
+      "month": "2026-05-01",
+      "impact": "Minor",
+      "incidents": 23
+    },
+    {
+      "month": "2026-05-01",
+      "impact": "Major",
+      "incidents": 17
+    },
+    {
+      "month": "2026-06-01",
+      "impact": "Minor",
+      "incidents": 35
+    },
+    {
+      "month": "2026-06-01",
+      "impact": "Major",
+      "incidents": 8
+    },
+    {
+      "month": "2026-06-01",
+      "impact": "Critical",
+      "incidents": 2
+    },
+    {
+      "month": "2026-07-01",
+      "impact": "Minor",
+      "incidents": 35
+    },
+    {
+      "month": "2026-07-01",
+      "impact": "Major",
+      "incidents": 12
+    },
+    {
+      "month": "2026-07-01",
+      "impact": "Critical",
+      "incidents": 4
+    },
+    {
+      "month": "2026-08-01",
+      "impact": "Minor",
+      "incidents": 16
+    },
+    {
+      "month": "2026-08-01",
+      "impact": "Major",
+      "incidents": 7
+    },
+    {
+      "month": "2026-08-01",
+      "impact": "Critical",
+      "incidents": 1
+    },
+    {
+      "month": "2026-09-01",
+      "impact": "Minor",
+      "incidents": 4
+    },
+    {
+      "month": "2026-09-01",
+      "impact": "Major",
+      "incidents": 8
+    }
+  ],
+  "takeaway": [
+    "Claude's status page logged 12 incidents in Sep 2026 (8 major or critical), against 33 in Sep 2025."
+  ],
+  "assumptions": [
+    "Incidents are the ones the company chose to post, with its own impact rating, so a company that posts more freely looks worse.",
+    "Impact is Anthropic's own rating: minor, major or critical. Notices rated 'none' (maintenance, information) are left out.",
+    "Growth in incidents partly reflects growth in usage and in how much Anthropic reports, not only in failures. Compare with hours below.",
+    "Counted by the month the incident started. Complete months only."
+  ],
+  "badges": [],
+  "id": "product.incidents_monthly",
+  "page": "product",
+  "as_of": "2026-10-01",
+  "sources": [
+    {
+      "source": "status_incidents",
+      "label": "Public status pages (Anthropic and OpenAI)",
+      "url": "https://status.openai.com/incidents/01M45E0JFFJZ6EQ3BWYPW74R2Z",
+      "method": "api",
+      "tier": "company-stated",
+      "cadence": "daily",
+      "as_of": "2026-10-01",
+      "retrieved_at": "2026-10-05T07:19:13Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T08:47:54Z"
+}

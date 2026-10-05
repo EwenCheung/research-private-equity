@@ -26,6 +26,12 @@ export const ManualBadge = () => (
   </span>
 );
 
+export const HardcodedBadge = () => (
+  <span className="badge hardcoded" title="Hand-entered in a cited ledger; it is not an automatically refreshed feed">
+    HARDCODED
+  </span>
+);
+
 export const ArithmeticBadge = () => (
   <span className="badge" title="Computed by us from the rows shown">
     Arithmetic, not a model

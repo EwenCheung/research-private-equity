@@ -1,0 +1,132 @@
+{
+  "title": "Customer numbers Anthropic has stated",
+  "subtitle": "Anthropic's own newsroom, with the sentence quoted word for word",
+  "kind": "table",
+  "encoding": {},
+  "columns": [
+    {
+      "field": "date",
+      "label": "Date",
+      "format": "date"
+    },
+    {
+      "field": "what",
+      "label": "What is counted",
+      "format": "text"
+    },
+    {
+      "field": "value",
+      "label": "Number stated",
+      "format": "int"
+    },
+    {
+      "field": "wording",
+      "label": "As worded",
+      "format": "text"
+    },
+    {
+      "field": "quote",
+      "label": "What Anthropic said",
+      "format": "text"
+    },
+    {
+      "field": "link",
+      "label": "Source",
+      "format": "url"
+    }
+  ],
+  "rows": [
+    {
+      "date": "2025-09-02",
+      "what": "business customers",
+      "value": 300000.0,
+      "wording": "over 300,000",
+      "quote": "Anthropic now serves over 300,000 business customers, and our number of large accounts—customers that each represent over $100,000 in run-rate revenue—has grown nearly 7x in the past year.",
+      "link": "https://www.anthropic.com/news/anthropic-raises-series-f-at-usd183b-post-money-valuation"
+    },
+    {
+      "date": "2025-11-12",
+      "what": "business customers",
+      "value": 300000.0,
+      "wording": "more than 300,000",
+      "quote": "Anthropic serves more than 300,000 business customers, and our number of large accounts—customers that each represent over $100,000 in run-rate revenue—has grown nearly sevenfold in the past year.",
+      "link": "https://www.anthropic.com/news/anthropic-invests-50-billion-in-american-ai-infrastructure"
+    },
+    {
+      "date": "2026-02-12",
+      "what": "growth multiple (x), past year, in customers spending over $100K a year (run-rate)",
+      "value": 7.0,
+      "wording": "7x",
+      "quote": "The number of customers spending over $100,000 annually on Claude (as represented by run-rate revenue) has grown 7x in the past year.",
+      "link": "https://www.anthropic.com/news/anthropic-raises-30-billion-series-g-funding-380-billion-post-money-valuation"
+    },
+    {
+      "date": "2026-02-12",
+      "what": "Fortune 10 companies that are Claude customers",
+      "value": 8.0,
+      "wording": "eight",
+      "quote": "Eight of the Fortune 10 are now Claude customers.",
+      "link": "https://www.anthropic.com/news/anthropic-raises-30-billion-series-g-funding-380-billion-post-money-valuation"
+    },
+    {
+      "date": "2026-02-12",
+      "what": "customers spending over $1M a year (annualized)",
+      "value": 500.0,
+      "wording": "exceeds 500",
+      "quote": "Two years ago, a dozen customers spent over $1 million with us on an annualized basis. Today that number exceeds 500.",
+      "link": "https://www.anthropic.com/news/anthropic-raises-30-billion-series-g-funding-380-billion-post-money-valuation"
+    },
+    {
+      "date": "2026-04-06",
+      "what": "business customers spending over $1M a year (annualized)",
+      "value": 1000.0,
+      "wording": "exceeds 1,000",
+      "quote": "When we announced our Series G fundraising in February, we shared that over 500 business customers were each spending over $1 million on an annualized basis. Today that number exceeds 1,000, doubling in less than two months.",
+      "link": "https://www.anthropic.com/news/google-broadcom-partnership-compute"
+    },
+    {
+      "date": "2026-04-20",
+      "what": "customers running Claude on Amazon Bedrock (Amazon's platform, not all Anthropic customers)",
+      "value": 100000.0,
+      "wording": "over 100,000",
+      "quote": "We have worked closely with Amazon since 2023 and over 100,000 customers now run Claude on Amazon Bedrock.",
+      "link": "https://www.anthropic.com/news/anthropic-amazon-compute"
+    }
+  ],
+  "takeaway": [
+    "Anthropic said customers spending over $1M a year went from over 500 on 2026-02-12 to over 1,000 on 2026-04-06, 2.0× in 53 days; each is a floor ('exceeds'), so the true ratio is not known."
+  ],
+  "assumptions": [
+    "Anthropic is private and files nothing with the SEC, so every figure is a company claim, never audited. Each quote was checked to appear word for word on its page when the ledger was built.",
+    "Numbers are floors ('over', 'exceeds'). Definitions differ between rows (business customers, customers above $1M a year, Bedrock customers), so only rows with the same 'what' are comparable.",
+    "Not entered because they cannot be dated or are not numbers: 'a dozen' customers above $1M 'two years ago' (Feb 2026 page), 'nearly 7x' growth in large accounts (Sep 2025), 'hundreds of thousands' of API customers (Jul 2025), and regional growth multiples for EMEA and Asia-Pacific.",
+    "Gaps: the Series H announcement (28 May 2026) gives run-rate revenue but no customer count; no figure on paying consumer subscribers or Claude Code seats is stated in a form that can be quoted.",
+    "Hand-maintained. Add a row with the customers-kpi-ledger skill when Anthropic states a new number."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "customers.kpi_claims",
+  "page": "customers",
+  "as_of": "2026-04-20",
+  "sources": [
+    {
+      "source": "customers_kpi_claims",
+      "label": "Anthropic customer metrics (cited ledger)",
+      "url": "https://www.anthropic.com/news/anthropic-amazon-compute",
+      "method": "ledger",
+      "tier": "company-stated",
+      "cadence": "quarterly",
+      "as_of": "2026-04-20",
+      "retrieved_at": "2026-10-05T07:49:36Z",
+      "freshness": "fresh",
+      "manual": {
+        "entered_by": "EwenCheung via Claude",
+        "entered_at": "2026-10-05T07:49:36Z",
+        "evidence": "We have worked closely with Amazon since 2023 and over 100,000 customers now run Claude on Amazon Bedrock."
+      }
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T08:47:54Z"
+}

@@ -28,6 +28,15 @@ export function fmt(value: Cell, format: Format = "text"): string {
   }
 }
 
+/** Chart labels (axis ticks, end and bar labels): 240,000,000 -> "240M". Tables and CSV keep exact values via fmt. */
+export function axis(value: Cell, format: Format = "float"): string {
+  const n = Number(value);
+  if (value === null || value === undefined || Number.isNaN(n) || Math.abs(n) < 10_000) return fmt(value, format);
+  if (format === "int" || format === "float") return compact.format(n);
+  if (format === "usd") return `$${compact.format(n)}`;
+  return fmt(value, format);
+}
+
 export const isNumeric = (f: Format) => ["int", "float", "pct", "usd", "usd_compact", "multiple"].includes(f);
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;

@@ -1,6 +1,7 @@
 import * as Plot from "@observablehq/plot";
 import { useContext, useEffect, useRef, useState } from "react";
-import { fmt, shortDate, toDate } from "../format";
+import { companies } from "../api";
+import { axis, fmt, shortDate, toDate } from "../format";
 import { SchemeContext } from "../theme";
 import type { ChartSpec } from "../types";
 
@@ -41,16 +42,36 @@ function useWidth() {
   return { ref, width };
 }
 
+/** Companies own fixed slots (target first, then peers), so Anthropic is the same colour on every chart.
+ *  Any other series takes the next free slot in order of appearance. */
+export function slotsFor(series: string[], companyNames: string[]): number[] {
+  const fixed = series.map((s) => companyNames.indexOf(s));
+  const taken = new Set(fixed.filter((i) => i >= 0));
+  let next = 0;
+  return fixed.map((i) => {
+    if (i >= 0) return i;
+    while (taken.has(next)) next++;
+    taken.add(next);
+    return next;
+  });
+}
+
 export function useSeriesColors(spec: ChartSpec) {
   const scheme = useContext(SchemeContext);
   const series = seriesOf(spec);
+  const [names, setNames] = useState<string[] | null>(null);
   const [colors, setColors] = useState<string[]>([]);
+  useEffect(() => {
+    companies().then((cs) => setNames(cs.map((c) => c.name)));
+  }, []);
   // Read the tokens after commit, once the theme attribute has been applied.
   useEffect(() => {
+    if (names === null) return;
     const css = getComputedStyle(document.documentElement);
+    const slots = slotsFor(series.length ? series : [""], names);
     // The palette is capped at 8 slots; folding the rest into "Other" is the mart's job, so overflow reads as muted.
-    setColors(Array.from({ length: Math.max(series.length, 1) }, (_, i) => css.getPropertyValue(SLOTS[i] ?? "--idle").trim() || "#898781"));
-  }, [scheme, series.join("|")]); // eslint-disable-line react-hooks/exhaustive-deps
+    setColors(slots.map((i) => css.getPropertyValue(SLOTS[i] ?? "--idle").trim() || "#898781"));
+  }, [scheme, names, series.join("|")]); // eslint-disable-line react-hooks/exhaustive-deps
   return { scheme, series, colors };
 }
 
@@ -125,7 +146,7 @@ function build(spec: ChartSpec, series: string[], colors: string[], c: Ink, widt
     marginRight: !band && labelEnds && spec.kind === "line" ? 64 : 16,
     style: { background: "transparent", color: c.ink, fontFamily: "var(--sans)", fontSize: "12px", ["--plot-background" as string]: c.surface },
     x: xScale,
-    y: { label: y!.label, grid: true, tickFormat: (d: number) => fmt(d, yFmt), nice: true },
+    y: { label: y!.label, grid: true, tickFormat: (d: number) => axis(d, yFmt), nice: true },
     color: { type: "categorical", domain: series, range: colors },
   };
 
@@ -134,7 +155,7 @@ function build(spec: ChartSpec, series: string[], colors: string[], c: Ink, widt
   const endLabel = Plot.text(lastPerSeries, {
     x: xs,
     y: (r: Row) => r[yf],
-    text: (r: Row) => fmt(r[yf], yFmt),
+    text: (r: Row) => axis(r[yf], yFmt),
     dx: 10,
     textAnchor: "start",
     fill: c.ink,
@@ -155,7 +176,7 @@ function build(spec: ChartSpec, series: string[], colors: string[], c: Ink, widt
         marks: [
           Plot.barY(rows, { x: (r: Row) => String(r[xf]), y: (r: Row) => r[yf], fill, ry: 4 }),
           Plot.ruleY([0], { stroke: c.axis }),
-          ...(rows.length <= 14 ? [Plot.text(rows, { x: (r: Row) => String(r[xf]), y: (r: Row) => r[yf], text: (r: Row) => fmt(r[yf], yFmt), dy: -8, fill: c.ink })] : []),
+          ...(rows.length <= 14 ? [Plot.text(rows, { x: (r: Row) => String(r[xf]), y: (r: Row) => r[yf], text: (r: Row) => axis(r[yf], yFmt), dy: -8, fill: c.ink })] : []),
           Plot.tip(rows, Plot.pointerX({ x: (r: Row) => String(r[xf]), y: (r: Row) => r[yf], title: tipText }) as Plot.TipOptions),
         ],
       });

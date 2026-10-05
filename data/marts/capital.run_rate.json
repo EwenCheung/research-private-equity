@@ -1,0 +1,263 @@
+{
+  "title": "Anthropic run-rate revenue, as stated",
+  "subtitle": "Each dot is one statement of annualised revenue: Anthropic's own, and press reports kept as a separate series. Nothing is drawn between dots",
+  "kind": "scatter",
+  "encoding": {
+    "x": {
+      "field": "date",
+      "type": "temporal",
+      "label": "Date the figure describes"
+    },
+    "y": {
+      "field": "run_rate",
+      "type": "quantitative",
+      "label": "Run-rate revenue (USD per year)",
+      "format": "usd_compact"
+    },
+    "color": {
+      "field": "tier",
+      "type": "nominal",
+      "label": "Who said it"
+    }
+  },
+  "columns": [
+    {
+      "field": "date",
+      "label": "Date described",
+      "format": "date"
+    },
+    {
+      "field": "tier",
+      "label": "Who said it",
+      "format": "text"
+    },
+    {
+      "field": "run_rate",
+      "label": "Run-rate",
+      "format": "usd"
+    },
+    {
+      "field": "qualifier",
+      "label": "Wording",
+      "format": "text"
+    },
+    {
+      "field": "stated_on",
+      "label": "Stated on",
+      "format": "date"
+    },
+    {
+      "field": "growth",
+      "label": "× previous company-stated figure",
+      "format": "multiple"
+    },
+    {
+      "field": "cagr",
+      "label": "Annualised growth (CAGR)",
+      "format": "pct"
+    },
+    {
+      "field": "doubling_days",
+      "label": "Doubling time (days)",
+      "format": "int"
+    },
+    {
+      "field": "quote",
+      "label": "What was said",
+      "format": "text"
+    },
+    {
+      "field": "link",
+      "label": "Source",
+      "format": "url"
+    }
+  ],
+  "rows": [
+    {
+      "date": "2024-01-01",
+      "tier": "Company-stated",
+      "run_rate": 87000000.0,
+      "qualifier": "exact",
+      "stated_on": "2025-09-26",
+      "growth": null,
+      "cagr": null,
+      "doubling_days": null,
+      "quote": "our run-rate revenue has grown from $87 million at the start of 2024 to over $5 billion in August 2025",
+      "link": "https://www.anthropic.com/news/anthropic-expands-global-leadership-in-enterprise-ai-naming-chris-ciauri-as-managing-director-of"
+    },
+    {
+      "date": "2025-01-01",
+      "tier": "Company-stated",
+      "run_rate": 1000000000.0,
+      "qualifier": "approximately",
+      "stated_on": "2025-09-02",
+      "growth": 11.494252873563218,
+      "cagr": 10.417821757649975,
+      "doubling_days": 104,
+      "quote": "At the beginning of 2025, less than two years after launch, Anthropic’s run-rate revenue had grown to approximately $1 billion.",
+      "link": "https://www.anthropic.com/news/anthropic-raises-series-f-at-usd183b-post-money-valuation"
+    },
+    {
+      "date": "2025-08-31",
+      "tier": "Company-stated",
+      "run_rate": 5000000000.0,
+      "qualifier": "over",
+      "stated_on": "2025-09-02",
+      "growth": 5.0,
+      "cagr": 10.330044565321774,
+      "doubling_days": 104,
+      "quote": "By August 2025, just eight months later, our run-rate revenue reached over $5 billion",
+      "link": "https://www.anthropic.com/news/anthropic-raises-series-f-at-usd183b-post-money-valuation"
+    },
+    {
+      "date": "2025-10-21",
+      "tier": "Company-stated",
+      "run_rate": 7000000000.0,
+      "qualifier": "exact",
+      "stated_on": "2025-10-21",
+      "growth": 1.4,
+      "cagr": 10.112666846484995,
+      "doubling_days": 105,
+      "quote": "with revenue growing from a $1B to $7B run rate over the last nine months",
+      "link": "https://www.anthropic.com/news/statement-dario-amodei-american-ai-leadership"
+    },
+    {
+      "date": "2025-12-31",
+      "tier": "Company-stated",
+      "run_rate": 9000000000.0,
+      "qualifier": "approximately",
+      "stated_on": "2026-04-06",
+      "growth": 1.2857142857142858,
+      "cagr": 2.6399448839205917,
+      "doubling_days": 196,
+      "quote": "Our run-rate revenue has now surpassed $30 billion—up from approximately $9 billion at the end of 2025.",
+      "link": "https://www.anthropic.com/news/google-broadcom-partnership-compute"
+    },
+    {
+      "date": "2026-02-12",
+      "tier": "Company-stated",
+      "run_rate": 14000000000.0,
+      "qualifier": "exact",
+      "stated_on": "2026-02-12",
+      "growth": 1.5555555555555556,
+      "cagr": 41.539829604540486,
+      "doubling_days": 67,
+      "quote": "Today, our run-rate revenue is $14 billion, with this figure growing over 10x annually in each of those past three years.",
+      "link": "https://www.anthropic.com/news/anthropic-raises-30-billion-series-g-funding-380-billion-post-money-valuation"
+    },
+    {
+      "date": "2026-04-06",
+      "tier": "Company-stated",
+      "run_rate": 30000000000.0,
+      "qualifier": "surpassed",
+      "stated_on": "2026-04-06",
+      "growth": 2.142857142857143,
+      "cagr": 189.318761485491,
+      "doubling_days": 48,
+      "quote": "Our run-rate revenue has now surpassed $30 billion—up from approximately $9 billion at the end of 2025.",
+      "link": "https://www.anthropic.com/news/google-broadcom-partnership-compute"
+    },
+    {
+      "date": "2026-04-20",
+      "tier": "Company-stated",
+      "run_rate": 30000000000.0,
+      "qualifier": "surpassed",
+      "stated_on": "2026-04-20",
+      "growth": null,
+      "cagr": null,
+      "doubling_days": null,
+      "quote": "Our run-rate revenue has now surpassed $30 billion, up from approximately $9 billion at the end of 2025.",
+      "link": "https://www.anthropic.com/news/anthropic-amazon-compute"
+    },
+    {
+      "date": "2026-05-28",
+      "tier": "Company-stated",
+      "run_rate": 47000000000.0,
+      "qualifier": "crossed",
+      "stated_on": "2026-05-28",
+      "growth": 1.5666666666666667,
+      "cagr": 22.36607533486754,
+      "doubling_days": 80,
+      "quote": "our run-rate revenue crossed $47 billion earlier this month.",
+      "link": "https://www.anthropic.com/news/series-h"
+    },
+    {
+      "date": "2025-05-30",
+      "tier": "Press-reported",
+      "run_rate": 3000000000.0,
+      "qualifier": "about",
+      "stated_on": "2025-05-30",
+      "growth": null,
+      "cagr": null,
+      "doubling_days": null,
+      "quote": "Anthropic is making about $3 billion in annualized revenue, according to two sources familiar with the matter",
+      "link": "https://www.cnbc.com/2025/05/30/anthropic-hits-3-billion-in-annualized-revenue-on-business-demand-for-ai.html"
+    },
+    {
+      "date": "2026-07-31",
+      "tier": "Press-reported",
+      "run_rate": 65000000000.0,
+      "qualifier": "hit",
+      "stated_on": "2026-08-17",
+      "growth": null,
+      "cagr": null,
+      "doubling_days": null,
+      "quote": "annualized revenue run rate hit $65 billion at the end of July, CNBC confirmed on Monday",
+      "link": "https://www.cnbc.com/2026/08/17/anthropic-says-annualized-revenue-climbed-to-65-billion-in-july.html"
+    }
+  ],
+  "takeaway": [
+    "Anthropic's own run-rate statements go from $87M (2024-01-01) to $47B (2026-05-28): 540x in 878 days, which is 13.7x a year (CAGR) and doubling every 97 days."
+  ],
+  "assumptions": [
+    "Growth columns are arithmetic on Anthropic's own statements only: × = this figure ÷ the previous different figure; CAGR = (this ÷ previous)^(365 ÷ days between them) − 1; doubling time = days × ln 2 ÷ ln(this ÷ previous). Press rows have none.",
+    "A run-rate is a company's annualised projection from a recent period, not recognised revenue. Words like 'over', 'surpassed' and 'crossed' make a figure a floor.",
+    "Short gaps magnify CAGR: a 43-day gap that grows 1.6x reads as roughly 40x a year. Read the × column first.",
+    "Dates: 'start of 2024' is 2024-01-01; 'end of 2025' is 2025-12-31; 'August 2025' uses the month end; other statements use the date they were made (see the wording and the quote).",
+    "The press series is not company-confirmed except where the outlet says so, and stays visibly separate. Nothing is interpolated between points.",
+    "Claude Code run-rate statements (a product line, not charted): $500M on 2025-09-02; $1B on 2025-11-30; $2.5B on 2026-02-12.",
+    "Press-reported recognised revenue (not a run-rate): Q2 2025 $787M; FY2025 $4.6B; Q1 2026 $4.7B; Q2 2026 $11.5B."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "capital.run_rate",
+  "page": "capital",
+  "as_of": "2026-07-31",
+  "sources": [
+    {
+      "source": "capital_arr_milestones",
+      "label": "Anthropic run-rate revenue statements (cited ledger)",
+      "url": "https://www.anthropic.com/news/series-h",
+      "method": "ledger",
+      "tier": "company-stated",
+      "cadence": "monthly",
+      "as_of": "2026-05-28",
+      "retrieved_at": "2026-10-05T07:48:16Z",
+      "freshness": "fresh",
+      "manual": {
+        "entered_by": "EwenCheung via Claude",
+        "entered_at": "2026-10-05T07:48:16Z",
+        "evidence": "our run-rate revenue crossed $47 billion earlier this month."
+      }
+    },
+    {
+      "source": "capital_arr_press",
+      "label": "Press-reported Anthropic revenue figures (cited ledger)",
+      "url": "https://www.cnbc.com/2026/08/17/anthropic-says-annualized-revenue-climbed-to-65-billion-in-july.html",
+      "method": "ledger",
+      "tier": "press",
+      "cadence": "monthly",
+      "as_of": "2026-07-31",
+      "retrieved_at": "2026-10-05T07:48:16Z",
+      "freshness": "fresh",
+      "manual": {
+        "entered_by": "EwenCheung via Claude",
+        "entered_at": "2026-10-05T07:48:16Z",
+        "evidence": "annualized revenue run rate hit $65 billion at the end of July, CNBC confirmed on Monday"
+      }
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T08:47:54Z"
+}

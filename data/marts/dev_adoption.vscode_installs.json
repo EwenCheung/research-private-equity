@@ -1,0 +1,93 @@
+{
+  "title": "VS Code extension installs",
+  "subtitle": "Cumulative installs of each company's coding extension, latest snapshot",
+  "kind": "bar",
+  "encoding": {
+    "x": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    },
+    "y": {
+      "field": "value",
+      "type": "quantitative",
+      "label": "Installs",
+      "format": "int"
+    },
+    "color": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    }
+  },
+  "columns": [
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "value",
+      "label": "Installs",
+      "format": "int"
+    },
+    {
+      "field": "growth",
+      "label": "Change since first snapshot",
+      "format": "pct"
+    },
+    {
+      "field": "since",
+      "label": "First snapshot",
+      "format": "date"
+    }
+  ],
+  "rows": [
+    {
+      "company": "Anthropic",
+      "value": 26990733,
+      "since": "2026-10-05",
+      "growth": null
+    },
+    {
+      "company": "OpenAI",
+      "value": 15115529,
+      "since": "2026-10-05",
+      "growth": null
+    },
+    {
+      "company": "Google DeepMind",
+      "value": 5409253,
+      "since": "2026-10-05",
+      "growth": null
+    }
+  ],
+  "takeaway": [
+    "Anthropic leads with 27M installs, 1.8× OpenAI."
+  ],
+  "assumptions": [
+    "Cumulative marketplace installs; uninstalls are not subtracted.",
+    "Extensions: Claude Code (anthropic.claude-code), ChatGPT/Codex (openai.chatgpt), Gemini Code Assist.",
+    "The marketplace publishes no history; growth is measured from our own daily snapshots."
+  ],
+  "badges": [],
+  "id": "dev_adoption.vscode_installs",
+  "page": "dev_adoption",
+  "as_of": "2026-10-05",
+  "sources": [
+    {
+      "source": "vscode_installs",
+      "label": "Visual Studio Marketplace install counts",
+      "url": "https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-05",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T08:47:54Z"
+}

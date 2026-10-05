@@ -273,7 +273,8 @@ button {
   color: var(--ink-2);
   white-space: nowrap;
 }
-.badge.manual {
+.badge.manual,
+.badge.hardcoded {
   background: var(--manual-bg);
   color: var(--manual-ink);
   border-color: transparent;

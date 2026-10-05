@@ -419,3 +419,16 @@ Out of scope, by your decisions or because the data is missing:
   - The old `.worktrees/` location produced a second, unused worktree for 1.1, so it is retired.
   - App-made worktrees start on a `claude/...` branch, so the first step is `git switch -c p<N>/<name> origin/phase/<N>`.
   - One `.env` lives in the repo root, and each worktree links to it.
+- **R16, 2026-10-05: Phase 2 findings that changed the plan.** Each one was found by checking real data.
+  - **Hiring.** Google DeepMind has no public job-board API and files H-1Bs as Google LLC, so it is a stated gap.
+    The Department of Labor blocks automated downloads, so H-1B files are downloaded by a person and imported (`pipeline.sources.hiring import-lca`).
+    Function and region are rule-classified, and the rules are published on each chart.
+  - **Developer adoption.** Bulk-download days (Codex CLI, May 2026) are excluded only when they spike against the surrounding 28 days on both sides, and each exclusion is named.
+    GitHub's commit-search count is flagged incomplete in about 40% of weeks, and the chart states how many.
+  - **Attention.** Wikipedia pages are renamed (Claude, Gemini/Bard, xAI/SpaceXAI), so each topic sums every title it has had.
+    GDELT is charted as a share of monitored articles because its coverage has shrunk, and it rate-limits long backfills, so that chart waits until Anthropic itself has data.
+    xAI is searched as "Grok" on Hacker News. Google Trends needs a SerpAPI key. Reddit is excluded.
+  - **Product.** Model releases, API prices and plan prices are cited ledgers: every row's quote was checked word for word against the fetched official page.
+    Ledger rows compiled by the assistant carry `entered_by = "EwenCheung via Claude"`. OpenAI's status feed holds only its latest 25 incidents, so its history starts when collection began.
+  - **Licensed data.** Entry goes through `pipeline.licensed`, which requires non-blank evidence, never overwrites, and stamps who and when. The contract alone accepted whitespace as evidence.
+- **R17: customers and capital are built in separate sessions** (2.5, 2.6) from prompts that carry these lessons. Their PRs go into `phase/2` like the others.

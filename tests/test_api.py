@@ -125,3 +125,9 @@ def test_serves_built_frontend(monkeypatch, tmp_path):
     assert "root" in c.get("/sample").text  # client-side route falls back to index.html
     assert c.get("/api/marts").status_code == 401  # the catch-all never shadows the API
     assert c.get("/api/nope").status_code in (401, 404)
+
+
+def test_companies_put_the_target_first_then_its_peers(authed):
+    names = [c["name"] for c in authed.get("/api/companies").json()]
+    assert names[0] == "Anthropic"
+    assert names[1:] == ["OpenAI", "Google DeepMind", "xAI", "Mistral AI", "Cohere"]

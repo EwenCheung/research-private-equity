@@ -1,0 +1,111 @@
+{
+  "title": "GitHub stars across each company's public repos",
+  "subtitle": "Stars on public, non-fork repositories, latest snapshot",
+  "kind": "bar",
+  "encoding": {
+    "x": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    },
+    "y": {
+      "field": "value",
+      "type": "quantitative",
+      "label": "Stars",
+      "format": "int"
+    },
+    "color": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    }
+  },
+  "columns": [
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "value",
+      "label": "Stars",
+      "format": "int"
+    },
+    {
+      "field": "growth",
+      "label": "Change since first snapshot",
+      "format": "pct"
+    },
+    {
+      "field": "since",
+      "label": "First snapshot",
+      "format": "date"
+    }
+  ],
+  "rows": [
+    {
+      "company": "OpenAI",
+      "value": 1003878,
+      "since": "2026-10-05",
+      "growth": null
+    },
+    {
+      "company": "Anthropic",
+      "value": 660633,
+      "since": "2026-10-05",
+      "growth": null
+    },
+    {
+      "company": "Google DeepMind",
+      "value": 169050,
+      "since": "2026-10-05",
+      "growth": null
+    },
+    {
+      "company": "xAI",
+      "value": 119387,
+      "since": "2026-10-05",
+      "growth": null
+    },
+    {
+      "company": "Mistral AI",
+      "value": 23585,
+      "since": "2026-10-05",
+      "growth": null
+    },
+    {
+      "company": "Cohere",
+      "value": 6662,
+      "since": "2026-10-05",
+      "growth": null
+    }
+  ],
+  "takeaway": [
+    "Anthropic has 661K stars; OpenAI leads with 1M."
+  ],
+  "assumptions": [
+    "Sum of stars on the organisation's public, non-fork repositories on the day collected.",
+    "Orgs: anthropics, openai, google-gemini, xai-org, mistralai, cohere-ai.",
+    "Stars are cumulative interest, not usage; one viral repo can dominate a total."
+  ],
+  "badges": [],
+  "id": "dev_adoption.github_stars",
+  "page": "dev_adoption",
+  "as_of": "2026-10-05",
+  "sources": [
+    {
+      "source": "github_org_stats",
+      "label": "GitHub organisation repositories (stars, forks, repos)",
+      "url": "https://github.com/anthropics",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-05",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T08:47:54Z"
+}

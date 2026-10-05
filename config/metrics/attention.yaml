@@ -1,0 +1,42 @@
+wiki_pageviews:
+  label: Wikipedia pageviews
+  unit: views per day
+  definition: Human (non-bot) views of an English Wikipedia article on one UTC day, summed over every title the topic has had.
+  aggregation: sum
+  higher_is: good
+news_articles:
+  label: News articles mentioning the company
+  unit: articles per day
+  definition: English-language articles in GDELT's monitored set matching the company's search terms on one day; compared with the day's total monitored articles.
+  aggregation: sum
+  higher_is: good
+hn_stories:
+  label: Hacker News stories
+  unit: stories per month
+  definition: Stories submitted to Hacker News in the month whose text matches the company's search words.
+  aggregation: sum
+  higher_is: good
+hn_stories_50plus:
+  label: Hacker News stories with 50+ points
+  unit: stories per month
+  definition: Hacker News stories matching the company's search words that reached 50 or more points.
+  aggregation: sum
+  higher_is: good
+news_headline:
+  label: News headline
+  unit: headline (count 1 each)
+  definition: One headline returned by Google News for the company's search terms, with its outlet and link.
+  aggregation: sum
+  higher_is: neutral
+search_interest:
+  label: Google search interest
+  unit: index 0-100
+  definition: Google Trends relative interest for the company's product term, 100 being the highest point of any compared term in the 5-year window.
+  aggregation: mean
+  higher_is: good
+appstore_rank:
+  label: App Store rank
+  unit: rank (1 is best)
+  definition: Position of the company's consumer app in Apple's US top-100 free iPhone apps chart on the day collected. Outside the top 100 there is no value.
+  aggregation: last
+  higher_is: bad

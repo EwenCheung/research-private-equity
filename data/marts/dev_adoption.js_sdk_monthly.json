@@ -1,0 +1,1502 @@
+{
+  "title": "JavaScript SDK downloads per month",
+  "subtitle": "Official API SDKs on npm, complete months",
+  "kind": "line",
+  "encoding": {
+    "x": {
+      "field": "month",
+      "type": "temporal",
+      "label": "Month"
+    },
+    "y": {
+      "field": "downloads",
+      "type": "quantitative",
+      "label": "Downloads",
+      "format": "int"
+    },
+    "color": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    }
+  },
+  "columns": [
+    {
+      "field": "month",
+      "label": "Month",
+      "format": "date"
+    },
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "downloads",
+      "label": "Downloads",
+      "format": "int"
+    },
+    {
+      "field": "raw",
+      "label": "Raw (incl. spike days)",
+      "format": "int"
+    },
+    {
+      "field": "spike_days",
+      "label": "Spike days excluded",
+      "format": "int"
+    }
+  ],
+  "rows": [
+    {
+      "month": "2023-01-01",
+      "company": "Anthropic",
+      "downloads": 97,
+      "raw": 97,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-01-01",
+      "company": "OpenAI",
+      "downloads": 572272,
+      "raw": 572272,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-01-01",
+      "company": "Cohere",
+      "downloads": 1940,
+      "raw": 1940,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-02-01",
+      "company": "Anthropic",
+      "downloads": 928,
+      "raw": 928,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-02-01",
+      "company": "OpenAI",
+      "downloads": 811981,
+      "raw": 811981,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-02-01",
+      "company": "Cohere",
+      "downloads": 4687,
+      "raw": 4687,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-03-01",
+      "company": "Anthropic",
+      "downloads": 57504,
+      "raw": 57504,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-03-01",
+      "company": "OpenAI",
+      "downloads": 1542131,
+      "raw": 1542131,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-03-01",
+      "company": "Cohere",
+      "downloads": 9290,
+      "raw": 9290,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-04-01",
+      "company": "Anthropic",
+      "downloads": 195579,
+      "raw": 195579,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-04-01",
+      "company": "OpenAI",
+      "downloads": 2123759,
+      "raw": 2123759,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-04-01",
+      "company": "Cohere",
+      "downloads": 14501,
+      "raw": 14501,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-05-01",
+      "company": "Anthropic",
+      "downloads": 296727,
+      "raw": 296727,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-05-01",
+      "company": "OpenAI",
+      "downloads": 2778296,
+      "raw": 2778296,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-05-01",
+      "company": "Cohere",
+      "downloads": 33696,
+      "raw": 33696,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-06-01",
+      "company": "Anthropic",
+      "downloads": 467263,
+      "raw": 467263,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-06-01",
+      "company": "OpenAI",
+      "downloads": 3347939,
+      "raw": 3347939,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-06-01",
+      "company": "Cohere",
+      "downloads": 51323,
+      "raw": 51323,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-07-01",
+      "company": "Anthropic",
+      "downloads": 826176,
+      "raw": 826176,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-07-01",
+      "company": "OpenAI",
+      "downloads": 4198199,
+      "raw": 4198199,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-07-01",
+      "company": "Cohere",
+      "downloads": 51341,
+      "raw": 51341,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-08-01",
+      "company": "Anthropic",
+      "downloads": 973878,
+      "raw": 973878,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-08-01",
+      "company": "OpenAI",
+      "downloads": 4922733,
+      "raw": 4922733,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-08-01",
+      "company": "Cohere",
+      "downloads": 63063,
+      "raw": 63063,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-09-01",
+      "company": "Anthropic",
+      "downloads": 899567,
+      "raw": 899567,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-09-01",
+      "company": "OpenAI",
+      "downloads": 4617028,
+      "raw": 4617028,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-09-01",
+      "company": "Cohere",
+      "downloads": 64501,
+      "raw": 64501,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-10-01",
+      "company": "Anthropic",
+      "downloads": 1075680,
+      "raw": 1075680,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-10-01",
+      "company": "OpenAI",
+      "downloads": 5195285,
+      "raw": 5195285,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-10-01",
+      "company": "Cohere",
+      "downloads": 75030,
+      "raw": 75030,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-11-01",
+      "company": "Anthropic",
+      "downloads": 1087945,
+      "raw": 1087945,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-11-01",
+      "company": "OpenAI",
+      "downloads": 5245821,
+      "raw": 5245821,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-11-01",
+      "company": "Cohere",
+      "downloads": 62108,
+      "raw": 62108,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-12-01",
+      "company": "Anthropic",
+      "downloads": 1062197,
+      "raw": 1062197,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-12-01",
+      "company": "OpenAI",
+      "downloads": 4953010,
+      "raw": 4953010,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-12-01",
+      "company": "Google DeepMind",
+      "downloads": 36630,
+      "raw": 36630,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-12-01",
+      "company": "Mistral AI",
+      "downloads": 9293,
+      "raw": 9293,
+      "spike_days": 0
+    },
+    {
+      "month": "2023-12-01",
+      "company": "Cohere",
+      "downloads": 87497,
+      "raw": 87497,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-01-01",
+      "company": "Anthropic",
+      "downloads": 1336386,
+      "raw": 1336386,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-01-01",
+      "company": "OpenAI",
+      "downloads": 6170496,
+      "raw": 6170496,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-01-01",
+      "company": "Google DeepMind",
+      "downloads": 122876,
+      "raw": 122876,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-01-01",
+      "company": "Mistral AI",
+      "downloads": 66072,
+      "raw": 66072,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-01-01",
+      "company": "Cohere",
+      "downloads": 121559,
+      "raw": 121559,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-02-01",
+      "company": "Anthropic",
+      "downloads": 1335215,
+      "raw": 1335215,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-02-01",
+      "company": "OpenAI",
+      "downloads": 6397798,
+      "raw": 6397798,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-02-01",
+      "company": "Google DeepMind",
+      "downloads": 207670,
+      "raw": 207670,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-02-01",
+      "company": "Mistral AI",
+      "downloads": 112544,
+      "raw": 112544,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-02-01",
+      "company": "Cohere",
+      "downloads": 150521,
+      "raw": 150521,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-03-01",
+      "company": "Anthropic",
+      "downloads": 1745479,
+      "raw": 1745479,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-03-01",
+      "company": "OpenAI",
+      "downloads": 7033718,
+      "raw": 7033718,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-03-01",
+      "company": "Google DeepMind",
+      "downloads": 285796,
+      "raw": 285796,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-03-01",
+      "company": "Mistral AI",
+      "downloads": 159562,
+      "raw": 159562,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-03-01",
+      "company": "Cohere",
+      "downloads": 224311,
+      "raw": 224311,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-04-01",
+      "company": "Anthropic",
+      "downloads": 2333718,
+      "raw": 2333718,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-04-01",
+      "company": "OpenAI",
+      "downloads": 7335940,
+      "raw": 7335940,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-04-01",
+      "company": "Google DeepMind",
+      "downloads": 414055,
+      "raw": 414055,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-04-01",
+      "company": "Mistral AI",
+      "downloads": 185808,
+      "raw": 185808,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-04-01",
+      "company": "Cohere",
+      "downloads": 289808,
+      "raw": 289808,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-05-01",
+      "company": "Anthropic",
+      "downloads": 2520249,
+      "raw": 2520249,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-05-01",
+      "company": "OpenAI",
+      "downloads": 7917804,
+      "raw": 7917804,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-05-01",
+      "company": "Google DeepMind",
+      "downloads": 636342,
+      "raw": 636342,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-05-01",
+      "company": "Mistral AI",
+      "downloads": 198336,
+      "raw": 198336,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-05-01",
+      "company": "Cohere",
+      "downloads": 394945,
+      "raw": 394945,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-06-01",
+      "company": "Anthropic",
+      "downloads": 2311716,
+      "raw": 2311716,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-06-01",
+      "company": "OpenAI",
+      "downloads": 8085677,
+      "raw": 8085677,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-06-01",
+      "company": "Google DeepMind",
+      "downloads": 543293,
+      "raw": 543293,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-06-01",
+      "company": "Mistral AI",
+      "downloads": 190145,
+      "raw": 190145,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-06-01",
+      "company": "Cohere",
+      "downloads": 395341,
+      "raw": 395341,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-07-01",
+      "company": "Anthropic",
+      "downloads": 2176387,
+      "raw": 2176387,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-07-01",
+      "company": "OpenAI",
+      "downloads": 8859641,
+      "raw": 8859641,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-07-01",
+      "company": "Google DeepMind",
+      "downloads": 676148,
+      "raw": 676148,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-07-01",
+      "company": "Mistral AI",
+      "downloads": 216985,
+      "raw": 216985,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-07-01",
+      "company": "Cohere",
+      "downloads": 413741,
+      "raw": 413741,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-08-01",
+      "company": "Anthropic",
+      "downloads": 2283932,
+      "raw": 2283932,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-08-01",
+      "company": "OpenAI",
+      "downloads": 9602251,
+      "raw": 9602251,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-08-01",
+      "company": "Google DeepMind",
+      "downloads": 797401,
+      "raw": 797401,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-08-01",
+      "company": "Mistral AI",
+      "downloads": 254728,
+      "raw": 254728,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-08-01",
+      "company": "Cohere",
+      "downloads": 444461,
+      "raw": 444461,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-09-01",
+      "company": "Anthropic",
+      "downloads": 2370023,
+      "raw": 2370023,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-09-01",
+      "company": "OpenAI",
+      "downloads": 9497667,
+      "raw": 9497667,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-09-01",
+      "company": "Google DeepMind",
+      "downloads": 930335,
+      "raw": 930335,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-09-01",
+      "company": "Mistral AI",
+      "downloads": 278688,
+      "raw": 278688,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-09-01",
+      "company": "Cohere",
+      "downloads": 476314,
+      "raw": 476314,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-10-01",
+      "company": "Anthropic",
+      "downloads": 2629335,
+      "raw": 2629335,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-10-01",
+      "company": "OpenAI",
+      "downloads": 10234118,
+      "raw": 10234118,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-10-01",
+      "company": "Google DeepMind",
+      "downloads": 1076871,
+      "raw": 1076871,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-10-01",
+      "company": "Mistral AI",
+      "downloads": 322342,
+      "raw": 322342,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-10-01",
+      "company": "Cohere",
+      "downloads": 526511,
+      "raw": 526511,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-11-01",
+      "company": "Anthropic",
+      "downloads": 2540809,
+      "raw": 2540809,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-11-01",
+      "company": "OpenAI",
+      "downloads": 9797902,
+      "raw": 9797902,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-11-01",
+      "company": "Google DeepMind",
+      "downloads": 1122198,
+      "raw": 1122198,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-11-01",
+      "company": "Mistral AI",
+      "downloads": 331116,
+      "raw": 331116,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-11-01",
+      "company": "Cohere",
+      "downloads": 556991,
+      "raw": 556991,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-12-01",
+      "company": "Anthropic",
+      "downloads": 2617617,
+      "raw": 2617617,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-12-01",
+      "company": "OpenAI",
+      "downloads": 9447815,
+      "raw": 9447815,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-12-01",
+      "company": "Google DeepMind",
+      "downloads": 1315158,
+      "raw": 1315158,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-12-01",
+      "company": "Mistral AI",
+      "downloads": 334417,
+      "raw": 334417,
+      "spike_days": 0
+    },
+    {
+      "month": "2024-12-01",
+      "company": "Cohere",
+      "downloads": 444135,
+      "raw": 444135,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-01-01",
+      "company": "Anthropic",
+      "downloads": 3220823,
+      "raw": 3220823,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-01-01",
+      "company": "OpenAI",
+      "downloads": 11238328,
+      "raw": 11238328,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-01-01",
+      "company": "Google DeepMind",
+      "downloads": 1719990,
+      "raw": 1719990,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-01-01",
+      "company": "Mistral AI",
+      "downloads": 450651,
+      "raw": 450651,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-01-01",
+      "company": "Cohere",
+      "downloads": 539409,
+      "raw": 539409,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-02-01",
+      "company": "Anthropic",
+      "downloads": 3919892,
+      "raw": 3919892,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-02-01",
+      "company": "OpenAI",
+      "downloads": 12786152,
+      "raw": 12786152,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-02-01",
+      "company": "Google DeepMind",
+      "downloads": 1959143,
+      "raw": 1959143,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-02-01",
+      "company": "Mistral AI",
+      "downloads": 597402,
+      "raw": 597402,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-02-01",
+      "company": "Cohere",
+      "downloads": 719377,
+      "raw": 719377,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-03-01",
+      "company": "Anthropic",
+      "downloads": 4659479,
+      "raw": 4659479,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-03-01",
+      "company": "OpenAI",
+      "downloads": 14907178,
+      "raw": 14907178,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-03-01",
+      "company": "Google DeepMind",
+      "downloads": 2544560,
+      "raw": 2544560,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-03-01",
+      "company": "Mistral AI",
+      "downloads": 752562,
+      "raw": 752562,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-03-01",
+      "company": "Cohere",
+      "downloads": 884920,
+      "raw": 884920,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-04-01",
+      "company": "Anthropic",
+      "downloads": 5160732,
+      "raw": 5160732,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-04-01",
+      "company": "OpenAI",
+      "downloads": 16319367,
+      "raw": 16319367,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-04-01",
+      "company": "Google DeepMind",
+      "downloads": 3226317,
+      "raw": 3226317,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-04-01",
+      "company": "Mistral AI",
+      "downloads": 878859,
+      "raw": 878859,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-04-01",
+      "company": "Cohere",
+      "downloads": 999111,
+      "raw": 999111,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-05-01",
+      "company": "Anthropic",
+      "downloads": 5923485,
+      "raw": 5923485,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-05-01",
+      "company": "OpenAI",
+      "downloads": 17764861,
+      "raw": 17764861,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-05-01",
+      "company": "Google DeepMind",
+      "downloads": 4147151,
+      "raw": 4147151,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-05-01",
+      "company": "Mistral AI",
+      "downloads": 965882,
+      "raw": 965882,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-05-01",
+      "company": "Cohere",
+      "downloads": 1149063,
+      "raw": 1149063,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-06-01",
+      "company": "Anthropic",
+      "downloads": 7484293,
+      "raw": 7484293,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-06-01",
+      "company": "OpenAI",
+      "downloads": 20356038,
+      "raw": 20356038,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-06-01",
+      "company": "Google DeepMind",
+      "downloads": 5795427,
+      "raw": 5795427,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-06-01",
+      "company": "Mistral AI",
+      "downloads": 1114656,
+      "raw": 1114656,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-06-01",
+      "company": "Cohere",
+      "downloads": 1377507,
+      "raw": 1377507,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-07-01",
+      "company": "Anthropic",
+      "downloads": 8410174,
+      "raw": 8410174,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-07-01",
+      "company": "OpenAI",
+      "downloads": 23283790,
+      "raw": 23283790,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-07-01",
+      "company": "Google DeepMind",
+      "downloads": 8172370,
+      "raw": 8172370,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-07-01",
+      "company": "Mistral AI",
+      "downloads": 1278840,
+      "raw": 1278840,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-07-01",
+      "company": "Cohere",
+      "downloads": 1478881,
+      "raw": 1478881,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-08-01",
+      "company": "Anthropic",
+      "downloads": 9386947,
+      "raw": 9386947,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-08-01",
+      "company": "OpenAI",
+      "downloads": 26508088,
+      "raw": 26508088,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-08-01",
+      "company": "Google DeepMind",
+      "downloads": 9399427,
+      "raw": 9399427,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-08-01",
+      "company": "Mistral AI",
+      "downloads": 1280986,
+      "raw": 1280986,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-08-01",
+      "company": "Cohere",
+      "downloads": 1374200,
+      "raw": 1374200,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-09-01",
+      "company": "Anthropic",
+      "downloads": 9816552,
+      "raw": 9816552,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-09-01",
+      "company": "OpenAI",
+      "downloads": 28571807,
+      "raw": 28571807,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-09-01",
+      "company": "Google DeepMind",
+      "downloads": 12126841,
+      "raw": 12126841,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-09-01",
+      "company": "Mistral AI",
+      "downloads": 1205871,
+      "raw": 1205871,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-09-01",
+      "company": "Cohere",
+      "downloads": 1276359,
+      "raw": 1276359,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-10-01",
+      "company": "Anthropic",
+      "downloads": 11560875,
+      "raw": 11560875,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-10-01",
+      "company": "OpenAI",
+      "downloads": 32838066,
+      "raw": 32838066,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-10-01",
+      "company": "Google DeepMind",
+      "downloads": 13460549,
+      "raw": 13460549,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-10-01",
+      "company": "Mistral AI",
+      "downloads": 1363036,
+      "raw": 1363036,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-10-01",
+      "company": "Cohere",
+      "downloads": 1346199,
+      "raw": 1346199,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-11-01",
+      "company": "Anthropic",
+      "downloads": 11884122,
+      "raw": 11884122,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-11-01",
+      "company": "OpenAI",
+      "downloads": 31705142,
+      "raw": 31705142,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-11-01",
+      "company": "Google DeepMind",
+      "downloads": 13825947,
+      "raw": 13825947,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-11-01",
+      "company": "Mistral AI",
+      "downloads": 1512197,
+      "raw": 1512197,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-11-01",
+      "company": "Cohere",
+      "downloads": 1460134,
+      "raw": 1460134,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-12-01",
+      "company": "Anthropic",
+      "downloads": 13301274,
+      "raw": 13301274,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-12-01",
+      "company": "OpenAI",
+      "downloads": 33952403,
+      "raw": 33952403,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-12-01",
+      "company": "Google DeepMind",
+      "downloads": 17096956,
+      "raw": 17096956,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-12-01",
+      "company": "Mistral AI",
+      "downloads": 1770583,
+      "raw": 1770583,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-12-01",
+      "company": "Cohere",
+      "downloads": 1406351,
+      "raw": 1406351,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-01-01",
+      "company": "Anthropic",
+      "downloads": 17226666,
+      "raw": 17226666,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-01-01",
+      "company": "OpenAI",
+      "downloads": 42229601,
+      "raw": 42229601,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-01-01",
+      "company": "Google DeepMind",
+      "downloads": 23520961,
+      "raw": 23520961,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-01-01",
+      "company": "Mistral AI",
+      "downloads": 3106236,
+      "raw": 3106236,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-01-01",
+      "company": "Cohere",
+      "downloads": 1476954,
+      "raw": 1476954,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-02-01",
+      "company": "Anthropic",
+      "downloads": 24055363,
+      "raw": 24055363,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-02-01",
+      "company": "OpenAI",
+      "downloads": 50093720,
+      "raw": 50093720,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-02-01",
+      "company": "Google DeepMind",
+      "downloads": 32390016,
+      "raw": 32390016,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-02-01",
+      "company": "Mistral AI",
+      "downloads": 6059551,
+      "raw": 6059551,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-02-01",
+      "company": "Cohere",
+      "downloads": 1498282,
+      "raw": 1498282,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-03-01",
+      "company": "Anthropic",
+      "downloads": 40746913,
+      "raw": 40746913,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-03-01",
+      "company": "OpenAI",
+      "downloads": 71409136,
+      "raw": 71409136,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-03-01",
+      "company": "Google DeepMind",
+      "downloads": 51592901,
+      "raw": 51592901,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-03-01",
+      "company": "Mistral AI",
+      "downloads": 10495964,
+      "raw": 10495964,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-03-01",
+      "company": "Cohere",
+      "downloads": 1829612,
+      "raw": 1829612,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-04-01",
+      "company": "Anthropic",
+      "downloads": 63810977,
+      "raw": 63810977,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-04-01",
+      "company": "OpenAI",
+      "downloads": 78839300,
+      "raw": 78839300,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-04-01",
+      "company": "Google DeepMind",
+      "downloads": 55228490,
+      "raw": 55228490,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-04-01",
+      "company": "Mistral AI",
+      "downloads": 10048985,
+      "raw": 10048985,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-04-01",
+      "company": "Cohere",
+      "downloads": 1762531,
+      "raw": 1762531,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-05-01",
+      "company": "Anthropic",
+      "downloads": 85366234,
+      "raw": 85366234,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-05-01",
+      "company": "OpenAI",
+      "downloads": 93459170,
+      "raw": 93459170,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-05-01",
+      "company": "Google DeepMind",
+      "downloads": 63823658,
+      "raw": 63823658,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-05-01",
+      "company": "Mistral AI",
+      "downloads": 13055496,
+      "raw": 13055496,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-05-01",
+      "company": "Cohere",
+      "downloads": 1931630,
+      "raw": 1931630,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-06-01",
+      "company": "Anthropic",
+      "downloads": 97548464,
+      "raw": 97548464,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-06-01",
+      "company": "OpenAI",
+      "downloads": 107525418,
+      "raw": 107525418,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-06-01",
+      "company": "Google DeepMind",
+      "downloads": 79259391,
+      "raw": 79259391,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-06-01",
+      "company": "Mistral AI",
+      "downloads": 19926359,
+      "raw": 19926359,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-06-01",
+      "company": "Cohere",
+      "downloads": 2028883,
+      "raw": 2028883,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-07-01",
+      "company": "Anthropic",
+      "downloads": 117147185,
+      "raw": 117147185,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-07-01",
+      "company": "OpenAI",
+      "downloads": 129765443,
+      "raw": 129765443,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-07-01",
+      "company": "Google DeepMind",
+      "downloads": 86902079,
+      "raw": 86902079,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-07-01",
+      "company": "Mistral AI",
+      "downloads": 24567541,
+      "raw": 24567541,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-07-01",
+      "company": "Cohere",
+      "downloads": 2049432,
+      "raw": 2049432,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-08-01",
+      "company": "Anthropic",
+      "downloads": 142833257,
+      "raw": 142833257,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-08-01",
+      "company": "OpenAI",
+      "downloads": 148136807,
+      "raw": 148136807,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-08-01",
+      "company": "Google DeepMind",
+      "downloads": 104013528,
+      "raw": 104013528,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-08-01",
+      "company": "Mistral AI",
+      "downloads": 32094084,
+      "raw": 32094084,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-08-01",
+      "company": "Cohere",
+      "downloads": 2143030,
+      "raw": 2143030,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-09-01",
+      "company": "Anthropic",
+      "downloads": 165410854,
+      "raw": 165410854,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-09-01",
+      "company": "OpenAI",
+      "downloads": 162818065,
+      "raw": 162818065,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-09-01",
+      "company": "Google DeepMind",
+      "downloads": 113355411,
+      "raw": 113355411,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-09-01",
+      "company": "Mistral AI",
+      "downloads": 33776030,
+      "raw": 33776030,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-09-01",
+      "company": "Cohere",
+      "downloads": 2022756,
+      "raw": 2022756,
+      "spike_days": 0
+    }
+  ],
+  "takeaway": [
+    "In Sep 2026, JavaScript SDK downloads: Anthropic 165M (+16% on Aug 2026), the most of the tracked companies."
+  ],
+  "assumptions": [
+    "Downloads count every install, including CI and mirrors: read them as relative pull, not users.",
+    "Installs pulled in as a dependency of another package count too, so an SDK bundled by popular agent frameworks (google-genai is one) reads higher than its direct use.",
+    "No day exceeded 10× its surrounding 28-day medians, so nothing was excluded.",
+    "Google is @google/genai plus the legacy @google/generative-ai. xAI publishes no npm SDK."
+  ],
+  "badges": [],
+  "id": "dev_adoption.js_sdk_monthly",
+  "page": "dev_adoption",
+  "as_of": "2026-10-04",
+  "sources": [
+    {
+      "source": "npm_downloads",
+      "label": "npm registry download counts",
+      "url": "https://api.npmjs.org/downloads/range/2025-09-29:2026-10-04/@anthropic-ai/sdk",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T08:47:54Z"
+}

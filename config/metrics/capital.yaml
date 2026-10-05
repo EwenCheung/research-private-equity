@@ -1,0 +1,66 @@
+round_amount_usd:
+  label: Round amount
+  unit: USD
+  definition: Amount Anthropic says it raised in one named funding round, as stated in its own announcement. Includes any previously committed investments the announcement says are part of it.
+  aggregation: sum
+  higher_is: neutral
+round_post_money_usd:
+  label: Post-money valuation
+  unit: USD
+  definition: Valuation of Anthropic immediately after a round, as stated by Anthropic in the announcement. Rounds whose announcement states none have no row.
+  aggregation: last
+  higher_is: neutral
+run_rate_usd:
+  label: Run-rate revenue
+  unit: USD per year
+  definition: Annualised revenue as the speaker states it (the company in the company-stated ledger, a news outlet in the press ledger). dims.scope separates the company total from a product line such as Claude Code. Not recognised revenue.
+  aggregation: last
+  higher_is: good
+revenue_usd:
+  label: Reported revenue
+  unit: USD
+  definition: Recognised revenue for a stated period (dims.period), as reported by the press from documents it saw. Not a run-rate.
+  aggregation: sum
+  higher_is: good
+holder_invested_usd:
+  label: Strategic holder cash invested
+  unit: USD
+  definition: Cash a strategic holder says it invested in Anthropic in a stated quarter, in its SEC filing. dims.instrument says convertible note or nonvoting preferred stock.
+  aggregation: sum
+  higher_is: neutral
+holder_value_usd:
+  label: Strategic holder carrying value
+  unit: USD
+  definition: Amount a strategic holder records for its Anthropic securities at a balance-sheet date. dims.basis says whether it is an estimated fair value (convertible notes) or the amount recorded (nonvoting preferred stock).
+  aggregation: last
+  higher_is: neutral
+holder_commitment_usd:
+  label: Strategic holder commitment
+  unit: USD
+  definition: A funding facility or later investment a strategic holder says it has committed to Anthropic, in its SEC filing. dims.kind says what the figure is.
+  aggregation: last
+  higher_is: neutral
+form_d_filing:
+  label: Form D filing naming Anthropic
+  unit: filing (count 1 each)
+  definition: One SEC Form D or Form D/A whose text names Anthropic. dims.issuer_class says whether the filer is Anthropic itself (anthropic_own) or a vehicle set up by someone else (third_party_vehicle).
+  aggregation: sum
+  higher_is: neutral
+form_d_amount_sold_usd:
+  label: Form D amount sold
+  unit: USD
+  definition: Total amount sold so far that a Form D states, as of the filing date. Stated by the filer, not verified.
+  aggregation: last
+  higher_is: neutral
+nport_value_usd:
+  label: Fund holding value
+  unit: USD
+  definition: Value in USD a mutual fund reports for one Anthropic line in its N-PORT-P at the report date (its own fair-value mark).
+  aggregation: last
+  higher_is: neutral
+nport_units:
+  label: Fund holding shares
+  unit: shares
+  definition: Number of shares a mutual fund reports for one Anthropic line in its N-PORT-P. The mark per share is value divided by shares.
+  aggregation: last
+  higher_is: neutral

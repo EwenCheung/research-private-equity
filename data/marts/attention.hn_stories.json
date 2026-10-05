@@ -1,0 +1,1696 @@
+{
+  "title": "Hacker News front-page stories",
+  "subtitle": "Stories with 50 or more points mentioning each company, by submission month",
+  "kind": "line",
+  "encoding": {
+    "x": {
+      "field": "month",
+      "type": "temporal",
+      "label": "Month"
+    },
+    "y": {
+      "field": "front",
+      "type": "quantitative",
+      "label": "Stories with 50+ points",
+      "format": "int"
+    },
+    "color": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    }
+  },
+  "columns": [
+    {
+      "field": "month",
+      "label": "Month",
+      "format": "date"
+    },
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "front",
+      "label": "Stories with 50+ points",
+      "format": "int"
+    },
+    {
+      "field": "stories",
+      "label": "All stories",
+      "format": "int"
+    }
+  ],
+  "rows": [
+    {
+      "month": "2023-01-01",
+      "company": "OpenAI",
+      "front": 20,
+      "stories": 328
+    },
+    {
+      "month": "2023-01-01",
+      "company": "Anthropic",
+      "front": 2,
+      "stories": 15
+    },
+    {
+      "month": "2023-01-01",
+      "company": "xAI",
+      "front": 45,
+      "stories": 488
+    },
+    {
+      "month": "2023-01-01",
+      "company": "Google DeepMind",
+      "front": 2,
+      "stories": 29
+    },
+    {
+      "month": "2023-01-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 0
+    },
+    {
+      "month": "2023-01-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 4
+    },
+    {
+      "month": "2023-02-01",
+      "company": "OpenAI",
+      "front": 30,
+      "stories": 282
+    },
+    {
+      "month": "2023-02-01",
+      "company": "Anthropic",
+      "front": 1,
+      "stories": 20
+    },
+    {
+      "month": "2023-02-01",
+      "company": "xAI",
+      "front": 22,
+      "stories": 397
+    },
+    {
+      "month": "2023-02-01",
+      "company": "Google DeepMind",
+      "front": 2,
+      "stories": 14
+    },
+    {
+      "month": "2023-02-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 0
+    },
+    {
+      "month": "2023-02-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 6
+    },
+    {
+      "month": "2023-03-01",
+      "company": "OpenAI",
+      "front": 59,
+      "stories": 521
+    },
+    {
+      "month": "2023-03-01",
+      "company": "Anthropic",
+      "front": 2,
+      "stories": 18
+    },
+    {
+      "month": "2023-03-01",
+      "company": "xAI",
+      "front": 50,
+      "stories": 499
+    },
+    {
+      "month": "2023-03-01",
+      "company": "Google DeepMind",
+      "front": 0,
+      "stories": 17
+    },
+    {
+      "month": "2023-03-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 0
+    },
+    {
+      "month": "2023-03-01",
+      "company": "Cohere",
+      "front": 1,
+      "stories": 2
+    },
+    {
+      "month": "2023-04-01",
+      "company": "OpenAI",
+      "front": 29,
+      "stories": 381
+    },
+    {
+      "month": "2023-04-01",
+      "company": "Anthropic",
+      "front": 2,
+      "stories": 12
+    },
+    {
+      "month": "2023-04-01",
+      "company": "xAI",
+      "front": 30,
+      "stories": 416
+    },
+    {
+      "month": "2023-04-01",
+      "company": "Google DeepMind",
+      "front": 6,
+      "stories": 31
+    },
+    {
+      "month": "2023-04-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 0
+    },
+    {
+      "month": "2023-04-01",
+      "company": "Cohere",
+      "front": 2,
+      "stories": 9
+    },
+    {
+      "month": "2023-05-01",
+      "company": "OpenAI",
+      "front": 38,
+      "stories": 434
+    },
+    {
+      "month": "2023-05-01",
+      "company": "Anthropic",
+      "front": 3,
+      "stories": 35
+    },
+    {
+      "month": "2023-05-01",
+      "company": "xAI",
+      "front": 43,
+      "stories": 457
+    },
+    {
+      "month": "2023-05-01",
+      "company": "Google DeepMind",
+      "front": 5,
+      "stories": 33
+    },
+    {
+      "month": "2023-05-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 0
+    },
+    {
+      "month": "2023-05-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 1
+    },
+    {
+      "month": "2023-06-01",
+      "company": "OpenAI",
+      "front": 33,
+      "stories": 407
+    },
+    {
+      "month": "2023-06-01",
+      "company": "Anthropic",
+      "front": 2,
+      "stories": 18
+    },
+    {
+      "month": "2023-06-01",
+      "company": "xAI",
+      "front": 40,
+      "stories": 440
+    },
+    {
+      "month": "2023-06-01",
+      "company": "Google DeepMind",
+      "front": 5,
+      "stories": 50
+    },
+    {
+      "month": "2023-06-01",
+      "company": "Mistral AI",
+      "front": 1,
+      "stories": 7
+    },
+    {
+      "month": "2023-06-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 5
+    },
+    {
+      "month": "2023-07-01",
+      "company": "OpenAI",
+      "front": 27,
+      "stories": 323
+    },
+    {
+      "month": "2023-07-01",
+      "company": "Anthropic",
+      "front": 5,
+      "stories": 45
+    },
+    {
+      "month": "2023-07-01",
+      "company": "xAI",
+      "front": 35,
+      "stories": 405
+    },
+    {
+      "month": "2023-07-01",
+      "company": "Google DeepMind",
+      "front": 4,
+      "stories": 33
+    },
+    {
+      "month": "2023-07-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 0
+    },
+    {
+      "month": "2023-07-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 3
+    },
+    {
+      "month": "2023-08-01",
+      "company": "OpenAI",
+      "front": 39,
+      "stories": 318
+    },
+    {
+      "month": "2023-08-01",
+      "company": "Anthropic",
+      "front": 4,
+      "stories": 24
+    },
+    {
+      "month": "2023-08-01",
+      "company": "xAI",
+      "front": 4,
+      "stories": 432
+    },
+    {
+      "month": "2023-08-01",
+      "company": "Google DeepMind",
+      "front": 3,
+      "stories": 23
+    },
+    {
+      "month": "2023-08-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 0
+    },
+    {
+      "month": "2023-08-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 5
+    },
+    {
+      "month": "2023-09-01",
+      "company": "OpenAI",
+      "front": 24,
+      "stories": 322
+    },
+    {
+      "month": "2023-09-01",
+      "company": "Anthropic",
+      "front": 1,
+      "stories": 43
+    },
+    {
+      "month": "2023-09-01",
+      "company": "xAI",
+      "front": 42,
+      "stories": 470
+    },
+    {
+      "month": "2023-09-01",
+      "company": "Google DeepMind",
+      "front": 3,
+      "stories": 27
+    },
+    {
+      "month": "2023-09-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 6
+    },
+    {
+      "month": "2023-09-01",
+      "company": "Cohere",
+      "front": 1,
+      "stories": 6
+    },
+    {
+      "month": "2023-10-01",
+      "company": "OpenAI",
+      "front": 29,
+      "stories": 273
+    },
+    {
+      "month": "2023-10-01",
+      "company": "Anthropic",
+      "front": 5,
+      "stories": 32
+    },
+    {
+      "month": "2023-10-01",
+      "company": "xAI",
+      "front": 25,
+      "stories": 383
+    },
+    {
+      "month": "2023-10-01",
+      "company": "Google DeepMind",
+      "front": 5,
+      "stories": 39
+    },
+    {
+      "month": "2023-10-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 5
+    },
+    {
+      "month": "2023-10-01",
+      "company": "Cohere",
+      "front": 1,
+      "stories": 5
+    },
+    {
+      "month": "2023-11-01",
+      "company": "OpenAI",
+      "front": 99,
+      "stories": 1043
+    },
+    {
+      "month": "2023-11-01",
+      "company": "Anthropic",
+      "front": 6,
+      "stories": 36
+    },
+    {
+      "month": "2023-11-01",
+      "company": "xAI",
+      "front": 36,
+      "stories": 395
+    },
+    {
+      "month": "2023-11-01",
+      "company": "Google DeepMind",
+      "front": 8,
+      "stories": 52
+    },
+    {
+      "month": "2023-11-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 1
+    },
+    {
+      "month": "2023-11-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 2
+    },
+    {
+      "month": "2023-12-01",
+      "company": "OpenAI",
+      "front": 39,
+      "stories": 429
+    },
+    {
+      "month": "2023-12-01",
+      "company": "Anthropic",
+      "front": 4,
+      "stories": 30
+    },
+    {
+      "month": "2023-12-01",
+      "company": "xAI",
+      "front": 27,
+      "stories": 377
+    },
+    {
+      "month": "2023-12-01",
+      "company": "Google DeepMind",
+      "front": 8,
+      "stories": 46
+    },
+    {
+      "month": "2023-12-01",
+      "company": "Mistral AI",
+      "front": 1,
+      "stories": 15
+    },
+    {
+      "month": "2023-12-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 3
+    },
+    {
+      "month": "2024-01-01",
+      "company": "OpenAI",
+      "front": 25,
+      "stories": 363
+    },
+    {
+      "month": "2024-01-01",
+      "company": "Anthropic",
+      "front": 1,
+      "stories": 22
+    },
+    {
+      "month": "2024-01-01",
+      "company": "xAI",
+      "front": 42,
+      "stories": 492
+    },
+    {
+      "month": "2024-01-01",
+      "company": "Google DeepMind",
+      "front": 6,
+      "stories": 22
+    },
+    {
+      "month": "2024-01-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 1
+    },
+    {
+      "month": "2024-01-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 3
+    },
+    {
+      "month": "2024-02-01",
+      "company": "OpenAI",
+      "front": 27,
+      "stories": 335
+    },
+    {
+      "month": "2024-02-01",
+      "company": "Anthropic",
+      "front": 2,
+      "stories": 15
+    },
+    {
+      "month": "2024-02-01",
+      "company": "xAI",
+      "front": 33,
+      "stories": 432
+    },
+    {
+      "month": "2024-02-01",
+      "company": "Google DeepMind",
+      "front": 3,
+      "stories": 31
+    },
+    {
+      "month": "2024-02-01",
+      "company": "Mistral AI",
+      "front": 2,
+      "stories": 9
+    },
+    {
+      "month": "2024-02-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 3
+    },
+    {
+      "month": "2024-03-01",
+      "company": "OpenAI",
+      "front": 34,
+      "stories": 390
+    },
+    {
+      "month": "2024-03-01",
+      "company": "Anthropic",
+      "front": 2,
+      "stories": 75
+    },
+    {
+      "month": "2024-03-01",
+      "company": "xAI",
+      "front": 45,
+      "stories": 508
+    },
+    {
+      "month": "2024-03-01",
+      "company": "Google DeepMind",
+      "front": 5,
+      "stories": 40
+    },
+    {
+      "month": "2024-03-01",
+      "company": "Mistral AI",
+      "front": 1,
+      "stories": 6
+    },
+    {
+      "month": "2024-03-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 4
+    },
+    {
+      "month": "2024-04-01",
+      "company": "OpenAI",
+      "front": 17,
+      "stories": 329
+    },
+    {
+      "month": "2024-04-01",
+      "company": "Anthropic",
+      "front": 6,
+      "stories": 46
+    },
+    {
+      "month": "2024-04-01",
+      "company": "xAI",
+      "front": 26,
+      "stories": 424
+    },
+    {
+      "month": "2024-04-01",
+      "company": "Google DeepMind",
+      "front": 5,
+      "stories": 21
+    },
+    {
+      "month": "2024-04-01",
+      "company": "Mistral AI",
+      "front": 1,
+      "stories": 1
+    },
+    {
+      "month": "2024-04-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 6
+    },
+    {
+      "month": "2024-05-01",
+      "company": "OpenAI",
+      "front": 65,
+      "stories": 606
+    },
+    {
+      "month": "2024-05-01",
+      "company": "Anthropic",
+      "front": 8,
+      "stories": 54
+    },
+    {
+      "month": "2024-05-01",
+      "company": "xAI",
+      "front": 36,
+      "stories": 418
+    },
+    {
+      "month": "2024-05-01",
+      "company": "Google DeepMind",
+      "front": 6,
+      "stories": 34
+    },
+    {
+      "month": "2024-05-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 4
+    },
+    {
+      "month": "2024-05-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 2
+    },
+    {
+      "month": "2024-06-01",
+      "company": "OpenAI",
+      "front": 26,
+      "stories": 345
+    },
+    {
+      "month": "2024-06-01",
+      "company": "Anthropic",
+      "front": 4,
+      "stories": 51
+    },
+    {
+      "month": "2024-06-01",
+      "company": "xAI",
+      "front": 35,
+      "stories": 378
+    },
+    {
+      "month": "2024-06-01",
+      "company": "Google DeepMind",
+      "front": 5,
+      "stories": 23
+    },
+    {
+      "month": "2024-06-01",
+      "company": "Mistral AI",
+      "front": 1,
+      "stories": 3
+    },
+    {
+      "month": "2024-06-01",
+      "company": "Cohere",
+      "front": 1,
+      "stories": 6
+    },
+    {
+      "month": "2024-07-01",
+      "company": "OpenAI",
+      "front": 28,
+      "stories": 296
+    },
+    {
+      "month": "2024-07-01",
+      "company": "Anthropic",
+      "front": 4,
+      "stories": 56
+    },
+    {
+      "month": "2024-07-01",
+      "company": "xAI",
+      "front": 24,
+      "stories": 393
+    },
+    {
+      "month": "2024-07-01",
+      "company": "Google DeepMind",
+      "front": 5,
+      "stories": 28
+    },
+    {
+      "month": "2024-07-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 2
+    },
+    {
+      "month": "2024-07-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 3
+    },
+    {
+      "month": "2024-08-01",
+      "company": "OpenAI",
+      "front": 24,
+      "stories": 276
+    },
+    {
+      "month": "2024-08-01",
+      "company": "Anthropic",
+      "front": 10,
+      "stories": 68
+    },
+    {
+      "month": "2024-08-01",
+      "company": "xAI",
+      "front": 27,
+      "stories": 454
+    },
+    {
+      "month": "2024-08-01",
+      "company": "Google DeepMind",
+      "front": 4,
+      "stories": 33
+    },
+    {
+      "month": "2024-08-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 2
+    },
+    {
+      "month": "2024-08-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 0
+    },
+    {
+      "month": "2024-09-01",
+      "company": "OpenAI",
+      "front": 41,
+      "stories": 370
+    },
+    {
+      "month": "2024-09-01",
+      "company": "Anthropic",
+      "front": 7,
+      "stories": 31
+    },
+    {
+      "month": "2024-09-01",
+      "company": "xAI",
+      "front": 35,
+      "stories": 397
+    },
+    {
+      "month": "2024-09-01",
+      "company": "Google DeepMind",
+      "front": 7,
+      "stories": 29
+    },
+    {
+      "month": "2024-09-01",
+      "company": "Mistral AI",
+      "front": 1,
+      "stories": 2
+    },
+    {
+      "month": "2024-09-01",
+      "company": "Cohere",
+      "front": 1,
+      "stories": 2
+    },
+    {
+      "month": "2024-10-01",
+      "company": "OpenAI",
+      "front": 28,
+      "stories": 357
+    },
+    {
+      "month": "2024-10-01",
+      "company": "Anthropic",
+      "front": 9,
+      "stories": 71
+    },
+    {
+      "month": "2024-10-01",
+      "company": "xAI",
+      "front": 25,
+      "stories": 442
+    },
+    {
+      "month": "2024-10-01",
+      "company": "Google DeepMind",
+      "front": 2,
+      "stories": 20
+    },
+    {
+      "month": "2024-10-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 1
+    },
+    {
+      "month": "2024-10-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 4
+    },
+    {
+      "month": "2024-11-01",
+      "company": "OpenAI",
+      "front": 18,
+      "stories": 301
+    },
+    {
+      "month": "2024-11-01",
+      "company": "Anthropic",
+      "front": 10,
+      "stories": 84
+    },
+    {
+      "month": "2024-11-01",
+      "company": "xAI",
+      "front": 32,
+      "stories": 404
+    },
+    {
+      "month": "2024-11-01",
+      "company": "Google DeepMind",
+      "front": 6,
+      "stories": 31
+    },
+    {
+      "month": "2024-11-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 2
+    },
+    {
+      "month": "2024-11-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 1
+    },
+    {
+      "month": "2024-12-01",
+      "company": "OpenAI",
+      "front": 32,
+      "stories": 384
+    },
+    {
+      "month": "2024-12-01",
+      "company": "Anthropic",
+      "front": 6,
+      "stories": 73
+    },
+    {
+      "month": "2024-12-01",
+      "company": "xAI",
+      "front": 29,
+      "stories": 431
+    },
+    {
+      "month": "2024-12-01",
+      "company": "Google DeepMind",
+      "front": 4,
+      "stories": 36
+    },
+    {
+      "month": "2024-12-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 1
+    },
+    {
+      "month": "2024-12-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 3
+    },
+    {
+      "month": "2025-01-01",
+      "company": "OpenAI",
+      "front": 35,
+      "stories": 412
+    },
+    {
+      "month": "2025-01-01",
+      "company": "Anthropic",
+      "front": 7,
+      "stories": 67
+    },
+    {
+      "month": "2025-01-01",
+      "company": "xAI",
+      "front": 24,
+      "stories": 440
+    },
+    {
+      "month": "2025-01-01",
+      "company": "Google DeepMind",
+      "front": 6,
+      "stories": 34
+    },
+    {
+      "month": "2025-01-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 2
+    },
+    {
+      "month": "2025-01-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 1
+    },
+    {
+      "month": "2025-02-01",
+      "company": "OpenAI",
+      "front": 20,
+      "stories": 381
+    },
+    {
+      "month": "2025-02-01",
+      "company": "Anthropic",
+      "front": 5,
+      "stories": 77
+    },
+    {
+      "month": "2025-02-01",
+      "company": "xAI",
+      "front": 34,
+      "stories": 429
+    },
+    {
+      "month": "2025-02-01",
+      "company": "Google DeepMind",
+      "front": 5,
+      "stories": 33
+    },
+    {
+      "month": "2025-02-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 0
+    },
+    {
+      "month": "2025-02-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 3
+    },
+    {
+      "month": "2025-03-01",
+      "company": "OpenAI",
+      "front": 36,
+      "stories": 378
+    },
+    {
+      "month": "2025-03-01",
+      "company": "Anthropic",
+      "front": 10,
+      "stories": 98
+    },
+    {
+      "month": "2025-03-01",
+      "company": "xAI",
+      "front": 31,
+      "stories": 456
+    },
+    {
+      "month": "2025-03-01",
+      "company": "Google DeepMind",
+      "front": 12,
+      "stories": 25
+    },
+    {
+      "month": "2025-03-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 4
+    },
+    {
+      "month": "2025-03-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 3
+    },
+    {
+      "month": "2025-04-01",
+      "company": "OpenAI",
+      "front": 33,
+      "stories": 407
+    },
+    {
+      "month": "2025-04-01",
+      "company": "Anthropic",
+      "front": 9,
+      "stories": 84
+    },
+    {
+      "month": "2025-04-01",
+      "company": "xAI",
+      "front": 34,
+      "stories": 469
+    },
+    {
+      "month": "2025-04-01",
+      "company": "Google DeepMind",
+      "front": 4,
+      "stories": 57
+    },
+    {
+      "month": "2025-04-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 3
+    },
+    {
+      "month": "2025-04-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 0
+    },
+    {
+      "month": "2025-05-01",
+      "company": "OpenAI",
+      "front": 26,
+      "stories": 388
+    },
+    {
+      "month": "2025-05-01",
+      "company": "Anthropic",
+      "front": 12,
+      "stories": 136
+    },
+    {
+      "month": "2025-05-01",
+      "company": "xAI",
+      "front": 34,
+      "stories": 563
+    },
+    {
+      "month": "2025-05-01",
+      "company": "Google DeepMind",
+      "front": 5,
+      "stories": 47
+    },
+    {
+      "month": "2025-05-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 2
+    },
+    {
+      "month": "2025-05-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 5
+    },
+    {
+      "month": "2025-06-01",
+      "company": "OpenAI",
+      "front": 33,
+      "stories": 414
+    },
+    {
+      "month": "2025-06-01",
+      "company": "Anthropic",
+      "front": 17,
+      "stories": 166
+    },
+    {
+      "month": "2025-06-01",
+      "company": "xAI",
+      "front": 32,
+      "stories": 502
+    },
+    {
+      "month": "2025-06-01",
+      "company": "Google DeepMind",
+      "front": 9,
+      "stories": 45
+    },
+    {
+      "month": "2025-06-01",
+      "company": "Mistral AI",
+      "front": 1,
+      "stories": 4
+    },
+    {
+      "month": "2025-06-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 1
+    },
+    {
+      "month": "2025-07-01",
+      "company": "OpenAI",
+      "front": 33,
+      "stories": 411
+    },
+    {
+      "month": "2025-07-01",
+      "company": "Anthropic",
+      "front": 17,
+      "stories": 145
+    },
+    {
+      "month": "2025-07-01",
+      "company": "xAI",
+      "front": 44,
+      "stories": 631
+    },
+    {
+      "month": "2025-07-01",
+      "company": "Google DeepMind",
+      "front": 2,
+      "stories": 36
+    },
+    {
+      "month": "2025-07-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 4
+    },
+    {
+      "month": "2025-07-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 0
+    },
+    {
+      "month": "2025-08-01",
+      "company": "OpenAI",
+      "front": 42,
+      "stories": 541
+    },
+    {
+      "month": "2025-08-01",
+      "company": "Anthropic",
+      "front": 16,
+      "stories": 146
+    },
+    {
+      "month": "2025-08-01",
+      "company": "xAI",
+      "front": 40,
+      "stories": 602
+    },
+    {
+      "month": "2025-08-01",
+      "company": "Google DeepMind",
+      "front": 3,
+      "stories": 18
+    },
+    {
+      "month": "2025-08-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 1
+    },
+    {
+      "month": "2025-08-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 1
+    },
+    {
+      "month": "2025-09-01",
+      "company": "OpenAI",
+      "front": 23,
+      "stories": 424
+    },
+    {
+      "month": "2025-09-01",
+      "company": "Anthropic",
+      "front": 15,
+      "stories": 153
+    },
+    {
+      "month": "2025-09-01",
+      "company": "xAI",
+      "front": 26,
+      "stories": 453
+    },
+    {
+      "month": "2025-09-01",
+      "company": "Google DeepMind",
+      "front": 5,
+      "stories": 34
+    },
+    {
+      "month": "2025-09-01",
+      "company": "Mistral AI",
+      "front": 2,
+      "stories": 4
+    },
+    {
+      "month": "2025-09-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 5
+    },
+    {
+      "month": "2025-10-01",
+      "company": "OpenAI",
+      "front": 37,
+      "stories": 626
+    },
+    {
+      "month": "2025-10-01",
+      "company": "Anthropic",
+      "front": 13,
+      "stories": 132
+    },
+    {
+      "month": "2025-10-01",
+      "company": "xAI",
+      "front": 34,
+      "stories": 603
+    },
+    {
+      "month": "2025-10-01",
+      "company": "Google DeepMind",
+      "front": 2,
+      "stories": 28
+    },
+    {
+      "month": "2025-10-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 1
+    },
+    {
+      "month": "2025-10-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 1
+    },
+    {
+      "month": "2025-11-01",
+      "company": "OpenAI",
+      "front": 31,
+      "stories": 436
+    },
+    {
+      "month": "2025-11-01",
+      "company": "Anthropic",
+      "front": 10,
+      "stories": 153
+    },
+    {
+      "month": "2025-11-01",
+      "company": "xAI",
+      "front": 26,
+      "stories": 566
+    },
+    {
+      "month": "2025-11-01",
+      "company": "Google DeepMind",
+      "front": 4,
+      "stories": 40
+    },
+    {
+      "month": "2025-11-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 0
+    },
+    {
+      "month": "2025-11-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 1
+    },
+    {
+      "month": "2025-12-01",
+      "company": "OpenAI",
+      "front": 33,
+      "stories": 451
+    },
+    {
+      "month": "2025-12-01",
+      "company": "Anthropic",
+      "front": 13,
+      "stories": 150
+    },
+    {
+      "month": "2025-12-01",
+      "company": "xAI",
+      "front": 42,
+      "stories": 576
+    },
+    {
+      "month": "2025-12-01",
+      "company": "Google DeepMind",
+      "front": 1,
+      "stories": 21
+    },
+    {
+      "month": "2025-12-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 1
+    },
+    {
+      "month": "2025-12-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 0
+    },
+    {
+      "month": "2026-01-01",
+      "company": "OpenAI",
+      "front": 33,
+      "stories": 487
+    },
+    {
+      "month": "2026-01-01",
+      "company": "Anthropic",
+      "front": 20,
+      "stories": 241
+    },
+    {
+      "month": "2026-01-01",
+      "company": "xAI",
+      "front": 46,
+      "stories": 765
+    },
+    {
+      "month": "2026-01-01",
+      "company": "Google DeepMind",
+      "front": 9,
+      "stories": 46
+    },
+    {
+      "month": "2026-01-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 3
+    },
+    {
+      "month": "2026-01-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 2
+    },
+    {
+      "month": "2026-02-01",
+      "company": "OpenAI",
+      "front": 47,
+      "stories": 750
+    },
+    {
+      "month": "2026-02-01",
+      "company": "Anthropic",
+      "front": 52,
+      "stories": 573
+    },
+    {
+      "month": "2026-02-01",
+      "company": "xAI",
+      "front": 39,
+      "stories": 760
+    },
+    {
+      "month": "2026-02-01",
+      "company": "Google DeepMind",
+      "front": 11,
+      "stories": 43
+    },
+    {
+      "month": "2026-02-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 4
+    },
+    {
+      "month": "2026-02-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 8
+    },
+    {
+      "month": "2026-03-01",
+      "company": "OpenAI",
+      "front": 44,
+      "stories": 767
+    },
+    {
+      "month": "2026-03-01",
+      "company": "Anthropic",
+      "front": 32,
+      "stories": 540
+    },
+    {
+      "month": "2026-03-01",
+      "company": "xAI",
+      "front": 44,
+      "stories": 746
+    },
+    {
+      "month": "2026-03-01",
+      "company": "Google DeepMind",
+      "front": 4,
+      "stories": 47
+    },
+    {
+      "month": "2026-03-01",
+      "company": "Mistral AI",
+      "front": 1,
+      "stories": 6
+    },
+    {
+      "month": "2026-03-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 2
+    },
+    {
+      "month": "2026-04-01",
+      "company": "OpenAI",
+      "front": 48,
+      "stories": 572
+    },
+    {
+      "month": "2026-04-01",
+      "company": "Anthropic",
+      "front": 48,
+      "stories": 531
+    },
+    {
+      "month": "2026-04-01",
+      "company": "xAI",
+      "front": 32,
+      "stories": 531
+    },
+    {
+      "month": "2026-04-01",
+      "company": "Google DeepMind",
+      "front": 12,
+      "stories": 63
+    },
+    {
+      "month": "2026-04-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 2
+    },
+    {
+      "month": "2026-04-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 4
+    },
+    {
+      "month": "2026-05-01",
+      "company": "OpenAI",
+      "front": 33,
+      "stories": 502
+    },
+    {
+      "month": "2026-05-01",
+      "company": "Anthropic",
+      "front": 26,
+      "stories": 344
+    },
+    {
+      "month": "2026-05-01",
+      "company": "xAI",
+      "front": 24,
+      "stories": 463
+    },
+    {
+      "month": "2026-05-01",
+      "company": "Google DeepMind",
+      "front": 5,
+      "stories": 42
+    },
+    {
+      "month": "2026-05-01",
+      "company": "Mistral AI",
+      "front": 2,
+      "stories": 13
+    },
+    {
+      "month": "2026-05-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 1
+    },
+    {
+      "month": "2026-06-01",
+      "company": "OpenAI",
+      "front": 36,
+      "stories": 476
+    },
+    {
+      "month": "2026-06-01",
+      "company": "Anthropic",
+      "front": 57,
+      "stories": 477
+    },
+    {
+      "month": "2026-06-01",
+      "company": "xAI",
+      "front": 22,
+      "stories": 487
+    },
+    {
+      "month": "2026-06-01",
+      "company": "Google DeepMind",
+      "front": 8,
+      "stories": 51
+    },
+    {
+      "month": "2026-06-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 2
+    },
+    {
+      "month": "2026-06-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 1
+    },
+    {
+      "month": "2026-07-01",
+      "company": "OpenAI",
+      "front": 51,
+      "stories": 624
+    },
+    {
+      "month": "2026-07-01",
+      "company": "Anthropic",
+      "front": 24,
+      "stories": 379
+    },
+    {
+      "month": "2026-07-01",
+      "company": "xAI",
+      "front": 38,
+      "stories": 559
+    },
+    {
+      "month": "2026-07-01",
+      "company": "Google DeepMind",
+      "front": 5,
+      "stories": 69
+    },
+    {
+      "month": "2026-07-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 1
+    },
+    {
+      "month": "2026-07-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 0
+    },
+    {
+      "month": "2026-08-01",
+      "company": "OpenAI",
+      "front": 54,
+      "stories": 575
+    },
+    {
+      "month": "2026-08-01",
+      "company": "Anthropic",
+      "front": 29,
+      "stories": 323
+    },
+    {
+      "month": "2026-08-01",
+      "company": "xAI",
+      "front": 35,
+      "stories": 547
+    },
+    {
+      "month": "2026-08-01",
+      "company": "Google DeepMind",
+      "front": 3,
+      "stories": 58
+    },
+    {
+      "month": "2026-08-01",
+      "company": "Mistral AI",
+      "front": 0,
+      "stories": 2
+    },
+    {
+      "month": "2026-08-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 0
+    },
+    {
+      "month": "2026-09-01",
+      "company": "OpenAI",
+      "front": 101,
+      "stories": 867
+    },
+    {
+      "month": "2026-09-01",
+      "company": "Anthropic",
+      "front": 42,
+      "stories": 474
+    },
+    {
+      "month": "2026-09-01",
+      "company": "xAI",
+      "front": 33,
+      "stories": 518
+    },
+    {
+      "month": "2026-09-01",
+      "company": "Google DeepMind",
+      "front": 8,
+      "stories": 41
+    },
+    {
+      "month": "2026-09-01",
+      "company": "Mistral AI",
+      "front": 2,
+      "stories": 4
+    },
+    {
+      "month": "2026-09-01",
+      "company": "Cohere",
+      "front": 0,
+      "stories": 4
+    }
+  ],
+  "takeaway": [
+    "Anthropic had 42 Hacker News stories with 50+ points in Sep 2026, against OpenAI at 101."
+  ],
+  "assumptions": [
+    "A developer-community signal: Hacker News readers are engineers and founders, not the general public.",
+    "A story counts if its title or text matches the company's search words; 50 or more points keeps the ones that drew real attention.",
+    "xAI is searched as 'Grok' because 'xAI' also matches unrelated stories. Mistral AI and Cohere have few stories, so their lines are noisy.",
+    "Complete months only. Reddit is not included: it requires authorised API access."
+  ],
+  "badges": [],
+  "id": "attention.hn_stories",
+  "page": "attention",
+  "as_of": "2026-10-01",
+  "sources": [
+    {
+      "source": "hackernews_stories",
+      "label": "Hacker News stories (Algolia search)",
+      "url": "https://hn.algolia.com/?query=Anthropic&type=story&dateRange=custom&dateStart=1790812800&dateEnd=1793491200",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-10-01",
+      "retrieved_at": "2026-10-05T07:01:16Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T08:47:54Z"
+}

@@ -1,0 +1,125 @@
+{
+  "title": "Models announced per quarter",
+  "subtitle": "Count of models in the release ledger, by quarter announced",
+  "kind": "bar",
+  "encoding": {
+    "x": {
+      "field": "quarter",
+      "type": "temporal",
+      "label": "Quarter"
+    },
+    "y": {
+      "field": "models",
+      "type": "quantitative",
+      "label": "Models announced",
+      "format": "int"
+    }
+  },
+  "columns": [
+    {
+      "field": "quarter",
+      "label": "Quarter starting",
+      "format": "date"
+    },
+    {
+      "field": "models",
+      "label": "Models announced",
+      "format": "int"
+    }
+  ],
+  "rows": [
+    {
+      "quarter": "2023-01-01",
+      "models": 1
+    },
+    {
+      "quarter": "2023-04-01",
+      "models": 0
+    },
+    {
+      "quarter": "2023-07-01",
+      "models": 1
+    },
+    {
+      "quarter": "2023-10-01",
+      "models": 1
+    },
+    {
+      "quarter": "2024-01-01",
+      "models": 3
+    },
+    {
+      "quarter": "2024-04-01",
+      "models": 1
+    },
+    {
+      "quarter": "2024-07-01",
+      "models": 0
+    },
+    {
+      "quarter": "2024-10-01",
+      "models": 1
+    },
+    {
+      "quarter": "2025-01-01",
+      "models": 1
+    },
+    {
+      "quarter": "2025-04-01",
+      "models": 2
+    },
+    {
+      "quarter": "2025-07-01",
+      "models": 2
+    },
+    {
+      "quarter": "2025-10-01",
+      "models": 2
+    },
+    {
+      "quarter": "2026-01-01",
+      "models": 2
+    },
+    {
+      "quarter": "2026-04-01",
+      "models": 5
+    },
+    {
+      "quarter": "2026-07-01",
+      "models": 5
+    }
+  ],
+  "takeaway": [
+    "Anthropic announced 15 models in the 12 months to 2026-09-28, against 5 in the 12 months before."
+  ],
+  "assumptions": [
+    "Counts each model once: a family announced together counts one per model, and Mythos models count too.",
+    "Measures how often Anthropic ships, not how big each release is."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "product.release_cadence",
+  "page": "product",
+  "as_of": "2026-09-28",
+  "sources": [
+    {
+      "source": "product_model_releases",
+      "label": "Anthropic model announcements (cited ledger)",
+      "url": "https://platform.claude.com/docs/en/release-notes/overview",
+      "method": "ledger",
+      "tier": "company-stated",
+      "cadence": "monthly",
+      "as_of": "2026-09-28",
+      "retrieved_at": "2026-10-05T07:36:19Z",
+      "freshness": "fresh",
+      "manual": {
+        "entered_by": "EwenCheung via Claude",
+        "entered_at": "2026-10-05T07:36:19Z",
+        "evidence": "We've launched Claude Sonnet 5.5 (claude-sonnet-5-5)."
+      }
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T08:47:54Z"
+}

@@ -1,0 +1,25 @@
+# How each company is found in the hiring sources. Boards verified live on 2026-10-05.
+# ats: the public job board API. wayback: board URLs whose Internet Archive captures give history.
+# lca_employers: employer names in DOL H-1B LCA files, normalised (upper case, punctuation removed).
+anthropic:
+  ats: {provider: greenhouse, board: anthropic}
+  wayback: [boards.greenhouse.io/anthropic, job-boards.greenhouse.io/anthropic, boards-api.greenhouse.io/v1/boards/anthropic/jobs]
+  lca_employers: [ANTHROPIC PBC]
+openai:
+  ats: {provider: ashby, board: openai}
+  wayback: [jobs.ashbyhq.com/openai]
+  lca_employers: [OPENAI OPCO LLC, OPENAI LLC, OPENAI INC, OPENAI GLOBAL LLC]
+# google-deepmind posts only on Google's own careers site, which has no public API, and files H-1Bs as Google LLC:
+# no hiring source can separate it, so it is listed as a gap.
+xai:
+  ats: {provider: greenhouse, board: xai}
+  wayback: [boards.greenhouse.io/xai, job-boards.greenhouse.io/xai]
+  lca_employers: [XAI CORP, XAI LLC, XAI HOLDINGS CORP]
+mistral:
+  ats: {provider: ashby, board: mistral.ai}
+  wayback: [jobs.ashbyhq.com/mistral.ai, jobs.lever.co/mistral]
+  lca_employers: [MISTRAL AI INC, MISTRAL AI US INC]
+cohere:
+  ats: {provider: ashby, board: cohere}
+  wayback: [jobs.ashbyhq.com/cohere]
+  lca_employers: [COHERE INC, COHERE TECHNOLOGIES INC]

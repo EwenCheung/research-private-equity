@@ -1,0 +1,98 @@
+{
+  "title": "US App Store rank today",
+  "subtitle": "Position in Apple's top 100 free iPhone apps, latest snapshot",
+  "kind": "stat",
+  "encoding": {
+    "y": {
+      "field": "rank",
+      "type": "quantitative",
+      "label": "Rank (1 is best)",
+      "format": "int"
+    }
+  },
+  "columns": [
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "rank",
+      "label": "Rank",
+      "format": "int"
+    },
+    {
+      "field": "climbed",
+      "label": "Places climbed (+) or fallen (-) since last snapshot",
+      "format": "int"
+    },
+    {
+      "field": "app",
+      "label": "App",
+      "format": "text"
+    },
+    {
+      "field": "since",
+      "label": "Compared with",
+      "format": "date"
+    }
+  ],
+  "rows": [
+    {
+      "company": "OpenAI",
+      "app": "ChatGPT",
+      "rank": 3,
+      "climbed": null,
+      "since": null
+    },
+    {
+      "company": "Google DeepMind",
+      "app": "Gemini",
+      "rank": 14,
+      "climbed": null,
+      "since": null
+    },
+    {
+      "company": "Anthropic",
+      "app": "Claude",
+      "rank": 19,
+      "climbed": null,
+      "since": null
+    },
+    {
+      "company": "xAI",
+      "app": "Grok",
+      "rank": 35,
+      "climbed": null,
+      "since": null
+    }
+  ],
+  "takeaway": [
+    "Claude is #19 on the US App Store free chart, behind ChatGPT #3, Gemini #14."
+  ],
+  "assumptions": [
+    "Apple publishes only today's top 100 and no history, so this chart's history starts on the first day we collected (2026-10-05).",
+    "An app outside the top 100 has no rank here: it is left out, not shown as 101 or below. Cohere has no consumer app.",
+    "Rank follows downloads, so it moves with launches and promotions. US storefront only."
+  ],
+  "badges": [],
+  "id": "attention.appstore_rank",
+  "page": "attention",
+  "as_of": "2026-10-05",
+  "sources": [
+    {
+      "source": "appstore_top_charts",
+      "label": "Apple App Store top-free chart (US)",
+      "url": "https://itunes.apple.com/us/rss/topfreeapplications/limit=100/json",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-05",
+      "retrieved_at": "2026-10-05T03:30:15Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T08:47:54Z"
+}

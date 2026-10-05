@@ -1,0 +1,77 @@
+{
+  "title": "Share of news coverage",
+  "subtitle": "Articles mentioning each company per 10,000 English-language articles GDELT monitored",
+  "kind": "line",
+  "encoding": {
+    "x": {
+      "field": "month",
+      "type": "temporal",
+      "label": "Month"
+    },
+    "y": {
+      "field": "per_10k",
+      "type": "quantitative",
+      "label": "Articles per 10,000",
+      "format": "float"
+    },
+    "color": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    }
+  },
+  "columns": [
+    {
+      "field": "month",
+      "label": "Month",
+      "format": "date"
+    },
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "per_10k",
+      "label": "Articles per 10,000",
+      "format": "float"
+    },
+    {
+      "field": "articles",
+      "label": "Matching articles",
+      "format": "int"
+    }
+  ],
+  "rows": [],
+  "takeaway": [
+    "Awaiting data: GDELT's history for Anthropic has not been collected yet (its API rate-limits long backfills)."
+  ],
+  "assumptions": [
+    "GDELT's monitored article set has shrunk and shifted since 2023, so a raw count would mislead. The chart is each company's share of that day's monitored articles.",
+    "Share = articles matching the company's search terms ÷ all monitored English articles, summed over the month. Raw counts are in the table.",
+    "Search terms match by words, so some unrelated articles are included, most for common words (Mistral, Cohere, Grok).",
+    "Complete months only."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "attention.news_share",
+  "page": "attention",
+  "as_of": null,
+  "sources": [
+    {
+      "source": "gdelt_news_volume",
+      "label": "GDELT news volume (English-language articles)",
+      "url": "https://api.gdeltproject.org/api/v2/doc/doc?query=%22OpenAI%22+sourcelang%3Aenglish&mode=timelinevolraw&format=json&startdatetime=20240101000000&enddatetime=20241230235959",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2024-12-30",
+      "retrieved_at": "2026-10-05T07:07:23Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "awaiting_data",
+  "generated_at": "2026-10-05T08:47:54Z"
+}

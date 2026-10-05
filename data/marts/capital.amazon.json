@@ -1,0 +1,175 @@
+{
+  "title": "Amazon's reported stake in Anthropic",
+  "subtitle": "Convertible notes at estimated fair value and nonvoting preferred stock at the amount Amazon records, from its 10-K and 10-Q",
+  "kind": "stacked_bar",
+  "encoding": {
+    "x": {
+      "field": "date",
+      "type": "ordinal",
+      "label": "Balance-sheet date"
+    },
+    "y": {
+      "field": "value",
+      "type": "quantitative",
+      "label": "Amount recorded (USD)",
+      "format": "usd_compact"
+    },
+    "color": {
+      "field": "instrument",
+      "type": "nominal",
+      "label": "Instrument"
+    }
+  },
+  "columns": [
+    {
+      "field": "date",
+      "label": "Balance-sheet date",
+      "format": "date"
+    },
+    {
+      "field": "instrument",
+      "label": "Instrument",
+      "format": "text"
+    },
+    {
+      "field": "value",
+      "label": "Amount recorded",
+      "format": "usd_compact"
+    },
+    {
+      "field": "basis",
+      "label": "Basis",
+      "format": "text"
+    },
+    {
+      "field": "quote",
+      "label": "What the filing says",
+      "format": "text"
+    },
+    {
+      "field": "link",
+      "label": "Filing",
+      "format": "url"
+    }
+  ],
+  "rows": [
+    {
+      "date": "2024-12-31",
+      "instrument": "Convertible notes",
+      "value": 13800000000.0,
+      "basis": "estimated fair value",
+      "quote": "as of December 31, 2024 had an estimated fair value of approximately $ 13.8 billion",
+      "link": "https://www.sec.gov/Archives/edgar/data/1018724/000101872425000004/amzn-20241231.htm"
+    },
+    {
+      "date": "2025-06-30",
+      "instrument": "Notes and preferred (combined, no split)",
+      "value": 15100000000.0,
+      "basis": "estimated fair value",
+      "quote": "As of June 30, 2025, the estimated fair value of our convertible notes and amounts recorded for nonvoting preferred stock investments was approximately $ 15.1 billion.",
+      "link": "https://www.sec.gov/Archives/edgar/data/1018724/000101872425000086/amzn-20250630.htm"
+    },
+    {
+      "date": "2025-09-30",
+      "instrument": "Convertible notes",
+      "value": 23700000000.0,
+      "basis": "estimated fair value",
+      "quote": "As of September 30, 2025, the estimated fair value of our convertible notes recorded on our consolidated balance sheet was approximately $ 23.7 billion",
+      "link": "https://www.sec.gov/Archives/edgar/data/1018724/000101872425000123/amzn-20250930.htm"
+    },
+    {
+      "date": "2025-09-30",
+      "instrument": "Nonvoting preferred stock",
+      "value": 14800000000.0,
+      "basis": "amount recorded",
+      "quote": "As of September 30, 2025, the amount recorded on our consolidated balance sheet for nonvoting preferred stock was approximately $ 14.8 billion.",
+      "link": "https://www.sec.gov/Archives/edgar/data/1018724/000101872425000123/amzn-20250930.htm"
+    },
+    {
+      "date": "2025-12-31",
+      "instrument": "Convertible notes",
+      "value": 45800000000.0,
+      "basis": "estimated fair value",
+      "quote": "As of December 31, 2025, the estimated fair value of our convertible notes recorded on our consolidated balance sheet was approximately $ 45.8 billion",
+      "link": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000004/amzn-20251231.htm"
+    },
+    {
+      "date": "2025-12-31",
+      "instrument": "Nonvoting preferred stock",
+      "value": 14800000000.0,
+      "basis": "amount recorded",
+      "quote": "As of December 31, 2025, the amount recorded on our consolidated balance sheet for nonvoting preferred stock was approximately $ 14.8 billion.",
+      "link": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000004/amzn-20251231.htm"
+    },
+    {
+      "date": "2026-03-31",
+      "instrument": "Convertible notes",
+      "value": 42200000000.0,
+      "basis": "estimated fair value",
+      "quote": "As of December 31, 2025 and March 31, 2026, the estimated fair value of our convertible notes recorded on our consolidated balance sheets was approximately $ 45.8 billion and $ 42.2 billion",
+      "link": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000014/amzn-20260331.htm"
+    },
+    {
+      "date": "2026-03-31",
+      "instrument": "Nonvoting preferred stock",
+      "value": 32000000000.0,
+      "basis": "amount recorded",
+      "quote": "As of December 31, 2025 and March 31, 2026, the amounts recorded on our consolidated balance sheets for nonvoting preferred stock were approximately $ 14.8 billion and $ 32.0 billion.",
+      "link": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000014/amzn-20260331.htm"
+    },
+    {
+      "date": "2026-06-30",
+      "instrument": "Convertible notes",
+      "value": 97900000000.0,
+      "basis": "estimated fair value",
+      "quote": "As of December 31, 2025 and June 30, 2026, the estimated fair value of our convertible notes recorded on our consolidated balance sheets was approximately $ 45.8 billion and $ 97.9 billion",
+      "link": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000026/amzn-20260630.htm"
+    },
+    {
+      "date": "2026-06-30",
+      "instrument": "Nonvoting preferred stock",
+      "value": 92500000000.0,
+      "basis": "amount recorded",
+      "quote": "As of December 31, 2025 and June 30, 2026, the amounts recorded on our consolidated balance sheets for nonvoting preferred stock were approximately $ 14.8 billion and $ 92.5 billion.",
+      "link": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000026/amzn-20260630.htm"
+    }
+  ],
+  "takeaway": [
+    "Amazon records $190.4B for its Anthropic convertible notes and nonvoting preferred stock at 2026-06-30, against $38.5B at 2025-09-30.",
+    "It reports investing $18B in cash since 2023, so the carrying value is 10.6x the cash invested."
+  ],
+  "assumptions": [
+    "Notes are at estimated fair value (level 3); the preferred stock is the amount Amazon records, adjusted for observable price changes. They are different bases, so the stack shows what Amazon reports, not one valuation method.",
+    "At 2025-06-30 Amazon gave one combined figure for notes and preferred without a split, so that bar is a single series; at 2024-12-31 only the notes are given.",
+    "Amazon does not disclose a share count or an ownership percentage, so no stake percentage or implied company valuation is computed. It says only that conversions on a liquidity event are subject to an ownership cap.",
+    "Cash invested is the sum of the quarterly investments Amazon states ($8.0 billion in notes through Q4 2025, then $10.0 billion of preferred in Q2 2026); the filings' own $8.0 billion note total matches.",
+    "Alphabet's 10-K and 10-Q filings never name Anthropic (checked 2023 to 2026), so there is no Alphabet row. This is a gap, not a zero.",
+    "Amazon also states a financing facility of up to $20.0 billion ($15.0 billion available after it took $5.0 billion of Series H); see the ledger."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "capital.amazon",
+  "page": "capital",
+  "as_of": "2026-06-30",
+  "sources": [
+    {
+      "source": "capital_strategic_holders",
+      "label": "Amazon 10-K and 10-Q passages on its Anthropic investment (cited ledger)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000026/amzn-20260630.htm",
+      "method": "ledger",
+      "tier": "filing",
+      "cadence": "quarterly",
+      "as_of": "2026-06-30",
+      "retrieved_at": "2026-10-05T07:48:16Z",
+      "freshness": "fresh",
+      "manual": {
+        "entered_by": "EwenCheung via Claude",
+        "entered_at": "2026-10-05T07:48:16Z",
+        "evidence": "an aggregate facility not to exceed $ 20.0 billion that will expire 30 months after an Anthropic liquidity event"
+      }
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T08:47:54Z"
+}

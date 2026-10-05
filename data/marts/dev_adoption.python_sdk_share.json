@@ -1,0 +1,613 @@
+{
+  "title": "Share of Python SDK downloads",
+  "subtitle": "Each company's share of downloads across the six tracked SDKs, last 18 complete months",
+  "kind": "stacked_bar",
+  "encoding": {
+    "x": {
+      "field": "month",
+      "type": "temporal",
+      "label": "Month"
+    },
+    "y": {
+      "field": "share",
+      "type": "quantitative",
+      "label": "Share of downloads",
+      "format": "pct"
+    },
+    "color": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    }
+  },
+  "columns": [
+    {
+      "field": "month",
+      "label": "Month",
+      "format": "date"
+    },
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "share",
+      "label": "Share",
+      "format": "pct"
+    }
+  ],
+  "rows": [
+    {
+      "month": "2025-04-01",
+      "company": "OpenAI",
+      "share": 0.7027
+    },
+    {
+      "month": "2025-04-01",
+      "company": "Anthropic",
+      "share": 0.1178
+    },
+    {
+      "month": "2025-04-01",
+      "company": "Google DeepMind",
+      "share": 0.0965
+    },
+    {
+      "month": "2025-04-01",
+      "company": "Mistral AI",
+      "share": 0.0176
+    },
+    {
+      "month": "2025-04-01",
+      "company": "Cohere",
+      "share": 0.0654
+    },
+    {
+      "month": "2025-04-01",
+      "company": "xAI",
+      "share": 0.0
+    },
+    {
+      "month": "2025-05-01",
+      "company": "OpenAI",
+      "share": 0.5394
+    },
+    {
+      "month": "2025-05-01",
+      "company": "Anthropic",
+      "share": 0.0879
+    },
+    {
+      "month": "2025-05-01",
+      "company": "Google DeepMind",
+      "share": 0.297
+    },
+    {
+      "month": "2025-05-01",
+      "company": "Mistral AI",
+      "share": 0.0132
+    },
+    {
+      "month": "2025-05-01",
+      "company": "Cohere",
+      "share": 0.0626
+    },
+    {
+      "month": "2025-05-01",
+      "company": "xAI",
+      "share": 0.0
+    },
+    {
+      "month": "2025-06-01",
+      "company": "OpenAI",
+      "share": 0.45
+    },
+    {
+      "month": "2025-06-01",
+      "company": "Anthropic",
+      "share": 0.084
+    },
+    {
+      "month": "2025-06-01",
+      "company": "Google DeepMind",
+      "share": 0.4071
+    },
+    {
+      "month": "2025-06-01",
+      "company": "Mistral AI",
+      "share": 0.0142
+    },
+    {
+      "month": "2025-06-01",
+      "company": "Cohere",
+      "share": 0.0446
+    },
+    {
+      "month": "2025-06-01",
+      "company": "xAI",
+      "share": 0.0
+    },
+    {
+      "month": "2025-07-01",
+      "company": "OpenAI",
+      "share": 0.4312
+    },
+    {
+      "month": "2025-07-01",
+      "company": "Anthropic",
+      "share": 0.0908
+    },
+    {
+      "month": "2025-07-01",
+      "company": "Google DeepMind",
+      "share": 0.4244
+    },
+    {
+      "month": "2025-07-01",
+      "company": "Mistral AI",
+      "share": 0.0158
+    },
+    {
+      "month": "2025-07-01",
+      "company": "Cohere",
+      "share": 0.0377
+    },
+    {
+      "month": "2025-07-01",
+      "company": "xAI",
+      "share": 0.0002
+    },
+    {
+      "month": "2025-08-01",
+      "company": "OpenAI",
+      "share": 0.4363
+    },
+    {
+      "month": "2025-08-01",
+      "company": "Anthropic",
+      "share": 0.1222
+    },
+    {
+      "month": "2025-08-01",
+      "company": "Google DeepMind",
+      "share": 0.388
+    },
+    {
+      "month": "2025-08-01",
+      "company": "Mistral AI",
+      "share": 0.0177
+    },
+    {
+      "month": "2025-08-01",
+      "company": "Cohere",
+      "share": 0.0355
+    },
+    {
+      "month": "2025-08-01",
+      "company": "xAI",
+      "share": 0.0003
+    },
+    {
+      "month": "2025-09-01",
+      "company": "OpenAI",
+      "share": 0.4046
+    },
+    {
+      "month": "2025-09-01",
+      "company": "Anthropic",
+      "share": 0.0995
+    },
+    {
+      "month": "2025-09-01",
+      "company": "Google DeepMind",
+      "share": 0.4442
+    },
+    {
+      "month": "2025-09-01",
+      "company": "Mistral AI",
+      "share": 0.0178
+    },
+    {
+      "month": "2025-09-01",
+      "company": "Cohere",
+      "share": 0.0335
+    },
+    {
+      "month": "2025-09-01",
+      "company": "xAI",
+      "share": 0.0005
+    },
+    {
+      "month": "2025-10-01",
+      "company": "OpenAI",
+      "share": 0.4037
+    },
+    {
+      "month": "2025-10-01",
+      "company": "Anthropic",
+      "share": 0.0951
+    },
+    {
+      "month": "2025-10-01",
+      "company": "Google DeepMind",
+      "share": 0.4541
+    },
+    {
+      "month": "2025-10-01",
+      "company": "Mistral AI",
+      "share": 0.0167
+    },
+    {
+      "month": "2025-10-01",
+      "company": "Cohere",
+      "share": 0.0299
+    },
+    {
+      "month": "2025-10-01",
+      "company": "xAI",
+      "share": 0.0004
+    },
+    {
+      "month": "2025-11-01",
+      "company": "OpenAI",
+      "share": 0.3279
+    },
+    {
+      "month": "2025-11-01",
+      "company": "Anthropic",
+      "share": 0.0778
+    },
+    {
+      "month": "2025-11-01",
+      "company": "Google DeepMind",
+      "share": 0.5516
+    },
+    {
+      "month": "2025-11-01",
+      "company": "Mistral AI",
+      "share": 0.0134
+    },
+    {
+      "month": "2025-11-01",
+      "company": "Cohere",
+      "share": 0.0283
+    },
+    {
+      "month": "2025-11-01",
+      "company": "xAI",
+      "share": 0.001
+    },
+    {
+      "month": "2025-12-01",
+      "company": "OpenAI",
+      "share": 0.2935
+    },
+    {
+      "month": "2025-12-01",
+      "company": "Anthropic",
+      "share": 0.079
+    },
+    {
+      "month": "2025-12-01",
+      "company": "Google DeepMind",
+      "share": 0.5888
+    },
+    {
+      "month": "2025-12-01",
+      "company": "Mistral AI",
+      "share": 0.0133
+    },
+    {
+      "month": "2025-12-01",
+      "company": "Cohere",
+      "share": 0.0243
+    },
+    {
+      "month": "2025-12-01",
+      "company": "xAI",
+      "share": 0.0011
+    },
+    {
+      "month": "2026-01-01",
+      "company": "OpenAI",
+      "share": 0.3295
+    },
+    {
+      "month": "2026-01-01",
+      "company": "Anthropic",
+      "share": 0.0946
+    },
+    {
+      "month": "2026-01-01",
+      "company": "Google DeepMind",
+      "share": 0.5289
+    },
+    {
+      "month": "2026-01-01",
+      "company": "Mistral AI",
+      "share": 0.0192
+    },
+    {
+      "month": "2026-01-01",
+      "company": "Cohere",
+      "share": 0.0259
+    },
+    {
+      "month": "2026-01-01",
+      "company": "xAI",
+      "share": 0.0019
+    },
+    {
+      "month": "2026-02-01",
+      "company": "OpenAI",
+      "share": 0.3346
+    },
+    {
+      "month": "2026-02-01",
+      "company": "Anthropic",
+      "share": 0.1048
+    },
+    {
+      "month": "2026-02-01",
+      "company": "Google DeepMind",
+      "share": 0.5044
+    },
+    {
+      "month": "2026-02-01",
+      "company": "Mistral AI",
+      "share": 0.0232
+    },
+    {
+      "month": "2026-02-01",
+      "company": "Cohere",
+      "share": 0.0281
+    },
+    {
+      "month": "2026-02-01",
+      "company": "xAI",
+      "share": 0.0049
+    },
+    {
+      "month": "2026-03-01",
+      "company": "OpenAI",
+      "share": 0.3672
+    },
+    {
+      "month": "2026-03-01",
+      "company": "Anthropic",
+      "share": 0.1312
+    },
+    {
+      "month": "2026-03-01",
+      "company": "Google DeepMind",
+      "share": 0.4312
+    },
+    {
+      "month": "2026-03-01",
+      "company": "Mistral AI",
+      "share": 0.025
+    },
+    {
+      "month": "2026-03-01",
+      "company": "Cohere",
+      "share": 0.038
+    },
+    {
+      "month": "2026-03-01",
+      "company": "xAI",
+      "share": 0.0074
+    },
+    {
+      "month": "2026-04-01",
+      "company": "OpenAI",
+      "share": 0.394
+    },
+    {
+      "month": "2026-04-01",
+      "company": "Anthropic",
+      "share": 0.1595
+    },
+    {
+      "month": "2026-04-01",
+      "company": "Google DeepMind",
+      "share": 0.342
+    },
+    {
+      "month": "2026-04-01",
+      "company": "Mistral AI",
+      "share": 0.0407
+    },
+    {
+      "month": "2026-04-01",
+      "company": "Cohere",
+      "share": 0.054
+    },
+    {
+      "month": "2026-04-01",
+      "company": "xAI",
+      "share": 0.0099
+    },
+    {
+      "month": "2026-05-01",
+      "company": "OpenAI",
+      "share": 0.3896
+    },
+    {
+      "month": "2026-05-01",
+      "company": "Anthropic",
+      "share": 0.1597
+    },
+    {
+      "month": "2026-05-01",
+      "company": "Google DeepMind",
+      "share": 0.331
+    },
+    {
+      "month": "2026-05-01",
+      "company": "Mistral AI",
+      "share": 0.0521
+    },
+    {
+      "month": "2026-05-01",
+      "company": "Cohere",
+      "share": 0.0566
+    },
+    {
+      "month": "2026-05-01",
+      "company": "xAI",
+      "share": 0.0111
+    },
+    {
+      "month": "2026-06-01",
+      "company": "OpenAI",
+      "share": 0.3958
+    },
+    {
+      "month": "2026-06-01",
+      "company": "Anthropic",
+      "share": 0.1696
+    },
+    {
+      "month": "2026-06-01",
+      "company": "Google DeepMind",
+      "share": 0.325
+    },
+    {
+      "month": "2026-06-01",
+      "company": "Mistral AI",
+      "share": 0.0554
+    },
+    {
+      "month": "2026-06-01",
+      "company": "Cohere",
+      "share": 0.0464
+    },
+    {
+      "month": "2026-06-01",
+      "company": "xAI",
+      "share": 0.0077
+    },
+    {
+      "month": "2026-07-01",
+      "company": "OpenAI",
+      "share": 0.4011
+    },
+    {
+      "month": "2026-07-01",
+      "company": "Anthropic",
+      "share": 0.1863
+    },
+    {
+      "month": "2026-07-01",
+      "company": "Google DeepMind",
+      "share": 0.3167
+    },
+    {
+      "month": "2026-07-01",
+      "company": "Mistral AI",
+      "share": 0.05
+    },
+    {
+      "month": "2026-07-01",
+      "company": "Cohere",
+      "share": 0.0411
+    },
+    {
+      "month": "2026-07-01",
+      "company": "xAI",
+      "share": 0.0048
+    },
+    {
+      "month": "2026-08-01",
+      "company": "OpenAI",
+      "share": 0.4395
+    },
+    {
+      "month": "2026-08-01",
+      "company": "Anthropic",
+      "share": 0.2021
+    },
+    {
+      "month": "2026-08-01",
+      "company": "Google DeepMind",
+      "share": 0.2847
+    },
+    {
+      "month": "2026-08-01",
+      "company": "Mistral AI",
+      "share": 0.0394
+    },
+    {
+      "month": "2026-08-01",
+      "company": "Cohere",
+      "share": 0.0299
+    },
+    {
+      "month": "2026-08-01",
+      "company": "xAI",
+      "share": 0.0044
+    },
+    {
+      "month": "2026-09-01",
+      "company": "OpenAI",
+      "share": 0.4747
+    },
+    {
+      "month": "2026-09-01",
+      "company": "Anthropic",
+      "share": 0.2375
+    },
+    {
+      "month": "2026-09-01",
+      "company": "Google DeepMind",
+      "share": 0.2353
+    },
+    {
+      "month": "2026-09-01",
+      "company": "Mistral AI",
+      "share": 0.0279
+    },
+    {
+      "month": "2026-09-01",
+      "company": "Cohere",
+      "share": 0.0171
+    },
+    {
+      "month": "2026-09-01",
+      "company": "xAI",
+      "share": 0.0075
+    }
+  ],
+  "takeaway": [
+    "Anthropic took 24% of tracked Python SDK downloads in Sep 2026, against 10% in Sep 2025."
+  ],
+  "assumptions": [
+    "Share = a company's SDK downloads ÷ the total across the six tracked companies' SDKs that month.",
+    "Untracked SDKs and frameworks that wrap these APIs (LangChain, LiteLLM) are not in the denominator.",
+    "Downloads count every install, including CI and mirrors: read them as relative pull, not users.",
+    "Installs pulled in as a dependency of another package count too, so an SDK bundled by popular agent frameworks (google-genai is one) reads higher than its direct use."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "dev_adoption.python_sdk_share",
+  "page": "dev_adoption",
+  "as_of": "2026-10-04",
+  "sources": [
+    {
+      "source": "pypi_downloads",
+      "label": "PyPI downloads (ClickHouse public PyPI dataset)",
+      "url": "https://sql-clickhouse.clickhouse.com/",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T08:47:54Z"
+}

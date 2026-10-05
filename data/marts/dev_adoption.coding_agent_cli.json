@@ -1,0 +1,460 @@
+{
+  "title": "Coding-agent CLI downloads per month",
+  "subtitle": "Claude Code vs OpenAI Codex CLI vs Gemini CLI on npm, complete months",
+  "kind": "line",
+  "encoding": {
+    "x": {
+      "field": "month",
+      "type": "temporal",
+      "label": "Month"
+    },
+    "y": {
+      "field": "downloads",
+      "type": "quantitative",
+      "label": "Downloads",
+      "format": "int"
+    },
+    "color": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    }
+  },
+  "columns": [
+    {
+      "field": "month",
+      "label": "Month",
+      "format": "date"
+    },
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "downloads",
+      "label": "Downloads",
+      "format": "int"
+    },
+    {
+      "field": "raw",
+      "label": "Raw (incl. spike days)",
+      "format": "int"
+    },
+    {
+      "field": "spike_days",
+      "label": "Spike days excluded",
+      "format": "int"
+    }
+  ],
+  "rows": [
+    {
+      "month": "2025-02-01",
+      "company": "Anthropic",
+      "downloads": 147648,
+      "raw": 147648,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-03-01",
+      "company": "Anthropic",
+      "downloads": 650866,
+      "raw": 650866,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-04-01",
+      "company": "OpenAI",
+      "downloads": 82164,
+      "raw": 82164,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-04-01",
+      "company": "Anthropic",
+      "downloads": 862556,
+      "raw": 862556,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-05-01",
+      "company": "OpenAI",
+      "downloads": 134689,
+      "raw": 134689,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-05-01",
+      "company": "Anthropic",
+      "downloads": 1521790,
+      "raw": 1521790,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-06-01",
+      "company": "OpenAI",
+      "downloads": 104618,
+      "raw": 104618,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-06-01",
+      "company": "Anthropic",
+      "downloads": 4338148,
+      "raw": 4338148,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-06-01",
+      "company": "Google DeepMind",
+      "downloads": 341480,
+      "raw": 341480,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-07-01",
+      "company": "OpenAI",
+      "downloads": 122799,
+      "raw": 122799,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-07-01",
+      "company": "Anthropic",
+      "downloads": 17045271,
+      "raw": 17045271,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-07-01",
+      "company": "Google DeepMind",
+      "downloads": 825600,
+      "raw": 825600,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-08-01",
+      "company": "OpenAI",
+      "downloads": 392237,
+      "raw": 392237,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-08-01",
+      "company": "Anthropic",
+      "downloads": 21541238,
+      "raw": 21541238,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-08-01",
+      "company": "Google DeepMind",
+      "downloads": 959645,
+      "raw": 959645,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-09-01",
+      "company": "OpenAI",
+      "downloads": 871011,
+      "raw": 871011,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-09-01",
+      "company": "Anthropic",
+      "downloads": 22734286,
+      "raw": 22734286,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-09-01",
+      "company": "Google DeepMind",
+      "downloads": 2424984,
+      "raw": 2424984,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-10-01",
+      "company": "OpenAI",
+      "downloads": 1120267,
+      "raw": 1120267,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-10-01",
+      "company": "Anthropic",
+      "downloads": 23989032,
+      "raw": 23989032,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-10-01",
+      "company": "Google DeepMind",
+      "downloads": 1150943,
+      "raw": 1150943,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-11-01",
+      "company": "OpenAI",
+      "downloads": 1453966,
+      "raw": 1453966,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-11-01",
+      "company": "Anthropic",
+      "downloads": 21571991,
+      "raw": 21571991,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-11-01",
+      "company": "Google DeepMind",
+      "downloads": 1637458,
+      "raw": 1637458,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-12-01",
+      "company": "OpenAI",
+      "downloads": 1980311,
+      "raw": 1980311,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-12-01",
+      "company": "Anthropic",
+      "downloads": 21551967,
+      "raw": 21551967,
+      "spike_days": 0
+    },
+    {
+      "month": "2025-12-01",
+      "company": "Google DeepMind",
+      "downloads": 1677922,
+      "raw": 1677922,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-01-01",
+      "company": "OpenAI",
+      "downloads": 2327895,
+      "raw": 2327895,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-01-01",
+      "company": "Anthropic",
+      "downloads": 27575444,
+      "raw": 27575444,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-01-01",
+      "company": "Google DeepMind",
+      "downloads": 2029752,
+      "raw": 2029752,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-02-01",
+      "company": "OpenAI",
+      "downloads": 5801153,
+      "raw": 5801153,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-02-01",
+      "company": "Anthropic",
+      "downloads": 30510428,
+      "raw": 30510428,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-02-01",
+      "company": "Google DeepMind",
+      "downloads": 2727397,
+      "raw": 2727397,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-03-01",
+      "company": "OpenAI",
+      "downloads": 14529757,
+      "raw": 14529757,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-03-01",
+      "company": "Anthropic",
+      "downloads": 44445736,
+      "raw": 44445736,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-03-01",
+      "company": "Google DeepMind",
+      "downloads": 3201602,
+      "raw": 3201602,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-04-01",
+      "company": "OpenAI",
+      "downloads": 31367293,
+      "raw": 31367293,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-04-01",
+      "company": "Anthropic",
+      "downloads": 49361496,
+      "raw": 49361496,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-04-01",
+      "company": "Google DeepMind",
+      "downloads": 3471911,
+      "raw": 3471911,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-05-01",
+      "company": "OpenAI",
+      "downloads": 38944659,
+      "raw": 239381470,
+      "spike_days": 6
+    },
+    {
+      "month": "2026-05-01",
+      "company": "Anthropic",
+      "downloads": 34562178,
+      "raw": 34562178,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-05-01",
+      "company": "Google DeepMind",
+      "downloads": 3185224,
+      "raw": 3185224,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-06-01",
+      "company": "OpenAI",
+      "downloads": 46157876,
+      "raw": 46157876,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-06-01",
+      "company": "Anthropic",
+      "downloads": 44038610,
+      "raw": 44038610,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-06-01",
+      "company": "Google DeepMind",
+      "downloads": 2515086,
+      "raw": 2515086,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-07-01",
+      "company": "OpenAI",
+      "downloads": 62207401,
+      "raw": 62207401,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-07-01",
+      "company": "Anthropic",
+      "downloads": 49100543,
+      "raw": 49100543,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-07-01",
+      "company": "Google DeepMind",
+      "downloads": 2025282,
+      "raw": 2025282,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-08-01",
+      "company": "OpenAI",
+      "downloads": 74276500,
+      "raw": 74276500,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-08-01",
+      "company": "Anthropic",
+      "downloads": 82199042,
+      "raw": 82199042,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-08-01",
+      "company": "Google DeepMind",
+      "downloads": 1636285,
+      "raw": 1636285,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-09-01",
+      "company": "OpenAI",
+      "downloads": 89664560,
+      "raw": 89664560,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-09-01",
+      "company": "Anthropic",
+      "downloads": 55930237,
+      "raw": 55930237,
+      "spike_days": 0
+    },
+    {
+      "month": "2026-09-01",
+      "company": "Google DeepMind",
+      "downloads": 1629189,
+      "raw": 1629189,
+      "spike_days": 0
+    }
+  ],
+  "takeaway": [
+    "In Sep 2026, coding-agent CLI downloads: Anthropic 55.9M (-32% on Aug 2026), against OpenAI at 89.7M (1.6× Anthropic)."
+  ],
+  "assumptions": [
+    "Downloads count every install, including CI and mirrors: read them as relative pull, not users.",
+    "Installs pulled in as a dependency of another package count too, so an SDK bundled by popular agent frameworks (google-genai is one) reads higher than its direct use.",
+    "Days above 10× a package's median of both the 28 days before and after are transient bulk-download anomalies and are excluded from the chart: OpenAI May 2026 (6 days, raw 239M). Raw totals stay in the table.",
+    "Products: Anthropic = @anthropic-ai/claude-code, Google DeepMind = @google/gemini-cli, OpenAI = @openai/codex.",
+    "CLIs update often, and each update is a download, so release cadence inflates counts."
+  ],
+  "badges": [],
+  "id": "dev_adoption.coding_agent_cli",
+  "page": "dev_adoption",
+  "as_of": "2026-10-04",
+  "sources": [
+    {
+      "source": "npm_downloads",
+      "label": "npm registry download counts",
+      "url": "https://api.npmjs.org/downloads/range/2025-09-29:2026-10-04/@anthropic-ai/sdk",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T08:47:54Z"
+}

@@ -1,0 +1,282 @@
+{
+  "title": "API price per model, at release",
+  "subtitle": "Input price in USD per million tokens, by the date each model was released",
+  "kind": "line",
+  "encoding": {
+    "x": {
+      "field": "released",
+      "type": "temporal",
+      "label": "Model released"
+    },
+    "y": {
+      "field": "input",
+      "type": "quantitative",
+      "label": "Input USD per million tokens",
+      "format": "float"
+    },
+    "color": {
+      "field": "tier",
+      "type": "nominal",
+      "label": "Tier"
+    }
+  },
+  "columns": [
+    {
+      "field": "released",
+      "label": "Released",
+      "format": "date"
+    },
+    {
+      "field": "model",
+      "label": "Model",
+      "format": "text"
+    },
+    {
+      "field": "tier",
+      "label": "Tier",
+      "format": "text"
+    },
+    {
+      "field": "input",
+      "label": "Input USD / MTok",
+      "format": "float"
+    },
+    {
+      "field": "output",
+      "label": "Output USD / MTok",
+      "format": "float"
+    },
+    {
+      "field": "basis",
+      "label": "Price basis",
+      "format": "text"
+    }
+  ],
+  "rows": [
+    {
+      "released": "2024-03-04",
+      "tier": "Haiku",
+      "model": "Claude 3 Haiku",
+      "input": 0.25,
+      "output": 1.25,
+      "basis": "launch price"
+    },
+    {
+      "released": "2024-03-04",
+      "tier": "Opus",
+      "model": "Claude 3 Opus",
+      "input": 15.0,
+      "output": 75.0,
+      "basis": "launch price"
+    },
+    {
+      "released": "2024-03-04",
+      "tier": "Sonnet",
+      "model": "Claude 3 Sonnet",
+      "input": 3.0,
+      "output": 15.0,
+      "basis": "launch price"
+    },
+    {
+      "released": "2024-06-21",
+      "tier": "Sonnet",
+      "model": "Claude 3.5 Sonnet",
+      "input": 3.0,
+      "output": 15.0,
+      "basis": "launch price"
+    },
+    {
+      "released": "2024-10-22",
+      "tier": "Haiku",
+      "model": "Claude 3.5 Haiku",
+      "input": 0.8,
+      "output": 4.0,
+      "basis": "current list price"
+    },
+    {
+      "released": "2025-02-24",
+      "tier": "Sonnet",
+      "model": "Claude 3.7 Sonnet",
+      "input": 3.0,
+      "output": 15.0,
+      "basis": "launch price"
+    },
+    {
+      "released": "2025-05-22",
+      "tier": "Opus",
+      "model": "Claude Opus 4",
+      "input": 15.0,
+      "output": 75.0,
+      "basis": "current list price"
+    },
+    {
+      "released": "2025-05-22",
+      "tier": "Sonnet",
+      "model": "Claude Sonnet 4",
+      "input": 3.0,
+      "output": 15.0,
+      "basis": "current list price"
+    },
+    {
+      "released": "2025-08-05",
+      "tier": "Opus",
+      "model": "Claude Opus 4.1",
+      "input": 15.0,
+      "output": 75.0,
+      "basis": "current list price"
+    },
+    {
+      "released": "2025-09-29",
+      "tier": "Sonnet",
+      "model": "Claude Sonnet 4.5",
+      "input": 3.0,
+      "output": 15.0,
+      "basis": "current list price"
+    },
+    {
+      "released": "2025-10-15",
+      "tier": "Haiku",
+      "model": "Claude Haiku 4.5",
+      "input": 1.0,
+      "output": 5.0,
+      "basis": "current list price"
+    },
+    {
+      "released": "2025-11-24",
+      "tier": "Opus",
+      "model": "Claude Opus 4.5",
+      "input": 5.0,
+      "output": 25.0,
+      "basis": "current list price"
+    },
+    {
+      "released": "2026-02-05",
+      "tier": "Opus",
+      "model": "Claude Opus 4.6",
+      "input": 5.0,
+      "output": 25.0,
+      "basis": "current list price"
+    },
+    {
+      "released": "2026-02-17",
+      "tier": "Sonnet",
+      "model": "Claude Sonnet 4.6",
+      "input": 3.0,
+      "output": 15.0,
+      "basis": "current list price"
+    },
+    {
+      "released": "2026-04-16",
+      "tier": "Opus",
+      "model": "Claude Opus 4.7",
+      "input": 5.0,
+      "output": 25.0,
+      "basis": "current list price"
+    },
+    {
+      "released": "2026-05-28",
+      "tier": "Opus",
+      "model": "Claude Opus 4.8",
+      "input": 5.0,
+      "output": 25.0,
+      "basis": "current list price"
+    },
+    {
+      "released": "2026-06-09",
+      "tier": "Fable",
+      "model": "Claude Fable 5",
+      "input": 10.0,
+      "output": 50.0,
+      "basis": "current list price"
+    },
+    {
+      "released": "2026-06-30",
+      "tier": "Sonnet",
+      "model": "Claude Sonnet 5",
+      "input": 2.0,
+      "output": 10.0,
+      "basis": "current list price"
+    },
+    {
+      "released": "2026-07-24",
+      "tier": "Opus",
+      "model": "Claude Opus 5",
+      "input": 5.0,
+      "output": 25.0,
+      "basis": "current list price"
+    },
+    {
+      "released": "2026-09-01",
+      "tier": "Fable",
+      "model": "Claude Fable 5.1",
+      "input": 10.0,
+      "output": 50.0,
+      "basis": "current list price"
+    },
+    {
+      "released": "2026-09-22",
+      "tier": "Opus",
+      "model": "Claude Opus 5.5",
+      "input": 4.0,
+      "output": 20.0,
+      "basis": "current list price"
+    },
+    {
+      "released": "2026-09-28",
+      "tier": "Sonnet",
+      "model": "Claude Sonnet 5.5",
+      "input": 2.0,
+      "output": 10.0,
+      "basis": "current list price"
+    }
+  ],
+  "takeaway": [
+    "Opus input pricing went from $15 per million tokens (Claude 3 Opus) to $4 (Claude Opus 5.5)."
+  ],
+  "assumptions": [
+    "Models still on the pricing page show today's list price; older models show the price in their launch announcement. The basis is in the table.",
+    "One model's price can change after release. Claude 3.5 Haiku was repriced from its launch price to $0.80 / $4.",
+    "List prices only: batch, prompt-caching and long-context rates differ. Mythos models are limited-access and not charted.",
+    "Newer tokenizers (Claude 4.7 and later) produce about 30% more tokens for the same text, so a lower price per token is not always a lower price per task."
+  ],
+  "badges": [],
+  "id": "product.api_prices",
+  "page": "product",
+  "as_of": "2026-10-05",
+  "sources": [
+    {
+      "source": "product_model_releases",
+      "label": "Anthropic model announcements (cited ledger)",
+      "url": "https://platform.claude.com/docs/en/release-notes/overview",
+      "method": "ledger",
+      "tier": "company-stated",
+      "cadence": "monthly",
+      "as_of": "2026-09-28",
+      "retrieved_at": "2026-10-05T07:36:19Z",
+      "freshness": "fresh",
+      "manual": {
+        "entered_by": "EwenCheung via Claude",
+        "entered_at": "2026-10-05T07:36:19Z",
+        "evidence": "We've launched Claude Sonnet 5.5 (claude-sonnet-5-5)."
+      }
+    },
+    {
+      "source": "product_api_prices",
+      "label": "Anthropic API prices (cited ledger)",
+      "url": "https://platform.claude.com/docs/en/about-claude/pricing",
+      "method": "ledger",
+      "tier": "company-stated",
+      "cadence": "monthly",
+      "as_of": "2026-10-05",
+      "retrieved_at": "2026-10-05T07:36:19Z",
+      "freshness": "fresh",
+      "manual": {
+        "entered_by": "EwenCheung via Claude",
+        "entered_at": "2026-10-05T07:36:19Z",
+        "evidence": "Claude Fable 5.1 For demanding reasoning and long-horizon agentic work $10 / MTok $50 / MTok"
+      }
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T08:47:54Z"
+}

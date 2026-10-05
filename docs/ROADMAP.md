@@ -16,24 +16,26 @@ The full design is in [the spec](superpowers/specs/2026-10-05-signal-monitor-des
 | 0.1 | Team environment: shared plugins, CLAUDE.md, README, roadmap, spec | `p0/team-env` | ☑ |
 | 0.2 | Contracts & fixtures: row, chart-spec and AI-report schemas, module interfaces, sample marts | `p0/contracts` | ☑ |
 
-## Phase 1: Platform ⧗ (PR `phase/1` → `main`)
+## Phase 1: Platform ☑ (merged in #5, tag `phase-1`)
 | # | Implementation | Branch | Status |
 |---|---|---|---|
-| 1.1 | Data core: registry, collect/build CLIs, freshness, daily/weekly workflows, snapshot capture | `p1/data-core` | ⧗ (#2) |
-| 1.2 | Web core: FastAPI, password, React shell, ChartCard, sample page, Render config | `p1/web-core` | ⧗ (#3) |
-| gate | Integration: live freshness from `data/registry.json`, real-data `DATA_DIR`, login throttle, workflow hardening, worktree standard | `p1/integration` | ⧗ (#4) |
+| 1.1 | Data core: registry, collect/build CLIs, freshness, daily/weekly workflows, snapshot capture | `p1/data-core` | ☑ (#2) |
+| 1.2 | Web core: FastAPI, password, React shell, ChartCard, sample page, Render config | `p1/web-core` | ☑ (#3) |
+| gate | Integration: live freshness from `data/registry.json`, real-data `DATA_DIR`, login throttle, workflow hardening, worktree standard | `p1/integration` | ☑ (#4) |
 
-## Phase 2: Evidence pages ☐
+## Phase 2: Evidence pages ⧗ (PR review from `phase/2`)
 | # | Implementation | Branch | Status |
 |---|---|---|---|
-| 2.1 | Hiring & Talent | `p2/hiring` | ☐ |
-| 2.2 | Developer Adoption | `p2/dev-adoption` | ☐ |
-| 2.3 | Consumer & Attention | `p2/attention` | ☐ |
-| 2.4 | Product, Pricing & Reliability | `p2/product` | ☐ |
-| 2.5 | Customers & Contracts | `p2/customers` | ☐ |
-| 2.6 | Capital & Valuation | `p2/capital` | ☐ |
-| 2.7 | Licensed Alt-Data + `/add-manual-data` | `p2/licensed-data` | ☐ |
-| 2.8 | Data & Methods + `/refresh-data`, `/add-source` | `p2/data-methods` | ☐ |
+| 2.1 | Hiring & Talent | `p2/hiring` | ☑ (#8) |
+| 2.2 | Developer Adoption | `p2/dev-adoption` | ☑ (#10) |
+| 2.3 | Consumer & Attention | `p2/attention` | ☑ (#11) |
+| 2.4 | Product, Pricing & Reliability | `p2/product` | ☑ (#9, #14) |
+| 2.5 | Customers & Contracts | `p2/customers` | ☑ (#16) |
+| 2.6 | Capital & Valuation | `p2/capital` | ☑ (#15) |
+| 2.7 | Licensed Alt-Data + `/add-manual-data` | `p2/licensed-data` | ☑ (#12) |
+| 2.8 | Data & Methods + `/refresh-data`, `/add-source` | `p2/data-methods` | ☑ (#13) |
+
+| core | Shared http, frame helpers, fixed company colours, rate-limit patience, concrete provenance links and hardcoded-ledger labels | `p2/core`, `p2/core-ratelimit`, `p2/core-source-provenance` | ☑ (#6, #7, #17) |
 
 ## Phase 3: Cross-page synthesis ☐
 | # | Implementation | Branch | Status |

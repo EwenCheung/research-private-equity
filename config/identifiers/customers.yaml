@@ -1,0 +1,50 @@
+# How each company is found in the Customers sources. Every pattern below was checked against the real data on 2026-10-05
+# (see the assumptions on the charts); the reason for each exclusion is written next to it.
+#
+# hn: regex per term, run over each top-level comment of the monthly "Ask HN: Who is hiring?" threads. (?i) is on by default;
+#   (?-i:...) makes a part case-sensitive. A post naming several terms of one company counts once for that company.
+#   Left out on purpose: "DeepMind" (34 hits, almost all "ex-DeepMind" or "backed by DeepMind founders", not Gemini work).
+#   Known false hits kept in: Gemini the Las Vegas solar project and Gemini the crypto exchange (2 of 55 Gemini hits).
+# sec: EDGAR full-text queries per term, run over 10-K and 10-Q main documents; a filing matching any query counts once.
+#   Bare "Claude" is NOT searched: it is mostly a first name (Norfolk Southern, Sarepta, Welltower...), so the Claude term uses
+#   product names. "Mistral" and "Cohere" are also ordinary company names (Mistral Equity Partners, Cohere Health), so they
+#   are searched only next to another AI lab's name. "xAI" also matches the XAI Octagon fund and a few garbled documents
+#   from before xAI existed (since: drops those). ignore: CIKs of filers whose hits were opened and are not the company.
+# usaspending: search = recipient_search_text terms (substring match: "anthropic" also returns PHILANTHROPIC...), then
+#   recipient = patterns the recipient name must match in full. Search terms are kept long because short ones match thousands
+#   of unrelated recipients ("xai" = PRAXAIR, "cohere" = COHERENT, "open ai" = OPEN AIR). MISTRAL INC (a defence contractor)
+#   and COHERE GROUP do not match.
+anthropic:
+  hn: {Claude: '\bclaude\b', Anthropic: '\banthropic\b'}
+  sec:
+    Anthropic:
+      queries: ['"Anthropic"']
+      # EDGAR search ignores case. Every one of the 122 filings found on 2026-10-05 was opened: all but N2OFF name the company.
+      ignore: {'0001789192': 'N2OFF, Inc. writes "anthropic factors" (human-caused emissions), not the company'}
+    Claude: {queries: ['"Claude Code"', '"Claude Sonnet"', '"Claude Opus"', '"Claude Haiku"', '"Claude AI"', '"Claude Cowork"']}
+  usaspending: {search: [anthropic], recipient: ['ANTHROPIC,? (PBC|INC\.?)']}
+openai:
+  hn: {OpenAI: '\bopen ?ai\b', GPT: '\b(?:chatgpt|gpt)\b|\bgpt-?\d'}
+  sec:
+    OpenAI: {queries: ['"OpenAI"']}
+  usaspending: {search: [openai, openai opco, openai global], recipient: ['OPEN ?AI( OPCO| GLOBAL| GROUP)?,? ?(LLC|INC\.?|PBC)?']}
+google-deepmind:
+  hn: {Gemini: '(?-i:\bGemini\b)'}
+  sec:
+    DeepMind: {queries: ['"DeepMind"']}
+  usaspending: {search: [deepmind], recipient: ['(GOOGLE )?DEEPMIND( TECHNOLOGIES)?( LIMITED| LTD| LLC| INC\.?)?']}
+xai:
+  hn: {xAI: '(?-i:\bxAI\b)|\bx\.ai\b', Grok: '(?-i:\bGrok\b)'}
+  sec:
+    xAI: {queries: ['"xAI" -"Octagon"', '"X.AI"'], since: '2023-07-12'}
+  usaspending: {search: [x.ai, xai corp, xai holdings], recipient: ['(X\.AI|XAI)( CORP\.?| HOLDINGS| LLC| INC\.?)*']}
+mistral:
+  hn: {Mistral: '\bmistral\b'}
+  sec:
+    Mistral: {queries: ['"Mistral AI"', '"Mistral" "OpenAI"', '"Mistral" "Anthropic"']}
+  usaspending: {search: [mistral ai], recipient: ['MISTRAL AI( SAS)?']}
+cohere:
+  hn: {Cohere: '(?-i:\bCohere\b)(?!\s+Health)'}
+  sec:
+    Cohere: {queries: ['"Cohere" "OpenAI"', '"Cohere" "Anthropic"', '"Cohere" "Mistral"']}
+  usaspending: {search: [cohere inc, cohere technologies, cohere ai], recipient: ['COHERE (INC\.?|TECHNOLOGIES.*|AI.*)']}

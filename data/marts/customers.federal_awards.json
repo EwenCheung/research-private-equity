@@ -1,0 +1,89 @@
+{
+  "title": "Federal awards to the AI labs",
+  "subtitle": "Direct awards on USAspending.gov whose recipient name matches the company, every award type since Oct 2007",
+  "kind": "table",
+  "encoding": {},
+  "columns": [
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "recipient",
+      "label": "Recipient name",
+      "format": "text"
+    },
+    {
+      "field": "start",
+      "label": "Start",
+      "format": "date"
+    },
+    {
+      "field": "agency",
+      "label": "Awarding agency",
+      "format": "text"
+    },
+    {
+      "field": "type",
+      "label": "Award type",
+      "format": "text"
+    },
+    {
+      "field": "description",
+      "label": "Description",
+      "format": "text"
+    },
+    {
+      "field": "obligated",
+      "label": "Obligated",
+      "format": "usd"
+    },
+    {
+      "field": "link",
+      "label": "Source",
+      "format": "url"
+    }
+  ],
+  "rows": [
+    {
+      "company": "Anthropic",
+      "recipient": "ANTHROPIC, PBC",
+      "start": "2026-02-11",
+      "agency": "Department of State",
+      "type": "Purchase Order",
+      "description": "CLAUDE AI",
+      "obligated": 18960.0,
+      "link": "https://www.usaspending.gov/award/CONT_AWD_19PCRD26K4661_1900_-NONE-_-NONE-"
+    }
+  ],
+  "takeaway": [
+    "USAspending lists Anthropic: 1 award, $18,960 obligated under exact recipient names, and none for Cohere, Google DeepMind, Mistral AI, OpenAI, xAI."
+  ],
+  "assumptions": [
+    "Recipient names must match the company in full. USAspending's own search is a substring match: 'anthropic' also returns PHILANTHROPIC recipients, 'cohere' returns COHERENT, 'xai' returns PRAXAIR. MISTRAL INC, a defence contractor, is not Mistral AI and is excluded.",
+    "Only awards made in the company's own name appear. Claude or GPT bought through a reseller or cloud marketplace, other-transaction agreements (such as the 2025 Pentagon frontier-AI prototype awards) and GSA schedule listings with no money obligated are not in this list.",
+    "Obligated is the total obligated to date, not outlays. Search run on the retrieval date shown below; a company with no rows had no match that day.",
+    "Google DeepMind is part of Alphabet and does not receive awards under its own name; Google's awards are not attributed to it."
+  ],
+  "badges": [],
+  "id": "customers.federal_awards",
+  "page": "customers",
+  "as_of": "2026-10-05",
+  "sources": [
+    {
+      "source": "usaspending_awards",
+      "label": "USAspending.gov awards",
+      "url": "https://www.usaspending.gov/award/",
+      "method": "api",
+      "tier": "filing",
+      "cadence": "weekly",
+      "as_of": "2026-10-05",
+      "retrieved_at": "2026-10-05T07:54:47Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T08:47:54Z"
+}

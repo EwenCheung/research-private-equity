@@ -26,7 +26,7 @@ Every number in the system is one observation row. The schema is `contracts/obse
 Tiers, from most to least direct:
 - **company-stated:** the company's own channel (its job board, newsroom, status page, pricing page).
 - **filing:** SEC, DOL or other government records.
-- **platform:** third-party telemetry (npm, PyPI, GitHub, OpenRouter, App Store, Wikimedia, Trends).
+- **platform:** third-party telemetry (npm, PyPI, GitHub, App Store, Wikimedia, Trends).
 - **press:** media reports.
 - **vendor:** licensed alt-data (YipitData, M Science).
 - **derived:** computed by us.

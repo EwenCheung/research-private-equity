@@ -1,0 +1,773 @@
+{
+  "title": "Open roles over time",
+  "subtitle": "Daily live collections, plus monthly Internet Archive captures of the same boards",
+  "kind": "line",
+  "encoding": {
+    "x": {
+      "field": "date",
+      "type": "temporal",
+      "label": "Date"
+    },
+    "y": {
+      "field": "roles",
+      "type": "quantitative",
+      "label": "Open roles",
+      "format": "int"
+    },
+    "color": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    }
+  },
+  "columns": [
+    {
+      "field": "date",
+      "label": "Date",
+      "format": "date"
+    },
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "roles",
+      "label": "Open roles",
+      "format": "int"
+    }
+  ],
+  "rows": [
+    {
+      "date": "2024-05-14",
+      "company": "Anthropic",
+      "roles": 81
+    },
+    {
+      "date": "2024-06-05",
+      "company": "Anthropic",
+      "roles": 117
+    },
+    {
+      "date": "2024-07-13",
+      "company": "Anthropic",
+      "roles": 109
+    },
+    {
+      "date": "2024-08-02",
+      "company": "Anthropic",
+      "roles": 96
+    },
+    {
+      "date": "2024-09-09",
+      "company": "Anthropic",
+      "roles": 69
+    },
+    {
+      "date": "2024-10-03",
+      "company": "Anthropic",
+      "roles": 81
+    },
+    {
+      "date": "2024-11-01",
+      "company": "Anthropic",
+      "roles": 81
+    },
+    {
+      "date": "2024-12-01",
+      "company": "Anthropic",
+      "roles": 59
+    },
+    {
+      "date": "2025-01-03",
+      "company": "Anthropic",
+      "roles": 77
+    },
+    {
+      "date": "2025-02-03",
+      "company": "Anthropic",
+      "roles": 141
+    },
+    {
+      "date": "2025-03-03",
+      "company": "Anthropic",
+      "roles": 166
+    },
+    {
+      "date": "2025-03-20",
+      "company": "Anthropic",
+      "roles": 146
+    },
+    {
+      "date": "2025-04-05",
+      "company": "Anthropic",
+      "roles": 160
+    },
+    {
+      "date": "2025-05-01",
+      "company": "Anthropic",
+      "roles": 181
+    },
+    {
+      "date": "2025-06-12",
+      "company": "Anthropic",
+      "roles": 209
+    },
+    {
+      "date": "2025-07-02",
+      "company": "Anthropic",
+      "roles": 214
+    },
+    {
+      "date": "2025-08-03",
+      "company": "Anthropic",
+      "roles": 191
+    },
+    {
+      "date": "2025-09-02",
+      "company": "Anthropic",
+      "roles": 174
+    },
+    {
+      "date": "2025-10-05",
+      "company": "Anthropic",
+      "roles": 197
+    },
+    {
+      "date": "2025-11-01",
+      "company": "Anthropic",
+      "roles": 238
+    },
+    {
+      "date": "2025-12-11",
+      "company": "Anthropic",
+      "roles": 306
+    },
+    {
+      "date": "2026-01-04",
+      "company": "Anthropic",
+      "roles": 295
+    },
+    {
+      "date": "2026-02-01",
+      "company": "Anthropic",
+      "roles": 365
+    },
+    {
+      "date": "2026-03-03",
+      "company": "Anthropic",
+      "roles": 451
+    },
+    {
+      "date": "2026-04-07",
+      "company": "Anthropic",
+      "roles": 424
+    },
+    {
+      "date": "2026-05-01",
+      "company": "Anthropic",
+      "roles": 439
+    },
+    {
+      "date": "2026-05-10",
+      "company": "Anthropic",
+      "roles": 423
+    },
+    {
+      "date": "2026-06-01",
+      "company": "Anthropic",
+      "roles": 367
+    },
+    {
+      "date": "2026-07-03",
+      "company": "Anthropic",
+      "roles": 388
+    },
+    {
+      "date": "2026-08-06",
+      "company": "Anthropic",
+      "roles": 395
+    },
+    {
+      "date": "2026-09-06",
+      "company": "Anthropic",
+      "roles": 592
+    },
+    {
+      "date": "2026-10-05",
+      "company": "Anthropic",
+      "roles": 639
+    },
+    {
+      "date": "2024-11-21",
+      "company": "Cohere",
+      "roles": 29
+    },
+    {
+      "date": "2024-12-01",
+      "company": "Cohere",
+      "roles": 24
+    },
+    {
+      "date": "2025-01-06",
+      "company": "Cohere",
+      "roles": 31
+    },
+    {
+      "date": "2025-02-25",
+      "company": "Cohere",
+      "roles": 43
+    },
+    {
+      "date": "2025-04-08",
+      "company": "Cohere",
+      "roles": 42
+    },
+    {
+      "date": "2025-05-04",
+      "company": "Cohere",
+      "roles": 46
+    },
+    {
+      "date": "2025-07-02",
+      "company": "Cohere",
+      "roles": 72
+    },
+    {
+      "date": "2025-08-14",
+      "company": "Cohere",
+      "roles": 70
+    },
+    {
+      "date": "2025-09-20",
+      "company": "Cohere",
+      "roles": 75
+    },
+    {
+      "date": "2025-10-18",
+      "company": "Cohere",
+      "roles": 68
+    },
+    {
+      "date": "2025-11-02",
+      "company": "Cohere",
+      "roles": 73
+    },
+    {
+      "date": "2025-12-21",
+      "company": "Cohere",
+      "roles": 121
+    },
+    {
+      "date": "2026-02-15",
+      "company": "Cohere",
+      "roles": 121
+    },
+    {
+      "date": "2026-03-01",
+      "company": "Cohere",
+      "roles": 128
+    },
+    {
+      "date": "2026-05-01",
+      "company": "Cohere",
+      "roles": 122
+    },
+    {
+      "date": "2026-08-09",
+      "company": "Cohere",
+      "roles": 141
+    },
+    {
+      "date": "2026-09-12",
+      "company": "Cohere",
+      "roles": 145
+    },
+    {
+      "date": "2026-10-05",
+      "company": "Cohere",
+      "roles": 137
+    },
+    {
+      "date": "2023-09-27",
+      "company": "Mistral AI",
+      "roles": 7
+    },
+    {
+      "date": "2023-10-02",
+      "company": "Mistral AI",
+      "roles": 7
+    },
+    {
+      "date": "2023-12-01",
+      "company": "Mistral AI",
+      "roles": 9
+    },
+    {
+      "date": "2024-01-13",
+      "company": "Mistral AI",
+      "roles": 8
+    },
+    {
+      "date": "2024-02-21",
+      "company": "Mistral AI",
+      "roles": 4
+    },
+    {
+      "date": "2024-03-06",
+      "company": "Mistral AI",
+      "roles": 5
+    },
+    {
+      "date": "2024-04-04",
+      "company": "Mistral AI",
+      "roles": 10
+    },
+    {
+      "date": "2024-05-22",
+      "company": "Mistral AI",
+      "roles": 19
+    },
+    {
+      "date": "2024-06-12",
+      "company": "Mistral AI",
+      "roles": 22
+    },
+    {
+      "date": "2024-07-19",
+      "company": "Mistral AI",
+      "roles": 28
+    },
+    {
+      "date": "2024-08-03",
+      "company": "Mistral AI",
+      "roles": 28
+    },
+    {
+      "date": "2024-09-08",
+      "company": "Mistral AI",
+      "roles": 43
+    },
+    {
+      "date": "2024-10-07",
+      "company": "Mistral AI",
+      "roles": 41
+    },
+    {
+      "date": "2024-11-02",
+      "company": "Mistral AI",
+      "roles": 42
+    },
+    {
+      "date": "2024-12-04",
+      "company": "Mistral AI",
+      "roles": 47
+    },
+    {
+      "date": "2025-01-09",
+      "company": "Mistral AI",
+      "roles": 34
+    },
+    {
+      "date": "2025-02-02",
+      "company": "Mistral AI",
+      "roles": 33
+    },
+    {
+      "date": "2025-03-03",
+      "company": "Mistral AI",
+      "roles": 48
+    },
+    {
+      "date": "2025-04-03",
+      "company": "Mistral AI",
+      "roles": 51
+    },
+    {
+      "date": "2025-05-04",
+      "company": "Mistral AI",
+      "roles": 58
+    },
+    {
+      "date": "2025-06-19",
+      "company": "Mistral AI",
+      "roles": 64
+    },
+    {
+      "date": "2025-07-16",
+      "company": "Mistral AI",
+      "roles": 65
+    },
+    {
+      "date": "2025-08-07",
+      "company": "Mistral AI",
+      "roles": 67
+    },
+    {
+      "date": "2025-09-06",
+      "company": "Mistral AI",
+      "roles": 78
+    },
+    {
+      "date": "2025-10-17",
+      "company": "Mistral AI",
+      "roles": 102
+    },
+    {
+      "date": "2025-11-05",
+      "company": "Mistral AI",
+      "roles": 115
+    },
+    {
+      "date": "2026-01-07",
+      "company": "Mistral AI",
+      "roles": 151
+    },
+    {
+      "date": "2026-02-06",
+      "company": "Mistral AI",
+      "roles": 159
+    },
+    {
+      "date": "2026-03-09",
+      "company": "Mistral AI",
+      "roles": 144
+    },
+    {
+      "date": "2026-04-15",
+      "company": "Mistral AI",
+      "roles": 149
+    },
+    {
+      "date": "2026-05-22",
+      "company": "Mistral AI",
+      "roles": 162
+    },
+    {
+      "date": "2026-06-10",
+      "company": "Mistral AI",
+      "roles": 168
+    },
+    {
+      "date": "2026-07-12",
+      "company": "Mistral AI",
+      "roles": 151
+    },
+    {
+      "date": "2026-08-15",
+      "company": "Mistral AI",
+      "roles": 164
+    },
+    {
+      "date": "2026-09-09",
+      "company": "Mistral AI",
+      "roles": 187
+    },
+    {
+      "date": "2026-10-05",
+      "company": "Mistral AI",
+      "roles": 209
+    },
+    {
+      "date": "2024-03-14",
+      "company": "OpenAI",
+      "roles": 142
+    },
+    {
+      "date": "2024-05-22",
+      "company": "OpenAI",
+      "roles": 159
+    },
+    {
+      "date": "2024-09-06",
+      "company": "OpenAI",
+      "roles": 183
+    },
+    {
+      "date": "2024-11-12",
+      "company": "OpenAI",
+      "roles": 165
+    },
+    {
+      "date": "2024-12-12",
+      "company": "OpenAI",
+      "roles": 154
+    },
+    {
+      "date": "2025-01-18",
+      "company": "OpenAI",
+      "roles": 198
+    },
+    {
+      "date": "2025-02-08",
+      "company": "OpenAI",
+      "roles": 271
+    },
+    {
+      "date": "2025-03-04",
+      "company": "OpenAI",
+      "roles": 307
+    },
+    {
+      "date": "2025-04-15",
+      "company": "OpenAI",
+      "roles": 298
+    },
+    {
+      "date": "2025-05-29",
+      "company": "OpenAI",
+      "roles": 330
+    },
+    {
+      "date": "2025-06-24",
+      "company": "OpenAI",
+      "roles": 319
+    },
+    {
+      "date": "2025-07-24",
+      "company": "OpenAI",
+      "roles": 318
+    },
+    {
+      "date": "2025-08-13",
+      "company": "OpenAI",
+      "roles": 334
+    },
+    {
+      "date": "2025-09-29",
+      "company": "OpenAI",
+      "roles": 363
+    },
+    {
+      "date": "2025-11-19",
+      "company": "OpenAI",
+      "roles": 431
+    },
+    {
+      "date": "2026-03-08",
+      "company": "OpenAI",
+      "roles": 615
+    },
+    {
+      "date": "2026-06-09",
+      "company": "OpenAI",
+      "roles": 720
+    },
+    {
+      "date": "2026-08-19",
+      "company": "OpenAI",
+      "roles": 733
+    },
+    {
+      "date": "2026-09-23",
+      "company": "OpenAI",
+      "roles": 817
+    },
+    {
+      "date": "2026-10-05",
+      "company": "OpenAI",
+      "roles": 827
+    },
+    {
+      "date": "2023-11-12",
+      "company": "xAI",
+      "roles": 5
+    },
+    {
+      "date": "2023-12-03",
+      "company": "xAI",
+      "roles": 5
+    },
+    {
+      "date": "2024-05-20",
+      "company": "xAI",
+      "roles": 12
+    },
+    {
+      "date": "2024-06-06",
+      "company": "xAI",
+      "roles": 18
+    },
+    {
+      "date": "2024-07-14",
+      "company": "xAI",
+      "roles": 28
+    },
+    {
+      "date": "2024-08-17",
+      "company": "xAI",
+      "roles": 35
+    },
+    {
+      "date": "2024-09-07",
+      "company": "xAI",
+      "roles": 36
+    },
+    {
+      "date": "2024-10-10",
+      "company": "xAI",
+      "roles": 48
+    },
+    {
+      "date": "2024-11-03",
+      "company": "xAI",
+      "roles": 58
+    },
+    {
+      "date": "2024-12-05",
+      "company": "xAI",
+      "roles": 64
+    },
+    {
+      "date": "2025-01-04",
+      "company": "xAI",
+      "roles": 71
+    },
+    {
+      "date": "2025-02-06",
+      "company": "xAI",
+      "roles": 74
+    },
+    {
+      "date": "2025-03-04",
+      "company": "xAI",
+      "roles": 73
+    },
+    {
+      "date": "2025-04-03",
+      "company": "xAI",
+      "roles": 104
+    },
+    {
+      "date": "2025-05-05",
+      "company": "xAI",
+      "roles": 115
+    },
+    {
+      "date": "2025-06-12",
+      "company": "xAI",
+      "roles": 134
+    },
+    {
+      "date": "2025-07-07",
+      "company": "xAI",
+      "roles": 142
+    },
+    {
+      "date": "2025-08-03",
+      "company": "xAI",
+      "roles": 168
+    },
+    {
+      "date": "2025-09-01",
+      "company": "xAI",
+      "roles": 201
+    },
+    {
+      "date": "2025-10-03",
+      "company": "xAI",
+      "roles": 231
+    },
+    {
+      "date": "2025-11-05",
+      "company": "xAI",
+      "roles": 257
+    },
+    {
+      "date": "2025-12-14",
+      "company": "xAI",
+      "roles": 251
+    },
+    {
+      "date": "2026-01-27",
+      "company": "xAI",
+      "roles": 275
+    },
+    {
+      "date": "2026-02-20",
+      "company": "xAI",
+      "roles": 294
+    },
+    {
+      "date": "2026-03-03",
+      "company": "xAI",
+      "roles": 191
+    },
+    {
+      "date": "2026-04-01",
+      "company": "xAI",
+      "roles": 223
+    },
+    {
+      "date": "2026-05-15",
+      "company": "xAI",
+      "roles": 223
+    },
+    {
+      "date": "2026-06-16",
+      "company": "xAI",
+      "roles": 223
+    },
+    {
+      "date": "2026-07-20",
+      "company": "xAI",
+      "roles": 220
+    },
+    {
+      "date": "2026-08-13",
+      "company": "xAI",
+      "roles": 215
+    },
+    {
+      "date": "2026-09-02",
+      "company": "xAI",
+      "roles": 251
+    },
+    {
+      "date": "2026-10-05",
+      "company": "xAI",
+      "roles": 301
+    }
+  ],
+  "takeaway": [
+    "Anthropic's board went from 81 roles in 2024-05 to 639 on 2026-10-05 (+689%)."
+  ],
+  "assumptions": [
+    "Counts postings listed on each company's own job board in the weekly snapshot. Boards list roles, not headcount: one posting can fill several seats, and a company can leave roles unlisted.",
+    "History before our own collection comes from Internet Archive captures, so it is only as dense as the Archive's crawls and starts when each board was first captured.",
+    "Archived pages that could not be parsed are skipped, not estimated.",
+    "Google DeepMind is missing: it posts only on Google's careers site, which has no public API."
+  ],
+  "badges": [],
+  "id": "hiring.open_roles",
+  "page": "hiring",
+  "as_of": "2026-10-05",
+  "sources": [
+    {
+      "source": "ats_open_roles",
+      "label": "Company job board API (Greenhouse / Ashby)",
+      "url": "https://boards-api.greenhouse.io/v1/boards/{board}/departments",
+      "method": "api",
+      "tier": "company-stated",
+      "cadence": "daily",
+      "as_of": "2026-10-05",
+      "retrieved_at": "2026-10-05T04:12:39Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "wayback_job_boards",
+      "label": "Internet Archive captures of company job boards",
+      "url": "https://web.archive.org/cdx/search/cdx?url={board}",
+      "method": "scrape",
+      "tier": "company-stated",
+      "cadence": "weekly",
+      "as_of": "2026-09-23",
+      "retrieved_at": "2026-10-05T06:59:56Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T07:09:16Z"
+}

@@ -1,0 +1,199 @@
+{
+  "title": "Where each company is hiring",
+  "subtitle": "Share of open roles by region, latest weekly snapshot",
+  "kind": "stacked_bar",
+  "encoding": {
+    "x": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    },
+    "y": {
+      "field": "share",
+      "type": "quantitative",
+      "label": "Share of open roles",
+      "format": "pct"
+    },
+    "color": {
+      "field": "region",
+      "type": "nominal",
+      "label": "Region"
+    }
+  },
+  "columns": [
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "region",
+      "label": "Region",
+      "format": "text"
+    },
+    {
+      "field": "roles",
+      "label": "Open roles",
+      "format": "int"
+    },
+    {
+      "field": "share",
+      "label": "Share",
+      "format": "pct"
+    }
+  ],
+  "rows": [
+    {
+      "company": "OpenAI",
+      "region": "United States",
+      "roles": 657,
+      "share": 0.7944
+    },
+    {
+      "company": "OpenAI",
+      "region": "UK & Europe",
+      "roles": 65,
+      "share": 0.0786
+    },
+    {
+      "company": "OpenAI",
+      "region": "Asia-Pacific",
+      "roles": 87,
+      "share": 0.1052
+    },
+    {
+      "company": "OpenAI",
+      "region": "Other international",
+      "roles": 18,
+      "share": 0.0218
+    },
+    {
+      "company": "Anthropic",
+      "region": "United States",
+      "roles": 496,
+      "share": 0.7762
+    },
+    {
+      "company": "Anthropic",
+      "region": "UK & Europe",
+      "roles": 81,
+      "share": 0.1268
+    },
+    {
+      "company": "Anthropic",
+      "region": "Asia-Pacific",
+      "roles": 57,
+      "share": 0.0892
+    },
+    {
+      "company": "Anthropic",
+      "region": "Other international",
+      "roles": 5,
+      "share": 0.0078
+    },
+    {
+      "company": "xAI",
+      "region": "United States",
+      "roles": 253,
+      "share": 0.8405
+    },
+    {
+      "company": "xAI",
+      "region": "UK & Europe",
+      "roles": 13,
+      "share": 0.0432
+    },
+    {
+      "company": "xAI",
+      "region": "Asia-Pacific",
+      "roles": 6,
+      "share": 0.0199
+    },
+    {
+      "company": "xAI",
+      "region": "Other international",
+      "roles": 29,
+      "share": 0.0963
+    },
+    {
+      "company": "Mistral AI",
+      "region": "United States",
+      "roles": 32,
+      "share": 0.1531
+    },
+    {
+      "company": "Mistral AI",
+      "region": "UK & Europe",
+      "roles": 144,
+      "share": 0.689
+    },
+    {
+      "company": "Mistral AI",
+      "region": "Asia-Pacific",
+      "roles": 23,
+      "share": 0.11
+    },
+    {
+      "company": "Mistral AI",
+      "region": "Other international",
+      "roles": 10,
+      "share": 0.0478
+    },
+    {
+      "company": "Cohere",
+      "region": "United States",
+      "roles": 41,
+      "share": 0.2993
+    },
+    {
+      "company": "Cohere",
+      "region": "UK & Europe",
+      "roles": 41,
+      "share": 0.2993
+    },
+    {
+      "company": "Cohere",
+      "region": "Asia-Pacific",
+      "roles": 10,
+      "share": 0.073
+    },
+    {
+      "company": "Cohere",
+      "region": "Other international",
+      "roles": 45,
+      "share": 0.3285
+    }
+  ],
+  "takeaway": [
+    "22% of Anthropic's roles with a stated location are outside the US (Cohere 70%, Mistral AI 85%, OpenAI 21%, xAI 16%)."
+  ],
+  "assumptions": [
+    "Region is the first listed location we can place. A role listed in San Francisco and London counts as United States.",
+    "A role that says only \"Remote\" (no country), or lists no place we recognise, is Remote / unspecified and left out of the international share. \"Remote, United States\" counts as the United States.",
+    "International share = roles in UK & Europe, Asia-Pacific or Other international ÷ roles with a stated location.",
+    "Counts postings listed on each company's own job board in the weekly snapshot. Boards list roles, not headcount: one posting can fill several seats, and a company can leave roles unlisted.",
+    "Google DeepMind is missing: it posts only on Google's careers site, which has no public API."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "hiring.region_mix",
+  "page": "hiring",
+  "as_of": "2026-10-05",
+  "sources": [
+    {
+      "source": "ats_postings",
+      "label": "Company job board API: every open posting",
+      "url": "https://boards-api.greenhouse.io/v1/boards/{board}/departments",
+      "method": "api",
+      "tier": "company-stated",
+      "cadence": "weekly",
+      "as_of": "2026-10-05",
+      "retrieved_at": "2026-10-05T04:12:39Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T07:09:16Z"
+}

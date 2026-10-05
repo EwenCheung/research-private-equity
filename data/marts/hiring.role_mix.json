@@ -1,0 +1,287 @@
+{
+  "title": "What each company is hiring for",
+  "subtitle": "Share of open roles by function, latest weekly snapshot",
+  "kind": "stacked_bar",
+  "encoding": {
+    "x": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    },
+    "y": {
+      "field": "share",
+      "type": "quantitative",
+      "label": "Share of open roles",
+      "format": "pct"
+    },
+    "color": {
+      "field": "function",
+      "type": "nominal",
+      "label": "Function"
+    }
+  },
+  "columns": [
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "function",
+      "label": "Function",
+      "format": "text"
+    },
+    {
+      "field": "roles",
+      "label": "Open roles",
+      "format": "int"
+    },
+    {
+      "field": "share",
+      "label": "Share",
+      "format": "pct"
+    }
+  ],
+  "rows": [
+    {
+      "company": "OpenAI",
+      "function": "Research & modeling",
+      "roles": 64,
+      "share": 0.0774
+    },
+    {
+      "company": "OpenAI",
+      "function": "Engineering & product",
+      "roles": 71,
+      "share": 0.0859
+    },
+    {
+      "company": "OpenAI",
+      "function": "Compute & data centers",
+      "roles": 118,
+      "share": 0.1427
+    },
+    {
+      "company": "OpenAI",
+      "function": "Applied AI & solutions",
+      "roles": 142,
+      "share": 0.1717
+    },
+    {
+      "company": "OpenAI",
+      "function": "Go-to-market & support",
+      "roles": 256,
+      "share": 0.3096
+    },
+    {
+      "company": "OpenAI",
+      "function": "Safety, security & policy",
+      "roles": 59,
+      "share": 0.0713
+    },
+    {
+      "company": "OpenAI",
+      "function": "Corporate & operations",
+      "roles": 108,
+      "share": 0.1306
+    },
+    {
+      "company": "OpenAI",
+      "function": "Other",
+      "roles": 9,
+      "share": 0.0109
+    },
+    {
+      "company": "Anthropic",
+      "function": "Research & modeling",
+      "roles": 70,
+      "share": 0.1095
+    },
+    {
+      "company": "Anthropic",
+      "function": "Engineering & product",
+      "roles": 120,
+      "share": 0.1878
+    },
+    {
+      "company": "Anthropic",
+      "function": "Compute & data centers",
+      "roles": 26,
+      "share": 0.0407
+    },
+    {
+      "company": "Anthropic",
+      "function": "Applied AI & solutions",
+      "roles": 60,
+      "share": 0.0939
+    },
+    {
+      "company": "Anthropic",
+      "function": "Go-to-market & support",
+      "roles": 142,
+      "share": 0.2222
+    },
+    {
+      "company": "Anthropic",
+      "function": "Safety, security & policy",
+      "roles": 106,
+      "share": 0.1659
+    },
+    {
+      "company": "Anthropic",
+      "function": "Corporate & operations",
+      "roles": 115,
+      "share": 0.18
+    },
+    {
+      "company": "xAI",
+      "function": "Research & modeling",
+      "roles": 13,
+      "share": 0.0432
+    },
+    {
+      "company": "xAI",
+      "function": "Engineering & product",
+      "roles": 47,
+      "share": 0.1561
+    },
+    {
+      "company": "xAI",
+      "function": "Compute & data centers",
+      "roles": 154,
+      "share": 0.5116
+    },
+    {
+      "company": "xAI",
+      "function": "Go-to-market & support",
+      "roles": 12,
+      "share": 0.0399
+    },
+    {
+      "company": "xAI",
+      "function": "Safety, security & policy",
+      "roles": 20,
+      "share": 0.0664
+    },
+    {
+      "company": "xAI",
+      "function": "Corporate & operations",
+      "roles": 25,
+      "share": 0.0831
+    },
+    {
+      "company": "xAI",
+      "function": "Other",
+      "roles": 30,
+      "share": 0.0997
+    },
+    {
+      "company": "Mistral AI",
+      "function": "Research & modeling",
+      "roles": 23,
+      "share": 0.11
+    },
+    {
+      "company": "Mistral AI",
+      "function": "Engineering & product",
+      "roles": 36,
+      "share": 0.1722
+    },
+    {
+      "company": "Mistral AI",
+      "function": "Compute & data centers",
+      "roles": 7,
+      "share": 0.0335
+    },
+    {
+      "company": "Mistral AI",
+      "function": "Applied AI & solutions",
+      "roles": 73,
+      "share": 0.3493
+    },
+    {
+      "company": "Mistral AI",
+      "function": "Go-to-market & support",
+      "roles": 33,
+      "share": 0.1579
+    },
+    {
+      "company": "Mistral AI",
+      "function": "Safety, security & policy",
+      "roles": 1,
+      "share": 0.0048
+    },
+    {
+      "company": "Mistral AI",
+      "function": "Corporate & operations",
+      "roles": 36,
+      "share": 0.1722
+    },
+    {
+      "company": "Cohere",
+      "function": "Research & modeling",
+      "roles": 27,
+      "share": 0.1971
+    },
+    {
+      "company": "Cohere",
+      "function": "Engineering & product",
+      "roles": 46,
+      "share": 0.3358
+    },
+    {
+      "company": "Cohere",
+      "function": "Go-to-market & support",
+      "roles": 36,
+      "share": 0.2628
+    },
+    {
+      "company": "Cohere",
+      "function": "Safety, security & policy",
+      "roles": 4,
+      "share": 0.0292
+    },
+    {
+      "company": "Cohere",
+      "function": "Corporate & operations",
+      "roles": 21,
+      "share": 0.1533
+    },
+    {
+      "company": "Cohere",
+      "function": "Other",
+      "roles": 3,
+      "share": 0.0219
+    }
+  ],
+  "takeaway": [
+    "Anthropic's open roles are led by go-to-market & support (22%) and engineering & product (19%)."
+  ],
+  "assumptions": [
+    "Function comes from each posting's department words, then its title words, by fixed rules (below). Anything unplaced is Other.",
+    "Rules, first match wins: compute (compute, data center, scaling); applied AI (applied AI, forward-deployed, solutions); safety/security/policy; research (research, science, modeling); go-to-market & support (sales, revenue, marketing, partnerships, customer support); corporate (finance, legal, people, comms, IT, programme management); engineering & product (engineering, software, infrastructure, product, design, data science).",
+    "Departments are named differently at each company, so a few postings could sit in a neighbouring function. Counts are in the table.",
+    "Counts postings listed on each company's own job board in the weekly snapshot. Boards list roles, not headcount: one posting can fill several seats, and a company can leave roles unlisted.",
+    "Google DeepMind is missing: it posts only on Google's careers site, which has no public API."
+  ],
+  "badges": [],
+  "id": "hiring.role_mix",
+  "page": "hiring",
+  "as_of": "2026-10-05",
+  "sources": [
+    {
+      "source": "ats_postings",
+      "label": "Company job board API: every open posting",
+      "url": "https://boards-api.greenhouse.io/v1/boards/{board}/departments",
+      "method": "api",
+      "tier": "company-stated",
+      "cadence": "weekly",
+      "as_of": "2026-10-05",
+      "retrieved_at": "2026-10-05T04:12:39Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T07:09:16Z"
+}

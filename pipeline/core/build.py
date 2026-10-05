@@ -1,6 +1,7 @@
 """build CLI: raw + manual + ledgers -> data/marts/<page>.<chart>.json, every mart validated as a chart spec."""
 
 import json
+import math
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
@@ -75,6 +76,10 @@ def build_mart(m: registry.Mart, all_rows: dict[str, list[dict]], now: datetime,
         raise ValueError(f"mart {m.id} declares unknown sources {missing}")
     ctx = Ctx([r for s in m.sources for r in all_rows[s]], names)
     spec = dict(m.fn(ctx))
+    # NaN is not JSON: browsers reject the whole file. A missing value is null.
+    spec["rows"] = [
+        {k: None if isinstance(v, float) and math.isnan(v) else v for k, v in r.items()} for r in spec.get("rows", [])
+    ]
     used = ctx.df.loc[sorted(ctx.used)]
     empty = not spec.get("rows")
     spec |= {
@@ -134,7 +139,7 @@ def build(*, root: Path = ROOT, now: datetime | None = None) -> tuple[list[Path]
             spec = build_mart(m, all_rows, now, names)
             out = root / "data" / "marts" / f"{m.id}.json"
             out.parent.mkdir(parents=True, exist_ok=True)
-            out.write_text(json.dumps(spec, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+            out.write_text(json.dumps(spec, indent=2, ensure_ascii=False, allow_nan=False) + "\n", encoding="utf-8")
             written.append(out)
         except Exception as e:  # noqa: BLE001 - one broken mart must not stop the others
             errors.append(f"{m.id}: {type(e).__name__}: {e}")

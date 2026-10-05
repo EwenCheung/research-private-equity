@@ -62,6 +62,11 @@ def _csv_rows(root: Path, meta: dict) -> list[dict]:
     return rows
 
 
+def latest_as_of(root: Path, source_id: str, entity: str) -> str | None:
+    """Newest as_of already stored for one entity, so an incremental collector fetches only what is new."""
+    return max((r["as_of"] for r in _raw_rows(root, source_id) if r["entity"] == entity), default=None)
+
+
 def read_observations(root: Path, meta: dict) -> list[dict]:
     """Every stored observation of one source. ponytail: validates all rows on every read; cache once raw passes ~1M rows."""
     return _csv_rows(root, meta) if meta["method"] in ("manual", "ledger") else _raw_rows(root, meta["id"])

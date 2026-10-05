@@ -1,0 +1,102 @@
+{
+  "title": "Claude plans today",
+  "subtitle": "Published price per month, with the page text quoted",
+  "kind": "table",
+  "encoding": {},
+  "columns": [
+    {
+      "field": "plan",
+      "label": "Plan",
+      "format": "text"
+    },
+    {
+      "field": "price",
+      "label": "USD per month",
+      "format": "float"
+    },
+    {
+      "field": "billing",
+      "label": "Billing",
+      "format": "text"
+    },
+    {
+      "field": "quote",
+      "label": "What the page says",
+      "format": "text"
+    },
+    {
+      "field": "link",
+      "label": "Source",
+      "format": "url"
+    }
+  ],
+  "rows": [
+    {
+      "plan": "Free",
+      "price": 0.0,
+      "billing": "annual",
+      "quote": "Free Try Claude $0 Free for everyone",
+      "link": "https://claude.com/pricing"
+    },
+    {
+      "plan": "Pro",
+      "price": 17.0,
+      "billing": "annual",
+      "quote": "Pro For everyday work $17 Per month with annual subscription discount ($200 billed up front)",
+      "link": "https://claude.com/pricing"
+    },
+    {
+      "plan": "Max",
+      "price": 100.0,
+      "billing": "from",
+      "quote": "Max For people who work with Claude all day From $100 Per month",
+      "link": "https://claude.com/pricing"
+    },
+    {
+      "plan": "Team (standard seat)",
+      "price": 20.0,
+      "billing": "annual",
+      "quote": "Team plan Standard seat All Claude features, plus more usage than Pro* $20 Per seat / month if billed annually",
+      "link": "https://claude.com/pricing"
+    },
+    {
+      "plan": "Enterprise",
+      "price": 20.0,
+      "billing": "annual, plus usage at API rates",
+      "quote": "Enterprise plan is built for large businesses operating at scale. Pricing is $20 per seat per month plus usage billed at API rates",
+      "link": "https://claude.com/pricing"
+    }
+  ],
+  "takeaway": [
+    "Pro is $17 a month on annual billing and Max starts at $100, 5.9× Pro."
+  ],
+  "assumptions": [
+    "As published on claude.com/pricing on 2026-10-05. Annual-billing prices are shown; monthly-billing prices are not read from the page.",
+    "Max is 'from' $100: it comes in 5× and 20× usage tiers. Enterprise is $20 per seat plus usage billed at API rates.",
+    "Plan prices were not collected before today, so there is no plan-price history yet."
+  ],
+  "badges": [],
+  "id": "product.plans",
+  "page": "product",
+  "as_of": "2026-10-05",
+  "sources": [
+    {
+      "source": "product_plan_prices",
+      "label": "Claude consumer and team plan prices (cited ledger)",
+      "url": "https://claude.com/pricing",
+      "method": "ledger",
+      "tier": "company-stated",
+      "cadence": "monthly",
+      "as_of": "2026-10-05",
+      "retrieved_at": "2026-10-05T08:00:00Z",
+      "freshness": "fresh",
+      "manual": {
+        "entered_by": "EwenCheung via Claude",
+        "entered_at": "2026-10-05T08:00:00Z",
+        "evidence": "Free Try Claude $0 Free for everyone"
+      }
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T07:24:45Z"
+}

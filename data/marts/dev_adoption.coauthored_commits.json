@@ -1,0 +1,899 @@
+{
+  "title": "Public GitHub commits co-authored by Claude",
+  "subtitle": "Weekly commit-search count of the Claude Code co-author trailer",
+  "kind": "line",
+  "encoding": {
+    "x": {
+      "field": "week",
+      "type": "temporal",
+      "label": "Week"
+    },
+    "y": {
+      "field": "commits",
+      "type": "quantitative",
+      "label": "Commits",
+      "format": "int"
+    },
+    "color": {
+      "field": "series",
+      "type": "nominal",
+      "label": "Series"
+    }
+  },
+  "columns": [
+    {
+      "field": "week",
+      "label": "Week starting",
+      "format": "date"
+    },
+    {
+      "field": "series",
+      "label": "Series",
+      "format": "text"
+    },
+    {
+      "field": "commits",
+      "label": "Commits",
+      "format": "int"
+    }
+  ],
+  "rows": [
+    {
+      "week": "2025-02-24",
+      "series": "Weekly count",
+      "commits": 2889
+    },
+    {
+      "week": "2025-03-03",
+      "series": "Weekly count",
+      "commits": 4182
+    },
+    {
+      "week": "2025-03-10",
+      "series": "Weekly count",
+      "commits": 5038
+    },
+    {
+      "week": "2025-03-17",
+      "series": "Weekly count",
+      "commits": 4011
+    },
+    {
+      "week": "2025-03-24",
+      "series": "Weekly count",
+      "commits": 4242
+    },
+    {
+      "week": "2025-03-31",
+      "series": "Weekly count",
+      "commits": 4401
+    },
+    {
+      "week": "2025-04-07",
+      "series": "Weekly count",
+      "commits": 4394
+    },
+    {
+      "week": "2025-04-14",
+      "series": "Weekly count",
+      "commits": 3754
+    },
+    {
+      "week": "2025-04-21",
+      "series": "Weekly count",
+      "commits": 4000
+    },
+    {
+      "week": "2025-04-28",
+      "series": "Weekly count",
+      "commits": 3524
+    },
+    {
+      "week": "2025-05-05",
+      "series": "Weekly count",
+      "commits": 4710
+    },
+    {
+      "week": "2025-05-12",
+      "series": "Weekly count",
+      "commits": 5329
+    },
+    {
+      "week": "2025-05-19",
+      "series": "Weekly count",
+      "commits": 11833
+    },
+    {
+      "week": "2025-05-26",
+      "series": "Weekly count",
+      "commits": 22047
+    },
+    {
+      "week": "2025-06-02",
+      "series": "Weekly count",
+      "commits": 31935
+    },
+    {
+      "week": "2025-06-09",
+      "series": "Weekly count",
+      "commits": 55052
+    },
+    {
+      "week": "2025-06-16",
+      "series": "Weekly count",
+      "commits": 73821
+    },
+    {
+      "week": "2025-06-23",
+      "series": "Weekly count",
+      "commits": 86246
+    },
+    {
+      "week": "2025-06-30",
+      "series": "Weekly count",
+      "commits": 87299
+    },
+    {
+      "week": "2025-07-07",
+      "series": "Weekly count",
+      "commits": 102864
+    },
+    {
+      "week": "2025-07-14",
+      "series": "Weekly count",
+      "commits": 104253
+    },
+    {
+      "week": "2025-07-21",
+      "series": "Weekly count",
+      "commits": 116586
+    },
+    {
+      "week": "2025-07-28",
+      "series": "Weekly count",
+      "commits": 128807
+    },
+    {
+      "week": "2025-08-04",
+      "series": "Weekly count",
+      "commits": 128640
+    },
+    {
+      "week": "2025-08-11",
+      "series": "Weekly count",
+      "commits": 139108
+    },
+    {
+      "week": "2025-08-18",
+      "series": "Weekly count",
+      "commits": 140744
+    },
+    {
+      "week": "2025-08-25",
+      "series": "Weekly count",
+      "commits": 131334
+    },
+    {
+      "week": "2025-09-01",
+      "series": "Weekly count",
+      "commits": 125945
+    },
+    {
+      "week": "2025-09-08",
+      "series": "Weekly count",
+      "commits": 128129
+    },
+    {
+      "week": "2025-09-15",
+      "series": "Weekly count",
+      "commits": 132666
+    },
+    {
+      "week": "2025-09-22",
+      "series": "Weekly count",
+      "commits": 119179
+    },
+    {
+      "week": "2025-09-29",
+      "series": "Weekly count",
+      "commits": 170599
+    },
+    {
+      "week": "2025-10-06",
+      "series": "Weekly count",
+      "commits": 184414
+    },
+    {
+      "week": "2025-10-13",
+      "series": "Weekly count",
+      "commits": 190582
+    },
+    {
+      "week": "2025-10-20",
+      "series": "Weekly count",
+      "commits": 260946
+    },
+    {
+      "week": "2025-10-27",
+      "series": "Weekly count",
+      "commits": 247150
+    },
+    {
+      "week": "2025-11-03",
+      "series": "Weekly count",
+      "commits": 244405
+    },
+    {
+      "week": "2025-11-10",
+      "series": "Weekly count",
+      "commits": 258631
+    },
+    {
+      "week": "2025-11-17",
+      "series": "Weekly count",
+      "commits": 257550
+    },
+    {
+      "week": "2025-11-24",
+      "series": "Weekly count",
+      "commits": 283629
+    },
+    {
+      "week": "2025-12-01",
+      "series": "Weekly count",
+      "commits": 309055
+    },
+    {
+      "week": "2025-12-08",
+      "series": "Weekly count",
+      "commits": 305877
+    },
+    {
+      "week": "2025-12-15",
+      "series": "Weekly count",
+      "commits": 340964
+    },
+    {
+      "week": "2025-12-22",
+      "series": "Weekly count",
+      "commits": 363096
+    },
+    {
+      "week": "2025-12-29",
+      "series": "Weekly count",
+      "commits": 499779
+    },
+    {
+      "week": "2026-01-05",
+      "series": "Weekly count",
+      "commits": 679616
+    },
+    {
+      "week": "2026-01-12",
+      "series": "Weekly count",
+      "commits": 759796
+    },
+    {
+      "week": "2026-01-19",
+      "series": "Weekly count",
+      "commits": 843485
+    },
+    {
+      "week": "2026-01-26",
+      "series": "Weekly count",
+      "commits": 954232
+    },
+    {
+      "week": "2026-02-02",
+      "series": "Weekly count",
+      "commits": 1128328
+    },
+    {
+      "week": "2026-02-09",
+      "series": "Weekly count",
+      "commits": 1240169
+    },
+    {
+      "week": "2026-02-16",
+      "series": "Weekly count",
+      "commits": 1499428
+    },
+    {
+      "week": "2026-02-23",
+      "series": "Weekly count",
+      "commits": 1685763
+    },
+    {
+      "week": "2026-03-02",
+      "series": "Weekly count",
+      "commits": 1789135
+    },
+    {
+      "week": "2026-03-09",
+      "series": "Weekly count",
+      "commits": 1911352
+    },
+    {
+      "week": "2026-03-16",
+      "series": "Weekly count",
+      "commits": 2592576
+    },
+    {
+      "week": "2026-03-23",
+      "series": "Weekly count",
+      "commits": 2485608
+    },
+    {
+      "week": "2026-03-30",
+      "series": "Weekly count",
+      "commits": 2531561
+    },
+    {
+      "week": "2026-04-06",
+      "series": "Weekly count",
+      "commits": 2714572
+    },
+    {
+      "week": "2026-04-13",
+      "series": "Weekly count",
+      "commits": 2696424
+    },
+    {
+      "week": "2026-04-20",
+      "series": "Weekly count",
+      "commits": 2559116
+    },
+    {
+      "week": "2026-04-27",
+      "series": "Weekly count",
+      "commits": 2546266
+    },
+    {
+      "week": "2026-05-04",
+      "series": "Weekly count",
+      "commits": 2778692
+    },
+    {
+      "week": "2026-05-11",
+      "series": "Weekly count",
+      "commits": 3035246
+    },
+    {
+      "week": "2026-05-18",
+      "series": "Weekly count",
+      "commits": 3223735
+    },
+    {
+      "week": "2026-05-25",
+      "series": "Weekly count",
+      "commits": 2871996
+    },
+    {
+      "week": "2026-06-01",
+      "series": "Weekly count",
+      "commits": 3354856
+    },
+    {
+      "week": "2026-06-08",
+      "series": "Weekly count",
+      "commits": 3118422
+    },
+    {
+      "week": "2026-06-15",
+      "series": "Weekly count",
+      "commits": 3884942
+    },
+    {
+      "week": "2026-06-22",
+      "series": "Weekly count",
+      "commits": 3796256
+    },
+    {
+      "week": "2026-06-29",
+      "series": "Weekly count",
+      "commits": 4090435
+    },
+    {
+      "week": "2026-07-06",
+      "series": "Weekly count",
+      "commits": 4141661
+    },
+    {
+      "week": "2026-07-13",
+      "series": "Weekly count",
+      "commits": 3819373
+    },
+    {
+      "week": "2026-07-20",
+      "series": "Weekly count",
+      "commits": 3558843
+    },
+    {
+      "week": "2026-07-27",
+      "series": "Weekly count",
+      "commits": 4059683
+    },
+    {
+      "week": "2026-08-03",
+      "series": "Weekly count",
+      "commits": 3834857
+    },
+    {
+      "week": "2026-08-10",
+      "series": "Weekly count",
+      "commits": 3322958
+    },
+    {
+      "week": "2026-08-17",
+      "series": "Weekly count",
+      "commits": 3942848
+    },
+    {
+      "week": "2026-08-24",
+      "series": "Weekly count",
+      "commits": 4150762
+    },
+    {
+      "week": "2026-08-31",
+      "series": "Weekly count",
+      "commits": 5246580
+    },
+    {
+      "week": "2026-09-07",
+      "series": "Weekly count",
+      "commits": 5163149
+    },
+    {
+      "week": "2026-09-14",
+      "series": "Weekly count",
+      "commits": 4439363
+    },
+    {
+      "week": "2026-09-21",
+      "series": "Weekly count",
+      "commits": 7000399
+    },
+    {
+      "week": "2026-09-28",
+      "series": "Weekly count",
+      "commits": 8374501
+    },
+    {
+      "week": "2025-03-17",
+      "series": "4-week average",
+      "commits": 4030
+    },
+    {
+      "week": "2025-03-24",
+      "series": "4-week average",
+      "commits": 4368
+    },
+    {
+      "week": "2025-03-31",
+      "series": "4-week average",
+      "commits": 4423
+    },
+    {
+      "week": "2025-04-07",
+      "series": "4-week average",
+      "commits": 4262
+    },
+    {
+      "week": "2025-04-14",
+      "series": "4-week average",
+      "commits": 4197
+    },
+    {
+      "week": "2025-04-21",
+      "series": "4-week average",
+      "commits": 4137
+    },
+    {
+      "week": "2025-04-28",
+      "series": "4-week average",
+      "commits": 3918
+    },
+    {
+      "week": "2025-05-05",
+      "series": "4-week average",
+      "commits": 3997
+    },
+    {
+      "week": "2025-05-12",
+      "series": "4-week average",
+      "commits": 4390
+    },
+    {
+      "week": "2025-05-19",
+      "series": "4-week average",
+      "commits": 6349
+    },
+    {
+      "week": "2025-05-26",
+      "series": "4-week average",
+      "commits": 10979
+    },
+    {
+      "week": "2025-06-02",
+      "series": "4-week average",
+      "commits": 17786
+    },
+    {
+      "week": "2025-06-09",
+      "series": "4-week average",
+      "commits": 30216
+    },
+    {
+      "week": "2025-06-16",
+      "series": "4-week average",
+      "commits": 45713
+    },
+    {
+      "week": "2025-06-23",
+      "series": "4-week average",
+      "commits": 61763
+    },
+    {
+      "week": "2025-06-30",
+      "series": "4-week average",
+      "commits": 75604
+    },
+    {
+      "week": "2025-07-07",
+      "series": "4-week average",
+      "commits": 87557
+    },
+    {
+      "week": "2025-07-14",
+      "series": "4-week average",
+      "commits": 95165
+    },
+    {
+      "week": "2025-07-21",
+      "series": "4-week average",
+      "commits": 102750
+    },
+    {
+      "week": "2025-07-28",
+      "series": "4-week average",
+      "commits": 113127
+    },
+    {
+      "week": "2025-08-04",
+      "series": "4-week average",
+      "commits": 119571
+    },
+    {
+      "week": "2025-08-11",
+      "series": "4-week average",
+      "commits": 128285
+    },
+    {
+      "week": "2025-08-18",
+      "series": "4-week average",
+      "commits": 134324
+    },
+    {
+      "week": "2025-08-25",
+      "series": "4-week average",
+      "commits": 134956
+    },
+    {
+      "week": "2025-09-01",
+      "series": "4-week average",
+      "commits": 134282
+    },
+    {
+      "week": "2025-09-08",
+      "series": "4-week average",
+      "commits": 131538
+    },
+    {
+      "week": "2025-09-15",
+      "series": "4-week average",
+      "commits": 129518
+    },
+    {
+      "week": "2025-09-22",
+      "series": "4-week average",
+      "commits": 126479
+    },
+    {
+      "week": "2025-09-29",
+      "series": "4-week average",
+      "commits": 137643
+    },
+    {
+      "week": "2025-10-06",
+      "series": "4-week average",
+      "commits": 151714
+    },
+    {
+      "week": "2025-10-13",
+      "series": "4-week average",
+      "commits": 166193
+    },
+    {
+      "week": "2025-10-20",
+      "series": "4-week average",
+      "commits": 201635
+    },
+    {
+      "week": "2025-10-27",
+      "series": "4-week average",
+      "commits": 220773
+    },
+    {
+      "week": "2025-11-03",
+      "series": "4-week average",
+      "commits": 235770
+    },
+    {
+      "week": "2025-11-10",
+      "series": "4-week average",
+      "commits": 252783
+    },
+    {
+      "week": "2025-11-17",
+      "series": "4-week average",
+      "commits": 251934
+    },
+    {
+      "week": "2025-11-24",
+      "series": "4-week average",
+      "commits": 261053
+    },
+    {
+      "week": "2025-12-01",
+      "series": "4-week average",
+      "commits": 277216
+    },
+    {
+      "week": "2025-12-08",
+      "series": "4-week average",
+      "commits": 289027
+    },
+    {
+      "week": "2025-12-15",
+      "series": "4-week average",
+      "commits": 309881
+    },
+    {
+      "week": "2025-12-22",
+      "series": "4-week average",
+      "commits": 329748
+    },
+    {
+      "week": "2025-12-29",
+      "series": "4-week average",
+      "commits": 377429
+    },
+    {
+      "week": "2026-01-05",
+      "series": "4-week average",
+      "commits": 470863
+    },
+    {
+      "week": "2026-01-12",
+      "series": "4-week average",
+      "commits": 575571
+    },
+    {
+      "week": "2026-01-19",
+      "series": "4-week average",
+      "commits": 695669
+    },
+    {
+      "week": "2026-01-26",
+      "series": "4-week average",
+      "commits": 809282
+    },
+    {
+      "week": "2026-02-02",
+      "series": "4-week average",
+      "commits": 921460
+    },
+    {
+      "week": "2026-02-09",
+      "series": "4-week average",
+      "commits": 1041553
+    },
+    {
+      "week": "2026-02-16",
+      "series": "4-week average",
+      "commits": 1205539
+    },
+    {
+      "week": "2026-02-23",
+      "series": "4-week average",
+      "commits": 1388422
+    },
+    {
+      "week": "2026-03-02",
+      "series": "4-week average",
+      "commits": 1553623
+    },
+    {
+      "week": "2026-03-09",
+      "series": "4-week average",
+      "commits": 1721419
+    },
+    {
+      "week": "2026-03-16",
+      "series": "4-week average",
+      "commits": 1994706
+    },
+    {
+      "week": "2026-03-23",
+      "series": "4-week average",
+      "commits": 2194667
+    },
+    {
+      "week": "2026-03-30",
+      "series": "4-week average",
+      "commits": 2380274
+    },
+    {
+      "week": "2026-04-06",
+      "series": "4-week average",
+      "commits": 2581079
+    },
+    {
+      "week": "2026-04-13",
+      "series": "4-week average",
+      "commits": 2607041
+    },
+    {
+      "week": "2026-04-20",
+      "series": "4-week average",
+      "commits": 2625418
+    },
+    {
+      "week": "2026-04-27",
+      "series": "4-week average",
+      "commits": 2629094
+    },
+    {
+      "week": "2026-05-04",
+      "series": "4-week average",
+      "commits": 2645124
+    },
+    {
+      "week": "2026-05-11",
+      "series": "4-week average",
+      "commits": 2729830
+    },
+    {
+      "week": "2026-05-18",
+      "series": "4-week average",
+      "commits": 2895984
+    },
+    {
+      "week": "2026-05-25",
+      "series": "4-week average",
+      "commits": 2977417
+    },
+    {
+      "week": "2026-06-01",
+      "series": "4-week average",
+      "commits": 3121458
+    },
+    {
+      "week": "2026-06-08",
+      "series": "4-week average",
+      "commits": 3142252
+    },
+    {
+      "week": "2026-06-15",
+      "series": "4-week average",
+      "commits": 3307554
+    },
+    {
+      "week": "2026-06-22",
+      "series": "4-week average",
+      "commits": 3538619
+    },
+    {
+      "week": "2026-06-29",
+      "series": "4-week average",
+      "commits": 3722513
+    },
+    {
+      "week": "2026-07-06",
+      "series": "4-week average",
+      "commits": 3978323
+    },
+    {
+      "week": "2026-07-13",
+      "series": "4-week average",
+      "commits": 3961931
+    },
+    {
+      "week": "2026-07-20",
+      "series": "4-week average",
+      "commits": 3902578
+    },
+    {
+      "week": "2026-07-27",
+      "series": "4-week average",
+      "commits": 3894890
+    },
+    {
+      "week": "2026-08-03",
+      "series": "4-week average",
+      "commits": 3818189
+    },
+    {
+      "week": "2026-08-10",
+      "series": "4-week average",
+      "commits": 3694085
+    },
+    {
+      "week": "2026-08-17",
+      "series": "4-week average",
+      "commits": 3790086
+    },
+    {
+      "week": "2026-08-24",
+      "series": "4-week average",
+      "commits": 3812856
+    },
+    {
+      "week": "2026-08-31",
+      "series": "4-week average",
+      "commits": 4165787
+    },
+    {
+      "week": "2026-09-07",
+      "series": "4-week average",
+      "commits": 4625834
+    },
+    {
+      "week": "2026-09-14",
+      "series": "4-week average",
+      "commits": 4749963
+    },
+    {
+      "week": "2026-09-21",
+      "series": "4-week average",
+      "commits": 5462372
+    },
+    {
+      "week": "2026-09-28",
+      "series": "4-week average",
+      "commits": 6244353
+    }
+  ],
+  "takeaway": [
+    "About 6.2M public commits a week carried Claude's co-author trailer in the 4 weeks to 2026-09-28, +57% on the same span 12 weeks earlier."
+  ],
+  "assumptions": [
+    "GitHub's search count is an estimate. The same week has read 8.0M one day and 9.2M the next, so read the trend.",
+    "GitHub flagged 35 of the 84 weeks as incomplete results (its search timed out), so those weeks may read low.",
+    "Only public repositories' default branches are indexed; private and enterprise work is invisible.",
+    "The trailer is added by Claude Code by default and can be switched off, so this undercounts usage.",
+    "Other coding agents add no comparable trailer, so there is no peer series."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "dev_adoption.coauthored_commits",
+  "page": "dev_adoption",
+  "as_of": "2026-09-28",
+  "sources": [
+    {
+      "source": "github_coauthored_commits",
+      "label": "GitHub commit search: public commits co-authored by Claude",
+      "url": "https://api.github.com/search/commits?q=%22Co-Authored-By%3A+Claude%22",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-09-28",
+      "retrieved_at": "2026-10-05T06:52:42Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T07:27:23Z"
+}

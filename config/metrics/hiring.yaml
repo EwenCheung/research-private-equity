@@ -1,0 +1,24 @@
+open_roles:
+  label: Open roles
+  unit: roles
+  definition: Postings listed on the company's own public job board when collected (live API, or an Internet Archive capture of it).
+  aggregation: last
+  higher_is: neutral
+job_posting:
+  label: Job posting
+  unit: posting (count 1 each)
+  definition: One listed posting with its title, department and location; counted to give function and region mixes.
+  aggregation: sum
+  higher_is: neutral
+h1b_lca_filing:
+  label: H-1B LCA filings
+  unit: applications
+  definition: H-1B Labor Condition Applications decided for the employer, from DOL OFLC disclosure files (filed, not hires).
+  aggregation: sum
+  higher_is: neutral
+h1b_offered_wage_annual:
+  label: Offered wage (annualised)
+  unit: USD per year
+  definition: The lower bound of the wage offered on an H-1B LCA, annualised (hour x2080, week x52, bi-weekly x26, month x12).
+  aggregation: mean
+  higher_is: neutral

@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useLayoutEffect, useState } from "react";
 
 type Pref = "auto" | "light" | "dark";
 const KEY = "theme";
@@ -25,7 +25,8 @@ export function useTheme() {
     return () => m.removeEventListener("change", on);
   }, []);
 
-  useEffect(() => {
+  // Layout effect: the attribute must be set before any chart's passive effect reads the colour tokens.
+  useLayoutEffect(() => {
     if (pref === "auto") document.documentElement.removeAttribute("data-theme");
     else document.documentElement.dataset.theme = pref;
     try {

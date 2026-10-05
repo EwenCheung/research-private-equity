@@ -492,7 +492,8 @@ details.detail dd {
     animation: none;
   }
 }
-.error {
+.error,
+.login .error {
   color: var(--crit);
 }
 .gallery {

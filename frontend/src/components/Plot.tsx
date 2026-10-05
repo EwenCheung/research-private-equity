@@ -44,25 +44,29 @@ function useWidth() {
 export function useSeriesColors(spec: ChartSpec) {
   const scheme = useContext(SchemeContext);
   const series = seriesOf(spec);
-  // The palette is capped at 8 slots; folding the rest into "Other" is the mart's job, so overflow reads as muted.
-  const css = getComputedStyle(document.documentElement);
-  const colors = series.map((_, i) => css.getPropertyValue(SLOTS[i] ?? "--idle").trim() || "#898781");
+  const [colors, setColors] = useState<string[]>([]);
+  // Read the tokens after commit, once the theme attribute has been applied.
+  useEffect(() => {
+    const css = getComputedStyle(document.documentElement);
+    // The palette is capped at 8 slots; folding the rest into "Other" is the mart's job, so overflow reads as muted.
+    setColors(Array.from({ length: Math.max(series.length, 1) }, (_, i) => css.getPropertyValue(SLOTS[i] ?? "--idle").trim() || "#898781"));
+  }, [scheme, series.join("|")]); // eslint-disable-line react-hooks/exhaustive-deps
   return { scheme, series, colors };
 }
 
 export default function ChartPlot({ spec }: { spec: ChartSpec }) {
   const { ref, width } = useWidth();
-  const { scheme, series, colors } = useSeriesColors(spec);
+  const { series, colors } = useSeriesColors(spec);
 
   useEffect(() => {
     const el = ref.current;
-    if (!el || !width) return;
+    if (!el || !width || colors.length < Math.max(series.length, 1)) return;
     const css = getComputedStyle(document.documentElement);
     const v = (n: string) => css.getPropertyValue(n).trim();
     const plot = build(spec, series, colors, { ink: v("--ink"), ink3: v("--ink-3"), surface: v("--surface"), axis: v("--axis") }, width);
     el.replaceChildren(plot);
     return () => plot.remove();
-  }, [spec, width, scheme]); // eslint-disable-line react-hooks/exhaustive-deps -- colours derive from spec and scheme
+  }, [spec, width, colors]); // eslint-disable-line react-hooks/exhaustive-deps -- colours derive from spec and scheme
 
   return (
     <>
@@ -107,11 +111,12 @@ function build(spec: ChartSpec, series: string[], colors: string[], c: Ink, widt
   const every = Math.ceil(bandKeys.length / 8);
   const xScale: Plot.ScaleOptions = band
     ? {
+        type: "band",
         label: null,
-        padding: bandKeys.length <= 6 ? 0.6 : 0.35,
+        padding: bandKeys.length <= 6 ? 0.75 : 0.4,
         tickFormat: (d: string) => (bandKeys.indexOf(d) % every === 0 ? (temporal ? shortDate(d) : d) : ""),
       }
-    : { label: temporal ? null : x!.label };
+    : { label: temporal ? null : x!.label, ticks: 6 };
 
   const base: Plot.PlotOptions = {
     width,

@@ -1,0 +1,28 @@
+# One web service: builds the frontend, then serves it and the API from the same process.
+services:
+  - type: web
+    name: signal-monitor
+    runtime: python
+    plan: starter
+    buildCommand: |
+      pip install uv
+      uv sync --locked --no-dev
+      npm --prefix frontend ci
+      npm --prefix frontend run build
+    startCommand: uv run --no-dev uvicorn app.server:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/session
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12"
+      - key: NODE_VERSION
+        value: "22"
+      - key: COOKIE_SECURE
+        value: "1"
+      # Real data: the committed marts/registry written by the pipeline (fixtures when unset).
+      - key: MARTS_DIR
+        value: data/marts
+      - key: DASHBOARD_PASSWORD
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true

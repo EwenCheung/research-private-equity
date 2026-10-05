@@ -1,0 +1,4 @@
+slug: anthropic
+name: Anthropic
+role: target
+peers: [openai, google-deepmind, xai, mistral, cohere]

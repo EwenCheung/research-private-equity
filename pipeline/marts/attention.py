@@ -138,6 +138,12 @@ def wiki_companies(ctx):
 def news_share(ctx):
     df = dims(latest(ctx.obs(metric="news_articles"), keys=("entity", "as_of")), "total_articles")
     rows, takeaway = [], []
+    if len(df) and "anthropic" not in set(df["entity"]):
+        # A peers-only chart would read as a comparison with the target missing; wait until the target has data.
+        df = df.iloc[0:0]
+        takeaway = [
+            "Awaiting data: GDELT's history for Anthropic has not been collected yet (its API rate-limits long backfills)."
+        ]
     if len(df):
         df = df.assign(total=df["total_articles"].astype(float), month=lambda d: d["as_of"].str[:7] + "-01")
         last_day = df["as_of"].max()

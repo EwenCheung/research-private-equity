@@ -271,3 +271,9 @@ def test_recent_coverage_dedupes_and_keeps_the_link():
     spec = marts.recent_coverage(Ctx(rows, NAMES))
     assert [(r["date"], r["headline"]) for r in spec["rows"]] == [("2026-10-04", "B"), ("2026-10-03", "A")]
     assert spec["rows"][0]["link"].startswith("https://news.google.com/")
+
+
+def test_news_share_waits_when_only_peers_have_been_collected():
+    rows = [obs("gdelt_news_volume", "news_articles", "openai", "2026-08-10", 50, total_articles=10000)]
+    spec = marts.news_share(Ctx(rows, NAMES))
+    assert spec["rows"] == [] and spec["takeaway"][0].startswith("Awaiting data: GDELT's history for Anthropic")

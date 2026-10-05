@@ -52,7 +52,12 @@ Status: see [docs/ROADMAP.md](docs/ROADMAP.md). Design: [docs/superpowers/specs]
 ## Working on an implementation
 Each roadmap item gets its own branch and worktree, cut from the phase branch, so several can run in parallel without conflicts:
 ```bash
-git fetch origin && git worktree add .worktrees/p2-hiring -b p2/hiring origin/phase/2
+git fetch origin && git worktree add .claude/worktrees/p2-hiring -b p2/hiring origin/phase/2
 ```
+- **Location:** worktrees always live in `.claude/worktrees/`, the same place the Claude app and `claude --worktree` use.
+- **Starting from the Claude app:** if it made the worktree on a `claude/...` branch, switch to the roadmap branch first:
+  `git fetch origin && git switch -c p2/hiring origin/phase/2`.
+- **Secrets:** keep one `.env` in the repo root and link it into each worktree:
+  `ln -s "$(git rev-parse --path-format=absolute --git-common-dir)/../.env" .env`.
 When it's done, open a PR into `phase/2`. Nothing merges straight into `main`: each phase reaches `main` through one `phase/N` PR.
 Read `CLAUDE.md` for the ownership rule, ports, review checkpoints and commit conventions.

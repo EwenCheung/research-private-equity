@@ -10,6 +10,7 @@ import httpx
 
 UA = "signal-monitor/0.1 (private-company research)"
 RETRY_STATUS = {429, 500, 502, 503, 504}
+MAX_WAIT = 900  # never sleep longer than 15 minutes on one rate-limit reply
 SEC_MIN_INTERVAL = 0.12  # SEC fair access: at most 10 requests a second
 _last_sec_call = 0.0
 
@@ -18,8 +19,21 @@ class SourceUnavailable(Exception):
     """The source can't run here (e.g. a missing API key). collect reports it as skipped, not as a failure."""
 
 
+def rate_limit_wait(r: httpx.Response) -> float | None:
+    """Seconds to wait when the server says we're rate limited: 429, or GitHub's 403 carrying rate-limit headers."""
+    if r.status_code not in (403, 429):
+        return None
+    if (after := r.headers.get("Retry-After", "").strip()).isdigit():
+        return float(after)
+    if r.headers.get("x-ratelimit-remaining") == "0" and (reset := r.headers.get("x-ratelimit-reset", "")).isdigit():
+        return max(1.0, float(reset) - time.time())
+    if r.status_code == 403 and "secondary rate limit" in r.text:  # GitHub sends no header; its docs say wait minutes
+        return 120.0
+    return 30.0 if r.status_code == 429 else None  # a plain 403 is a real refusal: don't retry it
+
+
 def request(method: str, url: str, *, attempts: int = 4, timeout: float = 60, headers=None, **kw) -> httpx.Response:
-    """httpx request with our user agent, retrying 429/5xx and dropped connections with backoff."""
+    """httpx request with our user agent, retrying rate limits, 5xx and dropped connections with backoff."""
     headers = {"User-Agent": UA, **(headers or {})}
     for attempt in range(attempts):
         last = attempt == attempts - 1
@@ -29,11 +43,12 @@ def request(method: str, url: str, *, attempts: int = 4, timeout: float = 60, he
             if last:
                 raise
         else:
-            if r.status_code not in RETRY_STATUS or last:
+            wait = rate_limit_wait(r)
+            if (wait is None and r.status_code not in RETRY_STATUS) or last:
                 r.raise_for_status()
                 return r
-            if wait := r.headers.get("Retry-After", "").strip():
-                time.sleep(min(float(wait) if wait.isdigit() else 30, 120))
+            if wait is not None:
+                time.sleep(min(wait, MAX_WAIT))
                 continue
         time.sleep(min(2**attempt, 30))
     raise AssertionError("unreachable")

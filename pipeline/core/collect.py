@@ -39,19 +39,25 @@ def collect(
     for s in sources:
         rows = []
         for co in scope:
-            try:  # a failing collector or invalid row drops that company's rows only; everything else still runs
-                rows += [
-                    validate(
-                        "observation",
-                        {**row, "source": s.id, "method": s.meta["method"], "tier": s.meta["tier"]} | stamp,
+            produced = []
+            # A failure stops this company's collection only. Rows already yielded are complete, provenance-stamped
+            # observations, so they are kept (a long backfill that hits a limit keeps its progress); the error is reported.
+            try:
+                for row in s.fn(co):
+                    produced.append(
+                        validate(
+                            "observation",
+                            {**row, "source": s.id, "method": s.meta["method"], "tier": s.meta["tier"]} | stamp,
+                        )
                     )
-                    for row in s.fn(co)
-                ]
             except SourceUnavailable as e:
                 skipped.append(f"{s.id}: {e}")
                 break
             except Exception as e:  # noqa: BLE001 - any collector failure must not stop the other sources
-                errors.append(f"{s.id}/{co.slug}: {type(e).__name__}: {e}")
+                kept = f" (kept {len(produced)} rows collected before it)" if produced else ""
+                errors.append(f"{s.id}/{co.slug}: {type(e).__name__}: {e}{kept}")
+            finally:
+                rows += produced
         written[s.id] = write_raw(root, s.id, rows, now) if rows else None
     return written, errors, skipped
 

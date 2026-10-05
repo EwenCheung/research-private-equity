@@ -1,7 +1,7 @@
 import * as Plot from "@observablehq/plot";
 import { useContext, useEffect, useRef, useState } from "react";
 import { companies } from "../api";
-import { fmt, shortDate, toDate } from "../format";
+import { axis, fmt, shortDate, toDate } from "../format";
 import { SchemeContext } from "../theme";
 import type { ChartSpec } from "../types";
 
@@ -146,7 +146,7 @@ function build(spec: ChartSpec, series: string[], colors: string[], c: Ink, widt
     marginRight: !band && labelEnds && spec.kind === "line" ? 64 : 16,
     style: { background: "transparent", color: c.ink, fontFamily: "var(--sans)", fontSize: "12px", ["--plot-background" as string]: c.surface },
     x: xScale,
-    y: { label: y!.label, grid: true, tickFormat: (d: number) => fmt(d, yFmt), nice: true },
+    y: { label: y!.label, grid: true, tickFormat: (d: number) => axis(d, yFmt), nice: true },
     color: { type: "categorical", domain: series, range: colors },
   };
 
@@ -155,7 +155,7 @@ function build(spec: ChartSpec, series: string[], colors: string[], c: Ink, widt
   const endLabel = Plot.text(lastPerSeries, {
     x: xs,
     y: (r: Row) => r[yf],
-    text: (r: Row) => fmt(r[yf], yFmt),
+    text: (r: Row) => axis(r[yf], yFmt),
     dx: 10,
     textAnchor: "start",
     fill: c.ink,
@@ -176,7 +176,7 @@ function build(spec: ChartSpec, series: string[], colors: string[], c: Ink, widt
         marks: [
           Plot.barY(rows, { x: (r: Row) => String(r[xf]), y: (r: Row) => r[yf], fill, ry: 4 }),
           Plot.ruleY([0], { stroke: c.axis }),
-          ...(rows.length <= 14 ? [Plot.text(rows, { x: (r: Row) => String(r[xf]), y: (r: Row) => r[yf], text: (r: Row) => fmt(r[yf], yFmt), dy: -8, fill: c.ink })] : []),
+          ...(rows.length <= 14 ? [Plot.text(rows, { x: (r: Row) => String(r[xf]), y: (r: Row) => r[yf], text: (r: Row) => axis(r[yf], yFmt), dy: -8, fill: c.ink })] : []),
           Plot.tip(rows, Plot.pointerX({ x: (r: Row) => String(r[xf]), y: (r: Row) => r[yf], title: tipText }) as Plot.TipOptions),
         ],
       });

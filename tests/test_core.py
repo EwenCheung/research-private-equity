@@ -114,7 +114,7 @@ def raw_rows(path):
 
 def test_collect_stamps_provenance_and_writes_immutable_gzip(clean_registry, root):
     registry.source(**META)(lambda co: [{**ROW, "entity": co.slug}])
-    written, errors = collect(root=root, now=NOW)
+    written, errors, _ = collect(root=root, now=NOW)
     assert errors == []
     path = written["fake_jobs"]
     assert path == root / "data/raw/fake_jobs/20261005T060211Z.jsonl.gz"
@@ -131,7 +131,7 @@ def test_collect_stamps_provenance_and_writes_immutable_gzip(clean_registry, roo
 def test_collect_rejects_rows_without_provenance(clean_registry, root):
     no_url = {k: v for k, v in ROW.items() if k != "source_url"}
     registry.source(**META)(lambda co: [no_url])
-    written, errors = collect(root=root, now=NOW)
+    written, errors, _ = collect(root=root, now=NOW)
     assert written == {"fake_jobs": None}  # nothing invalid reaches disk
     assert len(errors) == 2 and "source_url" in errors[0]
     assert not (root / "data/raw").exists()
@@ -143,7 +143,7 @@ def test_a_failing_collector_does_not_stop_the_others(clean_registry, root):
 
     registry.source(**META)(boom)
     registry.source(**{**META, "id": "ok_jobs"})(lambda co: [{**ROW, "entity": co.slug}])
-    written, errors = collect(root=root, now=NOW)
+    written, errors, _ = collect(root=root, now=NOW)
     assert written["fake_jobs"] is None and written["ok_jobs"].exists()
     assert "fake_jobs/a: RuntimeError: api down" in errors
 
@@ -155,7 +155,7 @@ def test_one_failing_company_keeps_the_other_companies_rows(clean_registry, root
         return [{**ROW, "entity": "b"}]
 
     registry.source(**META)(only_b)
-    written, errors = collect(root=root, now=NOW)
+    written, errors, _ = collect(root=root, now=NOW)
     assert [r["entity"] for r in raw_rows(written["fake_jobs"])] == ["b"]
     assert len(errors) == 1
 
@@ -165,7 +165,7 @@ def test_collect_filters(clean_registry, root):
     registry.source(**{**META, "id": "weekly_x", "cadence": "weekly"})(lambda co: [{**ROW, "entity": co.slug}])
     registry.source(**{**META, "id": "yipit_x", "method": "manual", "tier": "vendor"})(lambda co: 1 / 0)
     assert set(collect(root=root, now=NOW, cadence="daily")[0]) == {"fake_jobs"}  # manual never runs
-    written, _ = collect(root=root, now=NOW, source_ids=["weekly_x"], company="b")
+    written, _, _ = collect(root=root, now=NOW, source_ids=["weekly_x"], company="b")
     assert [r["entity"] for r in raw_rows(written["weekly_x"])] == ["b"]
     with pytest.raises(SystemExit):
         collect(root=root, now=NOW, source_ids=["nope"])
@@ -394,3 +394,69 @@ def test_appstore_fetch_retries_a_stalled_request(monkeypatch):
     finally:
         snapshots._chart.cache_clear()
     assert len(calls) == 3
+
+
+# ---- shared http and incremental helpers ----
+
+
+def test_a_source_without_its_key_is_skipped_not_failed(clean_registry, root):
+    from pipeline.core.http import SourceUnavailable
+
+    def needs_key(co):
+        raise SourceUnavailable("set FAKE_KEY")
+
+    registry.source(**META)(needs_key)
+    registry.source(**{**META, "id": "ok_jobs"})(lambda co: [{**ROW, "entity": co.slug}])
+    written, errors, skipped = collect(root=root, now=NOW)
+    assert errors == [] and skipped == ["fake_jobs: set FAKE_KEY"]  # reported once, not per company
+    assert written["fake_jobs"] is None and written["ok_jobs"].exists()
+
+
+def test_latest_as_of_reads_what_is_already_stored(clean_registry, root):
+    from pipeline.core.store import latest_as_of
+
+    registry.source(**META)(lambda co: [{**ROW, "entity": co.slug, "as_of": d} for d in ("2026-10-01", "2026-10-03")])
+    collect(root=root, now=NOW)
+    assert latest_as_of(root, "fake_jobs", "a") == "2026-10-03"
+    assert latest_as_of(root, "fake_jobs", "ghost") is None
+    assert latest_as_of(root, "never_collected", "a") is None
+
+
+def test_http_retries_transient_errors_then_succeeds(monkeypatch):
+    import httpx
+
+    from pipeline.core import http
+
+    calls = []
+
+    def fake(method, url, **kw):
+        calls.append(kw["headers"]["User-Agent"])
+        status = 503 if len(calls) < 3 else 200
+        return httpx.Response(status, request=httpx.Request(method, url))
+
+    monkeypatch.setattr(http.httpx, "request", fake)
+    monkeypatch.setattr(http.time, "sleep", lambda s: None)
+    assert http.get("https://example.com").status_code == 200
+    assert len(calls) == 3 and calls[0] == http.UA
+
+
+def test_sec_requires_a_user_agent(monkeypatch):
+    from pipeline.core import http
+
+    monkeypatch.delenv("SEC_USER_AGENT", raising=False)
+    with pytest.raises(http.SourceUnavailable, match="SEC_USER_AGENT"):
+        http.sec_get("https://efts.sec.gov/LATEST/search-index")
+
+
+def test_nan_in_mart_rows_is_written_as_null(clean_registry, root):
+    registry.source(**META)(lambda co: [{**ROW, "entity": co.slug}])
+
+    def with_gap(ctx):
+        ctx.obs(metric="open_roles")
+        return {**MART, "rows": [{"as_of": "2026-10-05", "value": float("nan")}]}
+
+    registry.mart(id="hiring.open_roles", sources=["fake_jobs"])(with_gap)
+    collect(root=root, now=NOW)
+    written, errors = build(root=root, now=NOW)
+    assert errors == []
+    assert json.loads(written[0].read_text())["rows"] == [{"as_of": "2026-10-05", "value": None}]

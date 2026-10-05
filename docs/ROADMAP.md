@@ -1,20 +1,20 @@
 # Roadmap
 
-Status: ☐ not started · ◐ in progress · ☑ done (merged and approved)
+Status: ☐ not started · ◐ in progress · ⧗ in PR review · ☑ merged to `main`
 
 The rules:
 - Implementations inside one phase are independent: one branch and one worktree each, and they can run in parallel.
-- A phase starts only when the phase before it is ☑.
+- The next phase branch is cut from the current one as soon as its PR opens, so work continues while the PR is reviewed.
 - PR flow: each implementation opens a PR into `phase/N`. At the gate, one PR `phase/N` → `main`. No direct merges to `main`.
-- This file is only updated at phase gates, on `main`.
+- This file is only updated on the phase branch, as the gate's last commit before the phase PR. Never directly on `main`.
 
 The full design is in [the spec](superpowers/specs/2026-10-05-signal-monitor-design.md).
 
-## Phase 0: Foundations ◐
+## Phase 0: Foundations ⧗ (PR `phase/0` → `main`)
 | # | Implementation | Branch | Status |
 |---|---|---|---|
-| 0.1 | Team environment: shared plugins, CLAUDE.md, README, roadmap, spec | `p0/team-env` | ◐ |
-| 0.2 | Contracts & fixtures: row, chart-spec and AI-report schemas, module interfaces, sample marts | `p0/contracts` | ◐ |
+| 0.1 | Team environment: shared plugins, CLAUDE.md, README, roadmap, spec | `p0/team-env` | ⧗ |
+| 0.2 | Contracts & fixtures: row, chart-spec and AI-report schemas, module interfaces, sample marts | `p0/contracts` | ⧗ |
 
 ## Phase 1: Platform ☐
 | # | Implementation | Branch | Status |

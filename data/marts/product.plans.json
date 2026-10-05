@@ -88,15 +88,15 @@
       "tier": "company-stated",
       "cadence": "monthly",
       "as_of": "2026-10-05",
-      "retrieved_at": "2026-10-05T08:00:00Z",
+      "retrieved_at": "2026-10-05T07:36:19Z",
       "freshness": "fresh",
       "manual": {
         "entered_by": "EwenCheung via Claude",
-        "entered_at": "2026-10-05T08:00:00Z",
+        "entered_at": "2026-10-05T07:36:19Z",
         "evidence": "Free Try Claude $0 Free for everyone"
       }
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T07:24:45Z"
+  "generated_at": "2026-10-05T07:36:29Z"
 }

@@ -1,0 +1,286 @@
+{
+  "title": "Share of news coverage",
+  "subtitle": "Articles mentioning each company per 10,000 English-language articles GDELT monitored",
+  "kind": "line",
+  "encoding": {
+    "x": {
+      "field": "month",
+      "type": "temporal",
+      "label": "Month"
+    },
+    "y": {
+      "field": "per_10k",
+      "type": "quantitative",
+      "label": "Articles per 10,000",
+      "format": "float"
+    },
+    "color": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    }
+  },
+  "columns": [
+    {
+      "field": "month",
+      "label": "Month",
+      "format": "date"
+    },
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "per_10k",
+      "label": "Articles per 10,000",
+      "format": "float"
+    },
+    {
+      "field": "articles",
+      "label": "Matching articles",
+      "format": "int"
+    }
+  ],
+  "rows": [
+    {
+      "month": "2023-01-01",
+      "company": "OpenAI",
+      "per_10k": 5.4,
+      "articles": 4284
+    },
+    {
+      "month": "2023-01-01",
+      "company": "Mistral AI",
+      "per_10k": 0.0,
+      "articles": 0
+    },
+    {
+      "month": "2023-02-01",
+      "company": "OpenAI",
+      "per_10k": 9.81,
+      "articles": 7375
+    },
+    {
+      "month": "2023-02-01",
+      "company": "Mistral AI",
+      "per_10k": 0.0,
+      "articles": 0
+    },
+    {
+      "month": "2023-03-01",
+      "company": "OpenAI",
+      "per_10k": 8.54,
+      "articles": 6305
+    },
+    {
+      "month": "2023-03-01",
+      "company": "Mistral AI",
+      "per_10k": 0.0,
+      "articles": 0
+    },
+    {
+      "month": "2023-04-01",
+      "company": "OpenAI",
+      "per_10k": 10.39,
+      "articles": 5074
+    },
+    {
+      "month": "2023-04-01",
+      "company": "Mistral AI",
+      "per_10k": 0.0,
+      "articles": 0
+    },
+    {
+      "month": "2023-05-01",
+      "company": "OpenAI",
+      "per_10k": 12.89,
+      "articles": 7372
+    },
+    {
+      "month": "2023-05-01",
+      "company": "Mistral AI",
+      "per_10k": 0.0,
+      "articles": 0
+    },
+    {
+      "month": "2023-06-01",
+      "company": "OpenAI",
+      "per_10k": 8.12,
+      "articles": 4370
+    },
+    {
+      "month": "2023-06-01",
+      "company": "Mistral AI",
+      "per_10k": 0.09,
+      "articles": 49
+    },
+    {
+      "month": "2023-07-01",
+      "company": "OpenAI",
+      "per_10k": 9.75,
+      "articles": 4949
+    },
+    {
+      "month": "2023-07-01",
+      "company": "Mistral AI",
+      "per_10k": 0.06,
+      "articles": 32
+    },
+    {
+      "month": "2023-08-01",
+      "company": "OpenAI",
+      "per_10k": 6.49,
+      "articles": 3323
+    },
+    {
+      "month": "2023-08-01",
+      "company": "Mistral AI",
+      "per_10k": 0.02,
+      "articles": 8
+    },
+    {
+      "month": "2023-09-01",
+      "company": "OpenAI",
+      "per_10k": 7.43,
+      "articles": 3757
+    },
+    {
+      "month": "2023-09-01",
+      "company": "Mistral AI",
+      "per_10k": 0.03,
+      "articles": 13
+    },
+    {
+      "month": "2023-10-01",
+      "company": "OpenAI",
+      "per_10k": 5.5,
+      "articles": 2482
+    },
+    {
+      "month": "2023-10-01",
+      "company": "Mistral AI",
+      "per_10k": 0.0,
+      "articles": 2
+    },
+    {
+      "month": "2023-11-01",
+      "company": "OpenAI",
+      "per_10k": 16.48,
+      "articles": 7733
+    },
+    {
+      "month": "2023-11-01",
+      "company": "Mistral AI",
+      "per_10k": 0.04,
+      "articles": 19
+    },
+    {
+      "month": "2023-12-01",
+      "company": "OpenAI",
+      "per_10k": 11.52,
+      "articles": 5528
+    },
+    {
+      "month": "2023-12-01",
+      "company": "Mistral AI",
+      "per_10k": 0.32,
+      "articles": 153
+    },
+    {
+      "month": "2024-01-01",
+      "company": "OpenAI",
+      "per_10k": 9.11,
+      "articles": 4130
+    },
+    {
+      "month": "2024-02-01",
+      "company": "OpenAI",
+      "per_10k": 9.51,
+      "articles": 4601
+    },
+    {
+      "month": "2024-03-01",
+      "company": "OpenAI",
+      "per_10k": 9.9,
+      "articles": 5198
+    },
+    {
+      "month": "2024-04-01",
+      "company": "OpenAI",
+      "per_10k": 7.52,
+      "articles": 3916
+    },
+    {
+      "month": "2024-05-01",
+      "company": "OpenAI",
+      "per_10k": 14.3,
+      "articles": 6963
+    },
+    {
+      "month": "2024-06-01",
+      "company": "OpenAI",
+      "per_10k": 12.35,
+      "articles": 6360
+    },
+    {
+      "month": "2024-07-01",
+      "company": "OpenAI",
+      "per_10k": 7.45,
+      "articles": 3850
+    },
+    {
+      "month": "2024-08-01",
+      "company": "OpenAI",
+      "per_10k": 6.97,
+      "articles": 3336
+    },
+    {
+      "month": "2024-09-01",
+      "company": "OpenAI",
+      "per_10k": 7.63,
+      "articles": 3971
+    },
+    {
+      "month": "2024-10-01",
+      "company": "OpenAI",
+      "per_10k": 6.92,
+      "articles": 3460
+    },
+    {
+      "month": "2024-11-01",
+      "company": "OpenAI",
+      "per_10k": 6.31,
+      "articles": 3094
+    }
+  ],
+  "takeaway": [],
+  "assumptions": [
+    "GDELT's monitored article set has shrunk and shifted since 2023, so a raw count would mislead. The chart is each company's share of that day's monitored articles.",
+    "Share = articles matching the company's search terms ÷ all monitored English articles, summed over the month. Raw counts are in the table.",
+    "Search terms match by words, so some unrelated articles are included, most for common words (Mistral, Cohere, Grok).",
+    "Complete months only."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "attention.news_share",
+  "page": "attention",
+  "as_of": "2024-12-30",
+  "sources": [
+    {
+      "source": "gdelt_news_volume",
+      "label": "GDELT news volume (English-language articles)",
+      "url": "https://api.gdeltproject.org/api/v2/doc/doc?mode=timelinevolraw",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2024-12-30",
+      "retrieved_at": "2026-10-05T07:07:23Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T07:25:44Z"
+}

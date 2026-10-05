@@ -1,0 +1,70 @@
+{
+  "title": "Google search interest",
+  "subtitle": "Relative search interest, 100 = the highest point of any compared term in the window",
+  "kind": "line",
+  "encoding": {
+    "x": {
+      "field": "month",
+      "type": "temporal",
+      "label": "Month"
+    },
+    "y": {
+      "field": "interest",
+      "type": "quantitative",
+      "label": "Interest (0-100)",
+      "format": "float"
+    },
+    "color": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    }
+  },
+  "columns": [
+    {
+      "field": "month",
+      "label": "Month",
+      "format": "date"
+    },
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "interest",
+      "label": "Interest (0-100)",
+      "format": "float"
+    }
+  ],
+  "rows": [],
+  "takeaway": [
+    "Awaiting data: Google Trends has no public API, so this needs a SerpAPI key (SERPAPI_KEY in .env; the free plan is enough)."
+  ],
+  "assumptions": [
+    "Google Trends is relative: 100 is the peak of the most-searched term in the 5-year window, and every other value is a share of it.",
+    "Terms compared: Claude AI, ChatGPT, Google Gemini, Grok AI, Mistral AI. Cohere is left out (Trends compares at most five).",
+    "Shown as monthly averages of weekly values, from the newest run only, because each run rescales to its own window.",
+    "Needs a SerpAPI key; without one this chart is empty."
+  ],
+  "badges": [],
+  "id": "attention.search_interest",
+  "page": "attention",
+  "as_of": null,
+  "sources": [
+    {
+      "source": "google_trends",
+      "label": "Google Trends via SerpAPI (interest over time)",
+      "url": "https://serpapi.com/search.json",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": null,
+      "retrieved_at": null,
+      "freshness": "never",
+      "manual": null
+    }
+  ],
+  "status": "awaiting_data",
+  "generated_at": "2026-10-05T07:25:44Z"
+}

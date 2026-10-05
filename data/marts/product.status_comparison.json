@@ -65,7 +65,7 @@
     {
       "source": "status_incidents",
       "label": "Public status pages (Anthropic and OpenAI)",
-      "url": "https://{host}/history.json",
+      "url": "https://status.openai.com/incidents/01M45E0JFFJZ6EQ3BWYPW74R2Z",
       "method": "api",
       "tier": "company-stated",
       "cadence": "daily",
@@ -76,5 +76,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T07:24:45Z"
+  "generated_at": "2026-10-05T08:47:54Z"
 }

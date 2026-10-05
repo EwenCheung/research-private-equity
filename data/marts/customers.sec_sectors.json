@@ -94,7 +94,7 @@
     {
       "source": "sec_filings_naming",
       "label": "SEC EDGAR full-text search (10-K and 10-Q)",
-      "url": "https://efts.sec.gov/LATEST/search-index",
+      "url": "https://www.sec.gov/Archives/edgar/data/1985554/000168316826007169/londax_i10k-053126.htm",
       "method": "api",
       "tier": "filing",
       "cadence": "weekly",
@@ -105,5 +105,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T08:04:24Z"
+  "generated_at": "2026-10-05T08:47:54Z"
 }

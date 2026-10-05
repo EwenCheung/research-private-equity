@@ -62,7 +62,7 @@
     {
       "source": "gdelt_news_volume",
       "label": "GDELT news volume (English-language articles)",
-      "url": "https://api.gdeltproject.org/api/v2/doc/doc?mode=timelinevolraw",
+      "url": "https://api.gdeltproject.org/api/v2/doc/doc?query=%22OpenAI%22+sourcelang%3Aenglish&mode=timelinevolraw&format=json&startdatetime=20240101000000&enddatetime=20241230235959",
       "method": "api",
       "tier": "platform",
       "cadence": "weekly",
@@ -73,5 +73,5 @@
     }
   ],
   "status": "awaiting_data",
-  "generated_at": "2026-10-05T07:39:45Z"
+  "generated_at": "2026-10-05T08:47:54Z"
 }

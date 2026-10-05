@@ -283,7 +283,7 @@
     {
       "source": "google_news_headlines",
       "label": "Google News RSS: latest headlines",
-      "url": "https://news.google.com/rss/search?q={query}",
+      "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTFAtRVI0Q2RodFB0MjdFM3lDdk85cmlQRHp0QlJGQjZpOWpLSXV3NmZrNVlfV2JRVXQxWVNTblpZdnVwNUNaWGdnRHk0ejVoeHZxQWR6bDNtaWRJV3VHeUtNMUVuaXZIaTdCREFRdmdaRzJHZWdZWFpHWHZR?oc=5",
       "method": "api",
       "tier": "press",
       "cadence": "daily",
@@ -294,5 +294,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T07:25:44Z"
+  "generated_at": "2026-10-05T08:47:54Z"
 }

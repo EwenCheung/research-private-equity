@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { api } from "../api";
 import { csvCell, fmt, isNumeric, utc } from "../format";
 import type { ChartSpec, Column, SourceLine } from "../types";
-import { ArithmeticBadge, ExtrapolationBadge, FreshnessBadge, ManualBadge } from "./Badges";
+import { ArithmeticBadge, ExtrapolationBadge, FreshnessBadge, HardcodedBadge, ManualBadge } from "./Badges";
 import ChartPlot from "./Plot";
 
 export default function ChartCard({ id }: { id: string }) {
@@ -125,10 +125,10 @@ function Card({ spec }: { spec: ChartSpec }) {
   );
 }
 
-const isWeb = (u: string) => /^https?:\/\//.test(u);
+const isWeb = (u: string) => /^https?:\/\//.test(u) && !/[{}]/.test(u);
 
 function Provenance({ s }: { s: SourceLine }) {
-  const isManual = s.method === "manual" || s.method === "ledger";
+  const isHandEntered = s.method === "manual" || s.method === "ledger";
   const label = isWeb(s.url) ? (
     <a href={s.url} target="_blank" rel="noreferrer">
       {s.label} ↗
@@ -138,10 +138,10 @@ function Provenance({ s }: { s: SourceLine }) {
   );
   const asOf = <span className="sep">{s.as_of ? `data as of ${s.as_of}` : "no data yet"}</span>;
 
-  if (isManual)
+  if (isHandEntered)
     return (
       <>
-        <ManualBadge />
+        {s.method === "ledger" ? <HardcodedBadge /> : <ManualBadge />}
         {s.manual ? (
           <>
             <span>
@@ -153,9 +153,11 @@ function Provenance({ s }: { s: SourceLine }) {
           <span>{label}, awaiting manual entry</span>
         )}
         {s.manual && asOf}
-        <span className="sep">
-          <FreshnessBadge state={s.freshness} />
-        </span>
+        {s.method === "manual" && (
+          <span className="sep">
+            <FreshnessBadge state={s.freshness} />
+          </span>
+        )}
       </>
     );
   return (

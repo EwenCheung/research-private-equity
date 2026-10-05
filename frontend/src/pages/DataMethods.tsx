@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../api";
-import { FreshnessBadge, ManualBadge } from "../components/Badges";
+import { FreshnessBadge, HardcodedBadge, ManualBadge } from "../components/Badges";
 import { utc } from "../format";
 import type { Freshness } from "../types";
 
@@ -66,22 +66,27 @@ const GAPS: [string, string][] = [
 ];
 
 const METHOD: Record<Source["method"], string> = { api: "API", scrape: "Scrape", manual: "Manual", ledger: "Ledger" };
+const isWeb = (url: string) => /^https?:\/\//.test(url) && !/[{}]/.test(url);
 
 function SourceRow({ s }: { s: Source }) {
+  const linked = isWeb(s.url);
   return (
     <tr>
       <td>
-        <a href={s.url.startsWith("http") ? s.url.replace(/\{[^}]+\}/g, "") : undefined} target="_blank" rel="noreferrer">
-          {s.label}
-          {s.url.startsWith("http") ? " ↗" : ""}
-        </a>
+        {linked ? (
+          <a href={s.url} target="_blank" rel="noreferrer">
+            {s.label} ↗
+          </a>
+        ) : (
+          <span title={s.url}>{s.label}</span>
+        )}
         <details>
           <summary>Caveats</summary>
           <p style={{ margin: "6px 0 0", maxWidth: "60ch" }}>{s.caveats}</p>
         </details>
       </td>
       <td>
-        {s.method === "manual" || s.method === "ledger" ? <ManualBadge /> : null} {METHOD[s.method]}
+        {s.method === "manual" ? <ManualBadge /> : null} {METHOD[s.method]}
       </td>
       <td>{s.tier}</td>
       <td>
@@ -92,7 +97,7 @@ function SourceRow({ s }: { s: Source }) {
       <td>
         {s.retrieved_at ? utc(s.retrieved_at) : "never"}
         <br />
-        <FreshnessBadge state={s.freshness} />
+        {s.method === "ledger" ? <HardcodedBadge /> : <FreshnessBadge state={s.freshness} />}
       </td>
       <td>{s.as_of ?? "–"}</td>
       <td className="num">{s.row_count.toLocaleString("en-US")}</td>
@@ -116,7 +121,9 @@ export default function DataMethods() {
 
   const byPage = new Map<string, Source[]>();
   for (const s of sources ?? []) byPage.set(s.page, [...(byPage.get(s.page) ?? []), s]);
-  const count = (f: Freshness) => (sources ?? []).filter((s) => s.freshness === f).length;
+  const liveSources = (sources ?? []).filter((s) => s.method !== "ledger");
+  const count = (f: Freshness) => liveSources.filter((s) => s.freshness === f).length;
+  const hardcoded = (sources ?? []).filter((s) => s.method === "ledger").length;
   const empty = marts.filter((m) => m.status === "awaiting_data");
 
   return (
@@ -124,7 +131,7 @@ export default function DataMethods() {
       <header className="page-head">
         <h1>Data &amp; Methods</h1>
         <p>
-          Every number on this site traces to a source below, with when it was last collected and what it cannot tell you.
+          Every number on this site traces to a source below, with when it was last collected or entered and what it cannot tell you.
           Freshness is recomputed from the clock each time you load this page.
         </p>
       </header>
@@ -141,14 +148,17 @@ export default function DataMethods() {
               </span>
             ))}
             <span>
+              <HardcodedBadge /> {hardcoded}
+            </span>
+            <span>
               {sources.length} sources · {marts.length} charts · {empty.length} awaiting data
             </span>
           </div>
 
           <h2 className="section-title">Every source</h2>
           <p className="subtitle" style={{ marginBottom: 14 }}>
-            Freshness measures when we last collected, not the date the data describes. A source is fresh within its SLA, aging up to
-            twice the SLA, and stale beyond.
+            Freshness measures when we last collected or updated a manual feed, not the date the data describes. A source is fresh within
+            its SLA, aging up to twice the SLA, and stale beyond. Cited ledgers are hardcoded and shown separately.
           </p>
           {[...byPage.entries()]
             .sort(([a], [b]) => (PAGES[a] ?? a).localeCompare(PAGES[b] ?? b))
@@ -163,7 +173,7 @@ export default function DataMethods() {
                         <th>Method</th>
                         <th>Tier</th>
                         <th>Cadence</th>
-                        <th>Last collected</th>
+                        <th>Last collected / entered</th>
                         <th>Data to</th>
                         <th className="num">Rows</th>
                       </tr>
@@ -207,10 +217,10 @@ export default function DataMethods() {
 
       <h2 className="section-title">How to read a number</h2>
       <p style={{ maxWidth: "70ch" }}>
-        Each chart ends with a provenance line: the source (linked), the date the data describes, and when we retrieved it. A
-        MANUAL badge means a person entered it, and the line then names who, when, and where in the report. A chart labelled
-        "Arithmetic, not a model" is computed from the rows shown, with the formula under "Assumptions &amp; detail". Raw snapshots
-        are never edited: a correction is a new row.
+        Each chart ends with a provenance line: the source (linked), the date the data describes, and when we retrieved or entered it. A
+        MANUAL badge marks a person-updated feed; HARDCODED marks a cited ledger rather than a live feed. The line names who entered it,
+        when, and the supporting evidence. A chart labelled "Arithmetic, not a model" is computed from the rows shown, with the formula
+        under "Assumptions &amp; detail". Raw snapshots are never edited: a correction is a new row.
       </p>
       <div className="table-wrap" style={{ maxHeight: "none" }}>
         <table>

@@ -884,7 +884,7 @@
     {
       "source": "github_coauthored_commits",
       "label": "GitHub commit search: public commits co-authored by Claude",
-      "url": "https://api.github.com/search/commits?q=%22Co-Authored-By%3A+Claude%22",
+      "url": "https://github.com/search?type=commits&q=%22Co-Authored-By%3A+Claude%22+committer-date%3A2026-09-28..2026-10-04",
       "method": "api",
       "tier": "platform",
       "cadence": "weekly",
@@ -895,5 +895,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T07:27:23Z"
+  "generated_at": "2026-10-05T08:47:54Z"
 }

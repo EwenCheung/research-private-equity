@@ -1681,7 +1681,7 @@
     {
       "source": "hackernews_stories",
       "label": "Hacker News stories (Algolia search)",
-      "url": "https://hn.algolia.com/api/v1/search",
+      "url": "https://hn.algolia.com/?query=Anthropic&type=story&dateRange=custom&dateStart=1790812800&dateEnd=1793491200",
       "method": "api",
       "tier": "platform",
       "cadence": "weekly",
@@ -1692,5 +1692,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T07:25:44Z"
+  "generated_at": "2026-10-05T08:47:54Z"
 }

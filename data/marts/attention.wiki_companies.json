@@ -1322,7 +1322,7 @@
     {
       "source": "wikipedia_pageviews",
       "label": "Wikimedia pageviews (English Wikipedia)",
-      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/{title}/daily/{start}/{end}",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/Claude_%28language_model%29/daily/20260927/20261004",
       "method": "api",
       "tier": "platform",
       "cadence": "daily",
@@ -1333,5 +1333,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T07:25:44Z"
+  "generated_at": "2026-10-05T08:47:54Z"
 }

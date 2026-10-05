@@ -113,7 +113,7 @@
     {
       "source": "customers_kpi_claims",
       "label": "Anthropic customer metrics (cited ledger)",
-      "url": "https://www.anthropic.com/news",
+      "url": "https://www.anthropic.com/news/anthropic-amazon-compute",
       "method": "ledger",
       "tier": "company-stated",
       "cadence": "quarterly",
@@ -123,10 +123,10 @@
       "manual": {
         "entered_by": "EwenCheung via Claude",
         "entered_at": "2026-10-05T07:49:36Z",
-        "evidence": "Anthropic now serves over 300,000 business customers, and our number of large accounts—customers that each represent over $100,000 in run-rate revenue—has grown nearly 7x in the past year."
+        "evidence": "We have worked closely with Amazon since 2023 and over 100,000 customers now run Claude on Amazon Bedrock."
       }
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T08:04:24Z"
+  "generated_at": "2026-10-05T08:47:54Z"
 }

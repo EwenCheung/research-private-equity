@@ -156,7 +156,7 @@
     {
       "source": "capital_strategic_holders",
       "label": "Amazon 10-K and 10-Q passages on its Anthropic investment (cited ledger)",
-      "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001018724&type=10-Q",
+      "url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000026/amzn-20260630.htm",
       "method": "ledger",
       "tier": "filing",
       "cadence": "quarterly",
@@ -166,10 +166,10 @@
       "manual": {
         "entered_by": "EwenCheung via Claude",
         "entered_at": "2026-10-05T07:48:16Z",
-        "evidence": "in September 2023 we invested in a $ 1.25 billion note from Anthropic, PBC, which is convertible to equity."
+        "evidence": "an aggregate facility not to exceed $ 20.0 billion that will expire 30 months after an Anthropic liquidity event"
       }
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T08:03:39Z"
+  "generated_at": "2026-10-05T08:47:54Z"
 }

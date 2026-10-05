@@ -50,12 +50,11 @@ All outputs, including the AI reporters, are drafts for deal-team review, not in
 | Page | Signal | Source |
 |---|---|---|
 | Hiring | Open roles, role mix (Research / Eng / Applied AI-FDE / GTM / Safety-Policy / Compute / G&A), location mix; same for OpenAI, xAI, Mistral, Cohere, DeepMind | Greenhouse (640 today) / Ashby (OpenAI 828) / Lever APIs, plus Wayback backfill of the careers pages |
-| Hiring | H-1B filings and median offered wage vs peers | DOL LCA quarterly disclosure files |
-| Dev adoption | `anthropic` vs `openai` vs `google-genai` downloads and share | pypistats + BigQuery PyPI history, npm downloads API (daily since 2023) |
-| Dev adoption | Claude Code installs; public commits co-authored by Claude per week (~9.2M last week) | npm API, GitHub search API (date ranges, so backfillable) |
-| Dev adoption | Token share by model provider | OpenRouter rankings (daily snapshot, no backfill) |
+| Hiring | H-1B filings and median offered wage vs peers | DOL LCA quarterly disclosure files (~79 MB each; keep only tracked employers' rows) |
+| Dev adoption | `anthropic` vs `openai` vs `google-genai` downloads and share | ClickHouse public PyPI dataset (full history, no key; verified) + pypistats (recent), npm downloads API (daily since 2023) |
+| Dev adoption | Claude Code installs; public commits co-authored by Claude per week, shown as a smoothed **index** | npm API; GitHub search API (noisy: 8.0M vs 9.2M for the same week, `incomplete_results`), with GH Archive via ClickHouse evaluated as a steadier source |
 | Dev adoption | Ecosystem: MCP SDK downloads, MCP-server repos, `anthropics` org stars and contributors, VS Code extension installs | npm, GitHub, VS Code Marketplace |
-| Attention | Wikipedia pageviews, Google Trends (Claude vs ChatGPT vs Gemini), App Store top-chart rank (snapshot), news volume and coverage list, HN/Reddit | Wikimedia, Trends, Apple RSS, GDELT + Google News RSS |
+| Attention | Wikipedia pageviews, Google Trends via SerpAPI (Claude vs ChatGPT vs Gemini), App Store top-chart rank (snapshot; Claude #19, ChatGPT #3, Gemini #14 in US top-free on 2026-10-05), news volume and coverage list, HN/Reddit | Wikimedia, SerpAPI Trends, iTunes top-charts RSS, GDELT + Google News RSS |
 | Product | Model release timeline, API price-per-Mtok history, plan tiers | Cited ledger + Wayback snapshots of the pricing page |
 | Product | Reliability: incidents and degraded minutes per week (capacity-strain proxy) | status.claude.com API |
 | Customers | Companies hiring for Claude/Anthropic skills (corpus of ~500 ATS boards) | Greenhouse/Lever/Ashby boards |
@@ -73,8 +72,8 @@ Each Anthropic number then also reads as a share.
 - Run-rate CAGR and doubling time from the ARR ledger.
 - Log-linear extrapolation to year-end, with a residual band.
 - EV / run-rate multiple at each round and against peers.
-- N-PORT-implied valuation against the last round price (premium or discount).
-- Anthropic's share of SDK downloads, hiring and token volume across peers.
+- N-PORT fund marks: per-fund $/share and its % change since the mark nearest the last round. An implied valuation only appears when a share count is cited in the ledger.
+- Anthropic's share of SDK downloads and hiring across peers.
 - GTM-to-R&D hiring ratio and international share of roles.
 - Tripwires: week-over-week moves larger than 2σ against the trailing 12 weeks.
 
@@ -145,8 +144,8 @@ Manual inputs go through `/add-manual-data`:
 - Git history is the audit trail.
 
 On "real-time": most sources only publish at daily resolution. So:
-- **Daily automated refresh** covers jobs, downloads, GitHub, OpenRouter, the status page and news.
-- **Weekly refresh** covers SEC, Trends and H-1B.
+- **Daily automated refresh** covers jobs, downloads, GitHub, App Store ranks, the status page and news.
+- **Weekly refresh** covers SEC and Trends. **Quarterly:** H-1B LCA files.
 - **On demand,** anyone can run `gh workflow run daily.yml` or `/refresh-data`.
 
 ## Comparability for the deal team
@@ -160,7 +159,7 @@ On "real-time": most sources only publish at daily resolution. So:
 
 ## Architecture: parallel-safe by design
 - **One tidy schema:** `{source, source_url, method, as_of, retrieved_at, tier, entity, metric, value, dims}`.
-- **Raw snapshots:** immutable JSONL in `data/raw/<source>/<date>.jsonl`.
+- **Raw snapshots:** immutable, gzip-compressed JSONL in `data/raw/<source>/<YYYYMMDDTHHMMSSZ>.jsonl.gz`. Large corpora store only the rows we use (see revisions).
 - **Marts:** written to `data/marts/<chart>.json`. Each mart is a chart spec: title, rows, as_of, sources, assumptions and takeaway.
 - **Backend:** Python.
   - The pipeline is the `collect`, `build` and `analysis` CLIs.
@@ -254,7 +253,7 @@ From `claude-plugins-official`:
 - [ ] `pipeline/core/*`: schema validation, auto-discovering registry, `collect` and `build` CLIs, freshness, company config loader.
 - [ ] `config/companies/anthropic.yaml` (including peers).
 - [ ] `daily.yml` and `weekly.yml` (collect → build → commit).
-- [ ] `pipeline/sources/snapshots.py`: raw-only daily capture of OpenRouter and App Store ranks.
+- [ ] `pipeline/sources/snapshots.py`: raw-only daily capture of App Store top-chart ranks (OpenRouter dropped: its terms forbid scraping).
   Data quality: these can't be backfilled, so their history starts the moment this merges.
 - [ ] `tests/test_core.py`, which rejects rows missing provenance.
 
@@ -274,11 +273,11 @@ Each implementation covers its page's collectors with backfills, ledgers, marts,
 | # | Branch | Page / function | Includes |
 |---|---|---|---|
 | 2.1 | `p2/hiring` | Hiring & Talent | ATS boards, Wayback backfill, H-1B LCA, role/location classifier, GTM:R&D, international share |
-| 2.2 | `p2/dev-adoption` | Developer Adoption | PyPI/BigQuery, npm, co-authored commits, GitHub org, MCP, VS Code, OpenRouter charts, SDK share |
-| 2.3 | `p2/attention` | Consumer & Attention | Wikimedia, Trends (+SerpAPI fallback), App Store charts, GDELT/News, HN/Reddit |
+| 2.2 | `p2/dev-adoption` | Developer Adoption | PyPI (ClickHouse + pypistats), npm, co-authored-commit index, GitHub org, MCP, VS Code, SDK share |
+| 2.3 | `p2/attention` | Consumer & Attention | Wikimedia, Trends via SerpAPI (awaiting data without a key), App Store charts, GDELT/News, HN/Reddit |
 | 2.4 | `p2/product` | Product, Pricing & Reliability | model-release ledger, pricing history via Wayback, status-page incidents |
 | 2.5 | `p2/customers` | Customers & Contracts | hiring-for-Claude corpus, SEC 10-K/10-Q mentions, USASpending, KPI ledger |
-| 2.6 | `p2/capital` | Capital & Valuation | ARR + funding ledgers, Form D, N-PORT marks and premium/discount, Amazon/Alphabet 10-Qs, EV/run-rate, CAGR, doubling time |
+| 2.6 | `p2/capital` | Capital & Valuation | ARR + funding ledgers, Form D, N-PORT marks and their change, Amazon/Alphabet 10-Qs, EV/run-rate, CAGR, doubling time |
 | 2.7 | `p2/licensed-data` | Licensed Alt-Data + manual input | Yipit/M Science placeholder panels, `/add-manual-data` skill |
 | 2.8 | `p2/data-methods` | Data & Methods + refresh | registry page, gaps list, `/refresh-data` and `/add-source` skills |
 
@@ -323,18 +322,23 @@ Each implementation covers its page's collectors with backfills, ledgers, marts,
    I click through it myself in the browser pane first.
 3. I hand you the URL with a short "please check" list: what's new on screen, and which numbers to compare against their source links.
 4. **I continue only after your OK.** Fixes stay on the same branch.
-5. Then I open the PR and merge it.
+5. Then I open the implementation PR into `phase/N`, and merge it after your OK.
 
 **Per phase gate.** Once every implementation in the phase is merged:
 1. I serve `main` and you do a quick check that everything works together.
-2. Then: tag `phase-N`, mark it ☑ in `docs/ROADMAP.md`, and deploy to Render.
+2. Then I open **one phase PR, `phase/N` → `main`**, and merge it only after your OK.
+3. After it merges: tag `phase-N`, mark it ☑ in `docs/ROADMAP.md`, and deploy to Render.
 
 ## Git conventions
 - Conventional Commits only: `type(scope): summary`.
   - Types: `feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `ci`.
   - Scope is the page or function, e.g. `feat(hiring): add greenhouse collector`, `ci(daily): schedule collectors`, `docs(roadmap): close phase 2`.
 - Small, focused commits, each one leaving the branch working.
-- One branch and one PR per implementation.
+- **No direct merges to `main`.**
+  - Implementation branches (`pN/<name>`) open PRs into the phase integration branch `phase/N`.
+  - At the phase gate, one PR `phase/N` → `main`.
+  - Merge with merge commits, not squash, so the conventional history survives.
+  - The only direct writer to `main` is the scheduled data job, and it only touches `data/` and `reports/` (see revision R2).
 - **Author is only you** (EwenCheung).
   No `Co-Authored-By`, no "Generated with Claude", and no AI tags in commits or PR descriptions. This overrides the default attribution.
 
@@ -358,8 +362,9 @@ Out of scope, by your decisions or because the data is missing:
   - A SerpAPI key.
 
 ## Risks
-- **Google Trends** often rate-limits CI IPs. Mitigation: weekly cadence plus retry, with SerpAPI as a fallback.
-- **OpenRouter and App Store data** is scraped as snapshots. Respect their terms and keep the request rate polite.
+- **Google Trends** has no free, reliable API (`pytrends` is archived). Mitigation: SerpAPI key; without one, the chart shows "awaiting data".
+- **Terms of use.** Each scraped source is checked against its terms before it's enabled. OpenRouter forbids scraping, so it's excluded.
+- **GitHub search counts** are approximate and rate-limited. Mitigation: one spaced query per window, store the `incomplete_results` flag, and show a smoothed index.
 - **The ARR ledger** is mostly press-reported. Every entry carries its tier and quote.
 - **AI reporters can overstate.** Mitigated by the citation and number gates, freshness flags and the "not advice" label.
 - **Parallel branches might need a core change.** Mitigation: the ownership rule, plus separate `fix(core)` PRs.
@@ -377,3 +382,32 @@ Out of scope, by your decisions or because the data is missing:
 - AI: the reports pass the gates, and the planted-fake-number test is rejected.
 - Phase gates: `main` is served and checked by you; `gh workflow run daily.yml` produces a data commit, and Render redeploys.
 - Release: in a fresh clone, Claude prompts for the 10 plugins, and every skill runs end to end.
+
+## Revisions (newest last; the plan is updated whenever something changes or proves unrealistic)
+- **R1, 2026-10-05: PR flow.** No direct merges to `main`.
+  - Implementation PRs go into `phase/N`, and one phase PR goes from `phase/N` to `main`.
+  - Phase 0 was folded into a single PR (`phase/0` → `main`), at your request.
+- **R2, 2026-10-05: scheduled data commits.**
+  - The daily and weekly jobs must land data somewhere the dashboard deploys from.
+  - Proposal: they are the only direct writer to `main`, and they only touch `data/` and `reports/`. Code never bypasses a PR.
+  - Alternative: a separate `data` branch merged by a daily PR (heavier: 365 PRs a year).
+  - **Decision needed** before 1.1 enables the schedule.
+- **R3, 2026-10-05: branch protection is available on this private repo.** It's optional; turning it on is your call.
+  It would need a bypass for the data job (R2), e.g. a deploy key.
+- **R4: all Python dependencies are declared in 0.2,** not Phase 1, so 1.1 and 1.2 never both edit `pyproject.toml`.
+- **R5: per-page company identifiers** go in `config/identifiers/<page>.yaml`, so Phase 2 pages don't share company files.
+- **R6: login.** `SESSION_SECRET` env var and a `GET /api/session` route.
+- **R7: storage realism.**
+  - Daily full snapshots of ~500 job boards would be about 5 GB a year in git.
+  - Fix: raw files are gzip-compressed (`.jsonl.gz`); the hiring-for-Claude corpus stores only matching postings plus per-company counts; the H-1B files keep only tracked employers.
+  - Estimated repo growth: tens of MB a year.
+- **R8: PyPI history** comes from ClickHouse's public dataset (verified, no key) instead of BigQuery, which needs GCP billing.
+- **R9: Google Trends.** `pytrends` is archived (verified), so Trends needs a SerpAPI key; without one, it shows "awaiting data".
+- **R10: OpenRouter is dropped.** Its terms forbid scraping (verified). No equivalent free token-share source is known, so the gap is listed on Data & Methods.
+- **R11: GitHub co-authored commits.**
+  - The search count is unstable (8.0M vs 9.2M for the same week, `incomplete_results: true`), and rapid queries hit secondary rate limits.
+  - Fix: show it as a smoothed index with a caveat, and evaluate GH Archive via ClickHouse in 2.2.
+- **R12: N-PORT.** Anthropic's share count isn't public, so an implied valuation can't be computed honestly.
+  The page shows fund marks and their % change instead; a valuation only appears with a cited share count.
+- **R13: H-1B LCA.** Each quarterly DOL file is ~79 MB (verified). It is collected quarterly, filtered to tracked employers.
+

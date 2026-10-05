@@ -5,6 +5,7 @@ Status: ☐ not started · ◐ in progress · ☑ done (merged and approved)
 The rules:
 - Implementations inside one phase are independent: one branch and one worktree each, and they can run in parallel.
 - A phase starts only when the phase before it is ☑.
+- PR flow: each implementation opens a PR into `phase/N`. At the gate, one PR `phase/N` → `main`. No direct merges to `main`.
 - This file is only updated at phase gates, on `main`.
 
 The full design is in [the spec](superpowers/specs/2026-10-05-signal-monitor-design.md).

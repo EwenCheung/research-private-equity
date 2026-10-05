@@ -1,0 +1,109 @@
+{
+  "title": "Which sectors name Anthropic",
+  "subtitle": "Distinct 10-K and 10-Q filers naming Anthropic or a Claude product, latest four quarters (Q4 2025 to Q3 2026), by SIC sector",
+  "kind": "bar",
+  "encoding": {
+    "x": {
+      "field": "sector",
+      "type": "nominal",
+      "label": "Sector"
+    },
+    "y": {
+      "field": "anthropic",
+      "type": "quantitative",
+      "label": "Distinct filers naming Anthropic",
+      "format": "int"
+    }
+  },
+  "columns": [
+    {
+      "field": "sector",
+      "label": "Sector",
+      "format": "text"
+    },
+    {
+      "field": "anthropic",
+      "label": "Naming Anthropic",
+      "format": "int"
+    },
+    {
+      "field": "openai",
+      "label": "Naming OpenAI",
+      "format": "int"
+    },
+    {
+      "field": "examples",
+      "label": "Examples naming Anthropic",
+      "format": "text"
+    }
+  ],
+  "rows": [
+    {
+      "sector": "Software & data processing",
+      "anthropic": 30,
+      "openai": 39,
+      "examples": "8X8 INC /DE/, Asana, Inc., Atlassian Corp, BOX INC"
+    },
+    {
+      "sector": "Finance, insurance & real estate",
+      "anthropic": 12,
+      "openai": 15,
+      "examples": "Apollo Global Management, Inc., Athene Holding Ltd., Blackstone Private Equity Strategies Fund, Blackstone Private Equity Strategies Fund L.P."
+    },
+    {
+      "sector": "Manufacturing",
+      "anthropic": 9,
+      "openai": 9,
+      "examples": "AVANOS MEDICAL, INC., CENTURY ALUMINUM CO, Innovative Eyewear Inc, JOHN WILEY & SONS, INC."
+    },
+    {
+      "sector": "Other services",
+      "anthropic": 5,
+      "openai": 7,
+      "examples": "BROADRIDGE FINANCIAL SOLUTIONS, INC., CHEGG, INC, Digital Brand Media & Marketing Group, Inc., Rimini Street, Inc."
+    },
+    {
+      "sector": "Retail",
+      "anthropic": 1,
+      "openai": 1,
+      "examples": "AMAZON COM INC"
+    },
+    {
+      "sector": "No SIC code (funds, BDCs, trusts)",
+      "anthropic": 1,
+      "openai": 9,
+      "examples": "SARATOGA INVESTMENT CORP."
+    }
+  ],
+  "takeaway": [
+    "58 distinct filers named Anthropic or a Claude product in Q4 2025 to Q3 2026; Software & data processing is the largest sector with 30 (52%)."
+  ],
+  "assumptions": [
+    "Sector comes from the filer's SIC code on EDGAR (first listed). Divisions follow the SEC table; software and data processing (7370-7379) are split out of Services because they are most of the filers. Newspapers (2711) and semiconductors (3674) are Manufacturing under the SEC's own table.",
+    "Filers with no SIC code (funds, BDCs, trusts) are their own row. SIC codes describe what a company mostly does, not how it uses Claude.",
+    "A company counts once however many of the four quarters it names Anthropic. It may be a customer, an investor, a supplier or a rival; mentions are not customers.",
+    "OpenAI is shown in the table for comparison; the bars are Anthropic only."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "customers.sec_sectors",
+  "page": "customers",
+  "as_of": "2026-09-15",
+  "sources": [
+    {
+      "source": "sec_filings_naming",
+      "label": "SEC EDGAR full-text search (10-K and 10-Q)",
+      "url": "https://efts.sec.gov/LATEST/search-index",
+      "method": "api",
+      "tier": "filing",
+      "cadence": "weekly",
+      "as_of": "2026-09-15",
+      "retrieved_at": "2026-10-05T07:59:10Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T08:04:24Z"
+}

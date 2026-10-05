@@ -1,0 +1,524 @@
+{
+  "title": "Public companies naming each lab in their filings",
+  "subtitle": "Distinct 10-K and 10-Q filers whose filing names the lab, by quarter the filing was made",
+  "kind": "line",
+  "encoding": {
+    "x": {
+      "field": "quarter",
+      "type": "temporal",
+      "label": "Quarter filed"
+    },
+    "y": {
+      "field": "filers",
+      "type": "quantitative",
+      "label": "Distinct filers",
+      "format": "int"
+    },
+    "color": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    }
+  },
+  "columns": [
+    {
+      "field": "quarter",
+      "label": "Quarter starting",
+      "format": "date"
+    },
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "filers",
+      "label": "Distinct filers",
+      "format": "int"
+    }
+  ],
+  "rows": [
+    {
+      "quarter": "2023-01-01",
+      "company": "Anthropic",
+      "filers": 0
+    },
+    {
+      "quarter": "2023-04-01",
+      "company": "Anthropic",
+      "filers": 0
+    },
+    {
+      "quarter": "2023-07-01",
+      "company": "Anthropic",
+      "filers": 0
+    },
+    {
+      "quarter": "2023-10-01",
+      "company": "Anthropic",
+      "filers": 1
+    },
+    {
+      "quarter": "2024-01-01",
+      "company": "Anthropic",
+      "filers": 3
+    },
+    {
+      "quarter": "2024-04-01",
+      "company": "Anthropic",
+      "filers": 5
+    },
+    {
+      "quarter": "2024-07-01",
+      "company": "Anthropic",
+      "filers": 4
+    },
+    {
+      "quarter": "2024-10-01",
+      "company": "Anthropic",
+      "filers": 3
+    },
+    {
+      "quarter": "2025-01-01",
+      "company": "Anthropic",
+      "filers": 7
+    },
+    {
+      "quarter": "2025-04-01",
+      "company": "Anthropic",
+      "filers": 7
+    },
+    {
+      "quarter": "2025-07-01",
+      "company": "Anthropic",
+      "filers": 6
+    },
+    {
+      "quarter": "2025-10-01",
+      "company": "Anthropic",
+      "filers": 11
+    },
+    {
+      "quarter": "2026-01-01",
+      "company": "Anthropic",
+      "filers": 32
+    },
+    {
+      "quarter": "2026-04-01",
+      "company": "Anthropic",
+      "filers": 20
+    },
+    {
+      "quarter": "2026-07-01",
+      "company": "Anthropic",
+      "filers": 26
+    },
+    {
+      "quarter": "2023-01-01",
+      "company": "Cohere",
+      "filers": 0
+    },
+    {
+      "quarter": "2023-04-01",
+      "company": "Cohere",
+      "filers": 0
+    },
+    {
+      "quarter": "2023-07-01",
+      "company": "Cohere",
+      "filers": 0
+    },
+    {
+      "quarter": "2023-10-01",
+      "company": "Cohere",
+      "filers": 0
+    },
+    {
+      "quarter": "2024-01-01",
+      "company": "Cohere",
+      "filers": 0
+    },
+    {
+      "quarter": "2024-04-01",
+      "company": "Cohere",
+      "filers": 0
+    },
+    {
+      "quarter": "2024-07-01",
+      "company": "Cohere",
+      "filers": 0
+    },
+    {
+      "quarter": "2024-10-01",
+      "company": "Cohere",
+      "filers": 0
+    },
+    {
+      "quarter": "2025-01-01",
+      "company": "Cohere",
+      "filers": 1
+    },
+    {
+      "quarter": "2025-04-01",
+      "company": "Cohere",
+      "filers": 1
+    },
+    {
+      "quarter": "2025-07-01",
+      "company": "Cohere",
+      "filers": 1
+    },
+    {
+      "quarter": "2025-10-01",
+      "company": "Cohere",
+      "filers": 0
+    },
+    {
+      "quarter": "2026-01-01",
+      "company": "Cohere",
+      "filers": 2
+    },
+    {
+      "quarter": "2026-04-01",
+      "company": "Cohere",
+      "filers": 2
+    },
+    {
+      "quarter": "2026-07-01",
+      "company": "Cohere",
+      "filers": 0
+    },
+    {
+      "quarter": "2023-01-01",
+      "company": "Google DeepMind",
+      "filers": 1
+    },
+    {
+      "quarter": "2023-04-01",
+      "company": "Google DeepMind",
+      "filers": 1
+    },
+    {
+      "quarter": "2023-07-01",
+      "company": "Google DeepMind",
+      "filers": 1
+    },
+    {
+      "quarter": "2023-10-01",
+      "company": "Google DeepMind",
+      "filers": 1
+    },
+    {
+      "quarter": "2024-01-01",
+      "company": "Google DeepMind",
+      "filers": 1
+    },
+    {
+      "quarter": "2024-04-01",
+      "company": "Google DeepMind",
+      "filers": 0
+    },
+    {
+      "quarter": "2024-07-01",
+      "company": "Google DeepMind",
+      "filers": 1
+    },
+    {
+      "quarter": "2024-10-01",
+      "company": "Google DeepMind",
+      "filers": 1
+    },
+    {
+      "quarter": "2025-01-01",
+      "company": "Google DeepMind",
+      "filers": 1
+    },
+    {
+      "quarter": "2025-04-01",
+      "company": "Google DeepMind",
+      "filers": 0
+    },
+    {
+      "quarter": "2025-07-01",
+      "company": "Google DeepMind",
+      "filers": 0
+    },
+    {
+      "quarter": "2025-10-01",
+      "company": "Google DeepMind",
+      "filers": 0
+    },
+    {
+      "quarter": "2026-01-01",
+      "company": "Google DeepMind",
+      "filers": 0
+    },
+    {
+      "quarter": "2026-04-01",
+      "company": "Google DeepMind",
+      "filers": 0
+    },
+    {
+      "quarter": "2026-07-01",
+      "company": "Google DeepMind",
+      "filers": 0
+    },
+    {
+      "quarter": "2023-01-01",
+      "company": "Mistral AI",
+      "filers": 0
+    },
+    {
+      "quarter": "2023-04-01",
+      "company": "Mistral AI",
+      "filers": 0
+    },
+    {
+      "quarter": "2023-07-01",
+      "company": "Mistral AI",
+      "filers": 0
+    },
+    {
+      "quarter": "2023-10-01",
+      "company": "Mistral AI",
+      "filers": 0
+    },
+    {
+      "quarter": "2024-01-01",
+      "company": "Mistral AI",
+      "filers": 0
+    },
+    {
+      "quarter": "2024-04-01",
+      "company": "Mistral AI",
+      "filers": 1
+    },
+    {
+      "quarter": "2024-07-01",
+      "company": "Mistral AI",
+      "filers": 0
+    },
+    {
+      "quarter": "2024-10-01",
+      "company": "Mistral AI",
+      "filers": 0
+    },
+    {
+      "quarter": "2025-01-01",
+      "company": "Mistral AI",
+      "filers": 0
+    },
+    {
+      "quarter": "2025-04-01",
+      "company": "Mistral AI",
+      "filers": 2
+    },
+    {
+      "quarter": "2025-07-01",
+      "company": "Mistral AI",
+      "filers": 1
+    },
+    {
+      "quarter": "2025-10-01",
+      "company": "Mistral AI",
+      "filers": 0
+    },
+    {
+      "quarter": "2026-01-01",
+      "company": "Mistral AI",
+      "filers": 1
+    },
+    {
+      "quarter": "2026-04-01",
+      "company": "Mistral AI",
+      "filers": 1
+    },
+    {
+      "quarter": "2026-07-01",
+      "company": "Mistral AI",
+      "filers": 0
+    },
+    {
+      "quarter": "2023-01-01",
+      "company": "OpenAI",
+      "filers": 6
+    },
+    {
+      "quarter": "2023-04-01",
+      "company": "OpenAI",
+      "filers": 5
+    },
+    {
+      "quarter": "2023-07-01",
+      "company": "OpenAI",
+      "filers": 5
+    },
+    {
+      "quarter": "2023-10-01",
+      "company": "OpenAI",
+      "filers": 11
+    },
+    {
+      "quarter": "2024-01-01",
+      "company": "OpenAI",
+      "filers": 19
+    },
+    {
+      "quarter": "2024-04-01",
+      "company": "OpenAI",
+      "filers": 14
+    },
+    {
+      "quarter": "2024-07-01",
+      "company": "OpenAI",
+      "filers": 11
+    },
+    {
+      "quarter": "2024-10-01",
+      "company": "OpenAI",
+      "filers": 17
+    },
+    {
+      "quarter": "2025-01-01",
+      "company": "OpenAI",
+      "filers": 39
+    },
+    {
+      "quarter": "2025-04-01",
+      "company": "OpenAI",
+      "filers": 18
+    },
+    {
+      "quarter": "2025-07-01",
+      "company": "OpenAI",
+      "filers": 17
+    },
+    {
+      "quarter": "2025-10-01",
+      "company": "OpenAI",
+      "filers": 23
+    },
+    {
+      "quarter": "2026-01-01",
+      "company": "OpenAI",
+      "filers": 64
+    },
+    {
+      "quarter": "2026-04-01",
+      "company": "OpenAI",
+      "filers": 36
+    },
+    {
+      "quarter": "2026-07-01",
+      "company": "OpenAI",
+      "filers": 27
+    },
+    {
+      "quarter": "2023-01-01",
+      "company": "xAI",
+      "filers": 0
+    },
+    {
+      "quarter": "2023-04-01",
+      "company": "xAI",
+      "filers": 0
+    },
+    {
+      "quarter": "2023-07-01",
+      "company": "xAI",
+      "filers": 0
+    },
+    {
+      "quarter": "2023-10-01",
+      "company": "xAI",
+      "filers": 0
+    },
+    {
+      "quarter": "2024-01-01",
+      "company": "xAI",
+      "filers": 0
+    },
+    {
+      "quarter": "2024-04-01",
+      "company": "xAI",
+      "filers": 0
+    },
+    {
+      "quarter": "2024-07-01",
+      "company": "xAI",
+      "filers": 2
+    },
+    {
+      "quarter": "2024-10-01",
+      "company": "xAI",
+      "filers": 2
+    },
+    {
+      "quarter": "2025-01-01",
+      "company": "xAI",
+      "filers": 1
+    },
+    {
+      "quarter": "2025-04-01",
+      "company": "xAI",
+      "filers": 2
+    },
+    {
+      "quarter": "2025-07-01",
+      "company": "xAI",
+      "filers": 4
+    },
+    {
+      "quarter": "2025-10-01",
+      "company": "xAI",
+      "filers": 10
+    },
+    {
+      "quarter": "2026-01-01",
+      "company": "xAI",
+      "filers": 10
+    },
+    {
+      "quarter": "2026-04-01",
+      "company": "xAI",
+      "filers": 10
+    },
+    {
+      "quarter": "2026-07-01",
+      "company": "xAI",
+      "filers": 10
+    }
+  ],
+  "takeaway": [
+    "26 distinct 10-K and 10-Q filers named Anthropic or a Claude product in Q3 2026, against 6 a year earlier and 27 naming OpenAI."
+  ],
+  "assumptions": [
+    "A filer that names Anthropic may be a customer, a supplier, an investor (Amazon, Nvidia, Zoom), a landlord or lender to it, or a competitor or litigant (News Corp, Meta). This counts mentions. It does not say who buys Claude.",
+    "Anthropic = the word Anthropic, or a Claude product name (Claude Code, Sonnet, Opus, Haiku, AI, Cowork). Bare 'Claude' is not searched because it is mostly a first name; the 7 filings it adds by product name are not otherwise found. All 122 filings naming Anthropic were opened: all but 2 (one filer writing 'anthropic factors') name the company, and that filer is excluded.",
+    "Quarter is the quarter the filing was made, so a 10-K lands in Q1 and the 10-Qs in Q2 to Q4. Filers with other year-ends still appear once per filing. 10-K/A and 10-Q/A count. Exhibits are ignored. Zero means no match in EDGAR full-text search, which is the only index used.",
+    "xAI counts include lenders holding xAI loans, a tenant and fund holdings, all verified in the filings. Cohere and Mistral are searched only beside another lab's name (bare 'Mistral' is Mistral Equity Partners, bare 'Cohere' is Cohere Health), so their lines are floors. DeepMind shows only Alphabet, which stopped using the word after Feb 2025.",
+    "Only complete quarters are shown; a quarter's late filers can still arrive a few weeks after it ends."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "customers.sec_filers",
+  "page": "customers",
+  "as_of": "2026-09-15",
+  "sources": [
+    {
+      "source": "sec_filings_naming",
+      "label": "SEC EDGAR full-text search (10-K and 10-Q)",
+      "url": "https://efts.sec.gov/LATEST/search-index",
+      "method": "api",
+      "tier": "filing",
+      "cadence": "weekly",
+      "as_of": "2026-09-15",
+      "retrieved_at": "2026-10-05T07:59:10Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-05T08:04:24Z"
+}

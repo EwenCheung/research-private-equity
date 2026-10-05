@@ -34,3 +34,4 @@ testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 120
+extend-exclude = ["docs"]  # keep interface examples in docs compact

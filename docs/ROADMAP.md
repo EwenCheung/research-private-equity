@@ -10,13 +10,13 @@ The rules:
 
 The full design is in [the spec](superpowers/specs/2026-10-05-signal-monitor-design.md).
 
-## Phase 0: Foundations ⧗ (PR `phase/0` → `main`)
+## Phase 0: Foundations ☑ (merged in #1, tag `phase-0`)
 | # | Implementation | Branch | Status |
 |---|---|---|---|
-| 0.1 | Team environment: shared plugins, CLAUDE.md, README, roadmap, spec | `p0/team-env` | ⧗ |
-| 0.2 | Contracts & fixtures: row, chart-spec and AI-report schemas, module interfaces, sample marts | `p0/contracts` | ⧗ |
+| 0.1 | Team environment: shared plugins, CLAUDE.md, README, roadmap, spec | `p0/team-env` | ☑ |
+| 0.2 | Contracts & fixtures: row, chart-spec and AI-report schemas, module interfaces, sample marts | `p0/contracts` | ☑ |
 
-## Phase 1: Platform ☐
+## Phase 1: Platform ◐ (branch `phase/1`)
 | # | Implementation | Branch | Status |
 |---|---|---|---|
 | 1.1 | Data core: registry, collect/build CLIs, freshness, daily/weekly workflows, snapshot capture | `p1/data-core` | ☐ |

@@ -12,7 +12,7 @@ Outputs are drafts for deal-team review, not investment advice. Use only public 
      `retrieved_at` (when we fetched or entered it), `tier`, `entity`, `metric`, `value` and `dims`.
    - Manual and ledger rows also carry `entered_by` and `evidence` (a quote, URL or file reference).
    - Never invent, interpolate or round a number without saying so on the chart.
-2. **As-of discipline.** Raw snapshots in `data/raw/<source>/<date>.jsonl` are immutable. Never edit or delete them; fix forward with new rows.
+2. **As-of discipline.** Raw snapshots in `data/raw/<source>/<YYYYMMDDTHHMMSSZ>.jsonl.gz` are immutable. Never edit or delete them; fix forward with new rows.
 3. **Comparable definitions.**
    - A metric means the same thing for every company and every week.
    - Definitions live in `config/metrics/<page>.yaml`.
@@ -27,6 +27,7 @@ Outputs are drafts for deal-team review, not investment advice. Use only public 
 - **Phases are layers.** Implementations inside one phase are independent of each other. Each one gets its own branch
   (`p<N>/<name>`) and worktree (`.worktrees/p<N>-<name>`). Dependencies only flow from one phase to the next.
 - **Each implementation is a vertical slice** of one page or function: collectors → marts → page → tests → skill.
+- **Branches.** Create implementation branches from `phase/N`, which is cut from `main` once the previous phase has merged.
 - **Ownership rule.** Page implementation `X` only touches its own files:
   - `pipeline/sources/X.py` and `pipeline/marts/X.py`
   - `config/metrics/X.yaml` and `data/ledgers/X_*.csv`
@@ -49,12 +50,19 @@ Outputs are drafts for deal-team review, not investment advice. Use only public 
 2. Serve the worktree locally and click through it in the browser.
 3. Hand the user the URL and a short "please check" list: what's new, and which numbers to compare against their source links.
 4. **Stop. Continue only after the user's OK.** Fixes stay on the same branch.
-5. Then open the PR and merge. At a phase gate: serve `main`, get the user's OK, tag `phase-N`, update `docs/ROADMAP.md`, deploy.
+5. Then open the implementation PR into `phase/N`, and merge it after the user's OK.
+6. At the phase gate: serve `phase/N`, get the user's OK, open **one PR `phase/N` → `main`**, and merge it only after OK.
+   Then tag `phase-N`, update `docs/ROADMAP.md`, and deploy.
 
 ## Git
 - Conventional Commits only: `type(scope): summary`. Types: `feat` `fix` `docs` `chore` `refactor` `test` `ci`.
   The scope is the page or function, e.g. `feat(hiring): add greenhouse collector`.
-- Small commits; each one leaves the branch working. One branch and one PR per implementation.
+- Small commits; each one leaves the branch working.
+- **Never merge directly into `main`.**
+  - Implementation branch `pN/<name>` → PR into the phase branch `phase/N`.
+  - Phase gate: one PR `phase/N` → `main`.
+  - Use merge commits, not squash.
+  - The only direct writer to `main` is the scheduled data job, and only for `data/` and `reports/` (design spec, revision R2).
 - **The author is the human committer only.** Never add `Co-Authored-By`, "Generated with Claude", or any AI-attribution tag,
   in commits or PR descriptions.
 

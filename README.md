@@ -31,8 +31,9 @@ Status: see [docs/ROADMAP.md](docs/ROADMAP.md). Design: [docs/superpowers/specs]
 4. The Python and frontend setup commands are added here as Phase 1 lands.
 
 ## Working on an implementation
-Each roadmap item gets its own branch and worktree, so several can run in parallel without conflicts:
+Each roadmap item gets its own branch and worktree, cut from the phase branch, so several can run in parallel without conflicts:
 ```bash
-git worktree add .worktrees/p2-hiring -b p2/hiring
+git fetch origin && git worktree add .worktrees/p2-hiring -b p2/hiring origin/phase/2
 ```
+When it's done, open a PR into `phase/2`. Nothing merges straight into `main`: each phase reaches `main` through one `phase/N` PR.
 Read `CLAUDE.md` for the ownership rule, ports, review checkpoints and commit conventions.

@@ -1,0 +1,264 @@
+{
+  "title": "Hot Pick, week 2026-W41",
+  "subtitle": "The hottest news, discussion, filings and insights about Anthropic in the 7 days to 2026-10-06",
+  "kind": "table",
+  "encoding": {},
+  "columns": [
+    {
+      "field": "rank",
+      "label": "#",
+      "format": "int"
+    },
+    {
+      "field": "kind",
+      "label": "Kind",
+      "format": "text"
+    },
+    {
+      "field": "headline",
+      "label": "Headline",
+      "format": "text"
+    },
+    {
+      "field": "score",
+      "label": "Score",
+      "format": "text"
+    },
+    {
+      "field": "why",
+      "label": "Why it is hot",
+      "format": "text"
+    },
+    {
+      "field": "date",
+      "label": "Date",
+      "format": "date"
+    },
+    {
+      "field": "link",
+      "label": "Link",
+      "format": "url"
+    }
+  ],
+  "rows": [
+    {
+      "rank": 1,
+      "kind": "News",
+      "headline": "OpenAI, Anthropic, Google, Meta testify at NYC AI hearing",
+      "score": "11 outlets",
+      "why": "Ran by 11 outlets in 7 days, among them qz.com, Unite.AI, Bushwick Daily",
+      "date": "2026-10-05",
+      "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTFBDdlNFRDVPMWE3TS1iLVdKZlo2NUlSR3YyQXpGRmVaQzJ6bTlWZlFOMHRIMHhKcUFSbGpSSjNFWjQwRWFFMHNBX0VmVHlQYXl1LXlJQTROYU9WTTg1ODg5R0U1NUtKdGNYTFNaNTNqUk9zXzJxVzB3LUNYcU1QUQ?oc=5"
+    },
+    {
+      "rank": 2,
+      "kind": "News",
+      "headline": "Anthropic tells Australia it's open to laws requiring reporting of AI agent hacks",
+      "score": "3 outlets",
+      "why": "Ran by 3 outlets in 7 days, among them TradingView, The Lufkin Daily News, thehindu.com",
+      "date": "2026-10-06",
+      "link": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxPMkZyeHhUU2pheGpraEZLazY4TFEwWDhZeEdtNlNENHVZQ0tfYnRLS0VJWUpGd2lKS1ZXMkh6czl5N1hsdnh2M3NBeGV2bDhkdEtsS2VTUDE2bXNPVmY1aXVPMGR4RnE1Rnk3aUxMZHEzdFpJangtNnRQVEtRQXpmY1hqSVhxVFkzOEhiempFNzltbVFjbzBKWkpSd0I1dVAtZUFha0QwLVpBS1k0UUpYd3hpbDBTVVpubWhNSW5MRUJqdXdfOWdCRVhING1KNk05UFljMS1RSXN0VklnN2tIZFBwZmszUQ?oc=5"
+    },
+    {
+      "rank": 3,
+      "kind": "News",
+      "headline": "Wall Street banks launch record $60bn chip deal for Broadcom and Anthropic",
+      "score": "3 outlets",
+      "why": "Ran by 3 outlets in 7 days, among them Financial Times, Yahoo Finance, KuCoin",
+      "date": "2026-10-05",
+      "link": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPdjU1RlZodzh1WDB5VTBqN0xyR0FBWHlETG9fNzh6cURoREZzS0ZOYXJzMFZoc25TLW5SMjd3aExMaVpsRWRxMUhJdV9zTGtMU2ZNUDV1SGpLMWpDUTI0Qm9Kcm80eWRFMUlheWpOR3ZsdHBPVkdpdnRWR0hoeHplMmR4WVA?oc=5"
+    },
+    {
+      "rank": 4,
+      "kind": "Discussion",
+      "headline": "Anthropic reported diary entry to police, woman faces felony charge",
+      "score": "721 points",
+      "why": "721 points and 558 comments on Hacker News",
+      "date": "2026-10-05",
+      "link": "https://news.ycombinator.com/item?id=49961057"
+    },
+    {
+      "rank": 5,
+      "kind": "Insight",
+      "headline": "Hacker News job posts naming Claude fall three months in a row",
+      "score": "Tripwire fired",
+      "why": "down 3 months in a row; it fires when 3 declines in a row. See the Consumer & Attention page.",
+      "date": "2026-10-06",
+      "link": null
+    },
+    {
+      "rank": 6,
+      "kind": "Insight",
+      "headline": "JavaScript SDK downloads: +72% on the previous 3 months",
+      "score": "7.2× its flat band",
+      "why": "425M in Jul to Sep 2026; the period before it was +201%. See the Developer Adoption page.",
+      "date": "2026-10-06",
+      "link": null
+    }
+  ],
+  "takeaway": [
+    "6 picks in the 7 days to 2026-10-06: 3 news, 1 discussion, 2 insights."
+  ],
+  "assumptions": [
+    "News: headlines from Google News's recent results for Anthropic, grouped when they share at least 2 content words and are at least 30% alike once common words are removed, and a story that mostly repeats one already shown is skipped. A story needs 2 or more outlets to qualify; its score is the number of outlets, and up to 3 stories are shown. Grouping by headline can merge or split stories.",
+    "Discussion: Hacker News stories matching Anthropic with at least 50 points, ranked by points (upvotes, not importance); 1 place.",
+    "Filings: listed companies whose new 10-K or 10-Q names Anthropic, shown when 2 or more did. A mention is not a purchase.",
+    "Insights: tripwires that have fired, then the signals whose latest change is widest against their flat band (at least 2 bands), from the Briefing's arithmetic; 2 places. Fund marks are left out because they move in steps when a round is priced. Insights use the latest three months, so they change slowly.",
+    "Each kind is scored in its own unit and kinds are never ranked against each other. A kind that does not qualify leaves its places empty, so a quiet week shows fewer picks, not filler.",
+    "Headlines are shown with their link, not reproduced. The picks are rules applied to public feeds, not a judgement of importance, and they are not investment advice."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "hot_pick.week_2026_41",
+  "page": "hot_pick",
+  "as_of": "2026-10-06",
+  "sources": [
+    {
+      "source": "news_headlines",
+      "label": "Google News headlines about Anthropic",
+      "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxPakluaktNLUFlZk8zejE5LUV6VWYtdkphTjB0UVpiYjJ2WVYwd2lXUC0xMTdPcFJXYUNMajk5MlMtcmNlSUxiUGY3T0plNzYxMG02X09jbkNlcDBldEdueENYdXhHVnd6TkVmVExyZGtzN0hqdUF5X2VsaEVMX3hWT21ob3VvWWE5UlNqbnZLb24yTXJlYWJiZGl1cjRWNnNad1ljTlF4WTVJREEza2Y0SmlmX0E0QzJfeVZjU1hFOXdYeDU2bEE?oc=5",
+      "method": "api",
+      "tier": "press",
+      "cadence": "daily",
+      "as_of": "2026-10-06",
+      "retrieved_at": "2026-10-06T08:56:11Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "hn_stories",
+      "label": "Hacker News stories about Anthropic",
+      "url": "https://news.ycombinator.com/item?id=49975345",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-06",
+      "retrieved_at": "2026-10-06T08:54:35Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "sec_filings_naming",
+      "label": "SEC EDGAR full-text search (10-K and 10-Q)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1985554/000168316826007169/londax_i10k-053126.htm",
+      "method": "api",
+      "tier": "filing",
+      "cadence": "weekly",
+      "as_of": "2026-09-15",
+      "retrieved_at": "2026-10-05T07:59:10Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "pypi_downloads",
+      "label": "PyPI downloads (ClickHouse public PyPI dataset)",
+      "url": "https://sql-clickhouse.clickhouse.com/",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "npm_downloads",
+      "label": "npm registry download counts",
+      "url": "https://api.npmjs.org/downloads/range/2025-09-29:2026-10-04/@anthropic-ai/sdk",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "github_coauthored_commits",
+      "label": "GitHub commit search: public commits co-authored by Claude",
+      "url": "https://github.com/search?type=commits&q=%22Co-Authored-By%3A+Claude%22+committer-date%3A2026-09-28..2026-10-04",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-09-28",
+      "retrieved_at": "2026-10-05T06:52:42Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "wikipedia_pageviews",
+      "label": "Wikimedia pageviews (English Wikipedia)",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/Claude_%28language_model%29/daily/20260927/20261004",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T07:07:58Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "hn_who_is_hiring",
+      "label": "Hacker News 'Who is hiring?' threads (Algolia)",
+      "url": "https://news.ycombinator.com/item?id=49522897",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-09-01",
+      "retrieved_at": "2026-10-05T07:49:51Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "ats_open_roles",
+      "label": "Company job board API (Greenhouse / Ashby)",
+      "url": "https://boards-api.greenhouse.io/v1/boards/anthropic/departments",
+      "method": "api",
+      "tier": "company-stated",
+      "cadence": "daily",
+      "as_of": "2026-10-05",
+      "retrieved_at": "2026-10-05T04:12:39Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "wayback_job_boards",
+      "label": "Internet Archive captures of company job boards",
+      "url": "https://web.archive.org/web/20260906161935/https://job-boards.greenhouse.io/anthropic",
+      "method": "scrape",
+      "tier": "company-stated",
+      "cadence": "weekly",
+      "as_of": "2026-09-06",
+      "retrieved_at": "2026-10-05T06:59:56Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "status_incidents",
+      "label": "Claude status page",
+      "url": "https://status.claude.com/incidents/k0h22tsvnydg",
+      "method": "api",
+      "tier": "company-stated",
+      "cadence": "daily",
+      "as_of": "2026-10-01",
+      "retrieved_at": "2026-10-05T07:19:13Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "sec_nport_marks",
+      "label": "SEC EDGAR N-PORT-P: mutual-fund holdings of Anthropic",
+      "url": "https://www.sec.gov/Archives/edgar/data/1905088/000094040026036464/primary_doc.xml",
+      "method": "api",
+      "tier": "filing",
+      "cadence": "weekly",
+      "as_of": "2026-07-31",
+      "retrieved_at": "2026-10-05T07:52:42Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-06T08:58:46Z"
+}

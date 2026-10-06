@@ -46,3 +46,27 @@ public_adoption_count:
   definition: Company-stated count exactly as scoped in the cited disclosure. Scopes and periods differ and the values are not directly comparable.
   aggregation: last
   higher_is: neutral
+openrouter_aa_intelligence_index:
+  label: Intelligence Index (via OpenRouter)
+  unit: index points
+  definition: Artificial Analysis's composite model-quality score, relayed unchanged by OpenRouter's benchmarks endpoint. Higher is better; attribute it to Artificial Analysis.
+  aggregation: last
+  higher_is: good
+openrouter_aa_coding_index:
+  label: Coding Index (via OpenRouter)
+  unit: index points
+  definition: Artificial Analysis's coding composite, relayed unchanged by OpenRouter's benchmarks endpoint.
+  aggregation: last
+  higher_is: good
+openrouter_aa_agentic_index:
+  label: Agentic Index (via OpenRouter)
+  unit: index points
+  definition: Artificial Analysis's agentic-task composite, relayed unchanged by OpenRouter's benchmarks endpoint.
+  aggregation: last
+  higher_is: good
+openrouter_eval_accuracy:
+  label: OpenRouter eval accuracy
+  unit: fraction of tasks
+  definition: Share of tasks a model solved in OpenRouter's own evaluation (GPQA Diamond or tau-bench verified airline), from the dims' benchmark, with the standard deviation, task count and average cost per task alongside.
+  aggregation: last
+  higher_is: good

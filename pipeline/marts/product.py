@@ -109,6 +109,144 @@ def openrouter_share(ctx):
     }
 
 
+INDEXES = ["openrouter_aa_intelligence_index", "openrouter_aa_coding_index", "openrouter_aa_agentic_index"]
+EVAL_LABELS = {"gpqa_diamond": "GPQA Diamond", "tau_bench_verified_airline": "tau-bench airline"}
+
+
+def cell(x):
+    return None if pd.isna(x) else float(x)
+
+
+def missing_companies(ctx, present) -> str:
+    return ", ".join(peer_name(ctx, e) for e in PEER_ORDER if e not in present) or "none"
+
+
+@mart(id="product.openrouter_indexes", sources=["openrouter_benchmarks"])
+def openrouter_indexes(ctx):
+    df = dims(ctx.obs(metric=INDEXES), "model")
+    rows, takeaway, present = [], [], set()
+    if len(df):
+        df = latest(df, keys=("entity", "metric", "model"))
+        wide = df.pivot_table(
+            index=["entity", "model", "as_of", "source_url"], columns="metric", values="value", aggfunc="last"
+        ).reset_index()
+        wide = wide.dropna(subset=[INDEXES[0]]).sort_values(INDEXES[0], ascending=False).drop_duplicates("entity")
+        present = set(wide["entity"])
+        rows = [
+            {
+                "company": peer_name(ctx, r["entity"]),
+                "model": r["model"],
+                "intelligence": cell(r[INDEXES[0]]),
+                "coding": cell(r.get(INDEXES[1])),
+                "agentic": cell(r.get(INDEXES[2])),
+                "date": r["as_of"],
+                "link": r["source_url"],
+            }
+            for r in wide.to_dict("records")
+        ]
+    if rows:
+        top = rows[0]
+        takeaway = [
+            f"{top['company']}'s {top['model']} has the highest Intelligence Index here, {top['intelligence']:.1f}."
+        ]
+        mine = next((r for r in rows if r["company"] == "Anthropic"), None)
+        if mine and mine is not top:
+            gap = top["intelligence"] - mine["intelligence"]
+            takeaway.append(
+                f"Anthropic's best, {mine['model']}, scores {mine['intelligence']:.1f}: {gap:.1f} points behind."
+            )
+    return {
+        "title": "Intelligence Index of each company's best model",
+        "subtitle": "Artificial Analysis indexes as relayed by OpenRouter's benchmarks API; the highest-scoring model per company",
+        "kind": "bar",
+        "encoding": {
+            "x": {"field": "company", "type": "nominal", "label": "Company"},
+            "y": {"field": "intelligence", "type": "quantitative", "label": "Intelligence Index", "format": "float"},
+            "color": {"field": "company", "type": "nominal", "label": "Company"},
+        },
+        "columns": [
+            {"field": "company", "label": "Company", "format": "text"},
+            {"field": "model", "label": "Model", "format": "text"},
+            {"field": "intelligence", "label": "Intelligence", "format": "float"},
+            {"field": "coding", "label": "Coding", "format": "float"},
+            {"field": "agentic", "label": "Agentic", "format": "float"},
+            {"field": "date", "label": "Feed date", "format": "date"},
+            {"field": "link", "label": "Source", "format": "url"},
+        ],
+        "rows": rows,
+        "takeaway": takeaway,
+        "assumptions": [
+            "Source: Artificial Analysis (artificialanalysis.ai) via OpenRouter (openrouter.ai/rankings). We relay the numbers unchanged.",
+            "Selection rule: the model with the highest Intelligence Index in the feed for each company; its Coding and Agentic indexes are shown for that same model. A blank is a score the feed does not publish, not zero.",
+        ]
+        + (
+            [
+                f"Companies with no model in the feed: {missing_companies(ctx, present)}. Absent means not listed on OpenRouter, or a provider prefix in config/identifiers/product.yaml that does not match."
+            ]
+            if rows
+            else []
+        ),
+        "badges": [],
+    }
+
+
+@mart(id="product.openrouter_evals", sources=["openrouter_benchmarks"])
+def openrouter_evals(ctx):
+    df = dims(ctx.obs(metric="openrouter_eval_accuracy"), "model", "benchmark", "stddev", "tasks", "cost_per_task_usd")
+    rows, takeaway = [], []
+    if len(df):
+        df = latest(df, keys=("entity", "benchmark", "model"))
+        best = df.sort_values("value", ascending=False).drop_duplicates(["entity", "benchmark"])
+        rows = [
+            {
+                "benchmark": EVAL_LABELS.get(r["benchmark"], r["benchmark"]),
+                "company": peer_name(ctx, r["entity"]),
+                "model": r["model"],
+                "accuracy": float(r["value"]),
+                "stddev": cell(r["stddev"]),
+                "tasks": None if pd.isna(r["tasks"]) else int(r["tasks"]),
+                "cost": cell(r["cost_per_task_usd"]),
+                "date": r["as_of"],
+                "link": r["source_url"],
+            }
+            for r in best.sort_values(["benchmark", "value"], ascending=[True, False]).to_dict("records")
+        ]
+    for name in dict.fromkeys(r["benchmark"] for r in rows):
+        group = [r for r in rows if r["benchmark"] == name]
+        top = group[0]
+        text = f"{name}: {top['company']}'s {top['model']} leads at {pct(top['accuracy'], 0)} accuracy."
+        mine = next((r for r in group if r["company"] == "Anthropic"), None)
+        if mine and mine is not top:
+            text += f" Anthropic's best, {mine['model']}, scores {pct(mine['accuracy'], 0)}."
+        takeaway.append(text)
+    return {
+        "title": "OpenRouter's own evaluations",
+        "subtitle": "Accuracy and cost per task on tasks OpenRouter runs itself; the highest-accuracy model per company and benchmark",
+        "kind": "table",
+        "encoding": {},
+        "columns": [
+            {"field": "benchmark", "label": "Benchmark", "format": "text"},
+            {"field": "company", "label": "Company", "format": "text"},
+            {"field": "model", "label": "Model", "format": "text"},
+            {"field": "accuracy", "label": "Accuracy", "format": "pct"},
+            {"field": "stddev", "label": "± std dev", "format": "pct"},
+            {"field": "tasks", "label": "Tasks", "format": "int"},
+            {"field": "cost", "label": "USD per task", "format": "float"},
+            {"field": "date", "label": "Last run", "format": "date"},
+            {"field": "link", "label": "Source", "format": "url"},
+        ],
+        "rows": rows,
+        "takeaway": takeaway,
+        "assumptions": [
+            "OpenRouter runs these evaluations itself (GPQA Diamond and tau-bench verified airline); the feed publishes accuracy, its standard deviation, the task count and average cost per task.",
+            "Selection rule: the highest-accuracy model per company and benchmark. A company's best model on one benchmark need not be its best on another.",
+            "Models are matched to companies by OpenRouter's provider prefix; a company absent from a benchmark was not evaluated or does not match a prefix in config/identifiers/product.yaml.",
+            "Cost per task is an average over the tasks run and depends on how long each model reasons; it is not a list price.",
+        ],
+        "badges": [],
+    }
+
+
 # ---- reliability ----
 @mart(id="product.incidents_monthly", sources=["status_incidents"])
 def incidents_monthly(ctx):

@@ -10,7 +10,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 
 from pipeline.core import source
-from pipeline.core.http import get
+from pipeline.core.http import env_key, get
 from pipeline.core.store import latest_as_of
 
 PAGE = "product"
@@ -18,6 +18,15 @@ HISTORY_START = date(2023, 1, 1)
 MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 TIME = re.compile(r"(?:([A-Z][a-z]{2}) (\d{1,2}), )?(\d{2}):(\d{2})")
 OPENROUTER_URL = "https://openrouter.ai/rankings?view=week"
+OPENROUTER_BENCHMARKS_API = "https://openrouter.ai/api/v1/benchmarks"
+# Row links point at the endpoint's documentation: the API itself answers 401 to anyone without a key.
+OPENROUTER_BENCHMARKS_DOCS = "https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks"
+AA_INDEXES = {
+    "intelligence_index": "openrouter_aa_intelligence_index",
+    "coding_index": "openrouter_aa_coding_index",
+    "agentic_index": "openrouter_aa_agentic_index",
+}
+OPENROUTER_EVALS = ("gpqa_diamond", "tau_bench_verified_airline")
 
 
 def parse_span(text: str, container_year: int, container_month: int) -> tuple[datetime, datetime | None]:
@@ -182,6 +191,60 @@ def openrouter_rankings(company):
         yield {**common, "metric": "openrouter_request_share", "value": row["share"]}
         if row["change"] is not None:
             yield {**common, "metric": "openrouter_request_change", "value": row["change"]}
+
+
+@lru_cache(maxsize=1)
+def _openrouter_benchmarks() -> dict:
+    key = env_key("OPENROUTER_API_KEY", "OpenRouter's benchmarks endpoint needs a free API key")
+    return get(OPENROUTER_BENCHMARKS_API, headers={"Authorization": f"Bearer {key}"}).json()
+
+
+@source(
+    id="openrouter_benchmarks",
+    page=PAGE,
+    label="OpenRouter benchmark feed (Artificial Analysis indexes and OpenRouter evals)",
+    url=OPENROUTER_BENCHMARKS_DOCS,
+    method="api",
+    tier="platform",
+    cadence="weekly",
+    sla_days=9,
+    backfillable=False,
+    caveats="Automated weekly HTTP GET of OpenRouter's /api/v1/benchmarks with a free API key (OPENROUTER_API_KEY); no "
+    "POST or browser automation. One request returns every model, rate-limited to 30 a minute and 500 a day. Intelligence, "
+    "Coding and Agentic indexes are Artificial Analysis's, relayed by OpenRouter (attribute them to Artificial Analysis); "
+    "accuracy and cost per task on GPQA Diamond and tau-bench airline are OpenRouter's own evaluations. Models are matched "
+    "to a company by OpenRouter's provider prefix (openrouter_slug). Search benchmarks and Design Arena are not collected. "
+    "Without the key the source is skipped.",
+)
+def openrouter_benchmarks(company):
+    slug = company.ids(PAGE).get("openrouter_slug")
+    if not slug:
+        return
+    payload = _openrouter_benchmarks()
+    feed_date = payload["meta"]["as_of"][:10]
+    for item in payload["data"]:
+        if not item["model_permaslug"].startswith(f"{slug}/"):
+            continue
+        common = {"source_url": OPENROUTER_BENCHMARKS_DOCS, "entity": company.slug}
+        dims = {"model": item["display_name"], "permaslug": item["model_permaslug"]}
+        if item["source"] == "artificial-analysis":
+            for field, metric in AA_INDEXES.items():
+                if item.get(field) is not None:
+                    yield {**common, "as_of": feed_date, "metric": metric, "value": item[field], "dims": dims}
+        elif item["source"] == "openrouter" and item.get("benchmark_type") in OPENROUTER_EVALS:
+            yield {
+                **common,
+                "as_of": item["last_run_timestamp"][:10],
+                "metric": "openrouter_eval_accuracy",
+                "value": item["accuracy"],
+                "dims": dims
+                | {
+                    "benchmark": item["benchmark_type"],
+                    "stddev": item["accuracy_stddev"],
+                    "tasks": item["total_tasks"],
+                    "cost_per_task_usd": item["avg_cost_per_task"],
+                },
+            }
 
 
 # ---- cited ledgers: rows live in data/ledgers/<id>.csv, each with a source link, a verbatim quote and who entered it ----

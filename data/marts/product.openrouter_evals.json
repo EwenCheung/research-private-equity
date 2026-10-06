@@ -1,0 +1,81 @@
+{
+  "title": "OpenRouter's own evaluations",
+  "subtitle": "Accuracy and cost per task on tasks OpenRouter runs itself; the highest-accuracy model per company and benchmark",
+  "kind": "table",
+  "encoding": {},
+  "columns": [
+    {
+      "field": "benchmark",
+      "label": "Benchmark",
+      "format": "text"
+    },
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "model",
+      "label": "Model",
+      "format": "text"
+    },
+    {
+      "field": "accuracy",
+      "label": "Accuracy",
+      "format": "pct"
+    },
+    {
+      "field": "stddev",
+      "label": "± std dev",
+      "format": "pct"
+    },
+    {
+      "field": "tasks",
+      "label": "Tasks",
+      "format": "int"
+    },
+    {
+      "field": "cost",
+      "label": "USD per task",
+      "format": "float"
+    },
+    {
+      "field": "date",
+      "label": "Last run",
+      "format": "date"
+    },
+    {
+      "field": "link",
+      "label": "Source",
+      "format": "url"
+    }
+  ],
+  "rows": [],
+  "takeaway": [],
+  "assumptions": [
+    "OpenRouter runs these evaluations itself (GPQA Diamond and tau-bench verified airline); the feed publishes accuracy, its standard deviation, the task count and average cost per task.",
+    "Selection rule: the highest-accuracy model per company and benchmark. A company's best model on one benchmark need not be its best on another.",
+    "Models are matched to companies by OpenRouter's provider prefix; a company absent from a benchmark was not evaluated or does not match a prefix in config/identifiers/product.yaml.",
+    "Cost per task is an average over the tasks run and depends on how long each model reasons; it is not a list price."
+  ],
+  "badges": [],
+  "id": "product.openrouter_evals",
+  "page": "product",
+  "as_of": null,
+  "sources": [
+    {
+      "source": "openrouter_benchmarks",
+      "label": "OpenRouter benchmark feed (Artificial Analysis indexes and OpenRouter evals)",
+      "url": "https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": null,
+      "retrieved_at": null,
+      "freshness": "never",
+      "manual": null
+    }
+  ],
+  "status": "awaiting_data",
+  "generated_at": "2026-10-06T03:48:08Z"
+}

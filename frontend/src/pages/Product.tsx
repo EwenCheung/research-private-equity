@@ -31,6 +31,15 @@ const SOURCE_METHODS = [
     update: "Collected weekly as a current snapshot. Authors outside the displayed leaders remain unknown, never recorded as zero.",
   },
   {
+    source: "OpenRouter benchmark feed",
+    id: "openrouter_benchmarks",
+    method: "Automated API · HTTP GET",
+    href: "https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks",
+    request: "GET /api/v1/benchmarks with a free OpenRouter API key (OPENROUTER_API_KEY). One request returns every model; limits are 30 a minute and 500 a day.",
+    why: "OpenRouter relays Artificial Analysis's Intelligence, Coding and Agentic indexes and publishes its own GPQA Diamond and tau-bench results with cost per task, as structured data.",
+    update: "Collected weekly as a current snapshot. Without the key the source is skipped and its charts show awaiting data.",
+  },
+  {
     source: "Anthropic model releases",
     id: "product_model_releases",
     method: "Hardcoded · cited ledger",
@@ -129,6 +138,11 @@ const SECTIONS: { title: string; note: string; charts: string[] }[] = [
     title: "Who do developers route to?",
     note: "OpenRouter request share by model author: usage, not quality. It counts requests that pass through OpenRouter only.",
     charts: ["product.openrouter_share"],
+  },
+  {
+    title: "What does OpenRouter's benchmark feed say?",
+    note: "Artificial Analysis indexes and OpenRouter's own evaluations, fetched through OpenRouter's benchmarks API. Needs an OpenRouter API key to collect.",
+    charts: ["product.openrouter_indexes", "product.openrouter_evals"],
   },
   {
     title: "What does it cost?",

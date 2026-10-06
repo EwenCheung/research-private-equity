@@ -7,6 +7,7 @@ from contracts import validate
 from pipeline.core import ROOT, registry
 from pipeline.core.build import Ctx
 from pipeline.core.companies import load_companies
+from pipeline.core.http import SourceUnavailable
 from pipeline.core.store import read_observations
 from pipeline.marts import product as marts
 from pipeline.sources import product as src
@@ -328,3 +329,141 @@ def test_real_charts_validate_against_the_shipped_ledgers(ledgers):
         assert all(
             s["manual"] and s["manual"]["evidence"] for s in spec["sources"]
         )  # ledger charts show who entered what, from which quote
+
+
+# ---- OpenRouter benchmarks API (shapes from its published OpenAPI example; no key was available to call it live) ----
+
+
+def benchmark_feed():
+    aa = lambda slug, name, i, c, a: {
+        "source": "artificial-analysis",
+        "model_permaslug": slug,
+        "display_name": name,
+        "intelligence_index": i,
+        "coding_index": c,
+        "agentic_index": a,
+        "pricing": {"prompt": "0.000003", "completion": "0.000015"},
+    }
+    ev = lambda slug, name, kind, acc: {
+        "source": "openrouter",
+        "model_permaslug": slug,
+        "display_name": name,
+        "benchmark_type": kind,
+        "accuracy": acc,
+        "accuracy_stddev": 0.03,
+        "avg_cost_per_task": 0.002,
+        "total_tasks": 300,
+        "last_run_timestamp": "2026-10-02T12:00:00Z",
+    }
+    return {
+        "data": [
+            aa("anthropic/claude-a", "Claude A", 60.0, 55.0, None),
+            aa("anthropic/claude-b", "Claude B", 70.0, 65.0, 50.0),
+            aa("openai/gpt-x", "GPT X", 75.0, 60.0, 52.0),
+            aa("google-vertex/other", "Not Google's prefix", 99.0, 99.0, 99.0),
+            ev("anthropic/claude-b", "Claude B", "gpqa_diamond", 0.8),
+            ev("openai/gpt-x", "GPT X", "gpqa_diamond", 0.85),
+            ev("openai/gpt-x", "GPT X", "search_browsecomp", 0.5),  # search shapes are not collected
+            {
+                "source": "design-arena",
+                "model_permaslug": "anthropic/claude-b",
+                "display_name": "Claude B",
+                "elo": 1400,
+            },
+        ],
+        "meta": {"as_of": "2026-10-03T08:00:00Z", "model_count": 4, "version": "v1"},
+    }
+
+
+def collected(monkeypatch, slug):
+    monkeypatch.setattr(src, "_openrouter_benchmarks", lambda: benchmark_feed())
+    return list(src.openrouter_benchmarks(load_companies(ROOT)[slug]))
+
+
+def test_benchmark_collector_keeps_only_the_companys_models_and_documented_metrics(monkeypatch):
+    rows = collected(monkeypatch, "anthropic")
+    got = {(r["metric"], r["dims"]["model"], r["value"], r["as_of"]) for r in rows}
+    assert got == {
+        ("openrouter_aa_intelligence_index", "Claude A", 60.0, "2026-10-03"),
+        ("openrouter_aa_coding_index", "Claude A", 55.0, "2026-10-03"),
+        ("openrouter_aa_intelligence_index", "Claude B", 70.0, "2026-10-03"),
+        ("openrouter_aa_coding_index", "Claude B", 65.0, "2026-10-03"),
+        ("openrouter_aa_agentic_index", "Claude B", 50.0, "2026-10-03"),
+        ("openrouter_eval_accuracy", "Claude B", 0.8, "2026-10-02"),  # the eval is dated by its own last run
+    }
+    for r in (
+        rows
+    ):  # a missing index is left out, never written as zero; every row links to the public docs, not the 401 API
+        assert r["source_url"].startswith("https://openrouter.ai/docs/")
+        validate(
+            "observation",
+            {
+                **r,
+                "source": "openrouter_benchmarks",
+                "method": "api",
+                "tier": "platform",
+                "retrieved_at": "2026-10-05T08:00:00Z",
+            },
+        )
+
+
+def test_benchmark_collector_is_skipped_without_a_key(monkeypatch):
+    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+    src._openrouter_benchmarks.cache_clear()
+    with pytest.raises(SourceUnavailable, match="OPENROUTER_API_KEY"):
+        list(src.openrouter_benchmarks(load_companies(ROOT)["anthropic"]))
+
+
+def test_every_peer_has_an_openrouter_provider_prefix():
+    companies = load_companies(ROOT)
+    assert all(c.ids("product").get("openrouter_slug") for c in companies.values())
+
+
+def stamp(rows, source="openrouter_benchmarks"):
+    return [
+        {
+            **r,
+            "source": source,
+            "method": "api",
+            "tier": "platform",
+            "retrieved_at": "2026-10-05T08:00:00Z",
+            "entered_by": None,
+            "evidence": None,
+        }
+        for r in rows
+    ]
+
+
+def test_index_chart_picks_each_companys_top_model_and_keeps_blanks_blank(monkeypatch):
+    rows = stamp(collected(monkeypatch, "anthropic") + collected(monkeypatch, "openai"))
+    spec = marts.openrouter_indexes(Ctx(rows, NAMES))
+    assert [(r["company"], r["model"], r["intelligence"], r["coding"], r["agentic"]) for r in spec["rows"]] == [
+        ("OpenAI", "GPT X", 75.0, 60.0, 52.0),
+        ("Anthropic", "Claude B", 70.0, 65.0, 50.0),
+    ]
+    assert spec["takeaway"][1] == "Anthropic's best, Claude B, scores 70.0: 5.0 points behind."
+    assert "Google DeepMind" in spec["assumptions"][2] and "OpenAI" not in spec["assumptions"][2]
+    assert marts.openrouter_indexes(Ctx([], NAMES))["rows"] == []
+
+
+def test_eval_chart_reports_accuracy_per_benchmark_and_company(monkeypatch):
+    rows = stamp(collected(monkeypatch, "anthropic") + collected(monkeypatch, "openai"))
+    spec = marts.openrouter_evals(Ctx(rows, NAMES))
+    assert [(r["benchmark"], r["company"], r["accuracy"], r["tasks"]) for r in spec["rows"]] == [
+        ("GPQA Diamond", "OpenAI", 0.85, 300),
+        ("GPQA Diamond", "Anthropic", 0.8, 300),
+    ]
+    assert spec["takeaway"] == [
+        "GPQA Diamond: OpenAI's GPT X leads at 85% accuracy. Anthropic's best, Claude B, scores 80%."
+    ]
+
+
+def test_benchmark_charts_satisfy_the_chart_contract_with_data_and_without(monkeypatch):
+    from pipeline.core.build import build_mart
+
+    registry.discover()
+    now = datetime(2026, 10, 5, 12, tzinfo=UTC)
+    rows = stamp(collected(monkeypatch, "anthropic") + collected(monkeypatch, "openai"))
+    for mid in ("product.openrouter_indexes", "product.openrouter_evals"):
+        assert build_mart(registry.MARTS[mid], {"openrouter_benchmarks": rows}, now, NAMES)["status"] == "ok"
+        assert build_mart(registry.MARTS[mid], {"openrouter_benchmarks": []}, now, NAMES)["status"] == "awaiting_data"

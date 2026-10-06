@@ -161,7 +161,6 @@ def ledgers():
         for sid in (
             "product_model_releases",
             "product_api_prices",
-            "product_plan_prices",
             "product_peer_plan_prices",
             "product_adoption_claims",
         )

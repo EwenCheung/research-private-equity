@@ -151,7 +151,7 @@ On "real-time": most sources only publish at daily resolution. So:
 ## Comparability for the deal team
 - **Metric dictionary.** `config/metrics/<page>.yaml` holds one canonical definition, unit and formula per metric.
   The files are merged at load, and every company is computed the same way.
-- **Weekly Hot Pick.** Each week's picks are kept in `reports/YYYY-Www/hot_pick.json`, with the 3 AI reports saved beside them once Phase 4 exists (R21).
+- **Weekly Hot Pick.** Each week's picks are kept as `data/marts/hot_pick.week_YYYY_WW.json`; Phase 4 saves the 3 AI reports for that week beside them (R21).
 - **Exports.**
   - Every chart: CSV download.
   - The Briefing and AI Analysis pages: a print stylesheet for PDF.
@@ -304,7 +304,7 @@ never let a hand-entered number feed a verdict; compute every sentence.
 - [ ] The week's hottest insights and news about Anthropic, at most seven, each with why it is hot, a published score, its source link, its as-of date and when it was retrieved.
 - [ ] Insights come from the marts (the largest moves, the tripwires that fired). News comes from public headline and discussion feeds (Google News, Hacker News), whose collectors this implementation re-adds.
 - [ ] The score is a published rule (points, distinct outlets, size of the move). No AI-written text in Phase 3.
-- [ ] `pipeline/hot_pick.py` writes `reports/YYYY-Www/hot_pick.json` on demand after `/refresh-data`. The page shows this week, with earlier weeks one click away. `/hot-pick` skill.
+- [ ] A `hot_pick.this_week` chart is rebuilt with every build. `pipeline/hot_pick.py freeze` saves it as `data/marts/hot_pick.week_YYYY_WW.json` (a chart spec, so the existing `/api/marts` and `ChartCard` serve it with provenance and no new endpoint). A past week is never overwritten. The page shows this week, with earlier weeks one click away. `/hot-pick` skill.
 - Done when: every pick's number matches its source, and a week with little news shows fewer picks, not filler.
 - Dropped from the old editions plan: the Compare-to picker, `data_pack.xlsx`, the print stylesheet and any `ChartCard` change.
 
@@ -463,3 +463,4 @@ Out of scope, by your decisions or because the data is missing:
   - Weekly editions become Hot Pick: a short weekly list of the hottest insights and news about Anthropic. Compare-to, the data pack and the print view are dropped.
   - A Signal page is added for the sharpest relationships among Anthropic's own series, with the corrections that stop it showing noise (R20).
   - Re-adds a headline collector and a Hacker News story collector, which R18 removed as noise: a short ranked pick list is not a feed.
+  - Hot Pick fills a fixed number of places per kind (news, discussion, filing, insight) and shows fewer picks rather than filler. Each kind is scored in its own unit (outlets, points, filings, size of the move), never on one scale.

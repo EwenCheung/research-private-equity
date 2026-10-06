@@ -79,6 +79,12 @@ Chart 1 and chart 2 are the same question, seen two ways: the first shows the ev
 
 **The valuation limit.** There are four funding-round post-money values (Series E 2025-03 $61.5B, F 2025-09 $183B, G 2026-02 $380B, H 2026-05 $965B) and 648 fund marks (per-share value from SEC N-PORT filings, since 2023-04). Four rounds cannot support a correlation. They support charts 5 and 6 as a description, labelled "n = 3 intervals". The fund marks give a denser quarterly valuation series (a mark per fund per report date), which is enough to test "does growth in a signal lead the mark", at a lag of one to four quarters, as a *Hypothesis*. Neither measures how much a signal "affects" valuation; they show what moved in the same period.
 
+**Plot first, test second.** Every chart draws its two series whether or not the test finds a pattern, so the reader can see what the analysis could not (a shape the test missed, a relationship that changes over time, a single outlier driving a result). The test is a label beside the plot, never a gate in front of it:
+- *Finding*, *Hypothesis* or *Not supported*, with the correlation, the lag, n and the noise ceiling, sit in the chart's subtitle and takeaway.
+- A pair that fails is drawn exactly like one that passes; the page says "no reliable pattern found, drawn so you can judge" and does not hide or restyle it.
+- Candidate pairs are listed in a fixed order (releases and valuation first, then the strongest tested pairs) so the page does not reshuffle with every run.
+- Nothing is smoothed, interpolated or rescaled without saying so on the chart (a right-hand axis is labelled, a rebased series says "rebased to 100").
+
 If no pair clears the bar, charts 2 and 4 say "no reliable relationship" and still show what was tested. A result is never hidden because it was null.
 
 **A core change is needed first.** The chart renderer draws one kind of mark per chart. A combined chart (bars or markers with a line, an optional right axis, an optional band) needs a new `combo` kind in `contracts/chart_spec.schema.json` and `frontend/src/components/Plot.tsx`, as its own `feat(web)` PR with its own tests, before the Signal page. Both files are core.

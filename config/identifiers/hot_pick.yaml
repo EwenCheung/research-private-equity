@@ -1,0 +1,5 @@
+# How Anthropic is found in the Hot Pick sources. Only the target company is collected: Hot Pick is about Anthropic.
+# news_query: the Google News search. hn_query: the Hacker News (Algolia) search text.
+anthropic:
+  news_query: '"Anthropic" AI'
+  hn_query: Anthropic

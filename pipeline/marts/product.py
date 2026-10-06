@@ -6,12 +6,11 @@ from datetime import UTC, date, datetime
 import pandas as pd
 
 from pipeline.core import mart
-from pipeline.core.frames import dims, latest, pct
+from pipeline.core.frames import dims, latest
 
 IMPACTS = ["minor", "major", "critical"]
 MONTH = {"field": "month", "label": "Month", "format": "date"}
 STATUS_NOTE = "Incidents are the ones the company chose to post, with its own impact rating, so a company that posts more freely looks worse."
-PEER_ORDER = ["anthropic", "openai", "google-deepmind", "xai", "mistral", "cohere"]
 
 
 def month_label(iso: str) -> str:
@@ -38,155 +37,7 @@ def last_collected(ctx) -> str:
     return str(ctx.df["retrieved_at"].max())[:10] if len(ctx.df) else datetime.now(UTC).date().isoformat()
 
 
-def peer_name(ctx, entity: str) -> str:
-    return ctx.names.get(entity, entity)
-
-
 # ---- usage ----
-
-
-@mart(id="product.openrouter_share", sources=["openrouter_rankings"])
-def openrouter_share(ctx):
-    df = dims(
-        ctx.obs(metric=["openrouter_request_share", "openrouter_request_change"]),
-        "author",
-        "rank",
-        "window",
-    )
-    rows = []
-    if len(df):
-        df = latest(df, keys=("entity", "metric"))
-        wide = df.pivot_table(
-            index=["entity", "author", "rank", "window", "source_url"], columns="metric", values="value", aggfunc="last"
-        ).reset_index()
-        rows = [
-            {
-                "company": peer_name(ctx, r.entity),
-                "author": r.author,
-                "rank": int(r.rank),
-                "share": float(r.openrouter_request_share),
-                "change": float(r.openrouter_request_change),
-                "link": r.source_url,
-            }
-            for r in wide.sort_values("rank").itertuples()
-        ]
-    takeaway = []
-    if rows:
-        leader = max(rows, key=lambda r: r["share"])
-        anthropic = next((r for r in rows if r["company"] == "Anthropic"), None)
-        takeaway = [
-            f"{leader['company']} has {pct(leader['share'], 1)} of requests in OpenRouter's public author table."
-        ]
-        if anthropic:
-            takeaway.append(
-                f"Anthropic is rank {anthropic['rank']} at {pct(anthropic['share'], 1)} in that same table."
-            )
-    return {
-        "title": "Share of developer requests sent to each company on OpenRouter",
-        "subtitle": "Trailing seven days, among the model authors in OpenRouter's public ranking",
-        "kind": "bar",
-        "encoding": {
-            "x": {"field": "company", "type": "nominal", "label": "Company"},
-            "y": {"field": "share", "type": "quantitative", "label": "Share of requests", "format": "pct"},
-            "color": {"field": "company", "type": "nominal", "label": "Company"},
-        },
-        "columns": [
-            {"field": "company", "label": "Company", "format": "text"},
-            {"field": "author", "label": "OpenRouter author", "format": "text"},
-            {"field": "rank", "label": "Rank", "format": "int"},
-            {"field": "share", "label": "Request share", "format": "pct"},
-            {"field": "change", "label": "Request change", "format": "pct"},
-            {"field": "link", "label": "Source", "format": "url"},
-        ],
-        "rows": rows,
-        "takeaway": takeaway,
-        "assumptions": [
-            "This is OpenRouter request share, not total market share, users, tokens or revenue. It covers only traffic visible to OpenRouter.",
-            "The public table shows leading authors only. xAI and Cohere are absent, which means unknown/below the display cutoff—not zero.",
-            "Request counts give a tiny prompt the same weight as a large generation; private requests may be excluded.",
-        ],
-        "badges": [],
-    }
-
-
-INDEXES = ["openrouter_aa_intelligence_index", "openrouter_aa_coding_index", "openrouter_aa_agentic_index"]
-
-
-def cell(x):
-    return None if pd.isna(x) else float(x)
-
-
-def missing_companies(ctx, present) -> str:
-    return ", ".join(peer_name(ctx, e) for e in PEER_ORDER if e not in present) or "none"
-
-
-@mart(id="product.openrouter_indexes", sources=["openrouter_benchmarks"])
-def openrouter_indexes(ctx):
-    df = dims(ctx.obs(metric=INDEXES), "model")
-    rows, takeaway, present = [], [], set()
-    if len(df):
-        df = latest(df, keys=("entity", "metric", "model"))
-        wide = df.pivot_table(
-            index=["entity", "model", "as_of", "source_url"], columns="metric", values="value", aggfunc="last"
-        ).reset_index()
-        wide = wide.dropna(subset=[INDEXES[0]]).sort_values(INDEXES[0], ascending=False).drop_duplicates("entity")
-        present = set(wide["entity"])
-        rows = [
-            {
-                "company": peer_name(ctx, r["entity"]),
-                "model": r["model"],
-                "intelligence": cell(r[INDEXES[0]]),
-                "coding": cell(r.get(INDEXES[1])),
-                "agentic": cell(r.get(INDEXES[2])),
-                "date": r["as_of"],
-                "link": r["source_url"],
-            }
-            for r in wide.to_dict("records")
-        ]
-    if rows:
-        top = rows[0]
-        takeaway = [
-            f"{top['company']}'s {top['model']} has the highest Intelligence Index here, {top['intelligence']:.1f}."
-        ]
-        mine = next((r for r in rows if r["company"] == "Anthropic"), None)
-        if mine and mine is not top:
-            gap = top["intelligence"] - mine["intelligence"]
-            takeaway.append(
-                f"Anthropic's best, {mine['model']}, scores {mine['intelligence']:.1f}: {gap:.1f} points behind."
-            )
-    return {
-        "title": "Which company has the best model: Intelligence Index",
-        "subtitle": "Artificial Analysis's quality score (higher is better), relayed by OpenRouter's benchmarks API; each company's highest-scoring model",
-        "kind": "bar",
-        "encoding": {
-            "x": {"field": "company", "type": "nominal", "label": "Company"},
-            "y": {"field": "intelligence", "type": "quantitative", "label": "Intelligence Index", "format": "float"},
-            "color": {"field": "company", "type": "nominal", "label": "Company"},
-        },
-        "columns": [
-            {"field": "company", "label": "Company", "format": "text"},
-            {"field": "model", "label": "Model", "format": "text"},
-            {"field": "intelligence", "label": "Intelligence", "format": "float"},
-            {"field": "coding", "label": "Coding", "format": "float"},
-            {"field": "agentic", "label": "Agentic", "format": "float"},
-            {"field": "date", "label": "Feed date", "format": "date"},
-            {"field": "link", "label": "Source", "format": "url"},
-        ],
-        "rows": rows,
-        "takeaway": takeaway,
-        "assumptions": [
-            "Source: Artificial Analysis (artificialanalysis.ai) via OpenRouter (openrouter.ai/rankings). We relay the numbers unchanged.",
-            "Selection rule: the model with the highest Intelligence Index in the feed for each company; its Coding and Agentic indexes are shown for that same model. A blank is a score the feed does not publish, not zero.",
-        ]
-        + (
-            [
-                f"Companies with no model in the feed: {missing_companies(ctx, present)}. Absent means not listed on OpenRouter, or a provider prefix in config/identifiers/product.yaml that does not match."
-            ]
-            if rows
-            else []
-        ),
-        "badges": [],
-    }
 
 
 # ---- reliability ----

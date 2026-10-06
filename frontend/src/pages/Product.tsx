@@ -24,16 +24,6 @@ const LEADERBOARDS: Embed[] = [
 
 const SECTIONS: { title: string; note: string; charts: string[] }[] = [
   {
-    title: "Which company do developers send requests to?",
-    note: "Usage, not quality. It counts only requests that pass through OpenRouter.",
-    charts: ["product.openrouter_share"],
-  },
-  {
-    title: "Which company has the best model?",
-    note: "Artificial Analysis's Intelligence Index for each company's best model, fetched through OpenRouter's benchmarks API.",
-    charts: ["product.openrouter_indexes"],
-  },
-  {
     title: "Is the service holding up?",
     note: "Incidents Anthropic posts on its own status page. Rising demand and rising incident counts often go together.",
     charts: ["product.incidents_monthly"],
@@ -89,10 +79,12 @@ export default function Product() {
       <header className="page-head">
         <h1>Product &amp; Reliability</h1>
         <p style={{ marginBottom: 10 }}>
-          <strong>What you are reading.</strong> Whether Claude's models are competitive and the service dependable: third-party model rankings, where developers route their requests on OpenRouter, and incidents on Claude's own status page.
+          <strong>What you are reading.</strong> How Claude's models rank against rivals, and how dependable the service has been. The
+          rankings are the leaderboard sites' own live pages; the incident counts come from Claude's status page.
         </p>
         <p>
-          <strong>How to read it.</strong> A higher Intelligence Index is a better model, a higher request share means more developers choose it, and fewer incidents is better. The embedded leaderboards are the sites' own live pages, not our data.
+          <strong>How to read it.</strong> Higher on a leaderboard is a better model. Fewer incidents is better, but read them against
+          demand: outages tend to rise with usage. The embedded leaderboards are not our data.
         </p>
       </header>
       <section>

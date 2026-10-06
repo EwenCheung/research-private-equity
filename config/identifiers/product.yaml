@@ -1,23 +1,12 @@
-# Public status pages and exact labels used by the peer-comparison platforms. openrouter_slug is the provider prefix
-# OpenRouter puts before every model id (e.g. anthropic/claude-...).
+# Public status pages and exact labels used by the peer-comparison platforms.
 # atlassian_history: Atlassian Statuspage with a history.json feed (full history).
 # incident_io: incident.io status page serving /api/v2/incidents.json (only the most recent incidents, so history
 # for it starts when we began collecting). Google DeepMind, xAI, Mistral and Cohere publish no comparable status feed.
 anthropic:
   status: {kind: atlassian_history, host: status.claude.com}
-  openrouter_author: Anthropic
-  openrouter_slug: anthropic
 openai:
   status: {kind: incident_io, host: status.openai.com}
-  openrouter_author: OpenAI
-  openrouter_slug: openai
-google-deepmind:
-  openrouter_author: Google
-  openrouter_slug: google
-xai:
-  openrouter_slug: x-ai
-mistral:
-  openrouter_author: Mistral AI
-  openrouter_slug: mistralai
-cohere:
-  openrouter_slug: cohere
+google-deepmind: {}
+xai: {}
+mistral: {}
+cohere: {}

@@ -4,39 +4,3 @@ incident:
   definition: One incident posted on the company's public status page, with the company's own impact rating, first-post time and resolved time.
   aggregation: sum
   higher_is: bad
-openrouter_request_share:
-  label: OpenRouter request share
-  unit: fraction
-  definition: Share of public requests attributed to a model author in OpenRouter's trailing-seven-day ranking; not total market share or user share.
-  aggregation: last
-  higher_is: neutral
-openrouter_request_change:
-  label: OpenRouter request change
-  unit: fraction
-  definition: Change in an author's public request count versus the prior period in OpenRouter's trailing-seven-day ranking.
-  aggregation: last
-  higher_is: neutral
-openrouter_aa_intelligence_index:
-  label: Intelligence Index (via OpenRouter)
-  unit: index points
-  definition: Artificial Analysis's composite model-quality score, relayed unchanged by OpenRouter's benchmarks endpoint. Higher is better; attribute it to Artificial Analysis.
-  aggregation: last
-  higher_is: good
-openrouter_aa_coding_index:
-  label: Coding Index (via OpenRouter)
-  unit: index points
-  definition: Artificial Analysis's coding composite, relayed unchanged by OpenRouter's benchmarks endpoint.
-  aggregation: last
-  higher_is: good
-openrouter_aa_agentic_index:
-  label: Agentic Index (via OpenRouter)
-  unit: index points
-  definition: Artificial Analysis's agentic-task composite, relayed unchanged by OpenRouter's benchmarks endpoint.
-  aggregation: last
-  higher_is: good
-openrouter_eval_accuracy:
-  label: OpenRouter eval accuracy
-  unit: fraction of tasks
-  definition: Share of tasks a model solved in OpenRouter's own evaluation (GPQA Diamond or tau-bench verified airline), from the dims' benchmark, with the standard deviation, task count and average cost per task alongside.
-  aggregation: last
-  higher_is: good

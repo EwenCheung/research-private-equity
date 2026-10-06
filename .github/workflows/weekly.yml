@@ -28,7 +28,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
-          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
       - id: build
         continue-on-error: true  # raw snapshots can't be backfilled: commit them even if a mart fails
         run: uv run python -m pipeline.build

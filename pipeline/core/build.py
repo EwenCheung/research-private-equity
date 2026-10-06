@@ -53,6 +53,13 @@ def _source_refs(ctx: Ctx, source_ids, now: datetime) -> list[dict]:
             key=lambda r: (datetime.fromisoformat(r.retrieved_at), r.as_of),
             default=None,
         )
+        # Link a row the chart actually read: a source spans several companies, and a chart about one of them
+        # must not point at another's page.
+        linked = max(
+            used.itertuples(),
+            key=lambda r: (datetime.fromisoformat(r.retrieved_at), r.as_of),
+            default=latest,
+        )
         retrieved = datetime.fromisoformat(latest.retrieved_at) if latest else None
         manual = None
         if latest and meta["method"] in ("manual", "ledger"):
@@ -63,7 +70,7 @@ def _source_refs(ctx: Ctx, source_ids, now: datetime) -> list[dict]:
                 "label": meta["label"],
                 # Source metadata may be a URL template (for example ``{board}``). Link the chart to the
                 # concrete URL that actually produced a row instead of publishing a known-broken template.
-                "url": latest.source_url if latest else meta["url"],
+                "url": linked.source_url if linked else meta["url"],
                 "method": meta["method"],
                 "tier": meta["tier"],
                 "cadence": meta["cadence"],

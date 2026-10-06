@@ -45,7 +45,6 @@ Status: see [docs/ROADMAP.md](docs/ROADMAP.md). Design: [docs/superpowers/specs]
 | Serve the API (needs `.env`) | `uv run uvicorn app.server:app --port 8000 --env-file .env` |
 | Serve the dashboard in dev | `npm --prefix frontend run dev` (opens on port 5173 and proxies `/api` to 8000) |
 | See what changed and what is stale | `uv run python -m pipeline.report` |
-| Run the scheduled jobs on GitHub | `gh workflow run daily.yml` · `gh workflow run weekly.yml` |
 
 - **Claude Code skills** in this repo: `/refresh-data` (update everything and report), `/add-source` (add a new collector).
 - Optional keys in `.env`: `GITHUB_TOKEN` is not needed if you are signed in with `gh auth login`.

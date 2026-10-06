@@ -68,7 +68,7 @@ Outputs are drafts for deal-team review, not investment advice. Use only public 
   - Implementation branch `pN/<name>` → PR into the phase branch `phase/N`.
   - Phase gate: one PR `phase/N` → `main`.
   - Use merge commits, not squash.
-  - The only direct writer to `main` is the scheduled data job, and only for `data/` and `reports/` (design spec, revision R2).
+  - Nothing writes to `main` directly, not even data: refresh it with `/refresh-data` on a branch and a PR (design spec, R19).
 - **The author is the human committer only.** Never add `Co-Authored-By`, "Generated with Claude", or any AI-attribution tag,
   in commits or PR descriptions.
 

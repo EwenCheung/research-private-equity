@@ -293,11 +293,11 @@ never let a hand-entered number feed a verdict; compute every sentence.
 - Done when: every sentence is computed from marts and every number links to its chart.
 
 **3.2 Signal page** (`p3/signal`): research note written (`docs/research/signal-page.md`); implementation after your sign-off
-- [ ] Charts, not tables (R23). Seven questions, each one chart: is Anthropic ahead of OpenAI (relative 13-week growth), how much of a move is the market (share explained by OpenAI's same-week growth), which tested pairs beat the noise ceiling, the lag profile of the strongest pair, whether it holds in both halves of the history, which series move together, and which series can be trusted (history length and noise).
+- [ ] Combined charts, not tables or single series (R23): releases over SDK downloads, the average around a release, Anthropic against OpenAI, lead and lag for the strongest pair, valuation over signals, and valuation step against signal growth. Needs a core `combo` chart kind first (own `feat(web)` PR).
 - [ ] `pipeline/marts/signal.py` builds weekly series from the Briefing's own adapters (so the numbers match), then growth, AR(2) pre-whitening, lag cross-correlation (−8 to +8 weeks), a circular-shift null (best of all lags), Benjamini-Hochberg FDR across every pair tested, and a first-half / second-half stability check.
 - [ ] The same tests run on Anthropic minus OpenAI growth, so a market-wide move is not reported as Anthropic's.
 - [ ] A result is labelled *Finding*, *Hypothesis* or *Not supported*; never causal. "Tested, nothing reliable" is shown, not hidden.
-- [ ] No collector is needed to start. Release dates (OpenRouter's public models list) were tested and dropped: growth after a release is no different from a random week (R23).
+- [ ] No collector is needed to start. Release dates (OpenRouter's public models list) are the markers; averaged, growth after a release is no different from a random week, and the page says so (R23). Funding rounds and fund marks are a descriptive valuation yardstick, never a verdict input.
 - Done when: a planted lead is recovered, a planted noise series never reaches the findings, a fixed seed gives identical output, and re-running on new data refreshes the page.
 
 **3.3 Hot Pick** (`p3/hot-pick`)
@@ -470,8 +470,9 @@ Out of scope, by your decisions or because the data is missing:
   - Left out: Reddit (rate-limited, terms need an agreement), VentureBeat (rate-limited), and sites with no feed (The Batch, Anthropic's own site) or a stale one (WSJ, SemiAnalysis).
   - Every kind keeps its own places and unit, so a month with little news shows fewer picks.
 - **R23, 2026-10-06: Signal is charts-first with OpenAI as the main comparison; Hot Pick has a week and a month.** Research note: `docs/research/signal-page.md`.
-  - Decisions: the page uses charts, not tables; OpenAI is the main comparison, so Anthropic doing badly while OpenAI does worse still reads as a good sign; no private data is supplied for now (the note lists what would help and how it would be used); release dates from OpenRouter were allowed only if useful.
+  - Decisions: the page uses charts that combine two aspects, not tables; OpenAI is the main comparison, so Anthropic doing badly while OpenAI does worse still reads as a good sign; no private data is supplied for now (the note lists what would help and how it would be used); release dates from OpenRouter were allowed only if useful.
   - **Retracted:** R20's "Wikipedia product views led PyPI downloads by one to two months (r about 0.5)". On weekly data (n 70-190, 17 lags, circular-shift null, FDR) the best r is +0.16 at 8 weeks, p 0.45. The monthly figure came from 31 points and 30 tries.
   - Probe on weekly data: 132 ordered pairs, 34 pass FDR but nearly all are duplicates or market-wide moves; of 26 lead hypotheses only 2 pass q < 0.05 (Anthropic npm to PyPI at 3 weeks, fading from r 0.45 to 0.13 between the halves; relative Wikipedia product views to relative CLI downloads at 4 weeks, n 70). Both are Hypotheses.
-  - Model releases (OpenRouter public models list, 15 Anthropic and 33 OpenAI release weeks) do not move any of 11 weekly series more than a random week (all q ≥ 0.87), so OpenRouter is not used.
+  - Model releases (OpenRouter public models list, 15 Anthropic and 33 OpenAI release weeks) do not move any of 11 weekly series more than a random week, tested over weeks −4 to +12 (all q ≥ 0.87 for the first four weeks; no week outside the 95% band, and no "month later" gain). Kept as chart markers so each release can be judged by eye; the null result is shown.
+  - Review feedback: single charts hid the connection, so every Signal chart puts two aspects together (events over a series, bars with a line); valuation history is added as a descriptive yardstick (four rounds, 648 fund marks).
   - Hot Pick now has a Week and a Month window with a toggle (supersedes R22's single month); R22's sources are unchanged.

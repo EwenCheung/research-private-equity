@@ -1,0 +1,108 @@
+{
+  "title": "List-price cost for fixed token workloads",
+  "subtitle": "Estimated API cost per attempt: quick 2K/0.5K, coding 20K/5K, long document 100K/5K input/output tokens",
+  "kind": "table",
+  "encoding": {},
+  "columns": [
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "model",
+      "label": "Model",
+      "format": "text"
+    },
+    {
+      "field": "quick_cents",
+      "label": "Quick answer ¢",
+      "format": "float"
+    },
+    {
+      "field": "coding_cents",
+      "label": "Coding attempt ¢",
+      "format": "float"
+    },
+    {
+      "field": "long_document_cents",
+      "label": "Long-document attempt ¢",
+      "format": "float"
+    }
+  ],
+  "rows": [
+    {
+      "company": "Anthropic",
+      "model": "claude-opus-4-6-high",
+      "quick_cents": 2.25,
+      "coding_cents": 22.5,
+      "long_document_cents": 62.5
+    },
+    {
+      "company": "OpenAI",
+      "model": "gpt-5.5-high",
+      "quick_cents": 2.5,
+      "coding_cents": 25.0,
+      "long_document_cents": 65.0
+    },
+    {
+      "company": "Google DeepMind",
+      "model": "gemini-4-argon-high",
+      "quick_cents": 0.9,
+      "coding_cents": 9.0,
+      "long_document_cents": 25.0
+    },
+    {
+      "company": "xAI",
+      "model": "grok-4.20-beta-0309-reasoning",
+      "quick_cents": 0.375,
+      "coding_cents": 3.75,
+      "long_document_cents": 13.75
+    },
+    {
+      "company": "Mistral AI",
+      "model": "mistral-medium-3.5",
+      "quick_cents": 0.338,
+      "coding_cents": 3.375,
+      "long_document_cents": 9.375
+    },
+    {
+      "company": "Cohere",
+      "model": "command-a-03-2025",
+      "quick_cents": 1.0,
+      "coding_cents": 10.0,
+      "long_document_cents": 30.0
+    }
+  ],
+  "takeaway": [
+    "At these fixed token counts, Mistral AI is cheapest for both the coding workload ($0.034) and long-document analysis ($0.094)."
+  ],
+  "assumptions": [
+    "These are transparent fixed-token scenarios, not measured cost per successfully completed task. True cost per completed task also depends on success rate, retries, tool calls and latency.",
+    "Formula per attempt in USD = input tokens × input price / 1M + output tokens × output price / 1M. The table displays US cents so sub-dollar differences remain visible.",
+    "Reasoning tokens, caching, batch discounts, long-context surcharges and provider-specific tokenization are excluded.",
+    "One selected model per company, using the same complete-field selection rule as the frontier scorecard."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "product.task_costs",
+  "page": "product",
+  "as_of": "2026-10-02",
+  "sources": [
+    {
+      "source": "arena_text_leaderboard",
+      "label": "Arena text leaderboard",
+      "url": "https://arena.ai/leaderboard/text?styleControl=off",
+      "method": "scrape",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-10-02",
+      "retrieved_at": "2026-10-06T01:50:46Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-06T03:05:27Z"
+}

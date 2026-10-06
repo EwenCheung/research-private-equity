@@ -1,0 +1,118 @@
+{
+  "title": "OpenRouter request share by model author",
+  "subtitle": "Trailing seven days among authors shown in OpenRouter's public request-share ranking",
+  "kind": "bar",
+  "encoding": {
+    "x": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    },
+    "y": {
+      "field": "share",
+      "type": "quantitative",
+      "label": "Share of requests",
+      "format": "pct"
+    },
+    "color": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    }
+  },
+  "columns": [
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "author",
+      "label": "OpenRouter author",
+      "format": "text"
+    },
+    {
+      "field": "rank",
+      "label": "Rank",
+      "format": "int"
+    },
+    {
+      "field": "share",
+      "label": "Request share",
+      "format": "pct"
+    },
+    {
+      "field": "change",
+      "label": "Request change",
+      "format": "pct"
+    },
+    {
+      "field": "link",
+      "label": "Source",
+      "format": "url"
+    }
+  ],
+  "rows": [
+    {
+      "company": "Google DeepMind",
+      "author": "Google",
+      "rank": 2,
+      "share": 0.215,
+      "change": 0.23,
+      "link": "https://openrouter.ai/rankings?view=week"
+    },
+    {
+      "company": "OpenAI",
+      "author": "OpenAI",
+      "rank": 3,
+      "share": 0.182,
+      "change": 0.2,
+      "link": "https://openrouter.ai/rankings?view=week"
+    },
+    {
+      "company": "Anthropic",
+      "author": "Anthropic",
+      "rank": 7,
+      "share": 0.025,
+      "change": 0.06,
+      "link": "https://openrouter.ai/rankings?view=week"
+    },
+    {
+      "company": "Mistral AI",
+      "author": "Mistral AI",
+      "rank": 9,
+      "share": 0.02,
+      "change": -0.02,
+      "link": "https://openrouter.ai/rankings?view=week"
+    }
+  ],
+  "takeaway": [
+    "Google DeepMind has 21.5% of requests in OpenRouter's public author table.",
+    "Anthropic is rank 7 at 2.5% in that same table."
+  ],
+  "assumptions": [
+    "This is OpenRouter request share, not total market share, users, tokens or revenue. It covers only traffic visible to OpenRouter.",
+    "The public table shows leading authors only. xAI and Cohere are absent, which means unknown/below the display cutoff—not zero.",
+    "Request counts give a tiny prompt the same weight as a large generation; private requests may be excluded."
+  ],
+  "badges": [],
+  "id": "product.openrouter_share",
+  "page": "product",
+  "as_of": "2026-10-05",
+  "sources": [
+    {
+      "source": "openrouter_rankings",
+      "label": "OpenRouter author request share",
+      "url": "https://openrouter.ai/rankings?view=week",
+      "method": "scrape",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-10-05",
+      "retrieved_at": "2026-10-06T01:50:46Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-06T03:05:27Z"
+}

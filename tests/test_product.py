@@ -1,7 +1,6 @@
 import httpx
 import pytest
 
-from contracts import validate
 from pipeline.core import ROOT
 from pipeline.core.build import Ctx
 from pipeline.core.companies import load_companies
@@ -91,36 +90,6 @@ def test_history_pages_until_the_cutoff_and_dedupes_nothing_it_does_not_need(mon
     assert [r["dims"]["code"] for r in src.status_incidents(load_companies(ROOT)["anthropic"])] == ["new"] and seen == [
         1
     ]
-
-
-def test_incident_io_feed_keeps_unresolved_incidents(monkeypatch):
-    feed = {
-        "incidents": [
-            {
-                "id": "a",
-                "name": "Errors",
-                "impact": "major",
-                "created_at": "2026-10-01T18:46:17Z",
-                "resolved_at": "2026-10-01T19:39:30Z",
-            },
-            {"id": "b", "name": "Open", "impact": "minor", "created_at": "2026-10-05T07:03:53Z"},
-        ]
-    }
-    monkeypatch.setattr(src, "get", lambda url, **k: response(feed))
-    rows = list(src.status_incidents(load_companies(ROOT)["openai"]))
-    assert [(r["dims"]["code"], r["dims"]["minutes"]) for r in rows] == [("a", 53), ("b", None)]
-    for r in rows:
-        validate(
-            "observation",
-            {
-                **r,
-                "source": "status_incidents",
-                "method": "api",
-                "tier": "company-stated",
-                "retrieved_at": "2026-10-05T08:00:00Z",
-            },
-        )
-    assert list(src.status_incidents(load_companies(ROOT)["xai"])) == []  # no status feed configured
 
 
 # ---- peer-comparison parsing ----

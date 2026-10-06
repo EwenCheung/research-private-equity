@@ -1,4 +1,4 @@
-"""Product, pricing and reliability: status pages, peer benchmarks, usage and cited ledgers."""
+"""Product reliability: Claude's public status page."""
 
 import re
 import time
@@ -12,7 +12,6 @@ PAGE = "product"
 HISTORY_START = date(2023, 1, 1)
 MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 TIME = re.compile(r"(?:([A-Z][a-z]{2}) (\d{1,2}), )?(\d{2}):(\d{2})")
-# Row links point at the endpoint's documentation: the API itself answers 401 to anyone without a key.
 
 
 def parse_span(text: str, container_year: int, container_month: int) -> tuple[datetime, datetime | None]:
@@ -56,29 +55,22 @@ def incident(company, host: str, code: str, name: str, impact: str, start: datet
 @source(
     id="status_incidents",
     page=PAGE,
-    label="Public status pages (Anthropic and OpenAI)",
-    url="https://{host}/history.json",
+    label="Claude status page",
+    url="https://status.claude.com/history",
     method="api",
     tier="company-stated",
     cadence="daily",
     sla_days=2,
     backfillable=True,
-    caveats="Automated HTTP GET: Anthropic /history.json?page=N and OpenAI /api/v2/incidents.json; no POST, authentication "
-    "or browser automation. Incidents are the ones the company chose to post, with its own impact rating, so a company that posts more freely looks worse. "
-    "Claude's page gives full history back to 2023; OpenAI's feed holds only its most recent incidents, so its history starts "
-    "when we began collecting. Incident length runs from first post to resolved, and unresolved incidents have none.",
+    caveats="Automated HTTP GET of status.claude.com/history.json?page=N; no POST, authentication or browser automation. "
+    "Incidents are the ones Anthropic chose to post, with its own impact rating. The page gives full history back to 2023. "
+    "Incident length runs from first post to resolved, and unresolved incidents have none.",
 )
 def status_incidents(company):
     status = company.ids(PAGE).get("status")
     if not status:
         return
     host = status["host"]
-    if status["kind"] == "incident_io":
-        for i in get(f"https://{host}/api/v2/incidents.json").json()["incidents"]:
-            start = datetime.fromisoformat(i["created_at"])
-            end = datetime.fromisoformat(i["resolved_at"]) if i.get("resolved_at") else None
-            yield incident(company, host, i["id"], i["name"], i.get("impact") or "none", start, end)
-        return
     last = latest_as_of(company.root, "status_incidents", company.slug)
     cutoff = max(HISTORY_START, date.fromisoformat(last) - timedelta(days=21)) if last else HISTORY_START
     page = 1

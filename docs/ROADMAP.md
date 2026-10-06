@@ -46,7 +46,7 @@ Nothing runs on a schedule (R19); Hot Pick and analysis run on demand.
 |---|---|---|---|
 | 3.1 | Briefing: Anthropic's verdict per signal family, OpenAI comparison, tripwires | `p3/briefing` | ☑ (#27, #28) |
 | 3.2 | Signal: the sharpest relationships between signals, including peers' moves; research first | `p3/signal` | ☐ (research) |
-| 3.3 | Hot Pick: the month's hottest news, blogs, discussion, technology trends and insights about Anthropic, with a monthly archive | `p3/hot-pick` | ◐ |
+| 3.3 | Hot Pick: the hottest news, blogs, discussion, technology trends and insights about Anthropic, for the last week and month, with saved archives | `p3/hot-pick` | ☑ (#29) |
 
 ## Phase 4: AI Analysis ☐
 | # | Implementation | Branch | Status |

@@ -26,7 +26,7 @@ All outputs, including the AI reporters, are drafts for deal-team review, not in
    Every number traces to an immutable raw snapshot.
 2. **Long-term and comparable.**
    - **Definitions:** one metric dictionary applies across time and across companies.
-   - **Weekly Hot Pick:** each week's hottest insights and news about Anthropic is kept, so past weeks stay readable (R21).
+   - **Monthly Hot Pick:** each month's hottest news, discussion and insights about Anthropic is kept, so past months stay readable (R21, R22).
 3. **Easy or near-real-time updates.**
    - **Automated sources** refresh on demand with `/refresh-data` (no scheduled job, R19).
    - **Manual sources** are a single paste into Claude.
@@ -151,7 +151,7 @@ On "real-time": most sources only publish at daily resolution. So:
 ## Comparability for the deal team
 - **Metric dictionary.** `config/metrics/<page>.yaml` holds one canonical definition, unit and formula per metric.
   The files are merged at load, and every company is computed the same way.
-- **Weekly Hot Pick.** Each week's picks are kept as `data/marts/hot_pick.week_YYYY_WW.json`; Phase 4 saves the 3 AI reports for that week beside them (R21).
+- **Monthly Hot Pick.** Each month's picks are kept as `data/marts/hot_pick.month_YYYY_MM.json`; Phase 4 saves the 3 AI reports for that month beside them (R21, R22).
 - **Exports.**
   - Every chart: CSV download.
   - The Briefing and AI Analysis pages: a print stylesheet for PDF.
@@ -301,11 +301,11 @@ never let a hand-entered number feed a verdict; compute every sentence.
 - Done when: a planted noise series never reaches the sharpest list, and re-running on new data refreshes the page.
 
 **3.3 Hot Pick** (`p3/hot-pick`)
-- [ ] The week's hottest insights and news about Anthropic, at most seven, each with why it is hot, a published score, its source link, its as-of date and when it was retrieved.
-- [ ] Insights come from the marts (the largest moves, the tripwires that fired). News comes from public headline and discussion feeds (Google News, Hacker News), whose collectors this implementation re-adds.
-- [ ] The score is a published rule (points, distinct outlets, size of the move). No AI-written text in Phase 3.
-- [ ] A `hot_pick.this_week` chart is rebuilt with every build. `pipeline/hot_pick.py freeze` saves it as `data/marts/hot_pick.week_YYYY_WW.json` (a chart spec, so the existing `/api/marts` and `ChartCard` serve it with provenance and no new endpoint). A past week is never overwritten. The page shows this week, with earlier weeks one click away. `/hot-pick` skill.
-- Done when: every pick's number matches its source, and a week with little news shows fewer picks, not filler.
+- [ ] A monthly list of the hottest things about Anthropic in the last 30 days. Each kind has its own places and its own score, and is never ranked against another: news (Google News plus the AI and technology sections of publishers' own feeds, scored by distinct outlets), blogs and newsletters (curated authors), community posts (dev.to, scored by reactions), discussion (Hacker News, scored by points), technology trends (new GitHub repositories about Claude, scored by stars), new filings that name Anthropic, and insights from the Briefing. Up to 13 picks, usually fewer, and fewer rather than filler.
+- [ ] Sources are public feeds and official APIs only: RSS and Atom feeds, the Algolia Hacker News search (Anthropic and Claude), the dev.to API and the GitHub search API. Reddit and VentureBeat rate-limit us and Reddit's terms need an agreement, so they are left out; a feed that fails is skipped and reported, never guessed.
+- [ ] A `hot_pick.this_month` chart is rebuilt with every build. `pipeline/hot_pick.py freeze` saves it as `data/marts/hot_pick.month_YYYY_MM.json` (a chart spec, so the existing `/api/marts` and `ChartCard` serve it with provenance). A past month is never overwritten. `/hot-pick` skill.
+- [ ] Each feed keeps only its latest items (a few days for busy sites) and nothing runs on a schedule, so collect at least weekly or the month has holes.
+- Done when: every pick's number matches its source, and a quiet month shows fewer picks, not filler.
 - Dropped from the old editions plan: the Compare-to picker, `data_pack.xlsx`, the print stylesheet and any `ChartCard` change.
 
 ### Phase 4: AI Analysis (depends on Phase 3: tripwires, signal results, Hot Pick)
@@ -387,7 +387,7 @@ Out of scope, by your decisions or because the data is missing:
   - You approve.
 - Contracts: `tests/test_contracts.py` validates the fixtures. `test_core.py` rejects rows without provenance, and manual rows without `entered_by`.
 - Collectors: snapshot counts match the live APIs (Greenhouse 640 and Ashby 828 as of 2026-10-05).
-- Hot Pick: a weekly run creates `reports/2026-Www/hot_pick.json`, and every pick has a source link and a published score.
+- Hot Pick: a monthly save creates `data/marts/hot_pick.month_2026_10.json`, and every pick has a source link and a published score.
 - AI: the reports pass the gates, and the planted-fake-number test is rejected.
 - Phase gates: `main` is served and checked by you; `/refresh-data` produces a data PR, and Render redeploys when it merges.
 - Release: in a fresh clone, Claude prompts for the 10 plugins, and every skill runs end to end.
@@ -464,3 +464,8 @@ Out of scope, by your decisions or because the data is missing:
   - A Signal page is added for the sharpest relationships among Anthropic's own series, with the corrections that stop it showing noise (R20).
   - Re-adds a headline collector and a Hacker News story collector, which R18 removed as noise: a short ranked pick list is not a feed.
   - Hot Pick fills a fixed number of places per kind (news, discussion, filing, insight) and shows fewer picks rather than filler. Each kind is scored in its own unit (outlets, points, filings, size of the move), never on one scale.
+- **R22, 2026-10-06: Hot Pick covers a month and many more sources.** A week was too thin: Google News returns about 100 recent items that reach back only two or three days.
+  - The window is 30 days and a month is saved at a time. News adds publishers' own AI and technology feeds; blogs and community posts, Hacker News (now searching Claude as well as Anthropic,
+    which found the month's biggest story) and new GitHub repositories about Claude add discussion and technology trends. Checked on 2026-10-06: 16 of 34 candidate feeds named Anthropic or Claude in the last month.
+  - Left out: Reddit (rate-limited, terms need an agreement), VentureBeat (rate-limited), and sites with no feed (The Batch, Anthropic's own site) or a stale one (WSJ, SemiAnalysis).
+  - Every kind keeps its own places and unit, so a month with little news shows fewer picks.

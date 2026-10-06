@@ -1,6 +1,5 @@
 import * as Plot from "@observablehq/plot";
 import { useContext, useEffect, useRef, useState } from "react";
-import { companies } from "../api";
 import { axis, fmt, shortDate, toDate } from "../format";
 import { SchemeContext } from "../theme";
 import type { ChartSpec } from "../types";
@@ -42,36 +41,50 @@ function useWidth() {
   return { ref, width };
 }
 
-/** Companies own fixed slots (target first, then peers), so Anthropic is the same colour on every chart.
- *  Any other series takes the next free slot in order of appearance. */
-export function slotsFor(series: string[], companyNames: string[]): number[] {
-  const fixed = series.map((s) => companyNames.indexOf(s));
+/** Each company owns one palette slot (index into SLOTS), so it is the same colour on every chart:
+ *  Anthropic orange, OpenAI dark green, Google blue, the rest anything distinct.
+ *  Incident severities read as a heat scale: amber, orange, red. */
+const NAME_SLOT: Record<string, number> = {
+  Anthropic: 1, // --s2 orange
+  OpenAI: 5, // --s6 dark green
+  "Google DeepMind": 0, // --s1 blue
+  xAI: 6, // --s7 purple
+  "Mistral AI": 4, // --s5 pink
+  Cohere: 3, // --s4 amber
+  Minor: 3,
+  Major: 1,
+  Critical: 7, // --s8 red
+};
+
+/** Any other series (a share class, "weekly count") takes the two slots nothing above owns first (teal, red), then any
+ *  slot not already used on this chart. */
+const UNOWNED_FIRST = [2, 7];
+
+export function slotsFor(series: string[]): number[] {
+  const fixed = series.map((s) => NAME_SLOT[s] ?? -1);
   const taken = new Set(fixed.filter((i) => i >= 0));
+  const order = [...UNOWNED_FIRST, ...SLOTS.keys()];
   let next = 0;
   return fixed.map((i) => {
     if (i >= 0) return i;
-    while (taken.has(next)) next++;
-    taken.add(next);
-    return next;
+    while (taken.has(order[next])) next++;
+    const slot = order[next] ?? SLOTS.length; // out of slots: reads as muted
+    taken.add(slot);
+    return slot;
   });
 }
 
 export function useSeriesColors(spec: ChartSpec) {
   const scheme = useContext(SchemeContext);
   const series = seriesOf(spec);
-  const [names, setNames] = useState<string[] | null>(null);
   const [colors, setColors] = useState<string[]>([]);
-  useEffect(() => {
-    companies().then((cs) => setNames(cs.map((c) => c.name)));
-  }, []);
   // Read the tokens after commit, once the theme attribute has been applied.
   useEffect(() => {
-    if (names === null) return;
     const css = getComputedStyle(document.documentElement);
-    const slots = slotsFor(series.length ? series : [""], names);
+    const slots = slotsFor(series.length ? series : [""]);
     // The palette is capped at 8 slots; folding the rest into "Other" is the mart's job, so overflow reads as muted.
     setColors(slots.map((i) => css.getPropertyValue(SLOTS[i] ?? "--idle").trim() || "#898781"));
-  }, [scheme, names, series.join("|")]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [scheme, series.join("|")]); // eslint-disable-line react-hooks/exhaustive-deps -- colours derive from spec and scheme
   return { scheme, series, colors };
 }
 

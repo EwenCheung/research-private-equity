@@ -50,18 +50,132 @@
       "format": "url"
     }
   ],
-  "rows": [],
-  "takeaway": [],
+  "rows": [
+    {
+      "benchmark": "GPQA Diamond",
+      "company": "Google DeepMind",
+      "model": "Gemini 3.8 Flash",
+      "accuracy": 0.95637,
+      "stddev": null,
+      "tasks": 191,
+      "cost": 0.06822796858638744,
+      "date": "2026-10-01",
+      "link": "https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks"
+    },
+    {
+      "benchmark": "GPQA Diamond",
+      "company": "OpenAI",
+      "model": "GPT-6 Astra Pro",
+      "accuracy": 0.954545,
+      "stddev": null,
+      "tasks": 198,
+      "cost": 0.332555398989899,
+      "date": "2026-10-01",
+      "link": "https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks"
+    },
+    {
+      "benchmark": "GPQA Diamond",
+      "company": "xAI",
+      "model": "Grok 4.6",
+      "accuracy": 0.928451,
+      "stddev": 0.004209000000000018,
+      "tasks": 396,
+      "cost": 0.12326839393939394,
+      "date": "2026-10-01",
+      "link": "https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks"
+    },
+    {
+      "benchmark": "GPQA Diamond",
+      "company": "Anthropic",
+      "model": "Claude Sonnet 5.5",
+      "accuracy": 0.920875,
+      "stddev": null,
+      "tasks": 198,
+      "cost": 0.025261131313131315,
+      "date": "2026-10-03",
+      "link": "https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks"
+    },
+    {
+      "benchmark": "GPQA Diamond",
+      "company": "Mistral AI",
+      "model": "Mistral Small 4",
+      "accuracy": 0.7575759999999999,
+      "stddev": null,
+      "tasks": 198,
+      "cost": 0.014556641414141414,
+      "date": "2026-09-01",
+      "link": "https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks"
+    },
+    {
+      "benchmark": "tau-bench airline",
+      "company": "Anthropic",
+      "model": "Claude Fable 5",
+      "accuracy": 0.7985185555555555,
+      "stddev": 0.0278934726458882,
+      "tasks": 450,
+      "cost": 0.9265346288888889,
+      "date": "2026-10-03",
+      "link": "https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks"
+    },
+    {
+      "benchmark": "tau-bench airline",
+      "company": "Google DeepMind",
+      "model": "Gemini 3.7 Flash",
+      "accuracy": 0.7847225,
+      "stddev": 0.020833500000000005,
+      "tasks": 96,
+      "cost": 0.11493318749999999,
+      "date": "2026-10-01",
+      "link": "https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks"
+    },
+    {
+      "benchmark": "tau-bench airline",
+      "company": "OpenAI",
+      "model": "GPT-5.1",
+      "accuracy": 0.771111,
+      "stddev": 0.04085521560339636,
+      "tasks": 150,
+      "cost": 0.4149127733333333,
+      "date": "2026-10-01",
+      "link": "https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks"
+    },
+    {
+      "benchmark": "tau-bench airline",
+      "company": "xAI",
+      "model": "Grok 4.6",
+      "accuracy": 0.7533335,
+      "stddev": 0.00666650000000002,
+      "tasks": 100,
+      "cost": 0.33087047999999997,
+      "date": "2026-10-01",
+      "link": "https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks"
+    },
+    {
+      "benchmark": "tau-bench airline",
+      "company": "Mistral AI",
+      "model": "Mistral Small 4",
+      "accuracy": 0.43666650000000007,
+      "stddev": 0.023333500000000007,
+      "tasks": 100,
+      "cost": 0.014376880000000002,
+      "date": "2026-09-01",
+      "link": "https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks"
+    }
+  ],
+  "takeaway": [
+    "GPQA Diamond: Google DeepMind's Gemini 3.8 Flash leads at 96% accuracy. Anthropic's best, Claude Sonnet 5.5, scores 92%.",
+    "tau-bench airline: Anthropic's Claude Fable 5 leads at 80% accuracy."
+  ],
   "assumptions": [
     "OpenRouter runs these evaluations itself (GPQA Diamond and tau-bench verified airline); the feed publishes accuracy, its standard deviation, the task count and average cost per task.",
-    "Selection rule: the highest-accuracy model per company and benchmark. A company's best model on one benchmark need not be its best on another.",
+    "Selection rule: the highest-accuracy model per company and benchmark. A company's best model on one benchmark need not be its best on another. A model with few tasks or no standard deviation is a noisier reading, so check the Tasks column before ranking.",
     "Models are matched to companies by OpenRouter's provider prefix; a company absent from a benchmark was not evaluated or does not match a prefix in config/identifiers/product.yaml.",
     "Cost per task is an average over the tasks run and depends on how long each model reasons; it is not a list price."
   ],
   "badges": [],
   "id": "product.openrouter_evals",
   "page": "product",
-  "as_of": null,
+  "as_of": "2026-10-03",
   "sources": [
     {
       "source": "openrouter_benchmarks",
@@ -70,12 +184,12 @@
       "method": "api",
       "tier": "platform",
       "cadence": "weekly",
-      "as_of": null,
-      "retrieved_at": null,
-      "freshness": "never",
+      "as_of": "2026-10-03",
+      "retrieved_at": "2026-10-06T03:57:28Z",
+      "freshness": "fresh",
       "manual": null
     }
   ],
-  "status": "awaiting_data",
-  "generated_at": "2026-10-06T03:48:08Z"
+  "status": "ok",
+  "generated_at": "2026-10-06T03:59:26Z"
 }

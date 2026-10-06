@@ -1,8 +1,5 @@
 # How each company is found in the capital sources. Verified live on 2026-10-05.
 # sec_query, nport_query: the word searched in EDGAR full-text for Form D and for N-PORT-P. It matches the whole word, so 'Anthropics Technology Ltd.' does not count.
-# own_issuer_names: normalised names (lower case, punctuation removed) of the company itself as a Form D issuer; any other filer is a third-party vehicle.
 # Peers are not collected here: their funding is not in a cited ledger yet, and listed as a gap on the page.
 anthropic:
-  sec_query: Anthropic
   nport_query: Anthropic
-  own_issuer_names: [anthropic, anthropic pbc, anthropic inc]

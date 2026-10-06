@@ -16,33 +16,3 @@ coauthored_commits:
   definition: GitHub commit-search count of public commits whose message contains the "Co-Authored-By Claude" trailer, Monday to Sunday.
   aggregation: sum
   higher_is: good
-org_stars:
-  label: GitHub stars
-  unit: stars
-  definition: Sum of stargazers across the organisation's public, non-fork repositories on the day collected.
-  aggregation: last
-  higher_is: good
-org_forks:
-  label: GitHub forks
-  unit: forks
-  definition: Sum of forks across the organisation's public, non-fork repositories on the day collected.
-  aggregation: last
-  higher_is: good
-org_public_repos:
-  label: Public repositories
-  unit: repositories
-  definition: Number of public, non-fork repositories in the organisation on the day collected.
-  aggregation: last
-  higher_is: neutral
-vscode_installs:
-  label: VS Code installs
-  unit: installs (cumulative)
-  definition: Cumulative installs of the company's VS Code extension reported by the Visual Studio Marketplace.
-  aggregation: last
-  higher_is: good
-mcp_server_repos_new:
-  label: New MCP-server repos
-  unit: repositories per month
-  definition: Public GitHub repositories tagged with the mcp-server topic, counted by the month they were created.
-  aggregation: sum
-  higher_is: good

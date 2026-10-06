@@ -36,17 +36,15 @@ const PAGES: Record<string, string> = {
   dev_adoption: "Developer Adoption",
   attention: "Consumer & Attention",
   product: "Product & Reliability",
-  customers: "Customers & Contracts",
+  customers: "Consumer & Attention",
   capital: "Capital & Valuation",
-  licensed_data: "Licensed Alt-Data",
 };
 
 const TIERS: [string, string][] = [
   ["company-stated", "The company's own channel: its job board, status page, newsroom or pricing page."],
   ["filing", "A regulatory record: SEC, Department of Labor, federal contract data."],
-  ["platform", "Third-party telemetry: npm, PyPI, GitHub, Wikipedia, App Store, GDELT."],
+  ["platform", "Third-party telemetry: npm, PyPI, GitHub, Wikipedia, Hacker News."],
   ["press", "A media report."],
-  ["vendor", "Licensed alt-data bought from a provider (YipitData, M Science)."],
   ["derived", "Computed by us from the rows shown; charts say how."],
 ];
 
@@ -55,14 +53,11 @@ const GAPS: [string, string][] = [
   ["Google DeepMind hiring", "Posts only on Google's careers site, which has no public API, and files H-1B applications as Google LLC."],
   ["LinkedIn headcount", "No public API; the reference case study lists the same gap."],
   ["Reddit activity", "Needs authorised API access."],
-  ["Token share by provider (OpenRouter)", "Its terms forbid scraping, and no free equivalent exists."],
-  ["Google Trends", "No public API. It runs through SerpAPI and needs SERPAPI_KEY; without it the chart is empty."],
-  ["YipitData and M Science", "Licensed. Entered by hand through /add-manual-data; empty until the team enters figures."],
-  ["H-1B applications", "The Department of Labor blocks automated downloads. A person downloads each quarterly file and imports it."],
-  ["App Store rank, news headlines, GitHub org totals, VS Code installs", "Their providers publish no history, so each series starts on the day we began collecting."],
+  ["YipitData and M Science panels", "Licensed and hand-entered; left out of the monitor."],
+  ["App Store rank, Google Trends, news volume, GitHub stars, VS Code installs, H-1B filings, federal awards", "Collected once, then dropped from the monitor as low-signal."],
   ["Secondary-market prices (Forge, Caplight, Hiive)", "Paid; not licensed."],
   ["Web traffic and app downloads (Similarweb, Sensor Tower)", "Paid; not licensed."],
-  ["Implied valuation from fund marks", "Anthropic's share count is not public, so a mark's percentage change is shown instead."],
+  ["Implied valuation from fund marks", "Anthropic's share count is not public, so only each fund's per-share mark is shown."],
 ];
 
 const METHOD: Record<Source["method"], string> = { api: "API", scrape: "Scrape", manual: "Manual", ledger: "Ledger" };
@@ -120,7 +115,10 @@ export default function DataMethods() {
   }, []);
 
   const byPage = new Map<string, Source[]>();
-  for (const s of sources ?? []) byPage.set(s.page, [...(byPage.get(s.page) ?? []), s]);
+  for (const s of sources ?? []) {
+    const group = PAGES[s.page] ?? s.page; // pages that were merged share one group
+    byPage.set(group, [...(byPage.get(group) ?? []), s]);
+  }
   const liveSources = (sources ?? []).filter((s) => s.method !== "ledger");
   const count = (f: Freshness) => liveSources.filter((s) => s.freshness === f).length;
   const hardcoded = (sources ?? []).filter((s) => s.method === "ledger").length;
@@ -130,9 +128,11 @@ export default function DataMethods() {
     <>
       <header className="page-head">
         <h1>Data &amp; Methods</h1>
+        <p style={{ marginBottom: 10 }}>
+          <strong>What you are reading.</strong> Where every number on this site comes from, when it was last collected, and what it cannot tell you.
+        </p>
         <p>
-          Every number on this site traces to a source below, with when it was last collected or entered and what it cannot tell you.
-          Freshness is recomputed from the clock each time you load this page.
+          <strong>How to read it.</strong> Freshness is recomputed from the clock each time you load this page. &ldquo;Fresh&rdquo; means collected within its schedule; a stale source means the charts built from it may be out of date.
         </p>
       </header>
 
@@ -147,9 +147,11 @@ export default function DataMethods() {
                 <FreshnessBadge state={f} /> {count(f)}
               </span>
             ))}
-            <span>
-              <HardcodedBadge /> {hardcoded}
-            </span>
+            {hardcoded ? (
+              <span>
+                <HardcodedBadge /> {hardcoded}
+              </span>
+            ) : null}
             <span>
               {sources.length} sources · {marts.length} charts · {empty.length} awaiting data
             </span>
@@ -158,13 +160,13 @@ export default function DataMethods() {
           <h2 className="section-title">Every source</h2>
           <p className="subtitle" style={{ marginBottom: 14 }}>
             Freshness measures when we last collected or updated a manual feed, not the date the data describes. A source is fresh within
-            its SLA, aging up to twice the SLA, and stale beyond. Cited ledgers are hardcoded and shown separately.
+            its SLA, aging up to twice the SLA, and stale beyond.{hardcoded ? " Cited ledgers are hardcoded and shown separately." : ""}
           </p>
           {[...byPage.entries()]
-            .sort(([a], [b]) => (PAGES[a] ?? a).localeCompare(PAGES[b] ?? b))
+            .sort(([a], [b]) => a.localeCompare(b))
             .map(([page, rows]) => (
               <section key={page} style={{ marginBottom: 22 }}>
-                <h3 style={{ font: "500 17px/1.3 var(--serif)", margin: "0 0 8px" }}>{PAGES[page] ?? page}</h3>
+                <h3 style={{ font: "500 17px/1.3 var(--serif)", margin: "0 0 8px" }}>{page}</h3>
                 <div className="table-wrap" style={{ maxHeight: "none" }}>
                   <table>
                     <thead>

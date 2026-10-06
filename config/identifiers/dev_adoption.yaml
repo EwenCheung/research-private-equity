@@ -1,35 +1,24 @@
 # How each company is found in the developer-adoption sources. Verified live on 2026-10-05.
 # sdk_*: the company's official API SDKs (legacy SDKs are summed with their successors).
-# cli_npm: the company's coding-agent CLI on npm. mcp_*: Model Context Protocol SDKs (created by Anthropic).
+# cli_npm: the company's coding-agent CLI on npm.
 anthropic:
   sdk_pypi: [anthropic]
   sdk_npm: ["@anthropic-ai/sdk"]
   cli_npm: "@anthropic-ai/claude-code"
-  mcp_pypi: [mcp]
-  mcp_npm: ["@modelcontextprotocol/sdk"]
-  vscode: anthropic.claude-code
-  github_org: anthropics
   coauthor_trailer: "Co-Authored-By: Claude"
 openai:
   sdk_pypi: [openai]
   sdk_npm: [openai]
   cli_npm: "@openai/codex"
-  vscode: openai.chatgpt
-  github_org: openai
 google-deepmind:
   sdk_pypi: [google-genai, google-generativeai]
   sdk_npm: ["@google/genai", "@google/generative-ai"]
   cli_npm: "@google/gemini-cli"
-  vscode: google.geminicodeassist
-  github_org: google-gemini
 xai:
   sdk_pypi: [xai-sdk]
-  github_org: xai-org
 mistral:
   sdk_pypi: [mistralai]
   sdk_npm: ["@mistralai/mistralai"]
-  github_org: mistralai
 cohere:
   sdk_pypi: [cohere]
   sdk_npm: [cohere-ai]
-  github_org: cohere-ai

@@ -18,8 +18,8 @@ Outputs are drafts for deal-team review, not investment advice. Use only public 
    - Definitions live in `config/metrics/<page>.yaml`.
    - Changing a definition is a visible, documented change.
 4. **Licensed data stays private.**
-   - YipitData, M Science and similar data only enter through `/add-manual-data`.
-   - Never paste it into issues, PRs, public sites or external services.
+   - The monitor holds none today (YipitData and M Science were left out). If any is added, never paste it into issues,
+     PRs, public sites or external services.
 5. **Interfaces.** `docs/contracts.md` and `contracts/*.schema.json` define the row, chart-spec and AI-report formats,
    and the module interfaces. Code must conform to them.
 

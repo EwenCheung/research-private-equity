@@ -1,4 +1,4 @@
-"""Customers and contracts: HN who-is-hiring posts, SEC 10-K/10-Q filers, federal awards (collected) and a cited KPI-claims ledger."""
+"""Customers: HN who-is-hiring posts and SEC 10-K/10-Q filers."""
 
 import html
 import re
@@ -8,7 +8,7 @@ from functools import cache
 from urllib.parse import quote
 
 from pipeline.core import source
-from pipeline.core.http import get, post, sec_get
+from pipeline.core.http import get, sec_get
 from pipeline.core.store import latest_as_of
 
 PAGE = "customers"
@@ -17,16 +17,7 @@ OVERLAP_DAYS = 45  # re-fetch this far back: late comments, late EDGAR indexing
 HN_SEARCH = "https://hn.algolia.com/api/v1/search_by_date"
 HN_ITEM = "https://hn.algolia.com/api/v1/items/{id}"
 EFTS = "https://efts.sec.gov/LATEST/search-index"
-USASPENDING = "https://api.usaspending.gov/api/v2/search/spending_by_award/"
 # USAspending only accepts award types from one family at a time.
-AWARD_FAMILIES = {
-    "contracts": ["A", "B", "C", "D"],
-    "idvs": ["IDV_A", "IDV_B", "IDV_B_A", "IDV_B_B", "IDV_B_C", "IDV_C", "IDV_D", "IDV_E"],
-    "grants": ["02", "03", "04", "05"],
-    "direct payments": ["06", "10"],
-    "loans": ["07", "08"],
-    "other": ["09", "11", "-1"],
-}
 
 
 def today() -> date:
@@ -172,92 +163,4 @@ def sec_filings_naming(company):
 # ---- USAspending: federal awards to recipients named like the company ----
 
 
-@source(
-    id="usaspending_awards",
-    page=PAGE,
-    label="USAspending.gov awards",
-    url="https://api.usaspending.gov/api/v2/search/spending_by_award/",
-    method="api",
-    tier="filing",
-    cadence="weekly",
-    sla_days=10,
-    backfillable=True,
-    caveats="Direct awards to a recipient whose name matches the company in full (substring search is filtered client-side: "
-    "'anthropic' also returns PHILANTHROPIC...). Awards bought through resellers, other-transaction agreements and "
-    "GSA schedule listings with no obligation do not appear under the company's name. The amount is total obligated to date.",
-)
-def usaspending_awards(company):
-    spec = company.ids(PAGE).get("usaspending")
-    if not spec:
-        return
-    names = [re.compile(p, re.IGNORECASE) for p in spec["recipient"]]
-    found = {}
-    for term in spec["search"]:
-        for codes in AWARD_FAMILIES.values():
-            page = 1
-            while True:
-                body = {
-                    "filters": {
-                        "recipient_search_text": [term],
-                        "award_type_codes": codes,
-                        "time_period": [{"start_date": "2007-10-01", "end_date": today().isoformat()}],
-                    },
-                    "fields": ["Award ID", "Recipient Name", "Award Amount", "Description", "Start Date", "End Date",
-                               "Awarding Agency", "Awarding Sub Agency", "Contract Award Type", "Award Type"],
-                    "page": page, "limit": 100,
-                }  # fmt: skip
-                r = post(USASPENDING, json=body).json()
-                for a in r["results"]:
-                    if any(n.fullmatch(a["Recipient Name"].strip()) for n in names) and a["Start Date"]:
-                        found[a["generated_internal_id"]] = a
-                if not r["page_metadata"]["hasNext"]:
-                    break
-                page += 1
-    url = "https://www.usaspending.gov/award/"
-    for gid, a in sorted(found.items(), key=lambda kv: kv[1]["Start Date"]):
-        yield {
-            "source_url": url + quote(gid),
-            "as_of": a["Start Date"],
-            "entity": company.slug,
-            "metric": "federal_award_obligation_usd",
-            "value": a["Award Amount"] or 0,
-            "dims": {
-                "award_id": a["Award ID"],
-                "recipient": a["Recipient Name"],
-                "agency": a["Awarding Agency"],
-                "sub_agency": a["Awarding Sub Agency"],
-                "type": a.get("Contract Award Type") or a.get("Award Type"),
-                "description": (a["Description"] or "")[:300],
-                "end": a["End Date"],
-            },
-        }
-    # the negative result is data too: "searched, nothing under this name" needs its own dated row
-    yield {"source_url": url, "as_of": today().isoformat(), "entity": company.slug, "metric": "federal_awards_found",
-           "value": len(found), "dims": {}}  # fmt: skip
-
-
 # ---- cited ledger: rows live in data/ledgers/<id>.csv, each with a source link, a verbatim quote and who entered it ----
-
-
-def ledger(**meta):
-    """A ledger source collects nothing: the core reads its CSV. Declared so it has an SLA, a label and caveats."""
-
-    def register(fn):
-        return source(**{"page": PAGE, "method": "ledger", "tier": "company-stated", "backfillable": True, **meta})(fn)
-
-    return register
-
-
-@ledger(
-    id="customers_kpi_claims",
-    label="Anthropic customer metrics (cited ledger)",
-    url="https://www.anthropic.com/news",
-    cadence="quarterly",
-    sla_days=100,
-    caveats="Customer counts Anthropic states in its own newsroom, each with the sentence quoted and checked word for word "
-    "against the page. Anthropic is private and files nothing with the SEC, so there are no filed customer metrics. "
-    "Definitions change between announcements (business customers, customers above $100K or $1M run-rate), so rows with "
-    "different 'what' are not comparable. Hand-maintained.",
-)
-def customers_kpi_claims(company):
-    return iter(())

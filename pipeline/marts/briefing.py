@@ -440,7 +440,7 @@ def tripwires(ctx):
     fired = [r["rule"] for r in rows if r["status"] == "Fired"]
     takeaway = (
         (
-            [f"{len(fired)} of {len(rows)} tripwires fired: " + "; ".join(fired).lower() + "."]
+            [f"{len(fired)} of {len(rows)} tripwires fired: " + "; ".join(fired) + "."]
             if fired
             else [f"None of the {len(rows)} tripwires has fired."]
         )

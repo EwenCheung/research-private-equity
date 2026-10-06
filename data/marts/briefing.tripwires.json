@@ -64,7 +64,7 @@
     }
   ],
   "takeaway": [
-    "1 of 6 tripwires fired: hacker news job posts naming claude fall three months in a row."
+    "1 of 6 tripwires fired: Hacker News job posts naming Claude fall three months in a row."
   ],
   "assumptions": [
     "The rules are in config/tripwires.yaml in plain terms: edit them there. Each names a signal from config/briefing.yaml.",
@@ -201,5 +201,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-06T08:25:17Z"
+  "generated_at": "2026-10-06T08:27:20Z"
 }

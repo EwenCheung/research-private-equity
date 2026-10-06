@@ -108,7 +108,7 @@ def test_a_story_needs_two_outlets_and_the_most_covered_come_first():
         story("A lone headline about quarterly pricing", "F"),
     )
     picks = m.news_picks(df, CFG["news"], 7)
-    assert [p["score"] for p in picks] == ["3 outlets", "2 outlets"]  # the lone headline never qualifies
+    assert [p["why"].split(" outlets")[0] for p in picks] == ["3", "2"]  # the lone headline never qualifies
 
 
 def test_a_story_that_mostly_repeats_one_already_chosen_is_skipped_and_places_are_limited():
@@ -145,11 +145,7 @@ def test_discussion_picks_the_top_story_above_the_points_floor():
         ]
     )
     [pick] = m.discussion_picks(df, CFG["discussion"])
-    assert (
-        pick["headline"] == "Big"
-        and pick["score"] == "721 points"
-        and pick["why"].startswith("721 points and 558 comments")
-    )
+    assert pick["headline"] == "Big" and pick["why"].startswith("721 points, 558 comments")
     assert m.discussion_picks(df.iloc[1:], CFG["discussion"]) == []
 
 
@@ -162,7 +158,7 @@ def test_filings_need_enough_distinct_filers_and_say_that_a_mention_is_not_a_pur
         ]
     )
     [pick] = m.filing_picks(df, {"places": 1, "min_filers": 2})
-    assert pick["score"] == "2 filers" and "Beta Inc (10-K)" in pick["why"] and "not a purchase" in pick["why"]
+    assert pick["why"].startswith("2 filers") and "Beta Inc (10-K)" in pick["why"] and "not a purchase" in pick["why"]
     assert pick["link"] == "https://sec/2" and m.filing_picks(df.iloc[:1], {"places": 1, "min_filers": 2}) == []
 
 
@@ -188,7 +184,7 @@ def test_insights_put_fired_tripwires_first_then_the_widest_moves_and_skip_flat_
         "b",
         "a",
     ]  # d fired, so it is not repeated as a mover
-    assert picks[0]["score"] == "Tripwire fired" and picks[1]["score"] == "6.0× its flat band"
+    assert picks[0]["why"].startswith("Tripwire fired") and picks[1]["why"].startswith("6.0× its flat band")
     assert "the period before it was +10%" in picks[1]["why"] and all(p["link"] is None for p in picks)
 
 

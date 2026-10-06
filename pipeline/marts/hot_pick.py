@@ -126,8 +126,7 @@ def news_picks(df: pd.DataFrame, cfg: dict, days: int) -> list[dict]:
         {
             "kind": "news",
             "headline": rep["title"],
-            "score": f"{n} outlets",
-            "why": f"Ran by {n} outlets in {days} days, among them {', '.join(outlets[:3])}",
+            "why": f"{n} outlets in {days} days, among them {', '.join(outlets[:3])}",
             "date": rep["published"][:10],
             "link": rep["source_url"],
         }
@@ -144,8 +143,7 @@ def discussion_picks(df: pd.DataFrame, cfg: dict) -> list[dict]:
         {
             "kind": "discussion",
             "headline": r.title,
-            "score": f"{int(r.value):,} points",
-            "why": f"{int(r.value):,} points and {int(r.comments):,} comments on Hacker News",
+            "why": f"{int(r.value):,} points, {int(r.comments):,} comments on Hacker News",
             "date": r.created[:10],
             "link": r.source_url,
         }
@@ -167,8 +165,7 @@ def filing_picks(df: pd.DataFrame, cfg: dict) -> list[dict]:
         {
             "kind": "filings",
             "headline": f"{len(filers)} listed companies named Anthropic in new filings",
-            "score": f"{len(filers)} filers",
-            "why": f"{shown}{more}. A mention is not a purchase.",
+            "why": f"{len(filers)} filers: {shown}{more}. A mention is not a purchase.",
             "date": newest["as_of"],
             "link": newest["source_url"],
         }
@@ -193,8 +190,7 @@ def insight_picks(cfg_b: dict, reads: dict, rules: list[dict], cfg: dict, end: d
                     {
                         "kind": "insights",
                         "headline": t["label"],
-                        "score": "Tripwire fired",
-                        "why": f"{now}; it fires when {briefing.threshold_text(t['rule'])}. See the {page[t['signal']]} page.",
+                        "why": f"Tripwire fired: {now}; it fires when {briefing.threshold_text(t['rule'])}. See the {page[t['signal']]} page.",
                     },
                 )
             )
@@ -210,8 +206,7 @@ def insight_picks(cfg_b: dict, reads: dict, rules: list[dict], cfg: dict, end: d
                 {
                     "kind": "insights",
                     "headline": f"{m['label']}: {m['chg'] * 100:+.0f}% on the previous {unit}",
-                    "score": f"{size:.1f}× its flat band",
-                    "why": f"{m['text']} in {m['based']}{before}. See the {page[sid]} page.",
+                    "why": f"{size:.1f}× its flat band: {m['text']} in {m['based']}{before}. See the {page[sid]} page.",
                 },
             )
         )
@@ -262,8 +257,7 @@ def this_week(ctx):
             {"field": "rank", "label": "#", "format": "int"},
             {"field": "kind", "label": "Kind", "format": "text"},
             {"field": "headline", "label": "Headline", "format": "text"},
-            {"field": "score", "label": "Score", "format": "text"},
-            {"field": "why", "label": "Why it is hot", "format": "text"},
+            {"field": "why", "label": "Why it is hot (its score first)", "format": "text"},
             {"field": "date", "label": "Date", "format": "date"},
             {"field": "link", "label": "Link", "format": "url"},
         ],
@@ -274,7 +268,7 @@ def this_week(ctx):
             f"Discussion: Hacker News stories matching Anthropic with at least {cfg['discussion']['min_points']} points, ranked by points (upvotes, not importance); {cfg['discussion']['places']} place.",
             f"Filings: listed companies whose new 10-K or 10-Q names Anthropic, shown when {cfg['filings']['min_filers']} or more did. A mention is not a purchase.",
             f"Insights: tripwires that have fired, then the signals whose latest change is widest against their flat band (at least {cfg['insights']['min_bands']} bands), from the Briefing's arithmetic; {cfg['insights']['places']} places. Fund marks are left out because they move in steps when a round is priced. Insights use the latest three months, so they change slowly.",
-            "Each kind is scored in its own unit and kinds are never ranked against each other. A kind that does not qualify leaves its places empty, so a quiet week shows fewer picks, not filler.",
+            "Each kind is scored in its own unit (the first words of its reason) and kinds are never ranked against each other. A kind that does not qualify leaves its places empty, so a quiet week shows fewer picks, not filler.",
             "Headlines are shown with their link, not reproduced. The picks are rules applied to public feeds, not a judgement of importance, and they are not investment advice.",
         ],
         "badges": ["arithmetic"],

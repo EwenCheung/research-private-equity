@@ -34,9 +34,9 @@ interface MartRow {
 const PAGES: Record<string, string> = {
   hiring: "Hiring & Talent",
   dev_adoption: "Developer Adoption",
-  attention: "Customers",
+  attention: "Consumer & Attention",
   product: "Product & Reliability",
-  customers: "Customers",
+  customers: "Consumer & Attention",
   capital: "Capital & Valuation",
 };
 

@@ -200,7 +200,7 @@ The router loads `import.meta.glob("./pages/*.tsx")`, and the nav is sorted by `
 ```bash
 uv run python -m pipeline.collect [--cadence daily|weekly] [--source ID ...] [--company SLUG]
 uv run python -m pipeline.build                 # raw + manual + ledgers -> data/marts/*.json + data/registry.json
-uv run python -m pipeline.hot_pick freeze       # Phase 3: data/marts/hot_pick.week_YYYY_WW.json
+uv run python -m pipeline.hot_pick freeze       # Phase 3: data/marts/hot_pick.month_YYYY_MM.json
 uv run python -m pipeline.analysis              # Phase 4: bull, bear, neutral
 uv run pytest
 ```
@@ -217,7 +217,7 @@ uv run pytest
 | `GET /api/companies` | `[{slug, name, role}]`: targets first, then their peers in config order. Charts give each company a fixed colour |
 | `GET /api/registry` | `data/registry.json` sources, with `freshness` recomputed live |
 | `GET /api/freshness` | `{source: {freshness, retrieved_at, as_of}}`, live |
-| `GET /api/marts` | Also lists the Phase 3 weekly picks, `hot_pick.week_2026_41`, as ordinary chart specs |
+| `GET /api/marts` | Also lists the Phase 3 weekly picks, `hot_pick.month_2026_10`, as ordinary chart specs |
 | `GET /api/analysis?week=` | Phase 4: `{bull, bear, neutral}` |
 
 **Environment:** see `.env.example`. `DATA_DIR` points the API at the pipeline's `data/` (Render sets `data`). If it's unset, the API serves `tests/fixtures/`.

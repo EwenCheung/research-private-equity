@@ -4,48 +4,65 @@ import ChartCard from "../components/ChartCard";
 
 export const meta = { title: "Hot Pick", path: "/hot-pick", order: 5 };
 
+type Period = "week" | "month";
+const NAMES: Record<Period, { now: string; past: string; one: string }> = {
+  week: { now: "What stood out this week?", past: "What stood out in earlier weeks?", one: "week" },
+  month: { now: "What stood out this month?", past: "What stood out in earlier months?", one: "month" },
+};
+
 export default function HotPick() {
-  const [weeks, setWeeks] = useState<string[] | null>(null);
+  const [period, setPeriod] = useState<Period>("month");
+  const [ids, setIds] = useState<string[] | null>(null);
 
   useEffect(() => {
     api<{ id: string }[]>("/api/marts")
-      .then((marts) => setWeeks(marts.map((m) => m.id).filter((id) => id.startsWith("hot_pick.week_")).sort().reverse()))
-      .catch(() => setWeeks([]));
+      .then((marts) => setIds(marts.map((m) => m.id)))
+      .catch(() => setIds([]));
   }, []);
+
+  const saved = ids === null ? null : ids.filter((id) => id.startsWith(`hot_pick.${period}_`)).sort().reverse();
 
   return (
     <>
       <header className="page-head">
         <h1>Hot Pick</h1>
         <p style={{ marginBottom: 10 }}>
-          <strong>What you are reading.</strong> The few things about Anthropic that stood out in the last seven days: the news that
-          several outlets ran, the most-discussed Hacker News story, new filings that name Anthropic, and the biggest moves in our own
+          <strong>What you are reading.</strong> The few things about Anthropic that stood out: the news several outlets ran, the
+          blogs and newsletters writing about it, the most-discussed Hacker News stories, popular developer posts, new GitHub
+          repositories people are building around Claude, new filings that name Anthropic, and the biggest moves in our own
           signals. Each pick says why it was picked and links to its source.
         </p>
         <p>
-          <strong>How to read it.</strong> Each kind is scored in its own unit (outlets, points, filers, size of the move) and never
-          against another kind, so read a score within its kind. A quiet week shows fewer picks, not filler. The picks are rules
-          applied to public feeds, not a judgement of importance.
+          <strong>How to read it.</strong> Each kind is scored in its own unit (outlets, points, reactions, stars, filers, size of
+          the move) and never against another kind, so read a score within its kind. A quiet period shows fewer picks, not filler.
+          The picks are rules applied to public feeds, not a judgement of importance.
         </p>
+        <div className="seg" role="group" aria-label="Period">
+          {(["week", "month"] as Period[]).map((p) => (
+            <button key={p} type="button" aria-pressed={p === period} onClick={() => setPeriod(p)}>
+              {p === "week" ? "Week" : "Month"}
+            </button>
+          ))}
+        </div>
       </header>
       <section>
-        <h2 className="section-title">What stood out this week?</h2>
+        <h2 className="section-title">{NAMES[period].now}</h2>
         <p className="subtitle" style={{ marginBottom: 14 }}>
-          Rebuilt every time the data is refreshed.
+          Rebuilt every time the data is refreshed. The {NAMES[period].one} covers the {period === "week" ? "last 7" : "last 30"} days.
         </p>
         <div className="grid">
-          <ChartCard id="hot_pick.this_week" />
+          <ChartCard key={period} id={`hot_pick.this_${period}`} />
         </div>
       </section>
       <section>
-        <h2 className="section-title">What stood out in earlier weeks?</h2>
+        <h2 className="section-title">{NAMES[period].past}</h2>
         <p className="subtitle" style={{ marginBottom: 14 }}>
-          Each week is saved with the Hot Pick command, and a saved week never changes.
+          Each {NAMES[period].one} is saved with the Hot Pick command, and a saved {NAMES[period].one} never changes.
         </p>
-        {weeks === null ? <div className="skeleton" style={{ height: 120 }} /> : null}
-        {weeks && weeks.length === 0 ? <p>No week has been saved yet.</p> : null}
+        {saved === null ? <div className="skeleton" style={{ height: 120 }} /> : null}
+        {saved && saved.length === 0 ? <p>No {NAMES[period].one} has been saved yet.</p> : null}
         <div className="grid">
-          {(weeks ?? []).map((id) => (
+          {(saved ?? []).map((id) => (
             <ChartCard key={id} id={id} />
           ))}
         </div>

@@ -26,7 +26,7 @@ All outputs, including the AI reporters, are drafts for deal-team review, not in
    Every number traces to an immutable raw snapshot.
 2. **Long-term and comparable.**
    - **Definitions:** one metric dictionary applies across time and across companies.
-   - **Monthly Hot Pick:** each month's hottest news, discussion and insights about Anthropic is kept, so past months stay readable (R21, R22).
+   - **Weekly and monthly Hot Pick:** each week and month's hottest news, discussion and insights about Anthropic is kept, so past months stay readable (R21, R22).
 3. **Easy or near-real-time updates.**
    - **Automated sources** refresh on demand with `/refresh-data` (no scheduled job, R19).
    - **Manual sources** are a single paste into Claude.
@@ -292,18 +292,18 @@ never let a hand-entered number feed a verdict; compute every sentence.
 - [ ] Links into each page. A peer appears only as context (for example a market-wide dip). No ARR extrapolation: the run-rate ledgers were removed (R18).
 - Done when: every sentence is computed from marts and every number links to its chart.
 
-**3.2 Signal page** (`p3/signal`): research and discussion first, implementation after your sign-off
-- [ ] Research note: which signals and which relationships are worth testing, and what data each needs. Candidate to test: a peer's model release moving Claude's signals (needs release dates, which the removed ledgers held).
-- [ ] `pipeline/marts/signal.py` relates Anthropic's own series: month-on-month changes and detrended levels, lead and lag (0 to 3 months), and stability across windows.
-- [ ] The page shows only the sharpest relationships, ranked by strength, stability and sample size, after a multiple-comparison correction and a holdout check (fit on the earlier two thirds, test on the last third). Each has its scatter, its n and one sentence. Everything else collapses to "no reliable relationship".
-- [ ] A signal-quality table (noise, trend, coverage start, cadence) so you know which series to trust.
-- [ ] A result is labelled a hypothesis until it holds on new data.
-- Done when: a planted noise series never reaches the sharpest list, and re-running on new data refreshes the page.
+**3.2 Signal page** (`p3/signal`): research note written (`docs/research/signal-page.md`); implementation after your sign-off
+- [ ] Charts, not tables (R23). Seven questions, each one chart: is Anthropic ahead of OpenAI (relative 13-week growth), how much of a move is the market (share explained by OpenAI's same-week growth), which tested pairs beat the noise ceiling, the lag profile of the strongest pair, whether it holds in both halves of the history, which series move together, and which series can be trusted (history length and noise).
+- [ ] `pipeline/marts/signal.py` builds weekly series from the Briefing's own adapters (so the numbers match), then growth, AR(2) pre-whitening, lag cross-correlation (−8 to +8 weeks), a circular-shift null (best of all lags), Benjamini-Hochberg FDR across every pair tested, and a first-half / second-half stability check.
+- [ ] The same tests run on Anthropic minus OpenAI growth, so a market-wide move is not reported as Anthropic's.
+- [ ] A result is labelled *Finding*, *Hypothesis* or *Not supported*; never causal. "Tested, nothing reliable" is shown, not hidden.
+- [ ] No collector is needed to start. Release dates (OpenRouter's public models list) were tested and dropped: growth after a release is no different from a random week (R23).
+- Done when: a planted lead is recovered, a planted noise series never reaches the findings, a fixed seed gives identical output, and re-running on new data refreshes the page.
 
 **3.3 Hot Pick** (`p3/hot-pick`)
-- [ ] A monthly list of the hottest things about Anthropic in the last 30 days. Each kind has its own places and its own score, and is never ranked against another: news (Google News plus the AI and technology sections of publishers' own feeds, scored by distinct outlets), blogs and newsletters (curated authors), community posts (dev.to, scored by reactions), discussion (Hacker News, scored by points), technology trends (new GitHub repositories about Claude, scored by stars), new filings that name Anthropic, and insights from the Briefing. Up to 13 picks, usually fewer, and fewer rather than filler.
+- [ ] A weekly (7 days) and a monthly (30 days) list, switched by a toggle, of the hottest things about Anthropic (R23). Each kind has its own places and its own score, and is never ranked against another: news (Google News plus the AI and technology sections of publishers' own feeds, scored by distinct outlets), blogs and newsletters (curated authors), community posts (dev.to, scored by reactions), discussion (Hacker News, scored by points), technology trends (new GitHub repositories about Claude, scored by stars), new filings that name Anthropic, and insights from the Briefing. Up to 13 picks, usually fewer, and fewer rather than filler.
 - [ ] Sources are public feeds and official APIs only: RSS and Atom feeds, the Algolia Hacker News search (Anthropic and Claude), the dev.to API and the GitHub search API. Reddit and VentureBeat rate-limit us and Reddit's terms need an agreement, so they are left out; a feed that fails is skipped and reported, never guessed.
-- [ ] A `hot_pick.this_month` chart is rebuilt with every build. `pipeline/hot_pick.py freeze` saves it as `data/marts/hot_pick.month_YYYY_MM.json` (a chart spec, so the existing `/api/marts` and `ChartCard` serve it with provenance). A past month is never overwritten. `/hot-pick` skill.
+- [ ] `hot_pick.this_week` and `hot_pick.this_month` charts are rebuilt with every build. `pipeline/hot_pick.py freeze` saves them as `data/marts/hot_pick.week_YYYY_WW.json` and `data/marts/hot_pick.month_YYYY_MM.json` (a chart spec, so the existing `/api/marts` and `ChartCard` serve it with provenance). A past month is never overwritten. `/hot-pick` skill.
 - [ ] Each feed keeps only its latest items (a few days for busy sites) and nothing runs on a schedule, so collect at least weekly or the month has holes.
 - Done when: every pick's number matches its source, and a quiet month shows fewer picks, not filler.
 - Dropped from the old editions plan: the Compare-to picker, `data_pack.xlsx`, the print stylesheet and any `ChartCard` change.
@@ -469,3 +469,9 @@ Out of scope, by your decisions or because the data is missing:
     which found the month's biggest story) and new GitHub repositories about Claude add discussion and technology trends. Checked on 2026-10-06: 16 of 34 candidate feeds named Anthropic or Claude in the last month.
   - Left out: Reddit (rate-limited, terms need an agreement), VentureBeat (rate-limited), and sites with no feed (The Batch, Anthropic's own site) or a stale one (WSJ, SemiAnalysis).
   - Every kind keeps its own places and unit, so a month with little news shows fewer picks.
+- **R23, 2026-10-06: Signal is charts-first with OpenAI as the main comparison; Hot Pick has a week and a month.** Research note: `docs/research/signal-page.md`.
+  - Decisions: the page uses charts, not tables; OpenAI is the main comparison, so Anthropic doing badly while OpenAI does worse still reads as a good sign; no private data is supplied for now (the note lists what would help and how it would be used); release dates from OpenRouter were allowed only if useful.
+  - **Retracted:** R20's "Wikipedia product views led PyPI downloads by one to two months (r about 0.5)". On weekly data (n 70-190, 17 lags, circular-shift null, FDR) the best r is +0.16 at 8 weeks, p 0.45. The monthly figure came from 31 points and 30 tries.
+  - Probe on weekly data: 132 ordered pairs, 34 pass FDR but nearly all are duplicates or market-wide moves; of 26 lead hypotheses only 2 pass q < 0.05 (Anthropic npm to PyPI at 3 weeks, fading from r 0.45 to 0.13 between the halves; relative Wikipedia product views to relative CLI downloads at 4 weeks, n 70). Both are Hypotheses.
+  - Model releases (OpenRouter public models list, 15 Anthropic and 33 OpenAI release weeks) do not move any of 11 weekly series more than a random week (all q ≥ 0.87), so OpenRouter is not used.
+  - Hot Pick now has a Week and a Month window with a toggle (supersedes R22's single month); R22's sources are unchanged.

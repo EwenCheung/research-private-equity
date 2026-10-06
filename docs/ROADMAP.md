@@ -39,13 +39,13 @@ The full design is in [the spec](superpowers/specs/2026-10-05-signal-monitor-des
 | core | Shared http, frame helpers, rate-limit patience, concrete provenance links from rows the chart read, hardcoded-ledger labels, and fixed company colours by name (Anthropic orange, OpenAI dark green, Google blue) | `p2/core`, `p2/core-ratelimit`, `p2/core-source-provenance`, `p2/core-provenance-used`, `p2/core-company-colours` | ☑ (#6, #7, #17, #24, #25) |
 
 ## Phase 3: Cross-page synthesis ◐ (branch `phase/3`)
-Re-planned after the cut (spec R20, R21): Anthropic only, judged by its own direction against its own history; signals grouped into families; no hand-entered number in any verdict.
+Re-planned after the cut (spec R20, R21): about Anthropic, judged by its own direction against its own history, with peers kept as context; signals grouped into families; no hand-entered number in any verdict. Build order: Briefing, Hot Pick, then Signal after research.
 Nothing runs on a schedule (R19); Hot Pick and analysis run on demand.
 
 | # | Implementation | Branch | Status |
 |---|---|---|---|
 | 3.1 | Briefing: Anthropic's verdict per signal family, divergence flags, tripwires | `p3/briefing` | ☐ |
-| 3.2 | Signal: the sharpest relationships among Anthropic's own signals, with correlation, lead–lag and stability | `p3/signal` | ☐ |
+| 3.2 | Signal: the sharpest relationships between signals, including peers' moves; research first | `p3/signal` | ☐ (research) |
 | 3.3 | Hot Pick: the week's hottest insights and news about Anthropic, with a weekly archive | `p3/hot-pick` | ☐ |
 
 ## Phase 4: AI Analysis ☐

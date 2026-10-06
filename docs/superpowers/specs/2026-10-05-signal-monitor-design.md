@@ -281,7 +281,7 @@ Each implementation covers its page's collectors with backfills, ledgers, marts,
 | 2.8 | `p2/data-methods` | Data & Methods + refresh | registry page, gaps list, `/refresh-data` and `/add-source` skills |
 
 ### Phase 3: Anthropic synthesis (depends on the Phase 2 marts; 3 parallel implementations)
-Phase 2 shows what each signal says; Phase 3 says what they add up to, for Anthropic only (R21). The rules (R20, R21): judge a signal by Anthropic's own direction
+Phase 2 shows what each signal says; Phase 3 says what they add up to for Anthropic, with peers kept as context (R21). The rules (R20, R21): judge a signal by Anthropic's own direction
 against its own history rather than its level, since levels all trend up together and correlate with anything; group signals into families so one verdict replaces several charts;
 never let a hand-entered number feed a verdict; compute every sentence.
 
@@ -289,10 +289,11 @@ never let a hand-entered number feed a verdict; compute every sentence.
 - [ ] A first page with one verdict per signal family: developer usage, enterprise adoption, consumer attention, build-out. Each reads "accelerating", "steady" or "slowing" from the 3-month change against the 3 months before it and the same months a year earlier. Thresholds live in `config/briefing.yaml`.
 - [ ] Divergence flags, for example consumer attention slowing while developer usage accelerates.
 - [ ] Tripwires from `config/tripwires.yaml`: plain-language rules you review ("SDK downloads down three months running"). They answer "what changed".
-- [ ] Links into each page. No ARR extrapolation: the run-rate ledgers were removed (R18).
+- [ ] Links into each page. A peer appears only as context (for example a market-wide dip). No ARR extrapolation: the run-rate ledgers were removed (R18).
 - Done when: every sentence is computed from marts and every number links to its chart.
 
-**3.2 Signal page** (`p3/signal`)
+**3.2 Signal page** (`p3/signal`): research and discussion first, implementation after your sign-off
+- [ ] Research note: which signals and which relationships are worth testing, and what data each needs. Candidate to test: a peer's model release moving Claude's signals (needs release dates, which the removed ledgers held).
 - [ ] `pipeline/marts/signal.py` relates Anthropic's own series: month-on-month changes and detrended levels, lead and lag (0 to 3 months), and stability across windows.
 - [ ] The page shows only the sharpest relationships, ranked by strength, stability and sample size, after a multiple-comparison correction and a holdout check (fit on the earlier two thirds, test on the last third). Each has its scatter, its n and one sentence. Everything else collapses to "no reliable relationship".
 - [ ] A signal-quality table (noise, trend, coverage start, cadence) so you know which series to trust.
@@ -455,9 +456,10 @@ Out of scope, by your decisions or because the data is missing:
   - Month-on-month changes were mostly uncorrelated (|r| below 0.45) apart from the two Wikipedia series (0.70) and the two download series (0.44). Wikipedia product views led PyPI downloads by one to two months (r about 0.5, n 31, 30 lags tried): a hypothesis to track, not a finding.
   - A market-wide dip (PyPI fell about 25% for Anthropic and 31% for OpenAI in Sep 2026) leaves share intact, which is why verdicts use share.
   - ARR extrapolation is dropped with the run-rate ledgers. Signal tests (3.3) is a new implementation; editions move to 3.4. `config/tripwires.yaml` holds the rules.
-- **R21, 2026-10-06: Phase 3 looks at Anthropic only, and editions become Hot Pick.**
-  - Peers grid and `/add-company` are dropped, and verdicts no longer use share against OpenAI. A verdict is Anthropic's own direction against its own history.
-    The Phase 2 charts still show peer lines as context; stripping them is a separate decision.
+- **R21, 2026-10-06: Phase 3 is about Anthropic, and editions become Hot Pick.**
+  - The peers grid and `/add-company` are dropped, and a verdict is Anthropic's own direction against its own history. Peers stay on the Phase 2 charts (decided 2026-10-06):
+    comparison matters, and a peer's model release can move Claude's signals, which the Signal page should test.
+  - Build order: Briefing, then Hot Pick. Signal starts with research and a discussion, and is implemented only after your sign-off.
   - Weekly editions become Hot Pick: a short weekly list of the hottest insights and news about Anthropic. Compare-to, the data pack and the print view are dropped.
   - A Signal page is added for the sharpest relationships among Anthropic's own series, with the corrections that stop it showing noise (R20).
   - Re-adds a headline collector and a Hacker News story collector, which R18 removed as noise: a short ranked pick list is not a feed.

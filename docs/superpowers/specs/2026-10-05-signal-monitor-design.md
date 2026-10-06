@@ -28,7 +28,7 @@ All outputs, including the AI reporters, are drafts for deal-team review, not in
    - **Definitions:** one metric dictionary applies across time and across companies.
    - **Weekly editions:** each week is frozen, so any two dates can be compared.
 3. **Easy or near-real-time updates.**
-   - **Automated sources** refresh on a schedule or on demand.
+   - **Automated sources** refresh on demand with `/refresh-data` (no scheduled job, R19).
    - **Manual sources** are a single paste into Claude.
 4. **Provenance on every number.**
    - **Automated:** "Source: npm downloads API ↗ · data as of 2026-10-04 · retrieved 2026-10-05 06:02 UTC".
@@ -101,7 +101,7 @@ Prompt structure borrows from the private-equity `ic-memo` skill and the equity-
 
 There is one prompt per reporter, and two ways to run it. `.claude/agents/{bull,bear,neutral}-reporter.md` is the single source of each prompt:
 - Colleagues run them interactively in Claude Code, with all plugins available.
-- `pipeline/analysis.py` reads the same file body for the scheduled run, through the Claude API (`claude-opus-5-5`) with structured outputs.
+- `pipeline/analysis.py` reads the same file body for the on-demand run, through the Claude API (`claude-opus-5-5`) with structured outputs.
 
 Quality gates. The run fails and retries, rather than publishing, when any of these fail:
 1. Every cited `chart_id` or metric must exist.
@@ -144,9 +144,9 @@ Manual inputs go through `/add-manual-data`:
 - Git history is the audit trail.
 
 On "real-time": most sources only publish at daily resolution. So:
-- **Daily automated refresh** covers jobs, downloads, GitHub, App Store ranks, the status page and news.
-- **Weekly refresh** covers SEC and Trends. **Quarterly:** H-1B LCA files.
-- **On demand,** anyone can run `gh workflow run daily.yml` or `/refresh-data`.
+- **Daily cadence** covers job boards, downloads, GitHub and the status page.
+- **Weekly cadence** covers SEC filings, Hacker News and GitHub commit search.
+- **Nothing runs by itself.** Anyone runs `/refresh-data` on a branch and opens a PR (R19).
 
 ## Comparability for the deal team
 - **Metric dictionary.** `config/metrics/<page>.yaml` holds one canonical definition, unit and formula per metric.
@@ -201,7 +201,7 @@ app/server.py                 FastAPI
 frontend/src/components/ChartCard.tsx · frontend/src/pages/<Page>.tsx
 tests/fixtures/ · tests/test_<area>.py
 data/raw/ data/ledgers/ data/manual/ data/marts/ · reports/YYYY-Www/
-.github/workflows/daily.yml · weekly.yml
+.github/workflows/ci.yml
 ```
 
 `.claude/settings.json` enables these plugins. Colleagues get an install prompt when they trust the folder.
@@ -252,7 +252,7 @@ From `claude-plugins-official`:
 - Uses the dependencies already declared in 0.2 (R4); it never edits `pyproject.toml` or `uv.lock`.
 - [ ] `pipeline/core/*`: schema validation, auto-discovering registry, `collect` and `build` CLIs, freshness, company config loader.
 - [ ] `config/companies/anthropic.yaml` (including peers).
-- [ ] `daily.yml` and `weekly.yml` (collect → build → commit). The cron trigger stays off until R2 is decided; `workflow_dispatch` works from day one.
+- [x] `daily.yml` and `weekly.yml` (collect → build → commit) were built, then removed by R19: there is no scheduled job.
 - [ ] `pipeline/sources/snapshots.py`: raw-only daily capture of App Store top-chart ranks (OpenRouter dropped: its terms forbid scraping).
   Data quality: these can't be backfilled, so their history starts the moment this merges.
 - [ ] `tests/test_core.py`, which rejects rows missing provenance.
@@ -281,21 +281,30 @@ Each implementation covers its page's collectors with backfills, ledgers, marts,
 | 2.7 | `p2/licensed-data` | Licensed Alt-Data + manual input | Yipit/M Science placeholder panels, `/add-manual-data` skill |
 | 2.8 | `p2/data-methods` | Data & Methods + refresh | registry page, gaps list, `/refresh-data` and `/add-source` skills |
 
-### Phase 3: Cross-page synthesis (depends on all Phase 2 marts; 3 parallel implementations)
-**3.1 Peers page and add-company** (`p3/peers`)
-- [ ] Share-of-signal comparisons across peers, using the metric dictionary.
+### Phase 3: Cross-page synthesis (depends on the Phase 2 marts; 4 parallel implementations)
+Phase 2 shows what each signal says; Phase 3 shows what they add up to. It follows R20: judge a signal by Anthropic's share against peers
+and its direction rather than its level, group signals into families so one verdict replaces several charts, and never let a hand-entered number feed a verdict.
+
+**3.1 Peers grid and add-company** (`p3/peers`)
+- [ ] A "Peers" page: one row per company, one column per kept signal (latest value, share of the peer group, 3-month change, rank), using the metric dictionary.
 - [ ] `/add-company` skill.
-- Done when: adding a company config makes it appear on every page.
+- Done when: adding a company config makes a new row appear in the grid.
 
 **3.2 Briefing page** (`p3/briefing`)
-- [ ] Headline numbers.
-- [ ] ARR chart with the log-linear extrapolation band.
-- [ ] Tripwires across all series: "what changed".
-- [ ] Links into each page.
+- [ ] A first page with one verdict per signal family: developer usage, enterprise adoption, consumer attention, build-out. Each is Anthropic's share against OpenAI plus its 3-month direction, in one computed sentence.
+- [ ] Divergence flags, for example consumer attention falling while developer usage rises.
+- [ ] Tripwires from `config/tripwires.yaml`: plain-language rules ("SDK share down three months running") that you review. They answer "what changed".
+- [ ] Links into each page. No ARR extrapolation: the run-rate ledgers were removed (R18).
+- Done when: every sentence is computed from marts and every number links to its chart.
 
-**3.3 Weekly editions and comparability** (`p3/editions`)
-- [ ] `pipeline/editions.py`: freeze `reports/YYYY-Www/` and write `data_pack.xlsx`.
-- [ ] `/api/compare`.
+**3.3 Signal tests** (`p3/signal-tests`)
+- [ ] A "Signal Tests" page: which signals move together (month-on-month changes and detrended levels), which lead which (0 to 3 months), and how stable each is.
+- [ ] Every cell shows n and a multiple-comparison caveat; a lead-lag result is labelled a hypothesis until it holds on new data.
+- Done when: re-running on new data updates the page, and a flat or noisy signal is labelled as such.
+
+**3.4 Weekly editions and comparability** (`p3/editions`)
+- [ ] `pipeline/editions.py`: freeze `reports/YYYY-Www/` (every chart spec, plus the Briefing once it exists) and write `data_pack.xlsx` with provenance columns. Run on demand after `/refresh-data`.
+- [ ] `/api/compare` and an "Editions" page.
 - [ ] "Compare to" picker. This is the only Phase 3 implementation allowed to touch `ChartCard`.
 - [ ] Print stylesheet.
 
@@ -306,13 +315,13 @@ Each implementation covers its page's collectors with backfills, ledgers, marts,
 - [ ] `analysis.py` with the gates.
 - [ ] The page itself, with case history.
 - [ ] `/run-analysis` skill.
-- [ ] Daily tripwire trigger, and reports included in each weekly edition.
+- [ ] Run on demand (`/run-analysis`), with the reports included in each weekly edition.
 - Done when: all 3 reports pass the gates, and a planted fake number gets rejected.
 
 ### Phase 5: Team release (depends on Phase 4)
 **5.1 Handover** (`p5/release`)
 - [ ] Final README walkthrough.
-- [ ] A fresh-clone test run as a colleague would, covering `/refresh-data`, `/add-manual-data` and `/run-analysis`.
+- [ ] A fresh-clone test run as a colleague would, covering `/refresh-data` and `/run-analysis`.
 - [ ] Production deploy check on Render.
 
 ## Review checkpoints
@@ -338,7 +347,7 @@ Each implementation covers its page's collectors with backfills, ledgers, marts,
   - Implementation branches (`pN/<name>`) open PRs into the phase integration branch `phase/N`.
   - At the phase gate, one PR `phase/N` → `main`.
   - Merge with merge commits, not squash, so the conventional history survives.
-  - The only direct writer to `main` is the scheduled data job, and it only touches `data/` and `reports/` (see revision R2).
+  - Nothing writes to `main` directly, not even data (see revision R19).
 - **Author is only you** (EwenCheung).
   No `Co-Authored-By`, no "Generated with Claude", and no AI tags in commits or PR descriptions. This overrides the default attribution.
 
@@ -380,7 +389,7 @@ Out of scope, by your decisions or because the data is missing:
 - Collectors: snapshot counts match the live APIs (Greenhouse 640 and Ashby 828 as of 2026-10-05).
 - Editions: a weekly run creates `reports/2026-Www/`. "Compare to" shows deltas, and `data_pack.xlsx` has provenance columns.
 - AI: the reports pass the gates, and the planted-fake-number test is rejected.
-- Phase gates: `main` is served and checked by you; `gh workflow run daily.yml` produces a data commit, and Render redeploys.
+- Phase gates: `main` is served and checked by you; `/refresh-data` produces a data PR, and Render redeploys when it merges.
 - Release: in a fresh clone, Claude prompts for the 10 plugins, and every skill runs end to end.
 
 ## Revisions (newest last; the plan is updated whenever something changes or proves unrealistic)
@@ -391,9 +400,9 @@ Out of scope, by your decisions or because the data is missing:
   - The daily and weekly jobs must land data somewhere the dashboard deploys from.
   - Proposal: they are the only direct writer to `main`, and they only touch `data/` and `reports/`. Code never bypasses a PR.
   - Alternative: a separate `data` branch merged by a daily PR (heavier: 365 PRs a year).
-  - **Decision needed** before 1.1 enables the schedule.
+  - **Closed by R19: there is no scheduled job.**
 - **R3, 2026-10-05: branch protection is available on this private repo.** It's optional; turning it on is your call.
-  It would need a bypass for the data job (R2), e.g. a deploy key.
+  With no scheduled data job (R19) it needs no bypass.
 - **R4: all Python dependencies are declared in 0.2,** not Phase 1, so 1.1 and 1.2 never both edit `pyproject.toml`.
 - **R5: per-page company identifiers** go in `config/identifiers/<page>.yaml`, so Phase 2 pages don't share company files.
 - **R6: login.** `SESSION_SECRET` env var and a `GET /api/session` route.
@@ -439,3 +448,11 @@ Out of scope, by your decisions or because the data is missing:
   USAspending, GitHub org, VS Code and MCP collectors, and the OpenRouter ranking scrape and benchmarks API (R10 stands: OpenRouter is dropped).
   Raw snapshots stay in `data/raw`.
   Earlier sections of this spec describe the removed items as originally planned.
+- **R19, 2026-10-06: there is no scheduled data job.** R2 is closed the other way: `daily.yml` and `weekly.yml` are removed, nothing writes to `main` directly,
+  and data refreshes through `/refresh-data` on a branch and a PR. `ci.yml` stays. The 365-PR objection to a data branch no longer applies because refreshes are on demand.
+  Consequences: no `main` bypass is needed (R3), editions and AI analysis run on demand, and CLAUDE.md lost its one exception to "never write to `main`".
+- **R20, 2026-10-06: Phase 3 is re-planned after the cut (R18).** Reading 47 charts as a deal team showed four independent signal families and no summary.
+  - Compare share against peers and direction, not levels. Levels all trend up together, so they correlate with anything: in a test against the company's stated run-rate (run before the ledgers were removed), even incident counts scored r 0.86.
+  - Month-on-month changes were mostly uncorrelated (|r| below 0.45) apart from the two Wikipedia series (0.70) and the two download series (0.44). Wikipedia product views led PyPI downloads by one to two months (r about 0.5, n 31, 30 lags tried): a hypothesis to track, not a finding.
+  - A market-wide dip (PyPI fell about 25% for Anthropic and 31% for OpenAI in Sep 2026) leaves share intact, which is why verdicts use share.
+  - ARR extrapolation is dropped with the run-rate ledgers. Signal tests (3.3) is a new implementation; editions move to 3.4. `config/tripwires.yaml` holds the rules.

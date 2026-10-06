@@ -10,8 +10,7 @@ The pipeline is: **collect** (public sources → immutable raw files) → **buil
 
 ## Before you start
 - Work on a branch, never directly on `main` (`git switch -c data/refresh-<date>`), unless the user has said the scheduled job writes to `main`.
-- `.env` must exist (copy `.env.example`). `SEC_USER_AGENT` is needed for SEC sources; `OPENROUTER_API_KEY` only for the OpenRouter benchmark feed. A missing optional
-  key is reported as `SKIP`, not as a failure.
+- `.env` must exist (copy `.env.example`). `SEC_USER_AGENT` is needed for SEC sources. A source whose key is missing is reported as `SKIP`, not as a failure.
 - Know the cadence: daily sources are cheap; weekly ones (Hacker News, GitHub commit search) are slow and rate-limited.
 
 ## Steps
@@ -23,7 +22,7 @@ The pipeline is: **collect** (public sources → immutable raw files) → **buil
 2. **Read the output.** Each source prints `wrote <file>`, `no rows`, `SKIP <why>` or `ERROR <why>`.
    - `429` / "Too Many Requests" / "refusing connections": the provider is rate-limiting. Wait and re-run; do not loop faster.
    - `ConnectError` / DNS: the network dropped. Re-run.
-   - `SKIP ... set OPENROUTER_API_KEY`: expected without the key. Say so; it is not a problem.
+   - `SKIP ... set <KEY>`: the source needs a key that is not set. Say so; it is not a failure.
 3. **Build.** `uv run python -m pipeline.build`. It prints an `ERROR` per chart that failed and still builds the rest.
 4. **Report.** `uv run python -m pipeline.report`. It lists each source's freshness and row change since the last commit, which sources need
    attention and the next step for each, and which charts are awaiting data. Tell the user these in plain words.

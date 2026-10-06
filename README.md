@@ -48,7 +48,7 @@ Status: see [docs/ROADMAP.md](docs/ROADMAP.md). Design: [docs/superpowers/specs]
 | Run the scheduled jobs on GitHub | `gh workflow run daily.yml` · `gh workflow run weekly.yml` |
 
 - **Claude Code skills** in this repo: `/refresh-data` (update everything and report), `/add-source` (add a new collector).
-- Optional keys in `.env`: `OPENROUTER_API_KEY` turns on the OpenRouter benchmark charts; `GITHUB_TOKEN` is not needed if you are signed in with `gh auth login`.
+- Optional keys in `.env`: `GITHUB_TOKEN` is not needed if you are signed in with `gh auth login`.
 - The API serves the Phase 0 fixtures unless `DATA_DIR=data` is set. Add that to `.env` to see the real collected data.
 - In worktree `n`, use ports `8000+n` and `5173+n` instead. For example, worktree 2 serves the API with `--port 8002` and runs the dashboard with `API_PORT=8002 WEB_PORT=5175 npm --prefix frontend run dev`.
 

@@ -175,6 +175,30 @@ function build(spec: ChartSpec, series: string[], colors: string[], c: Ink, widt
   });
   const line = Plot.line(rows, { x: xs, y: (r: Row) => r[yf], stroke, strokeWidth: 2, strokeLinejoin: "round", strokeLinecap: "round", z: cf ? (r: Row) => r[cf] : undefined });
 
+  // A colour field that is not the x field means several series per category: draw them side by side, one group per category.
+  const groupedBars = () => {
+    const groups = [...new Set(rows.map((r) => String(r[xf])))]; // categories in order of appearance, not alphabetical
+    const crowded = groups.length > 6;
+    const place = { fx: (r: Row) => String(r[xf]), x: (r: Row) => String(r[cf!]) };
+    const value = (r: Row) => Number(r[yf]);
+    const text = (r: Row) => (yFmt === "pct" ? `${Math.round(value(r) * 100)}%` : axis(r[yf], yFmt)); // short, so neighbours do not collide
+    const label = { ...place, y: value, text, fill: c.ink, fontSize: 10 };
+    return Plot.plot({
+      ...base,
+      height: crowded ? 380 : 320,
+      marginBottom: crowded ? 96 : 40,
+      fx: { axis: null, padding: 0.2, domain: groups },
+      x: { axis: null, padding: 0.1, domain: series },
+      marks: [
+        Plot.axisFx({ anchor: "bottom", label: null, tickSize: 0, tickRotate: crowded ? -35 : 0, textAnchor: crowded ? "end" : "middle" }),
+        Plot.barY(rows, { ...place, y: value, fill, ry: 3, title: tipText }),
+        Plot.ruleY([0], { stroke: c.axis }),
+        Plot.text(rows.filter((r) => value(r) >= 0), { ...label, dy: -6 }),
+        Plot.text(rows.filter((r) => value(r) < 0), { ...label, dy: 6, lineAnchor: "top" }),
+      ],
+    });
+  };
+
   switch (spec.kind) {
     case "line":
       return Plot.plot({ ...base, marks: [line, ends, ...(labelEnds ? [endLabel] : []), tip()] });
@@ -184,6 +208,7 @@ function build(spec: ChartSpec, series: string[], colors: string[], c: Ink, widt
         marks: [Plot.areaY(rows, { x: xs, y: (r: Row) => r[yf], fill, fillOpacity: 0.1, z: cf ? (r: Row) => r[cf] : undefined }), line, ends, tip()],
       });
     case "bar":
+      if (cf && cf !== xf) return groupedBars();
       return Plot.plot({
         ...base,
         marks: [

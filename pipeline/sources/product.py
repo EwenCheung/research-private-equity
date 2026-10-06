@@ -112,7 +112,7 @@ def status_incidents(company):
         time.sleep(0.5)
 
 
-# ---- peer model comparison and platform usage ----
+# ---- platform usage and benchmarks ----
 
 
 def _number(text: object) -> float | None:
@@ -245,74 +245,3 @@ def openrouter_benchmarks(company):
                     "cost_per_task_usd": item["avg_cost_per_task"],
                 },
             }
-
-
-# ---- cited ledgers: rows live in data/ledgers/<id>.csv, each with a source link, a verbatim quote and who entered it ----
-
-
-def ledger(**meta):
-    """A ledger source collects nothing: the core reads its CSV. Declared so it has an SLA, a label and caveats."""
-
-    def register(fn):
-        return source(**{"page": PAGE, "method": "ledger", "tier": "company-stated", "backfillable": True, **meta})(fn)
-
-    return register
-
-
-@ledger(
-    id="product_model_releases",
-    label="Anthropic model announcements (cited ledger)",
-    url="https://platform.claude.com/docs/en/release-notes/overview",
-    cadence="monthly",
-    sla_days=35,
-    caveats="One row per model, dated by Anthropic's own announcement or API release note, with the sentence quoted. "
-    "No API is used because the history spans release notes and news pages. Models limited to Project Glasswing participants "
-    "(Mythos) are included and marked. Update by verifying the linked announcement, appending a cited row to "
-    "data/ledgers/product_model_releases.csv and rebuilding when a model ships.",
-)
-def product_model_releases(company):
-    return iter(())
-
-
-@ledger(
-    id="product_api_prices",
-    label="Anthropic API prices (cited ledger)",
-    url="https://platform.claude.com/docs/en/about-claude/pricing",
-    cadence="monthly",
-    sla_days=35,
-    caveats="Current list price per million tokens from Anthropic's pricing table (retrieved 2026-10-05) for models still listed; "
-    "older models carry the price in their launch announcement. No versioned price-history API is available. List prices exclude "
-    "batch, caching and long-context rates. Update data/ledgers/product_api_prices.csv from the official page and quote, then rebuild.",
-)
-def product_api_prices(company):
-    return iter(())
-
-
-@ledger(
-    id="product_peer_plan_prices",
-    label="Standard individual AI plan prices (cited ledger)",
-    url="https://claude.com/pricing",
-    cadence="monthly",
-    sla_days=35,
-    caveats="One representative standard paid individual plan per company, using US monthly list price before tax. "
-    "No common API exists across the companies. Features and usage allowances differ, annual discounts are excluded, and "
-    "Cohere has no comparable consumer plan. Check each row's official link monthly, append newly dated cited rows to "
-    "data/ledgers/product_peer_plan_prices.csv and rebuild.",
-)
-def product_peer_plan_prices(company):
-    return iter(())
-
-
-@ledger(
-    id="product_adoption_claims",
-    label="Company-stated public adoption disclosures (cited ledger)",
-    url="https://www.anthropic.com/news/anthropic-raises-30-billion-series-g-funding-380-billion-post-money-valuation",
-    cadence="quarterly",
-    sla_days=100,
-    caveats="Company-stated snapshots with different scopes and periods: weekly users, monthly users, blended product reach, "
-    "or high-spend customers. No comparable API exists and automatic numeric scraping would erase the scope. They must not "
-    "be ranked as if equivalent; companies without a usable disclosure are omitted. Review official announcements quarterly, "
-    "append clearly scoped cited rows to data/ledgers/product_adoption_claims.csv and rebuild.",
-)
-def product_adoption_claims(company):
-    return iter(())

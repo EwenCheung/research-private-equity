@@ -8,7 +8,6 @@ from pipeline.core import ROOT, registry
 from pipeline.core.build import Ctx
 from pipeline.core.companies import load_companies
 from pipeline.core.http import SourceUnavailable
-from pipeline.core.store import read_observations
 from pipeline.marts import product as marts
 from pipeline.sources import product as src
 
@@ -154,55 +153,6 @@ def test_openrouter_parser_reads_request_share_not_token_share():
 # ---- the shipped ledgers ----
 
 
-@pytest.fixture(scope="module")
-def ledgers():
-    registry.discover()
-    return {
-        sid: read_observations(ROOT, registry.SOURCES[sid].meta)
-        for sid in (
-            "product_model_releases",
-            "product_api_prices",
-            "product_peer_plan_prices",
-            "product_adoption_claims",
-        )
-    }
-
-
-def test_every_ledger_row_is_cited_and_valid(ledgers):
-    for sid, rows in ledgers.items():
-        assert rows, sid
-        for r in rows:  # read_observations already validated the contract; check the human fields are real
-            assert r["source_url"].startswith("https://") and len(r["evidence"]) > 20 and r["entered_by"], (
-                sid,
-                r["dims"],
-            )
-            # retrieved_at is when the row was typed in, so it can never be later than now
-            assert datetime.fromisoformat(r["retrieved_at"]) <= datetime.now(UTC), (sid, r["dims"])
-
-
-def test_every_priced_model_has_a_release_date_and_prices_come_in_pairs(ledgers):
-    released = {r["dims"]["model"] for r in ledgers["product_model_releases"]}
-    priced = {(r["dims"]["model"], r["metric"]) for r in ledgers["product_api_prices"]}
-    models = {m for m, _ in priced}
-    assert models <= released, (
-        models - released
-    )  # a price we cannot place on the timeline would silently vanish from the chart
-    assert all(
-        ((m, "api_price_input_usd_mtok") in priced) and ((m, "api_price_output_usd_mtok") in priced) for m in models
-    )
-
-
-def test_release_ledger_is_unique_and_prices_are_sane(ledgers):
-    keys = [(r["as_of"], r["dims"]["model"]) for r in ledgers["product_model_releases"]]
-    assert len(keys) == len(set(keys)) and min(k[0] for k in keys) == "2023-03-14"
-    by_model = {}
-    for r in ledgers["product_api_prices"]:
-        by_model.setdefault(r["dims"]["model"], {})[r["metric"]] = r["value"]
-    assert all(
-        0 < v["api_price_input_usd_mtok"] < v["api_price_output_usd_mtok"] for v in by_model.values()
-    )  # output always costs more
-
-
 # ---- marts ----
 
 
@@ -256,42 +206,6 @@ def test_incidents_by_month_counts_each_incident_once_and_skips_none_and_the_run
     ]
 
 
-def test_release_cadence_compares_the_last_twelve_months_with_the_twelve_before():
-    def rel(day, model):
-        return {**obs("model_release", day, 1, model=model, tier="Opus"), "evidence": "q", "source_url": "https://x"}
-
-    rows = [rel("2026-09-01", "A"), rel("2026-03-01", "B"), rel("2025-12-01", "C"), rel("2025-04-01", "D")]
-    spec = marts.release_cadence(Ctx(rows, NAMES))
-    assert spec["takeaway"] == [
-        "Anthropic announced 3 models in the 12 months to 2026-09-01, against 1 in the 12 months before."
-    ]
-    assert next(r["models"] for r in spec["rows"]) == 1
-    assert sum(r["models"] for r in spec["rows"]) == 4  # empty quarters appear as zero
-
-
-def test_price_chart_joins_price_to_release_date_and_drops_unreleased_models():
-    rel = lambda m, d, t: {**obs("model_release", d, 1, model=m, tier=t), "evidence": "q", "source_url": "https://x"}
-    px = lambda m, v, metric: obs(metric, "2026-10-05", v, model=m, basis="current list price")
-    rows = [
-        rel("Claude Opus A", "2025-01-01", "Opus"),
-        rel("Claude Opus B", "2026-01-01", "Opus"),
-        px("Claude Opus A", 15, "api_price_input_usd_mtok"),
-        px("Claude Opus A", 75, "api_price_output_usd_mtok"),
-        px("Claude Opus B", 5, "api_price_input_usd_mtok"),
-        px("Claude Opus B", 25, "api_price_output_usd_mtok"),
-        px("Claude Ghost", 1, "api_price_input_usd_mtok"),
-        px("Claude Ghost", 5, "api_price_output_usd_mtok"),
-    ]
-    spec = marts.api_prices(Ctx(rows, NAMES))
-    assert [(r["model"], r["input"], r["output"]) for r in spec["rows"]] == [
-        ("Claude Opus A", 15.0, 75.0),
-        ("Claude Opus B", 5.0, 25.0),
-    ]
-    assert spec["takeaway"] == [
-        "Opus input pricing went from $15 per million tokens (Claude Opus A) to $5 (Claude Opus B)."
-    ]
-
-
 def test_openrouter_chart_does_not_turn_missing_authors_into_zero_share():
     common = {"author": "Anthropic", "rank": 7, "window": "trailing 7 days"}
     rows = [
@@ -310,25 +224,6 @@ def test_openrouter_chart_does_not_turn_missing_authors_into_zero_share():
         }
     ]
     assert "unknown/below the display cutoff" in spec["assumptions"][1]
-
-
-def test_real_charts_validate_against_the_shipped_ledgers(ledgers):
-    from pipeline.core.build import build_mart
-
-    now = datetime(2026, 10, 5, 12, tzinfo=UTC)
-    all_rows = {sid: ledgers[sid] for sid in ledgers} | {"status_incidents": []}
-    for mid in (
-        "product.model_releases",
-        "product.release_cadence",
-        "product.api_prices",
-        "product.peer_plans",
-        "product.public_adoption",
-    ):
-        spec = build_mart(registry.MARTS[mid], all_rows, now, NAMES)
-        assert spec["status"] == "ok" and spec["rows"], mid
-        assert all(
-            s["manual"] and s["manual"]["evidence"] for s in spec["sources"]
-        )  # ledger charts show who entered what, from which quote
 
 
 # ---- OpenRouter benchmarks API (shapes from its published OpenAPI example; no key was available to call it live) ----

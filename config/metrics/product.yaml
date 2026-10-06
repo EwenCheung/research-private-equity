@@ -4,30 +4,6 @@ incident:
   definition: One incident posted on the company's public status page, with the company's own impact rating, first-post time and resolved time.
   aggregation: sum
   higher_is: bad
-model_release:
-  label: Model release
-  unit: model (count 1 each)
-  definition: One model named in an Anthropic announcement or API release note, dated by that page.
-  aggregation: sum
-  higher_is: neutral
-api_price_input_usd_mtok:
-  label: API input price
-  unit: USD per million tokens
-  definition: List price for input tokens, from an official pricing page or the price field reported by the named comparison platform. Excludes batch, caching and long-context rates.
-  aggregation: last
-  higher_is: neutral
-api_price_output_usd_mtok:
-  label: API output price
-  unit: USD per million tokens
-  definition: List price for output tokens, from an official pricing page or the price field reported by the named comparison platform. Excludes batch, caching and long-context rates.
-  aggregation: last
-  higher_is: neutral
-plan_price_usd_month:
-  label: Plan price
-  unit: USD per month
-  definition: Published monthly price of the named plan on the stated billing basis, as shown on the cited official pricing page the day retrieved.
-  aggregation: last
-  higher_is: neutral
 openrouter_request_share:
   label: OpenRouter request share
   unit: fraction
@@ -38,12 +14,6 @@ openrouter_request_change:
   label: OpenRouter request change
   unit: fraction
   definition: Change in an author's public request count versus the prior period in OpenRouter's trailing-seven-day ranking.
-  aggregation: last
-  higher_is: neutral
-public_adoption_count:
-  label: Public adoption disclosure
-  unit: count as stated
-  definition: Company-stated count exactly as scoped in the cited disclosure. Scopes and periods differ and the values are not directly comparable.
   aggregation: last
   higher_is: neutral
 openrouter_aa_intelligence_index:

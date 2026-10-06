@@ -39,42 +39,6 @@ const SOURCE_METHODS = [
     why: "OpenRouter relays Artificial Analysis's Intelligence, Coding and Agentic indexes and publishes its own GPQA Diamond and tau-bench results with cost per task, as structured data.",
     update: "Collected weekly as a current snapshot. Without the key the source is skipped and its charts show awaiting data.",
   },
-  {
-    source: "Anthropic model releases",
-    id: "product_model_releases",
-    method: "Hardcoded · cited ledger",
-    href: "https://platform.claude.com/docs/en/release-notes/overview",
-    request: "No API request. A human verifies the official announcement and records its date, model, URL and exact supporting quote.",
-    why: "Announcements span release notes and news pages, and there is no stable complete historical API with the needed evidence.",
-    update: "Check monthly or when a model launches; append a cited row to data/ledgers/product_model_releases.csv, then rebuild.",
-  },
-  {
-    source: "Anthropic API prices",
-    id: "product_api_prices",
-    method: "Hardcoded · cited ledger",
-    href: "https://platform.claude.com/docs/en/about-claude/pricing",
-    request: "No API request. A human records each published input/output price with the official URL and quote.",
-    why: "The pricing page is current-state documentation, not a versioned price-history API; older launch prices come from announcements.",
-    update: "Check monthly and after model launches or repricing; append replacement rows to data/ledgers/product_api_prices.csv, then rebuild.",
-  },
-  {
-    source: "Peer subscription prices",
-    id: "product_peer_plan_prices",
-    method: "Hardcoded · cited ledger",
-    href: "https://support.claude.com/en/articles/8325606-what-is-the-pro-plan",
-    request: "No API request. A human checks each company's official plan page; every ledger row carries its own page link and quote.",
-    why: "The companies publish plans on different sites with no common API, and features or billing terms are not standardized.",
-    update: "Check all five linked plan pages monthly; append newly dated rows to data/ledgers/product_peer_plan_prices.csv, then rebuild.",
-  },
-  {
-    source: "Public adoption disclosures",
-    id: "product_adoption_claims",
-    method: "Hardcoded · cited ledger",
-    href: "https://www.anthropic.com/news/anthropic-raises-30-billion-series-g-funding-380-billion-post-money-valuation",
-    request: "No API request. A human records an official company disclosure with its original scope, qualifier, date, link and quote.",
-    why: "These figures appear irregularly in announcements and describe different measures; automating a numeric scrape would erase their meaning.",
-    update: "Review official announcements quarterly; append only clearly scoped rows to data/ledgers/product_adoption_claims.csv, then rebuild.",
-  },
 ] as const;
 
 interface Embed {
@@ -145,24 +109,9 @@ const SECTIONS: { title: string; note: string; charts: string[] }[] = [
     charts: ["product.openrouter_indexes", "product.openrouter_evals"],
   },
   {
-    title: "What does it cost?",
-    note: "Anthropic's API list prices by model and standard individual subscriptions for each company.",
-    charts: ["product.api_prices", "product.peer_plans"],
-  },
-  {
-    title: "What do the companies say about usage?",
-    note: "Company-stated user and customer counts. Their scopes differ, so they stay in a table instead of a chart.",
-    charts: ["product.public_adoption"],
-  },
-  {
     title: "Is the service holding up?",
     note: "Incidents each company posts on its own status page. Rising demand and rising incident counts often go together.",
     charts: ["product.incidents_monthly", "product.status_comparison"],
-  },
-  {
-    title: "How fast is Anthropic shipping?",
-    note: "Every model announcement, dated by Anthropic's own pages.",
-    charts: ["product.release_cadence", "product.model_releases"],
   },
 ];
 
@@ -222,7 +171,7 @@ export default function Product() {
       <header className="page-head">
         <h1>Product &amp; Reliability</h1>
         <p>
-          Where the frontier models stand on live third-party leaderboards, what Claude costs against its peers, and whether
+          Where the frontier models stand on live third-party leaderboards, who developers route requests to, and whether
           the service is holding up. Embedded pages are the sites' own live views; charts below them are collected by us,
           with source and caveats on every number.
           <br />
@@ -262,8 +211,7 @@ export default function Product() {
         <h2 className="section-title">How is every Product source collected?</h2>
         <p className="subtitle" style={{ marginBottom: 14 }}>
           Playwright is used only to test this dashboard. It does not collect any Product data. Automated sources below use
-          HTTP GET; “hardcoded” means a cited human-maintained ledger, not an unsupported number. The embedded leaderboards
-          above are not collected at all: your browser loads them live from their owners.
+          HTTP GET. The embedded leaderboards above are not collected at all: your browser loads them live from their owners.
         </p>
         <div className="card">
           <div className="card-body">

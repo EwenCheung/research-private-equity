@@ -105,7 +105,7 @@ const SECTIONS: { title: string; note: string; charts: string[] }[] = [
   },
   {
     title: "What does OpenRouter's benchmark feed say?",
-    note: "Artificial Analysis indexes and OpenRouter's own evaluations, fetched through OpenRouter's benchmarks API. Needs an OpenRouter API key to collect.",
+    note: "Artificial Analysis indexes and OpenRouter's own evaluations, fetched through OpenRouter's benchmarks API.",
     charts: ["product.openrouter_indexes", "product.openrouter_evals"],
   },
   {

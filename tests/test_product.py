@@ -256,8 +256,8 @@ def benchmark_feed():
             aa("anthropic/claude-b", "Claude B", 70.0, 65.0, 50.0),
             aa("openai/gpt-x", "GPT X", 75.0, 60.0, 52.0),
             aa("google-vertex/other", "Not Google's prefix", 99.0, 99.0, 99.0),
-            ev("anthropic/claude-b", "Claude B", "gpqa_diamond", 0.8),
-            ev("openai/gpt-x", "GPT X", "gpqa_diamond", 0.85),
+            ev("anthropic/claude-b", "Anthropic: Claude B", "gpqa_diamond", 0.8),
+            ev("openai/gpt-x", "OpenAI: GPT X", "gpqa_diamond", 0.85),
             ev("openai/gpt-x", "GPT X", "search_browsecomp", 0.5),  # search shapes are not collected
             {
                 "source": "design-arena",
@@ -284,7 +284,7 @@ def test_benchmark_collector_keeps_only_the_companys_models_and_documented_metri
         ("openrouter_aa_intelligence_index", "Claude B", 70.0, "2026-10-03"),
         ("openrouter_aa_coding_index", "Claude B", 65.0, "2026-10-03"),
         ("openrouter_aa_agentic_index", "Claude B", 50.0, "2026-10-03"),
-        ("openrouter_eval_accuracy", "Claude B", 0.8, "2026-10-02"),  # the eval is dated by its own last run
+        ("openrouter_eval_accuracy", "Anthropic: Claude B", 0.8, "2026-10-02"),  # the eval is dated by its own last run
     }
     for r in (
         rows
@@ -344,9 +344,9 @@ def test_index_chart_picks_each_companys_top_model_and_keeps_blanks_blank(monkey
 def test_eval_chart_reports_accuracy_per_benchmark_and_company(monkeypatch):
     rows = stamp(collected(monkeypatch, "anthropic") + collected(monkeypatch, "openai"))
     spec = marts.openrouter_evals(Ctx(rows, NAMES))
-    assert [(r["benchmark"], r["company"], r["accuracy"], r["tasks"]) for r in spec["rows"]] == [
-        ("GPQA Diamond", "OpenAI", 0.85, 300),
-        ("GPQA Diamond", "Anthropic", 0.8, 300),
+    assert [(r["benchmark"], r["company"], r["model"], r["accuracy"], r["tasks"]) for r in spec["rows"]] == [
+        ("GPQA Diamond", "OpenAI", "GPT X", 0.85, 300),  # the provider prefix the feed adds is dropped
+        ("GPQA Diamond", "Anthropic", "Claude B", 0.8, 300),
     ]
     assert spec["takeaway"] == [
         "GPQA Diamond: OpenAI's GPT X leads at 85% accuracy. Anthropic's best, Claude B, scores 80%."

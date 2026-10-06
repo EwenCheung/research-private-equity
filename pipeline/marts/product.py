@@ -201,7 +201,9 @@ def openrouter_evals(ctx):
             {
                 "benchmark": EVAL_LABELS.get(r["benchmark"], r["benchmark"]),
                 "company": peer_name(ctx, r["entity"]),
-                "model": r["model"],
+                "model": r["model"].split(": ", 1)[
+                    -1
+                ],  # the feed prefixes this one with the provider ("Google: Gemini ...")
                 "accuracy": float(r["value"]),
                 "stddev": cell(r["stddev"]),
                 "tasks": None if pd.isna(r["tasks"]) else int(r["tasks"]),
@@ -239,7 +241,7 @@ def openrouter_evals(ctx):
         "takeaway": takeaway,
         "assumptions": [
             "OpenRouter runs these evaluations itself (GPQA Diamond and tau-bench verified airline); the feed publishes accuracy, its standard deviation, the task count and average cost per task.",
-            "Selection rule: the highest-accuracy model per company and benchmark. A company's best model on one benchmark need not be its best on another.",
+            "Selection rule: the highest-accuracy model per company and benchmark. A company's best model on one benchmark need not be its best on another. A model with few tasks or no standard deviation is a noisier reading, so check the Tasks column before ranking.",
             "Models are matched to companies by OpenRouter's provider prefix; a company absent from a benchmark was not evaluated or does not match a prefix in config/identifiers/product.yaml.",
             "Cost per task is an average over the tasks run and depends on how long each model reasons; it is not a list price.",
         ],

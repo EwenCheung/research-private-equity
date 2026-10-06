@@ -1,0 +1,123 @@
+{
+  "title": "Standard individual subscription prices",
+  "subtitle": "One representative paid monthly consumer plan per company, from official pricing pages",
+  "kind": "table",
+  "encoding": {},
+  "columns": [
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "product",
+      "label": "Product",
+      "format": "text"
+    },
+    {
+      "field": "plan",
+      "label": "Plan",
+      "format": "text"
+    },
+    {
+      "field": "price",
+      "label": "USD per month",
+      "format": "usd"
+    },
+    {
+      "field": "billing",
+      "label": "Billing",
+      "format": "text"
+    },
+    {
+      "field": "quote",
+      "label": "What the page says",
+      "format": "text"
+    },
+    {
+      "field": "link",
+      "label": "Source",
+      "format": "url"
+    }
+  ],
+  "rows": [
+    {
+      "company": "Anthropic",
+      "product": "Claude",
+      "plan": "Pro",
+      "price": 20.0,
+      "billing": "monthly",
+      "quote": "The Pro plan is available for $20 per month (US), with pricing in your local currency where supported.",
+      "link": "https://support.claude.com/en/articles/8325606-what-is-the-pro-plan"
+    },
+    {
+      "company": "OpenAI",
+      "product": "ChatGPT",
+      "plan": "Plus",
+      "price": 20.0,
+      "billing": "monthly",
+      "quote": "Price: $20/month (billed monthly). API usage is separate and billed independently.",
+      "link": "https://help.openai.com/en/articles/6950777-what-is-chatgpt-plus"
+    },
+    {
+      "company": "Google DeepMind",
+      "product": "Gemini",
+      "plan": "Google AI Pro",
+      "price": 19.99,
+      "billing": "monthly",
+      "quote": "Google AI Pro (5 TB) $19.99/mo. Gemini app access is included with usage limits.",
+      "link": "https://one.google.com/about/plans"
+    },
+    {
+      "company": "xAI",
+      "product": "Grok",
+      "plan": "SuperGrok",
+      "price": 30.0,
+      "billing": "monthly",
+      "quote": "SuperGrok $30/month. Higher rate limits and access to frontier models.",
+      "link": "https://x.ai/pricing"
+    },
+    {
+      "company": "Mistral AI",
+      "product": "Mistral",
+      "plan": "Pro",
+      "price": 14.99,
+      "billing": "monthly",
+      "quote": "Verified students can get Mistral Pro for $5.99 / month (normally $14.99).",
+      "link": "https://mistral.ai/pricing/"
+    }
+  ],
+  "takeaway": [
+    "Standard individual paid plans range from $14.99 a month at Mistral AI to $30.00 at xAI."
+  ],
+  "assumptions": [
+    "One standard paid individual plan per company, using US monthly list price before tax. Annual discounts are excluded.",
+    "Features, usage allowances and included storage differ substantially, so price alone is not a value comparison.",
+    "API usage is separate. Cohere has no comparable consumer subscription in this table.",
+    "Hand-maintained ledger: refresh when an official pricing page changes."
+  ],
+  "badges": [],
+  "id": "product.peer_plans",
+  "page": "product",
+  "as_of": "2026-10-06",
+  "sources": [
+    {
+      "source": "product_peer_plan_prices",
+      "label": "Standard individual AI plan prices (cited ledger)",
+      "url": "https://support.claude.com/en/articles/8325606-what-is-the-pro-plan",
+      "method": "ledger",
+      "tier": "company-stated",
+      "cadence": "monthly",
+      "as_of": "2026-10-06",
+      "retrieved_at": "2026-10-06T01:46:21Z",
+      "freshness": "fresh",
+      "manual": {
+        "entered_by": "EwenCheung",
+        "entered_at": "2026-10-06T01:46:21Z",
+        "evidence": "The Pro plan is available for $20 per month (US), with pricing in your local currency where supported."
+      }
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-06T03:05:27Z"
+}

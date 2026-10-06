@@ -1,0 +1,99 @@
+{
+  "title": "Published context windows",
+  "subtitle": "Maximum context reported by Arena for each selected model",
+  "kind": "bar",
+  "encoding": {
+    "x": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    },
+    "y": {
+      "field": "context",
+      "type": "quantitative",
+      "label": "Context tokens",
+      "format": "int"
+    },
+    "color": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    }
+  },
+  "columns": [
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "model",
+      "label": "Model",
+      "format": "text"
+    },
+    {
+      "field": "context",
+      "label": "Context tokens",
+      "format": "int"
+    }
+  ],
+  "rows": [
+    {
+      "company": "Anthropic",
+      "model": "claude-opus-4-6-high",
+      "context": 1000000
+    },
+    {
+      "company": "OpenAI",
+      "model": "gpt-5.5-high",
+      "context": 1100000
+    },
+    {
+      "company": "Google DeepMind",
+      "model": "gemini-4-argon-high",
+      "context": 1000000
+    },
+    {
+      "company": "xAI",
+      "model": "grok-4.20-beta-0309-reasoning",
+      "context": 1000000
+    },
+    {
+      "company": "Mistral AI",
+      "model": "mistral-medium-3.5",
+      "context": 262100
+    },
+    {
+      "company": "Cohere",
+      "model": "command-a-03-2025",
+      "context": 256000
+    }
+  ],
+  "takeaway": [
+    "Published context spans 256K to 1.1M tokens across these selected models."
+  ],
+  "assumptions": [
+    "Advertised context capacity is not evidence that accuracy remains constant across the full window.",
+    "One selected model per company, using the same complete-field selection rule as the frontier scorecard."
+  ],
+  "badges": [],
+  "id": "product.context_windows",
+  "page": "product",
+  "as_of": "2026-10-02",
+  "sources": [
+    {
+      "source": "arena_text_leaderboard",
+      "label": "Arena text leaderboard",
+      "url": "https://arena.ai/leaderboard/text?styleControl=off",
+      "method": "scrape",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-10-02",
+      "retrieved_at": "2026-10-06T01:50:46Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-06T03:05:27Z"
+}

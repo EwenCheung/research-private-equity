@@ -1,0 +1,129 @@
+{
+  "title": "Benchmark quality versus measured task cost",
+  "subtitle": "Same-model rows shared by Arena and Artificial Analysis; upper-left combines a higher index with lower benchmark-task cost",
+  "kind": "scatter",
+  "encoding": {
+    "x": {
+      "field": "task_cost",
+      "type": "quantitative",
+      "label": "Artificial Analysis cost per task (USD)",
+      "format": "float"
+    },
+    "y": {
+      "field": "intelligence",
+      "type": "quantitative",
+      "label": "Artificial Analysis Intelligence Index",
+      "format": "float"
+    },
+    "color": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    }
+  },
+  "columns": [
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "model",
+      "label": "Model",
+      "format": "text"
+    },
+    {
+      "field": "task_cost",
+      "label": "AA task cost (USD)",
+      "format": "float"
+    },
+    {
+      "field": "intelligence",
+      "label": "AA Intelligence Index",
+      "format": "float"
+    },
+    {
+      "field": "arena_rank",
+      "label": "Arena rank",
+      "format": "int"
+    }
+  ],
+  "rows": [
+    {
+      "company": "Anthropic",
+      "model": "claude-opus-5.5-high",
+      "task_cost": 1.82,
+      "intelligence": 54.0,
+      "arena_rank": 4
+    },
+    {
+      "company": "OpenAI",
+      "model": "gpt-5.6-terra-xhigh",
+      "task_cost": 0.63,
+      "intelligence": 38.0,
+      "arena_rank": 51
+    },
+    {
+      "company": "Google DeepMind",
+      "model": "gemini-4-argon-high",
+      "task_cost": 1.99,
+      "intelligence": 53.0,
+      "arena_rank": 1
+    },
+    {
+      "company": "xAI",
+      "model": "grok-4.7-xhigh",
+      "task_cost": 3.74,
+      "intelligence": 46.0,
+      "arena_rank": 91
+    },
+    {
+      "company": "Mistral AI",
+      "model": "mistral-medium-3.5",
+      "task_cost": 0.5,
+      "intelligence": 14.0,
+      "arena_rank": 115
+    }
+  ],
+  "takeaway": [
+    "claude-opus-5.5-high has the highest Artificial Analysis index in this matched set (54) at $1.82 per benchmark task; mistral-medium-3.5 has the lowest reported task cost ($0.50)."
+  ],
+  "assumptions": [
+    "Artificial Analysis cost per task is the weighted-average USD consumed by one task in its Intelligence Index workload, using the actual input, cached-input and output tokens generated. It is not a universal business-task cost.",
+    "Selection rule: for each company, use the highest-ranked fully priced Arena model whose exact normalized model name also appears in Artificial Analysis. A documented alias maps Arena's dated command-a-03-2025 identifier to Artificial Analysis's Command A label.",
+    "Rows without a published Artificial Analysis task cost are absent from this scatter, not treated as zero. The combined table below retains them with a blank cell.",
+    "The relationship is descriptive, not causal: higher task cost can reflect more reasoning tokens or longer answers as well as token list price."
+  ],
+  "badges": [],
+  "id": "product.benchmark_cost_quality",
+  "page": "product",
+  "as_of": "2026-10-06",
+  "sources": [
+    {
+      "source": "arena_text_leaderboard",
+      "label": "Arena text leaderboard",
+      "url": "https://arena.ai/leaderboard/text?styleControl=off",
+      "method": "scrape",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-10-02",
+      "retrieved_at": "2026-10-06T01:50:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "artificial_analysis_leaderboard",
+      "label": "Artificial Analysis model leaderboard",
+      "url": "https://artificialanalysis.ai/leaderboards/models/",
+      "method": "scrape",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-10-06",
+      "retrieved_at": "2026-10-06T02:58:23Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-06T03:05:27Z"
+}

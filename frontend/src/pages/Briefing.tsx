@@ -9,6 +9,11 @@ const SECTIONS: { title: string; note: string; charts: string[] }[] = [
     charts: ["briefing.verdicts"],
   },
   {
+    title: "How did each signal move against OpenAI?",
+    note: "Anthropic's change in the latest window (orange) next to OpenAI's (green). The table view has the exact figures.",
+    charts: ["briefing.moves"],
+  },
+  {
     title: "What would change the view?",
     note: "Plain rules checked every time the Briefing is built. A rule that fires is a prompt to look, not a forecast.",
     charts: ["briefing.tripwires"],

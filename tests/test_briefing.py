@@ -148,6 +148,22 @@ def test_openai_has_a_series_for_the_signals_both_companies_share_and_none_for_t
         assert peer[sid] is None, sid
 
 
+def test_the_moves_chart_puts_anthropic_and_openai_side_by_side_where_both_exist(shipped):
+    rows, now = shipped
+    spec = build_mart(registry.MARTS["briefing.moves"], rows, now, NAMES)
+    assert spec["status"] == "ok" and spec["kind"] == "bar" and spec["encoding"]["color"]["field"] == "company"
+    by = {}
+    for r in spec["rows"]:
+        by.setdefault(r["signal"], {})[r["company"]] = r["chg"]
+    assert set(by["Python SDK"]) == {"Anthropic", "OpenAI"}
+    assert set(by["Incidents"]) == {"Anthropic"}  # no OpenAI series: one bar, never a zero
+    table = {r["signal"]: r for r in build_mart(registry.MARTS["briefing.signals"], rows, now, NAMES)["rows"]}
+    assert by["Python SDK"]["Anthropic"] == pytest.approx(
+        table["Python SDK downloads"]["chg"]
+    )  # same number as the table
+    assert spec["rows"][0]["company"] == "Anthropic"  # the first series keeps the first colour
+
+
 # ---- tripwires ----
 
 

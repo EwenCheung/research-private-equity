@@ -206,6 +206,7 @@ def read(sid: str, cfg: dict, sig: dict | None) -> dict | None:
     return {
         "id": sid,
         "label": cfg["label"],
+        "short": cfg.get("short", cfg["label"]),
         "recent": recent,
         "text": text,
         "based": based,
@@ -466,6 +467,51 @@ def verdicts(ctx):
             INPUTS,
         ],
     )
+
+
+@mart(id="briefing.moves", sources=SOURCES)
+def moves(ctx):
+    cfg, reads = read_all(ctx)
+    peer = read_peer(ctx)
+    edges = compare(cfg, reads, peer)
+    me, other = ctx.names.get(ME, "Anthropic"), ctx.names.get(PEER, "OpenAI")
+    rows = []
+    for fid in cfg:
+        for m in reads[fid]:
+            rows.append(
+                {"signal": m["short"], "company": me, "chg": m["chg"], "latest": m["text"], "based": m["based"]}
+            )
+            if o := peer.get(m["id"]):
+                rows.append(
+                    {"signal": m["short"], "company": other, "chg": o["chg"], "latest": o["text"], "based": o["based"]}
+                )
+    return {
+        "title": "How each signal moved: Anthropic against OpenAI",
+        "subtitle": "Change in the latest window on the one before it, with OpenAI where it has a comparable series",
+        "kind": "bar",
+        "encoding": {
+            "x": {"field": "signal", "type": "nominal", "label": "Signal"},
+            "y": {"field": "chg", "type": "quantitative", "label": "Change on the previous period", "format": "pct"},
+            "color": {"field": "company", "type": "nominal", "label": "Company"},
+        },
+        "columns": [
+            {"field": "signal", "label": "Signal", "format": "text"},
+            {"field": "company", "label": "Company", "format": "text"},
+            {"field": "chg", "label": "Change on previous period", "format": "pct"},
+            {"field": "latest", "label": "Latest window", "format": "text"},
+            {"field": "based", "label": "Window", "format": "text"},
+        ],
+        "rows": rows,
+        "takeaway": overall(edges),
+        "assumptions": [
+            BASIS,
+            READING,
+            "Where only Anthropic has a bar, OpenAI has no comparable series (see the note below).",
+            OPENAI,
+            INPUTS,
+        ],
+        "badges": ["arithmetic"],
+    }
 
 
 @mart(id="briefing.signals", sources=SOURCES)

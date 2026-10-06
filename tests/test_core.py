@@ -327,6 +327,17 @@ def test_a_mart_only_sees_its_declared_sources(clean_registry, root):
     assert [r["value"] for r in build_one(root, NOW)["rows"]] == [640]
 
 
+def test_the_source_link_is_a_row_the_chart_read_not_another_companys(clean_registry, root):
+    def rows(co):  # b's rows are newer, so a link taken from the whole source would point at b
+        day = "2026-10-05" if co.slug == "b" else "2026-10-04"
+        return [{**ROW, "entity": co.slug, "as_of": day, "source_url": f"https://example.com/{co.slug}/jobs"}]
+
+    registry.source(**META)(rows)
+    registry.mart(id="hiring.open_roles", sources=["fake_jobs"])(open_roles)  # reads company a only
+    collect(root=root, now=NOW)
+    assert build_one(root, NOW)["sources"][0]["url"] == "https://example.com/a/jobs"
+
+
 def test_a_broken_mart_is_reported_and_the_others_still_build(clean_registry, root):
     registry.source(**META)(lambda co: [{**ROW, "entity": co.slug}])
     registry.mart(id="hiring.bad", sources=["fake_jobs"])(lambda ctx: {"title": "no columns"})

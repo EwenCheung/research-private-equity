@@ -1,6 +1,6 @@
 incident:
   label: Status-page incident
   unit: incident (count 1 each)
-  definition: One incident posted on the company's public status page, with the company's own impact rating, first-post time and resolved time.
+  definition: One incident posted on the company's public status page, with the company's own impact rating (minor, major, critical or none; unrated where read from OpenAI's feed, which gives none), first-post time and resolved time. Maintenance notices are not incidents.
   aggregation: sum
   higher_is: bad

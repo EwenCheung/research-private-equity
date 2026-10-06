@@ -221,18 +221,30 @@ def incident(code, day, impact, minutes, entity="anthropic", retrieved="2026-10-
     )
 
 
-def test_incidents_by_month_counts_each_incident_once_and_skips_none_and_the_running_month():
+def test_incidents_compared_by_month_count_every_posted_incident_the_same_way_for_both_companies():
+    live, later = "2026-10-20T00:00:00Z", "2026-10-25T00:00:00Z"
     rows = [
-        incident("a", "2026-08-03", "minor", 30),
-        incident("a", "2026-08-03", "minor", 30, retrieved="2026-10-30T00:00:00Z"),  # a re-collection
-        incident("b", "2026-08-09", "major", 60),
-        incident("c", "2026-08-20", "none", 5),
-        incident("d", "2025-08-09", "minor", 10),
+        incident("a", "2026-08-03", "minor", 30, retrieved=live),
+        incident("a", "2026-08-03", "minor", 30, retrieved=later),  # a re-collection
+        incident("b", "2026-08-09", "major", 60, retrieved=live),
+        incident("c", "2026-08-20", "none", 5, retrieved=live),  # rated none, still an incident
+        incident("m", "2026-08-21", "maintenance", 5, retrieved=live),  # a notice, not an incident
+        incident("d", "2025-02-09", "minor", 10, retrieved=live),  # before the comparison starts
+        incident("e", "2026-10-03", "minor", 10, retrieved=live),  # the running month
+        incident("x", "2026-08-05", "major", 20, entity="openai", retrieved=live),
+        incident("x", "2026-08-05", "unrated", None, entity="openai", retrieved=later),  # the rated copy wins
+        incident("y", "2026-08-06", "unrated", None, entity="openai", retrieved=later),
+        incident("z", "2026-09-02", "unrated", None, entity="openai", retrieved=later),
     ]
-    ctx = Ctx(rows, NAMES)
-    spec = marts.incidents_monthly(ctx)
-    got = {(r["month"], r["impact"]): r["incidents"] for r in spec["rows"]}
-    assert got == {("2026-08-01", "Minor"): 1, ("2026-08-01", "Major"): 1, ("2025-08-01", "Minor"): 1}
+    spec = marts.incidents_monthly(Ctx(rows, NAMES))
+    got = {(r["month"], r["company"]): (r["incidents"], r["severe"]) for r in spec["rows"]}
+    assert got == {
+        ("2026-08-01", "Anthropic"): (3, 1),
+        ("2026-08-01", "OpenAI"): (2, None),  # one incident has no rating, so the month's rating is unknown
+        ("2026-09-01", "Anthropic"): (0, 0),
+        ("2026-09-01", "OpenAI"): (1, None),
+    }
     assert spec["takeaway"] == [
-        "Claude's status page logged 2 incidents in Aug 2026 (1 major or critical), against 1 in Aug 2025."
+        "In Sep 2026, Claude's status page posted 0 incidents and OpenAI's posted 1.",
+        "Since Aug 2026, Claude's page posted 3 incidents against OpenAI's 3, and posted more in 1 of 2 months.",
     ]

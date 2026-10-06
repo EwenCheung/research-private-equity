@@ -25,7 +25,7 @@ const LEADERBOARDS: Embed[] = [
 const SECTIONS: { title: string; note: string; charts: string[] }[] = [
   {
     title: "Is the service holding up?",
-    note: "Incidents Anthropic posts on its own status page. Rising demand and rising incident counts often go together.",
+    note: "Incidents Claude and OpenAI each post on their own status pages, counted the same way. Rising demand and rising incident counts often go together.",
     charts: ["product.incidents_monthly"],
   },
 ];
@@ -80,7 +80,7 @@ export default function Product() {
         <h1>Product &amp; Reliability</h1>
         <p style={{ marginBottom: 10 }}>
           <strong>What you are reading.</strong> How Claude's models rank against rivals, and how dependable the service has been. The
-          rankings are the leaderboard sites' own live pages; the incident counts come from Claude's status page.
+          rankings are the leaderboard sites' own live pages; the incident counts come from Claude's and OpenAI's own status pages.
         </p>
         <p>
           <strong>How to read it.</strong> Higher on a leaderboard is a better model. Fewer incidents is better, but read them against

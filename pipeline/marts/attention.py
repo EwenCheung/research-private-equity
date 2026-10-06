@@ -112,7 +112,7 @@ def wiki_products(ctx):
     return wiki_chart(
         ctx,
         "product",
-        "Consumer interest in each AI assistant",
+        "Wikipedia views of each AI assistant, per month",
         "Wikipedia views per month of each assistant's article: Claude, ChatGPT, Gemini (with Bard), Grok, Le Chat",
         [
             "Claude had no article of its own before January 2024 (it was covered inside Anthropic's), so its series starts then.",

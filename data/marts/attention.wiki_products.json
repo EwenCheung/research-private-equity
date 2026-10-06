@@ -1,5 +1,5 @@
 {
-  "title": "Consumer interest in each AI assistant",
+  "title": "Wikipedia views of each AI assistant, per month",
   "subtitle": "Wikipedia views per month of each assistant's article: Claude, ChatGPT, Gemini (with Bard), Grok, Le Chat",
   "kind": "line",
   "encoding": {
@@ -1079,5 +1079,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-06T07:10:00Z"
+  "generated_at": "2026-10-06T07:16:44Z"
 }

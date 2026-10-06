@@ -43,7 +43,7 @@ const PAGES: Record<string, string> = {
 const TIERS: [string, string][] = [
   ["company-stated", "The company's own channel: its job board, status page, newsroom or pricing page."],
   ["filing", "A regulatory record: SEC, Department of Labor, federal contract data."],
-  ["platform", "Third-party telemetry: npm, PyPI, GitHub, Wikipedia, OpenRouter, Hacker News."],
+  ["platform", "Third-party telemetry: npm, PyPI, GitHub, Wikipedia, Hacker News."],
   ["press", "A media report."],
   ["derived", "Computed by us from the rows shown; charts say how."],
 ];
@@ -129,7 +129,7 @@ export default function DataMethods() {
           <strong>What you are reading.</strong> Where every number on this site comes from, when it was last collected, and what it cannot tell you.
         </p>
         <p>
-          <strong>How to read it.</strong> Freshness is recomputed from the clock each time you load this page. &ldquo;Fresh&rdquo; means collected within its schedule; a stale source means the chart above it may be out of date.
+          <strong>How to read it.</strong> Freshness is recomputed from the clock each time you load this page. &ldquo;Fresh&rdquo; means collected within its schedule; a stale source means the charts built from it may be out of date.
         </p>
       </header>
 

@@ -1,5 +1,5 @@
 {
-  "title": "Listed companies that name each lab in SEC filings",
+  "title": "Listed companies naming each lab in a 10-K or 10-Q, by quarter",
   "subtitle": "Distinct companies whose 10-K or 10-Q names the lab, by quarter filed. A mention is not a purchase.",
   "kind": "line",
   "encoding": {
@@ -520,5 +520,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-06T07:10:00Z"
+  "generated_at": "2026-10-06T07:16:44Z"
 }

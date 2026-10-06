@@ -1,5 +1,5 @@
 {
-  "title": "Share of Hacker News job posts that name each lab",
+  "title": "Share of Who-is-hiring posts that name each lab",
   "subtitle": "Posts in the monthly 'Ask HN: Who is hiring?' thread that name the lab or its models, as a share of all posts that month",
   "kind": "line",
   "encoding": {
@@ -1972,5 +1972,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-06T07:10:00Z"
+  "generated_at": "2026-10-06T07:16:44Z"
 }

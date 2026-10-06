@@ -90,7 +90,7 @@ def hn_share(ctx):
                 )
             ]
     return {
-        "title": "Share of Hacker News job posts that name each lab",
+        "title": "Share of Who-is-hiring posts that name each lab",
         "subtitle": "Posts in the monthly 'Ask HN: Who is hiring?' thread that name the lab or its models, as a share of all posts that month",
         "kind": "line",
         "encoding": {
@@ -174,7 +174,7 @@ def sec_filers(ctx):
             )
         ]
     return {
-        "title": "Listed companies that name each lab in SEC filings",
+        "title": "Listed companies naming each lab in a 10-K or 10-Q, by quarter",
         "subtitle": "Distinct companies whose 10-K or 10-Q names the lab, by quarter filed. A mention is not a purchase.",
         "kind": "line",
         "encoding": {

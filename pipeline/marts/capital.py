@@ -117,7 +117,7 @@ def fund_marks(ctx):
             )
         ]
     return {
-        "title": "What funds say one Anthropic share is worth",
+        "title": "Value per share reported by each fund",
         "subtitle": "Each dot is one fund's reported value per share (value ÷ shares from its SEC N-PORT filing), by report date and share series",
         "kind": "scatter",
         "encoding": {

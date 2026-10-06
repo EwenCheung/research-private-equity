@@ -21,7 +21,7 @@ export default function DevAdoption() {
       <header className="page-head">
         <h1>Developer Adoption</h1>
         <p style={{ marginBottom: 10 }}>
-          <strong>What you are reading.</strong> Whether developers are choosing Claude. It counts downloads of each company's official software kit (SDK) and coding tool, and public code commits written with Claude Code. The sources are npm, PyPI and GitHub.
+          <strong>What you are reading.</strong> Whether developers are choosing Claude. It counts downloads of each company's official software kit (SDK) and coding tool, and public code commits written with Claude Code. The sources are the public package registries developers install from (npm and PyPI) and GitHub.
         </p>
         <p>
           <strong>How to read it.</strong> Look at share and direction, not the absolute number. Downloads include automated installs from build servers and mirrors, so they show relative pull, not users.

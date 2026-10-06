@@ -1961,7 +1961,7 @@
     {
       "source": "hn_who_is_hiring",
       "label": "Hacker News 'Who is hiring?' threads (Algolia)",
-      "url": "https://news.ycombinator.com/item?id=49922569",
+      "url": "https://news.ycombinator.com/item?id=49522897",
       "method": "api",
       "tier": "platform",
       "cadence": "weekly",
@@ -1972,5 +1972,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-06T07:16:44Z"
+  "generated_at": "2026-10-06T07:49:00Z"
 }

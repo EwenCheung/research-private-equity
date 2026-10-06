@@ -1,10 +1,6 @@
-"""Consumer attention: Wikipedia pageviews, news volume (GDELT), Hacker News, Google News headlines, Google Trends.
-
-The App Store rank snapshot lives in snapshots.py (it predates this page); its chart is built here.
-"""
+"""Consumer attention: Wikipedia pageviews."""
 
 from datetime import UTC, date, datetime, timedelta
-from functools import cache
 from urllib.parse import quote
 
 import httpx
@@ -16,7 +12,6 @@ from pipeline.core.store import latest_as_of
 PAGE = "attention"
 HISTORY_START = date(2023, 1, 1)
 WIKI = "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/{title}/daily/{start}/{end}"
-SERPAPI = "https://serpapi.com/search.json"
 
 
 def today() -> date:
@@ -84,25 +79,3 @@ def wikipedia_pageviews(company):
 
 
 # ---- Google Trends (SerpAPI) ----
-
-
-@cache
-def trends(terms: tuple[str, ...], key: str) -> dict[str, list[tuple[date, int]]]:
-    """One comparison request for all terms, so their values share a scale (Trends caps a comparison at 5 terms)."""
-    params = {
-        "engine": "google_trends",
-        "q": ",".join(terms),
-        "data_type": "TIMESERIES",
-        "date": "today 5-y",
-        "api_key": key,
-    }
-    body = get(SERPAPI, params=params, timeout=120).json()
-    if "interest_over_time" not in body:
-        raise RuntimeError(f"SerpAPI returned no interest_over_time: {str(body.get('error', body))[:150]}")
-    out: dict[str, list[tuple[date, int]]] = {t: [] for t in terms}
-    for point in body["interest_over_time"]["timeline_data"]:
-        when = datetime.fromtimestamp(int(point["timestamp"]), UTC).date()
-        for v in point["values"]:
-            if v["query"] in out:
-                out[v["query"]].append((when, int(v.get("extracted_value", v.get("value", 0)))))
-    return out

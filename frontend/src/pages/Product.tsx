@@ -22,15 +22,6 @@ const SOURCE_METHODS = [
     update: "Collected daily. History accumulates from our snapshots because older incidents cannot be backfilled from this feed.",
   },
   {
-    source: "Arena text leaderboard",
-    id: "arena_text_leaderboard",
-    method: "Automated HTML scrape · HTTP GET",
-    href: "https://arena.ai/leaderboard/text?styleControl=off",
-    request: "GET the public leaderboard page, then parse its server-rendered table. No POST, login, API key or Playwright.",
-    why: "The public table puts score, votes, token prices and context on the same model row; no stable public endpoint used here exposes that combined view.",
-    update: "Collected weekly as a current snapshot. Parser tests fail visibly if Arena changes the table columns.",
-  },
-  {
     source: "OpenRouter rankings",
     id: "openrouter_rankings",
     method: "Automated HTML scrape · HTTP GET",
@@ -38,24 +29,6 @@ const SOURCE_METHODS = [
     request: "GET the public weekly rankings page, then parse the author request-share table. No POST, login, API key or Playwright.",
     why: "OpenRouter's unauthenticated models API exposes model metadata, but the public author request-share comparison used here is published on the rankings page.",
     update: "Collected weekly as a current snapshot. Authors outside the displayed leaders remain unknown, never recorded as zero.",
-  },
-  {
-    source: "Artificial Analysis model leaderboard",
-    id: "artificial_analysis_leaderboard",
-    method: "Automated HTML scrape · HTTP GET",
-    href: "https://artificialanalysis.ai/leaderboards/models/",
-    request: "GET the public model-leaderboard page and parse its server-rendered table. No POST, login, API key or Playwright.",
-    why: "Its public table puts Intelligence Index, measured benchmark-task cost, throughput, first-chunk latency, total response time and context on one model row. The separate Data API requires an API key and is not used.",
-    update: "Collected weekly as a current snapshot. The live page exposes no separate data date, so as-of is the retrieval date; parser tests fail visibly if the table changes.",
-  },
-  {
-    source: "LiveBench leaderboard and cost files",
-    id: "livebench_leaderboard",
-    method: "Automated structured data · HTTP GET",
-    href: "https://livebench.ai/#/",
-    request: "GET https://api.github.com/repos/LiveBench/new-livebench/contents/public?ref=main to find the newest complete release; then GET https://livebench.ai/table_YYYY_MM_DD.csv, categories_YYYY_MM_DD.json and cost_YYYY_MM_DD.csv. No POST, login, API key or Playwright.",
-    why: "LiveBench publishes the exact objective subtask scores, question counts, token use, prices and cost fields behind its UI as versioned files. The dashboard can reproduce category and overall scores without scraping rendered cells.",
-    update: "Checked weekly. Each observation uses the release date, while immutable raw snapshots preserve what the versioned files contained when collected.",
   },
   {
     source: "Anthropic model releases",
@@ -74,15 +47,6 @@ const SOURCE_METHODS = [
     request: "No API request. A human records each published input/output price with the official URL and quote.",
     why: "The pricing page is current-state documentation, not a versioned price-history API; older launch prices come from announcements.",
     update: "Check monthly and after model launches or repricing; append replacement rows to data/ledgers/product_api_prices.csv, then rebuild.",
-  },
-  {
-    source: "Claude plan prices",
-    id: "product_plan_prices",
-    method: "Hardcoded · cited ledger",
-    href: "https://claude.com/pricing",
-    request: "No API request. A human records the displayed plan price, billing basis, official URL and quote.",
-    why: "The interactive pricing page has no stable public price-history endpoint and plan definitions can change.",
-    update: "Check monthly; append a newly dated row to data/ledgers/product_plan_prices.csv, then rebuild.",
   },
   {
     source: "Peer subscription prices",
@@ -104,43 +68,139 @@ const SOURCE_METHODS = [
   },
 ] as const;
 
+interface Embed {
+  title: string;
+  note: string;
+  href: string;
+  height?: number;
+  // OpenRouter sends X-Frame-Options: SAMEORIGIN (checked 2026-10-06), so its pages open only in their own tab.
+  blocked?: boolean;
+}
+
+const LEADERBOARDS: Embed[] = [
+  {
+    title: "Artificial Analysis: model leaderboard",
+    note: "Intelligence Index, price, speed and context for every tracked model.",
+    href: "https://artificialanalysis.ai/leaderboards/models",
+  },
+  {
+    title: "LiveBench: objective benchmark",
+    note: "Contamination-resistant tasks scored automatically, by category.",
+    href: "https://livebench.ai/#/",
+  },
+  {
+    title: "OpenRouter: rankings",
+    note: "Which models developers actually route requests to.",
+    href: "https://openrouter.ai/rankings#leaderboard-table",
+    blocked: true,
+  },
+];
+
+const COMPARISONS: Embed[] = [
+  {
+    title: "Compare models: intelligence vs token use",
+    note: "Artificial Analysis: how much each model scores against the tokens it spends to get there.",
+    href: "https://artificialanalysis.ai/models?intelligence-index-token-use=intelligence-vs-token-use#intelligence",
+  },
+  {
+    title: "Compare coding agents",
+    note: "Artificial Analysis: coding agents ranked on the same tasks.",
+    href: "https://artificialanalysis.ai/agents/coding-agents",
+  },
+  {
+    title: "Compare image models",
+    note: "Artificial Analysis: text-to-image model arena and pricing.",
+    href: "https://artificialanalysis.ai/image/models",
+  },
+  {
+    title: "Compare security: cyber index",
+    note: "Artificial Analysis: how models score on cybersecurity evaluations.",
+    href: "https://artificialanalysis.ai/evaluations/artificial-analysis-cyber-index",
+  },
+  {
+    title: "AI trends",
+    note: "Artificial Analysis: how quality, price and speed have moved over time.",
+    href: "https://artificialanalysis.ai/trends",
+  },
+];
+
 const SECTIONS: { title: string; note: string; charts: string[] }[] = [
   {
-    title: "How do the frontier products compare?",
-    note: "A like-for-like model snapshot from Arena: human-preference score, list price and published context window for the same model entry.",
-    charts: ["product.frontier_scorecard", "product.price_vs_quality", "product.context_windows"],
+    title: "Who do developers route to?",
+    note: "OpenRouter request share by model author: usage, not quality. It counts requests that pass through OpenRouter only.",
+    charts: ["product.openrouter_share"],
   },
   {
-    title: "What does usage cost?",
-    note: "API list prices, transparent fixed-token workload estimates and standard individual subscriptions. Workload costs are per attempt, not success-adjusted.",
-    charts: ["product.task_costs", "product.peer_plans", "product.api_prices", "product.plans"],
+    title: "What does it cost?",
+    note: "Anthropic's API list prices by model and standard individual subscriptions for each company.",
+    charts: ["product.api_prices", "product.peer_plans"],
   },
   {
-    title: "Who is using the products?",
-    note: "OpenRouter supplies comparable platform request share. Company user and customer disclosures are kept in a separate table because their scopes differ.",
-    charts: ["product.openrouter_share", "product.public_adoption"],
+    title: "What do the companies say about usage?",
+    note: "Company-stated user and customer counts. Their scopes differ, so they stay in a table instead of a chart.",
+    charts: ["product.public_adoption"],
   },
   {
     title: "Is the service holding up?",
-    note: "Incidents Anthropic posts on its own status page. Rising demand and rising incident counts often go together.",
-    charts: ["product.incidents_monthly", "product.incident_hours", "product.status_comparison", "product.recent_incidents"],
+    note: "Incidents each company posts on its own status page. Rising demand and rising incident counts often go together.",
+    charts: ["product.incidents_monthly", "product.status_comparison"],
   },
   {
     title: "How fast is Anthropic shipping?",
     note: "Every model announcement, dated by Anthropic's own pages.",
     charts: ["product.release_cadence", "product.model_releases"],
   },
-  {
-    title: "What is the combined model signal?",
-    note: "LiveBench's objective leaderboard and success-adjusted task cost, then a strict same-model join across Arena, Artificial Analysis and LiveBench with company-level OpenRouter usage. Missing measurements stay blank.",
-    charts: [
-      "product.livebench_leaderboard",
-      "product.livebench_cost_quality",
-      "product.benchmark_cost_quality",
-      "product.combined_model_signal",
-    ],
-  },
 ];
+
+function EmbedCard({ title, note, href, height = 720, blocked }: Embed) {
+  const host = new URL(href).hostname;
+  return (
+    <article className="card">
+      <div className="card-body">
+        <div className="card-top">
+          <div>
+            <h3>{title}</h3>
+            <p className="subtitle">{note}</p>
+          </div>
+          <div className="tools">
+            <a className="tool" href={href} target="_blank" rel="noreferrer">
+              Open ↗
+            </a>
+          </div>
+        </div>
+        <div className="badges">
+          <span className="badge">LIVE EMBED · third party</span>
+        </div>
+        {blocked ? (
+          <p className="takeaway">
+            {host} does not allow its pages to be shown inside other sites, so open it with the link above.
+          </p>
+        ) : (
+          <iframe
+            src={href}
+            title={title}
+            loading="lazy"
+            referrerPolicy="no-referrer"
+            sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms"
+            style={{ width: "100%", height, marginTop: 14, border: "1px solid var(--border)", borderRadius: 6, background: "#fff" }}
+          />
+        )}
+      </div>
+      <ul className="prov" aria-label="Sources">
+        <li>
+          <a href={href} target="_blank" rel="noreferrer">
+            {host} ↗
+          </a>
+          <span className="sep">
+            {blocked
+              ? "link only: not collected or stored by this dashboard"
+              : "loaded live from the site when you open this page · not collected or stored by this dashboard, so no as-of date of ours applies · if the frame is blank, the site refused to load; use the link"}
+          </span>
+        </li>
+      </ul>
+    </article>
+  );
+}
 
 export default function Product() {
   return (
@@ -148,13 +208,29 @@ export default function Product() {
       <header className="page-head">
         <h1>Product &amp; Reliability</h1>
         <p>
-          Compare Anthropic with OpenAI, Google, xAI, Mistral and Cohere on model quality, context, API workload cost,
-          measured benchmark-task cost, latency, subscriptions and usage—then track Claude's reliability and release pace.
-          Every number keeps its source and caveats.
+          Where the frontier models stand on live third-party leaderboards, what Claude costs against its peers, and whether
+          the service is holding up. Embedded pages are the sites' own live views; charts below them are collected by us,
+          with source and caveats on every number.
           <br />
           <a href="#product-source-methods">See exactly how every Product source is collected and updated ↓</a>
         </p>
       </header>
+      <section>
+        <h2 className="section-title">Overall leaderboards</h2>
+        <div className="grid">
+          {LEADERBOARDS.map((e) => (
+            <EmbedCard key={e.href} {...e} />
+          ))}
+        </div>
+      </section>
+      <section>
+        <h2 className="section-title">Compare models, agents, images and security</h2>
+        <div className="grid">
+          {COMPARISONS.map((e) => (
+            <EmbedCard key={e.href} {...e} />
+          ))}
+        </div>
+      </section>
       {SECTIONS.map((s) => (
         <section key={s.title}>
           <h2 className="section-title">{s.title}</h2>
@@ -172,7 +248,8 @@ export default function Product() {
         <h2 className="section-title">How is every Product source collected?</h2>
         <p className="subtitle" style={{ marginBottom: 14 }}>
           Playwright is used only to test this dashboard. It does not collect any Product data. Automated sources below use
-          HTTP GET; “hardcoded” means a cited human-maintained ledger, not an unsupported number.
+          HTTP GET; “hardcoded” means a cited human-maintained ledger, not an unsupported number. The embedded leaderboards
+          above are not collected at all: your browser loads them live from their owners.
         </p>
         <div className="card">
           <div className="card-body">

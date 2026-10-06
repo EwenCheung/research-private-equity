@@ -1,0 +1,15 @@
+# How the Hot Pick is chosen, for the last week and the last month. Each kind has its own places and its own score (outlets, points,
+# reactions, stars, filers, size of the move): kinds are never ranked against each other, and a kind that does not qualify leaves its
+# places empty rather than filling them.
+windows:
+  week: {days: 7, title: This week, places: {news: 3, discussion: 1, blog: 1, community: 1, trend: 1, filings: 1, insights: 2}}
+  month: {days: 30, title: This month, places: {news: 3, discussion: 2, blog: 2, community: 1, trend: 2, filings: 1, insights: 2}}
+order: [news, discussion, blog, community, trend, filings, insights]
+news: {min_outlets: 2, similarity: 0.3, min_shared: 2, repeat_shared: 3}
+discussion: {min_points: 50}
+community: {min_reactions: 20}
+trend: {min_stars: 100}
+filings: {min_filers: 2}
+# insights: tripwires that have fired, then the signals whose latest change is the most bands wide (see the Briefing).
+# Fund marks move in steps when a round is priced, so they are left out of the movers.
+insights: {min_bands: 2, exclude: [fund_marks]}

@@ -1,0 +1,32 @@
+# How Anthropic is found in the Hot Pick sources. Only the target company is collected: Hot Pick is about Anthropic.
+# news_query: the Google News search. hn_queries: Hacker News (Algolia) search words; a story must also name Anthropic or Claude in its title.
+# devto_tags: dev.to tags whose most popular posts of the month are read. github_queries: GitHub topic searches for new repositories.
+# feeds: publishers' and authors' RSS or Atom feeds, kept to items that name Anthropic or Claude. kind news feeds join the Google News
+#   stories when counting outlets; kind blog feeds are curated authors. Checked 2026-10-06; left out because they failed or were stale:
+#   VentureBeat and Reddit (rate-limited; Reddit's terms need an agreement), The Batch and Anthropic's own site (no feed), WSJ and SemiAnalysis (stale).
+anthropic:
+  news_query: '"Anthropic" AI'
+  hn_queries: [Anthropic, Claude]
+  devto_tags: [claude, anthropic]
+  github_queries: ['topic:claude-code', 'topic:claude', 'topic:anthropic']
+  feeds:
+    - {name: TechCrunch, url: "https://techcrunch.com/category/artificial-intelligence/feed/", kind: news}
+    - {name: The Verge, url: "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml", kind: news}
+    - {name: Ars Technica, url: "https://arstechnica.com/ai/feed/", kind: news}
+    - {name: MIT Technology Review, url: "https://www.technologyreview.com/topic/artificial-intelligence/feed", kind: news}
+    - {name: Wired, url: "https://www.wired.com/feed/tag/ai/latest/rss", kind: news}
+    - {name: ZDNET, url: "https://www.zdnet.com/topic/artificial-intelligence/rss.xml", kind: news}
+    - {name: The Register, url: "https://www.theregister.com/software/ai_ml/headlines.atom", kind: news}
+    - {name: BBC News, url: "http://feeds.bbci.co.uk/news/technology/rss.xml", kind: news}
+    - {name: The Guardian, url: "https://www.theguardian.com/technology/artificialintelligenceai/rss", kind: news}
+    - {name: The New York Times, url: "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml", kind: news}
+    - {name: CNBC, url: "https://www.cnbc.com/id/19854910/device/rss/rss.html", kind: news}
+    - {name: SiliconANGLE, url: "https://siliconangle.com/category/ai/feed/", kind: news}
+    - {name: The Decoder, url: "https://the-decoder.com/feed/", kind: news}
+    - {name: Axios, url: "https://api.axios.com/feed/", kind: news}
+    - {name: Simon Willison, url: "https://simonwillison.net/atom/everything/", kind: blog}
+    - {name: Import AI, url: "https://importai.substack.com/feed", kind: blog}
+    - {name: Don't Worry About the Vase, url: "https://thezvi.substack.com/feed", kind: blog}
+    - {name: Latent Space, url: "https://www.latent.space/feed", kind: blog}
+    - {name: Interconnects, url: "https://www.interconnects.ai/feed", kind: blog}
+    - {name: Hugging Face, url: "https://huggingface.co/blog/feed.xml", kind: blog}

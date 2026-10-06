@@ -35,6 +35,7 @@ const PAGES: Record<string, string> = {
   hiring: "Hiring & Talent",
   dev_adoption: "Developer Adoption",
   attention: "Consumer & Attention",
+  hot_pick: "Hot Pick",
   product: "Product & Reliability",
   customers: "Consumer & Attention",
   capital: "Capital & Valuation",

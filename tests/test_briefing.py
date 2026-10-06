@@ -95,6 +95,59 @@ def test_a_divergence_names_the_falling_family_against_the_rising_ones():
     assert b.divergences(cfg, {"a": "Rising", "b": "Rising", "c": "Mixed"}) == []
 
 
+# ---- against OpenAI ----
+
+
+def test_versus_compares_the_change_and_how_big_anthropic_is_next_to_openai():
+    a = b.read("x", CFG, monthly([100] * 3 + [150] * 3))  # +50%, 450 in the window
+    o = b.read("x", CFG, monthly([100] * 3 + [120] * 3))  # +20%, 360 in the window
+    v = b.versus(a, o, "up")
+    assert v["edge"] == "ahead" and v["gap"] == pytest.approx(30) and v["size"] == pytest.approx(450 / 360)
+    assert b.versus_text(v) == "Ahead by 30 pts, 1.2× OpenAI's level"
+    assert b.versus(a, None, "up") is None and b.versus_text(None) == "No OpenAI series"
+
+
+def test_a_gap_inside_five_points_is_level_and_for_incidents_a_bigger_fall_is_ahead():
+    a = b.read("x", CFG, monthly([100] * 3 + [110] * 3))
+    assert b.versus(a, b.read("x", CFG, monthly([100] * 3 + [107] * 3)), "up")["edge"] == "level"
+    fewer = b.read("x", {**CFG, "better": "down"}, monthly([100] * 3 + [60] * 3))  # -40%
+    more = b.read("x", {**CFG, "better": "down"}, monthly([100] * 3 + [90] * 3))  # -10%
+    assert b.versus(fewer, more, "down")["edge"] == "ahead"
+    assert b.versus(more, fewer, "down")["edge"] == "behind"
+
+
+def test_compare_counts_ahead_level_and_behind_per_family_and_overall():
+    mk = lambda sid, chg: {"id": sid, "chg": chg, "recent": 100.0}
+    cfg = {"f": {"signals": {"a": {}, "b": {}, "c": {}, "d": {}}}}
+    reads = {"f": [mk("a", 0.5), mk("b", 0.1), mk("c", -0.2), mk("d", 0.3)]}
+    peer = {"a": mk("a", 0.1), "b": mk("b", 0.09), "c": mk("c", 0.2), "d": None}
+    edges = b.compare(cfg, reads, peer)
+    assert edges["f"] == {"ahead": 1, "level": 1, "behind": 1, "n": 3}
+    assert b.oai_text(edges["f"]) == "Ahead on 1, level on 1, behind on 1 of 3"
+    assert b.overall(edges) == [
+        "Against OpenAI, Anthropic's change is ahead on 1 of 3 comparable signals and behind on 1."
+    ]
+    assert b.oai_text({"n": 0}) == "No OpenAI series" and b.overall({"f": {"n": 0, "ahead": 0, "behind": 0}}) == []
+
+
+def test_openai_has_a_series_for_the_signals_both_companies_share_and_none_for_the_rest(shipped):
+    rows, _ = shipped
+    peer = b.read_peer(Ctx([r for sid in b.SOURCES for r in rows[sid]], NAMES))
+    for sid in (
+        "python_sdk",
+        "js_sdk",
+        "claude_code_downloads",
+        "hn_job_posts",
+        "sec_filers",
+        "wiki_assistant",
+        "wiki_company",
+        "open_roles",
+    ):
+        assert peer[sid] is not None, sid
+    for sid in ("claude_code_commits", "incidents", "fund_marks"):
+        assert peer[sid] is None, sid
+
+
 # ---- tripwires ----
 
 

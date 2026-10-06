@@ -43,6 +43,16 @@
       "field": "reading",
       "label": "Reading",
       "format": "text"
+    },
+    {
+      "field": "oai_chg",
+      "label": "OpenAI on previous period",
+      "format": "pct"
+    },
+    {
+      "field": "versus",
+      "label": "Anthropic against OpenAI",
+      "format": "text"
     }
   ],
   "rows": [
@@ -54,7 +64,9 @@
       "chg": 0.32528542621866274,
       "prev": 1.2596841438986737,
       "yoy": 6.070229303044438,
-      "reading": "Up"
+      "reading": "Up",
+      "oai_chg": 0.16642400823873205,
+      "versus": "Ahead by 16 pts, 0.5× OpenAI's level"
     },
     {
       "family": "Developer usage",
@@ -64,7 +76,9 @@
       "chg": 0.7241468525721938,
       "prev": 2.007788092646617,
       "yoy": 14.4050964534852,
-      "reading": "Up"
+      "reading": "Up",
+      "oai_chg": 0.5749917498108668,
+      "versus": "Ahead by 15 pts, 1.0× OpenAI's level"
     },
     {
       "family": "Developer usage",
@@ -74,7 +88,9 @@
       "chg": 0.4631641148262093,
       "prev": 0.24802767162297892,
       "yoy": 2.0532843222270682,
-      "reading": "Up"
+      "reading": "Up",
+      "oai_chg": 0.9416913795047418,
+      "versus": "Behind by 48 pts, 0.8× OpenAI's level"
     },
     {
       "family": "Developer usage",
@@ -84,7 +100,9 @@
       "chg": 0.501193480615824,
       "prev": 1.0233251508416303,
       "yoy": 35.58497208263874,
-      "reading": "Up"
+      "reading": "Up",
+      "oai_chg": null,
+      "versus": "No OpenAI series"
     },
     {
       "family": "Enterprise adoption",
@@ -94,7 +112,9 @@
       "chg": 0.0022687079402732833,
       "prev": 0.5365705622213367,
       "yoy": 4.0953512747778795,
-      "reading": "Flat"
+      "reading": "Flat",
+      "oai_chg": -0.03276889473264286,
+      "versus": "Level (within 5 pts), 2.4× OpenAI's level"
     },
     {
       "family": "Enterprise adoption",
@@ -104,7 +124,9 @@
       "chg": 0.3,
       "prev": -0.375,
       "yoy": 3.3333333333333335,
-      "reading": "Up"
+      "reading": "Up",
+      "oai_chg": -0.25,
+      "versus": "Ahead by 55 pts, 1.0× OpenAI's level"
     },
     {
       "family": "Consumer attention",
@@ -114,7 +136,9 @@
       "chg": -0.2958648630503914,
       "prev": -0.02739643882274868,
       "yoy": 1.51557781073633,
-      "reading": "Down"
+      "reading": "Down",
+      "oai_chg": -0.1373135030665992,
+      "versus": "Behind by 16 pts, 0.1× OpenAI's level"
     },
     {
       "family": "Consumer attention",
@@ -124,7 +148,9 @@
       "chg": -0.32856242503100413,
       "prev": -0.22230806436196093,
       "yoy": 1.0643009347387562,
-      "reading": "Down"
+      "reading": "Down",
+      "oai_chg": -0.052021026946082356,
+      "versus": "Behind by 28 pts, 1.1× OpenAI's level"
     },
     {
       "family": "Build-out",
@@ -134,7 +160,9 @@
       "chg": 0.12520458265139117,
       "prev": 0.09990999099909992,
       "yoy": 1.3747841105354057,
-      "reading": "Up"
+      "reading": "Up",
+      "oai_chg": 0.6110716820440026,
+      "versus": "Behind by 49 pts, 0.6× OpenAI's level"
     },
     {
       "family": "Reliability",
@@ -144,7 +172,9 @@
       "chg": -0.30952380952380953,
       "prev": -0.023255813953488372,
       "yoy": -0.22321428571428573,
-      "reading": "Down"
+      "reading": "Down",
+      "oai_chg": null,
+      "versus": "No OpenAI series"
     },
     {
       "family": "What funds say a share is worth",
@@ -154,7 +184,9 @@
       "chg": 1.272934253929591,
       "prev": null,
       "yoy": null,
-      "reading": "Up"
+      "reading": "Up",
+      "oai_chg": null,
+      "versus": "No OpenAI series"
     }
   ],
   "takeaway": [],
@@ -162,8 +194,9 @@
     "The latest 3 complete months against the 3 before them and the same 3 months a year earlier. Quarterly series (SEC filings) use the latest complete quarter, the weekly commit series 13 weeks, and fund marks the latest report date against one at least 60 days earlier.",
     "A change smaller than a signal's band (10% unless its row says otherwise in config/briefing.yaml) counts as flat.",
     "Blank means the history is too short for that comparison, never zero.",
+    "OpenAI's columns repeat the same arithmetic for OpenAI on the same window: SDK downloads, Codex CLI downloads against Claude Code, views of the ChatGPT and OpenAI articles, Hacker News posts naming OpenAI or GPT, SEC filers naming OpenAI, and open roles. Claude Code commits, status-page incidents and fund marks have no OpenAI series. Ahead means Anthropic's change is better than OpenAI's by more than 5 points, behind the reverse, and level within 5 points. The size is Anthropic's latest window divided by OpenAI's.",
     "It judges each signal against its own history, never its level: levels trend up together, so they would agree with almost anything. It makes no claim that one signal causes another.",
-    "Every number is computed from the same sources and rules as the chart on its page. Hand-entered data is never used, and peers are not part of any verdict."
+    "Every number is computed from the same sources and rules as the chart on its page. Hand-entered data is never used, and no verdict reads OpenAI: its columns are context."
   ],
   "badges": [
     "arithmetic"
@@ -259,11 +292,11 @@
     {
       "source": "wayback_job_boards",
       "label": "Internet Archive captures of company job boards",
-      "url": "https://web.archive.org/web/20260906161935/https://job-boards.greenhouse.io/anthropic",
+      "url": "https://web.archive.org/web/20260923033353/https://jobs.ashbyhq.com/openai",
       "method": "scrape",
       "tier": "company-stated",
       "cadence": "weekly",
-      "as_of": "2026-09-06",
+      "as_of": "2026-09-23",
       "retrieved_at": "2026-10-05T06:59:56Z",
       "freshness": "fresh",
       "manual": null
@@ -294,5 +327,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-06T08:25:17Z"
+  "generated_at": "2026-10-06T08:33:23Z"
 }

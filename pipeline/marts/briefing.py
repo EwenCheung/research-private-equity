@@ -26,6 +26,8 @@ SOURCES = [
     "sec_nport_marks",
 ]
 ME = "anthropic"
+PEER = "openai"  # context only: no verdict reads it
+GAP = 5  # points: a change within this of OpenAI's reads as level
 # periods in the window, and in a year, for each series frequency
 WINDOW = {"M": (3, 12), "Q": (1, 4), "W": (13, 52)}
 UNIT = {"M": "3 months", "Q": "quarter", "W": "13 weeks"}
@@ -53,18 +55,20 @@ def monthly(df: pd.DataFrame, col: str = "value", month: str = "month") -> dict:
     return {pd.Period(m, "M"): float(v) for m, v in zip(df[month], df[col])}
 
 
-def download_series(ctx, metric: str, role: str) -> dict | None:
+def download_series(ctx, metric: str, role: str, ent: str = ME) -> dict | None:
     df = dev_adoption.monthly(ctx, metric, role)
-    return series("M", "sum", monthly(df[df["entity"] == ME])) if len(df) else None
+    return series("M", "sum", monthly(df[df["entity"] == ent])) if len(df) else None
 
 
-def wiki_series(ctx, kind: str) -> dict | None:
+def wiki_series(ctx, kind: str, ent: str = ME) -> dict | None:
     df, _ = attention.wiki_monthly(ctx, kind)
-    df = df[df["entity"] == ME] if len(df) else df
+    df = df[df["entity"] == ent] if len(df) else df
     return series("M", "sum", monthly(df, month="as_of")) if len(df) else None
 
 
-def commit_series(ctx) -> dict | None:
+def commit_series(ctx, ent: str = ME) -> dict | None:
+    if ent != ME:  # no other coding agent leaves a comparable trailer
+        return None
     df = latest(ctx.obs(metric="coauthored_commits", entity=ME), keys=("entity", "as_of"))
     return (
         series("W", "mean", {pd.Period(a, "W"): float(v) for a, v in zip(df["as_of"], df["value"])})
@@ -73,27 +77,27 @@ def commit_series(ctx) -> dict | None:
     )
 
 
-def hn_series(ctx) -> dict | None:
+def hn_series(ctx, ent: str = ME) -> dict | None:
     _, n = customers.hn_frames(ctx)
     if n.empty:
         return None
-    n = n[(n["entity"] == ME) & (n["term"] == customers.ANY)]
+    n = n[(n["entity"] == ent) & (n["term"] == customers.ANY)]
     return series(
         "M", "mean", {pd.Period(m, "M"): a / p for m, a, p in zip(n["month"], n["naming"], n["posts"])}, "pct"
     )
 
 
-def sec_series(ctx) -> dict | None:
+def sec_series(ctx, ent: str = ME) -> dict | None:
     df, done = customers.sec_filings(ctx)
     if df.empty:
         return None
-    counts = df[df["entity"] == ME].groupby("quarter")["cik"].nunique()
+    counts = df[df["entity"] == ent].groupby("quarter")["cik"].nunique()
     quarters = pd.period_range(pd.Period(df["quarter"].min(), "Q"), pd.Period(done, "Q"), freq="Q")
     return series("Q", "sum", {q: float(counts.get(q.start_time.date().isoformat(), 0)) for q in quarters})
 
 
-def roles_series(ctx) -> dict | None:
-    df = latest(ctx.obs(metric="open_roles", entity=ME), keys=("entity", "as_of"))
+def roles_series(ctx, ent: str = ME) -> dict | None:
+    df = latest(ctx.obs(metric="open_roles", entity=ent), keys=("entity", "as_of"))
     if df.empty:
         return None
     last = pd.Timestamp(df["as_of"].max())
@@ -103,7 +107,9 @@ def roles_series(ctx) -> dict | None:
     return series("M", "mean", monthly_mean.to_dict())
 
 
-def incident_series(ctx) -> dict | None:
+def incident_series(ctx, ent: str = ME) -> dict | None:
+    if ent != ME:  # only Claude's status page is collected
+        return None
     df = product.incidents(ctx, ME)
     if df.empty:
         return None
@@ -113,7 +119,9 @@ def incident_series(ctx) -> dict | None:
     return series("M", "sum", {m: float(counts.get(m.start_time.date().isoformat(), 0)) for m in months})
 
 
-def mark_change(ctx) -> dict | None:
+def mark_change(ctx, ent: str = ME) -> dict | None:
+    if ent != ME:  # funds are searched for Anthropic shares only
+        return None
     """Median per-share mark change for funds that reported at the latest date and at least 60 days earlier, same fund and share series."""
     df = capital.marks(ctx)
     if df.empty:
@@ -129,19 +137,19 @@ def mark_change(ctx) -> dict | None:
     return {"direct": float(ratios.median()), "n": len(both), "as_of": newest.date().isoformat()}
 
 
-def signals(ctx) -> dict:
+def signals(ctx, ent: str = ME) -> dict:
     return {
-        "python_sdk": download_series(ctx, "pypi_downloads", "sdk"),
-        "js_sdk": download_series(ctx, "npm_downloads", "sdk"),
-        "claude_code_downloads": download_series(ctx, "npm_downloads", "cli"),
-        "claude_code_commits": commit_series(ctx),
-        "hn_job_posts": hn_series(ctx),
-        "sec_filers": sec_series(ctx),
-        "wiki_assistant": wiki_series(ctx, "product"),
-        "wiki_company": wiki_series(ctx, "company"),
-        "open_roles": roles_series(ctx),
-        "incidents": incident_series(ctx),
-        "fund_marks": mark_change(ctx),
+        "python_sdk": download_series(ctx, "pypi_downloads", "sdk", ent),
+        "js_sdk": download_series(ctx, "npm_downloads", "sdk", ent),
+        "claude_code_downloads": download_series(ctx, "npm_downloads", "cli", ent),
+        "claude_code_commits": commit_series(ctx, ent),
+        "hn_job_posts": hn_series(ctx, ent),
+        "sec_filers": sec_series(ctx, ent),
+        "wiki_assistant": wiki_series(ctx, "product", ent),
+        "wiki_company": wiki_series(ctx, "company", ent),
+        "open_roles": roles_series(ctx, ent),
+        "incidents": incident_series(ctx, ent),
+        "fund_marks": mark_change(ctx, ent),
     }
 
 
@@ -218,6 +226,52 @@ def read_all(ctx) -> tuple[dict, dict]:
     for fid, fam in cfg.items():
         out[fid] = [r for sid, sc in fam["signals"].items() if (r := read(sid, sc, sigs.get(sid)))]
     return cfg, out
+
+
+def read_peer(ctx) -> dict:
+    """OpenAI's reading of each signal, by signal id; None where it has no comparable series."""
+    sigs = signals(ctx, PEER)
+    return {sid: read(sid, sc, sigs.get(sid)) for fam in config().values() for sid, sc in fam["signals"].items()}
+
+
+def versus(a: dict, o: dict | None, better: str) -> dict | None:
+    """How Anthropic's change compares with OpenAI's on the same window, and how big it is next to OpenAI."""
+    if o is None:
+        return None
+    gap = (a["chg"] - o["chg"]) * 100
+    good = gap > 0 if better == "up" else gap < 0
+    size = a["recent"] / o["recent"] if a["recent"] is not None and o["recent"] else None
+    return {
+        "gap": gap,
+        "edge": "level" if abs(gap) < GAP else "ahead" if good else "behind",
+        "size": size,
+        "chg": o["chg"],
+    }
+
+
+def versus_text(v: dict | None) -> str:
+    if v is None:
+        return "No OpenAI series"
+    edge = {
+        "ahead": f"Ahead by {abs(v['gap']):.0f} pts",
+        "behind": f"Behind by {abs(v['gap']):.0f} pts",
+        "level": f"Level (within {GAP} pts)",
+    }[v["edge"]]
+    return edge + (f", {v['size']:.1f}× OpenAI's level" if v["size"] is not None else "")
+
+
+def compare(cfg: dict, reads: dict, peer: dict) -> dict:
+    """Per family and overall: how many compared signals are ahead, level or behind OpenAI."""
+    out = {}
+    for fid, fam in cfg.items():
+        edges = []
+        for m in reads[fid]:
+            v = versus(m, peer.get(m["id"]), fam["signals"][m["id"]].get("better", "up"))
+            m["versus"] = v
+            if v:
+                edges.append(v["edge"])
+        out[fid] = {e: edges.count(e) for e in ("ahead", "level", "behind")} | {"n": len(edges)}
+    return out
 
 
 # ---- families ----
@@ -309,6 +363,20 @@ def threshold_text(rule: dict) -> str:
     return f"{rule['value'] * 100:.0f}% or more below the {rule['periods']}-month peak"
 
 
+def oai_text(e: dict) -> str:
+    if not e["n"]:
+        return "No OpenAI series"
+    return f"Ahead on {e['ahead']}, level on {e['level']}, behind on {e['behind']} of {e['n']}"
+
+
+def overall(edges: dict) -> list[str]:
+    n = sum(e["n"] for e in edges.values())
+    if not n:
+        return []
+    ahead, behind = sum(e["ahead"] for e in edges.values()), sum(e["behind"] for e in edges.values())
+    return [f"Against OpenAI, Anthropic's change is ahead on {ahead} of {n} comparable signals and behind on {behind}."]
+
+
 # ---- the three charts ----
 
 READING = (
@@ -319,7 +387,12 @@ BASIS = (
     "quarter, the weekly commit series 13 weeks, and fund marks the latest report date against one at least 60 days earlier."
 )
 LEVELS = "It judges each signal against its own history, never its level: levels trend up together, so they would agree with almost anything. It makes no claim that one signal causes another."
-INPUTS = "Every number is computed from the same sources and rules as the chart on its page. Hand-entered data is never used, and peers are not part of any verdict."
+INPUTS = "Every number is computed from the same sources and rules as the chart on its page. Hand-entered data is never used, and no verdict reads OpenAI: its columns are context."
+OPENAI = (
+    "OpenAI's columns repeat the same arithmetic for OpenAI on the same window: SDK downloads, Codex CLI downloads against Claude Code, views of the ChatGPT and OpenAI articles, "
+    "Hacker News posts naming OpenAI or GPT, SEC filers naming OpenAI, and open roles. Claude Code commits, status-page incidents and fund marks have no OpenAI series. "
+    "Ahead means Anthropic's change is better than OpenAI's by more than 5 points, behind the reverse, and level within 5 points. The size is Anthropic's latest window divided by OpenAI's."
+)
 
 
 def table(
@@ -341,6 +414,7 @@ def table(
 @mart(id="briefing.verdicts", sources=SOURCES)
 def verdicts(ctx):
     cfg, reads = read_all(ctx)
+    edges = compare(cfg, reads, read_peer(ctx))
     rows, state, takeaway = [], {}, []
     for fid, fam in cfg.items():
         members = reads[fid]
@@ -359,12 +433,15 @@ def verdicts(ctx):
                 "agree": f"{good} up, {bad} down, {len(members) - good - bad} flat of {len(members)}"
                 if words == "volume"
                 else f"{good} better, {bad} worse, {len(members) - good - bad} flat of {len(members)}",
+                "oai": oai_text(edges[fid]),
                 "where": fam["page"],
             }
         )
     if rows:
         takeaway = [", ".join(f"{cfg[f]['short']} {v.lower()}" for f, v in state.items()).capitalize() + "."]
-        takeaway += divergences(cfg, state)
+        takeaway += (
+            [" ".join(divergences(cfg, state) + overall(edges))] if divergences(cfg, state) or overall(edges) else []
+        )
     return table(
         "Where Anthropic stands",
         "One verdict per family of signals, from the latest 3 months against the 3 before",
@@ -373,6 +450,7 @@ def verdicts(ctx):
             {"field": "verdict", "label": "Verdict", "format": "text"},
             {"field": "moved", "label": "What moved (the period before in brackets)", "format": "text"},
             {"field": "agree", "label": "How the signals split", "format": "text"},
+            {"field": "oai", "label": "Against OpenAI", "format": "text"},
             {"field": "where", "label": "Where to look", "format": "text"},
         ],
         rows,
@@ -383,6 +461,7 @@ def verdicts(ctx):
             "A family is Rising or Improving when up minus down is more than half its signals, Falling or Worsening for the reverse, Flat when every signal is flat, and Mixed otherwise.",
             "The bracketed figure is the change in the period before, so you can see whether a rise is cooling or a fall is deepening.",
             "Funds mark Anthropic shares in steps, usually when a round is priced, so a large change in the marks follows a new round rather than a trend.",
+            OPENAI,
             LEVELS,
             INPUTS,
         ],
@@ -392,6 +471,7 @@ def verdicts(ctx):
 @mart(id="briefing.signals", sources=SOURCES)
 def signal_rows(ctx):
     cfg, reads = read_all(ctx)
+    compare(cfg, reads, read_peer(ctx))
     rows = []
     for fid, fam in cfg.items():
         for m in reads[fid]:
@@ -406,6 +486,8 @@ def signal_rows(ctx):
                     "prev": m["prev"],
                     "yoy": m["yoy"],
                     "reading": word,
+                    "oai_chg": m["versus"]["chg"] if m["versus"] else None,
+                    "versus": versus_text(m["versus"]),
                 }
             )
     return table(
@@ -420,10 +502,19 @@ def signal_rows(ctx):
             {"field": "prev", "label": "Period before: its change", "format": "pct"},
             {"field": "yoy", "label": "On a year earlier", "format": "pct"},
             {"field": "reading", "label": "Reading", "format": "text"},
+            {"field": "oai_chg", "label": "OpenAI on previous period", "format": "pct"},
+            {"field": "versus", "label": "Anthropic against OpenAI", "format": "text"},
         ],
         rows,
         [],
-        [BASIS, READING, "Blank means the history is too short for that comparison, never zero.", LEVELS, INPUTS],
+        [
+            BASIS,
+            READING,
+            "Blank means the history is too short for that comparison, never zero.",
+            OPENAI,
+            LEVELS,
+            INPUTS,
+        ],
     )
 
 

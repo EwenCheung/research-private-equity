@@ -25,6 +25,11 @@
       "format": "text"
     },
     {
+      "field": "oai",
+      "label": "Against OpenAI",
+      "format": "text"
+    },
+    {
       "field": "where",
       "label": "Where to look",
       "format": "text"
@@ -36,6 +41,7 @@
       "verdict": "▲ Rising",
       "moved": "Python SDK downloads +33% (was +126%); JavaScript SDK downloads +72% (was +201%); Claude Code downloads +46% (was +25%); Public commits written with Claude Code +50% (was +102%)",
       "agree": "4 up, 0 down, 0 flat of 4",
+      "oai": "Ahead on 2, level on 0, behind on 1 of 3",
       "where": "Developer Adoption"
     },
     {
@@ -43,6 +49,7 @@
       "verdict": "◆ Mixed",
       "moved": "Hacker News job posts naming Claude or Anthropic +0% (was +54%); Listed companies naming Anthropic in SEC filings +30% (was -38%)",
       "agree": "1 up, 0 down, 1 flat of 2",
+      "oai": "Ahead on 1, level on 1, behind on 0 of 2",
       "where": "Consumer & Attention"
     },
     {
@@ -50,6 +57,7 @@
       "verdict": "▼ Falling",
       "moved": "Wikipedia views of the Claude article -30% (was -3%); Wikipedia views of the Anthropic article -33% (was -22%)",
       "agree": "0 up, 2 down, 0 flat of 2",
+      "oai": "Ahead on 0, level on 0, behind on 2 of 2",
       "where": "Consumer & Attention"
     },
     {
@@ -57,6 +65,7 @@
       "verdict": "▲ Rising",
       "moved": "Open roles on Anthropic's job board +13% (was +10%)",
       "agree": "1 up, 0 down, 0 flat of 1",
+      "oai": "Ahead on 0, level on 0, behind on 1 of 1",
       "where": "Hiring & Talent"
     },
     {
@@ -64,6 +73,7 @@
       "verdict": "▲ Improving",
       "moved": "Incidents on Claude's status page -31% (was -2%)",
       "agree": "1 better, 0 worse, 0 flat of 1",
+      "oai": "No OpenAI series",
       "where": "Product & Reliability"
     },
     {
@@ -71,12 +81,13 @@
       "verdict": "▲ Rising",
       "moved": "Median change in funds' per-share mark +127%",
       "agree": "1 up, 0 down, 0 flat of 1",
+      "oai": "No OpenAI series",
       "where": "Capital & Valuation"
     }
   ],
   "takeaway": [
     "Developer usage rising, enterprise adoption mixed, consumer attention falling, build-out rising, reliability improving, fund marks rising.",
-    "Consumer attention is falling while developer usage, build-out and fund marks are rising."
+    "Consumer attention is falling while developer usage, build-out and fund marks are rising. Against OpenAI, Anthropic's change is ahead on 3 of 8 comparable signals and behind on 4."
   ],
   "assumptions": [
     "The latest 3 complete months against the 3 before them and the same 3 months a year earlier. Quarterly series (SEC filings) use the latest complete quarter, the weekly commit series 13 weeks, and fund marks the latest report date against one at least 60 days earlier.",
@@ -84,8 +95,9 @@
     "A family is Rising or Improving when up minus down is more than half its signals, Falling or Worsening for the reverse, Flat when every signal is flat, and Mixed otherwise.",
     "The bracketed figure is the change in the period before, so you can see whether a rise is cooling or a fall is deepening.",
     "Funds mark Anthropic shares in steps, usually when a round is priced, so a large change in the marks follows a new round rather than a trend.",
+    "OpenAI's columns repeat the same arithmetic for OpenAI on the same window: SDK downloads, Codex CLI downloads against Claude Code, views of the ChatGPT and OpenAI articles, Hacker News posts naming OpenAI or GPT, SEC filers naming OpenAI, and open roles. Claude Code commits, status-page incidents and fund marks have no OpenAI series. Ahead means Anthropic's change is better than OpenAI's by more than 5 points, behind the reverse, and level within 5 points. The size is Anthropic's latest window divided by OpenAI's.",
     "It judges each signal against its own history, never its level: levels trend up together, so they would agree with almost anything. It makes no claim that one signal causes another.",
-    "Every number is computed from the same sources and rules as the chart on its page. Hand-entered data is never used, and peers are not part of any verdict."
+    "Every number is computed from the same sources and rules as the chart on its page. Hand-entered data is never used, and no verdict reads OpenAI: its columns are context."
   ],
   "badges": [
     "arithmetic"
@@ -181,11 +193,11 @@
     {
       "source": "wayback_job_boards",
       "label": "Internet Archive captures of company job boards",
-      "url": "https://web.archive.org/web/20260906161935/https://job-boards.greenhouse.io/anthropic",
+      "url": "https://web.archive.org/web/20260923033353/https://jobs.ashbyhq.com/openai",
       "method": "scrape",
       "tier": "company-stated",
       "cadence": "weekly",
-      "as_of": "2026-09-06",
+      "as_of": "2026-09-23",
       "retrieved_at": "2026-10-05T06:59:56Z",
       "freshness": "fresh",
       "manual": null
@@ -216,5 +228,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-06T08:25:17Z"
+  "generated_at": "2026-10-06T08:33:23Z"
 }

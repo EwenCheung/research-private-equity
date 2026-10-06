@@ -70,7 +70,7 @@
     "The rules are in config/tripwires.yaml in plain terms: edit them there. Each names a signal from config/briefing.yaml.",
     "A tripwire is a prompt to look, not a forecast: a rule that fires says the signal crossed a line you chose.",
     "The latest 3 complete months against the 3 before them and the same 3 months a year earlier. Quarterly series (SEC filings) use the latest complete quarter, the weekly commit series 13 weeks, and fund marks the latest report date against one at least 60 days earlier.",
-    "Every number is computed from the same sources and rules as the chart on its page. Hand-entered data is never used, and peers are not part of any verdict."
+    "Every number is computed from the same sources and rules as the chart on its page. Hand-entered data is never used, and no verdict reads OpenAI: its columns are context."
   ],
   "badges": [
     "arithmetic"
@@ -201,5 +201,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-06T08:27:20Z"
+  "generated_at": "2026-10-06T08:33:23Z"
 }

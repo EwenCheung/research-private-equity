@@ -33,7 +33,7 @@ export default function Briefing() {
         <p>
           <strong>How to read it.</strong> Read the verdict, then the numbers behind it. Each shows its change on the previous period
           and, in brackets, the change the period before, so a rise that is cooling shows. Verdicts judge each signal against its own
-          history, not against other companies, and say what moved, not why.
+          history and say what moved, not why. The OpenAI columns show how the same signal moved for OpenAI, so a rise can be read against it; they never change a verdict.
         </p>
       </header>
       {SECTIONS.map((s) => (

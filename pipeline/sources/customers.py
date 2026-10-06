@@ -1,4 +1,4 @@
-"""Customers and contracts: HN who-is-hiring posts, SEC 10-K/10-Q filers, federal awards (collected) and a cited KPI-claims ledger."""
+"""Customers: HN who-is-hiring posts and SEC 10-K/10-Q filers."""
 
 import html
 import re

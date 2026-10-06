@@ -1,4 +1,4 @@
-"""Customers and contracts charts. Every number is counted from collected rows or quoted from a cited ledger row."""
+"""Customers charts. Every number is counted from collected rows."""
 
 import calendar
 from datetime import date

@@ -1,6 +1,6 @@
 import ChartCard from "../components/ChartCard";
 
-export const meta = { title: "Customers & Contracts", path: "/customers", order: 60 };
+export const meta = { title: "Customers", path: "/customers", order: 60 };
 
 const SECTIONS: { title: string; note: string; charts: string[] }[] = [
   {
@@ -19,7 +19,7 @@ export default function Customers() {
   return (
     <>
       <header className="page-head">
-        <h1>Customers &amp; Contracts</h1>
+        <h1>Customers</h1>
         <p style={{ marginBottom: 10 }}>
           <strong>What you are reading.</strong> Public evidence that businesses use or depend on Claude, against OpenAI, Google DeepMind, xAI, Mistral and Cohere. Anthropic is private, so this comes from other people's job posts and from the SEC filings of listed companies.
         </p>

@@ -72,7 +72,7 @@ The chart shows both dates.
 
 **Freshness is live.** `build` stores freshness in each mart, but the API recomputes it on every request from `data/registry.json`,
 using the current time. If the pipeline stops, badges turn amber and then red on their own, with no rebuild needed.
-(With fixtures the clock is pinned to the fixture build time, so the Sample page keeps showing every state.)
+(With fixtures the clock is pinned to the fixture build time, so every freshness state stays visible.)
 
 **`data/registry.json`** is written by every `build`. It is `{generated_at, sources: [...]}`, where each source is its declared metadata
 (section 2) plus `retrieved_at` (latest), `as_of` (latest), `row_count`, and `readable`. `readable` is false when stored rows failed validation.
@@ -187,7 +187,6 @@ The router loads `import.meta.glob("./pages/*.tsx")`, and the nav is sorted by `
 | 70 | Capital |
 | 80 | Peers |
 | 100 | Data & Methods |
-| 999 | Sample |
 
 ## 7. Config files (one file per owner, so nothing is shared)
 | File | Owner | Content |

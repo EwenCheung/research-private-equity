@@ -178,19 +178,20 @@ The router loads `import.meta.glob("./pages/*.tsx")`, and the nav is sorted by `
 | Order | Page |
 |---|---|
 | 0 | Briefing |
+| 5 | Hot Pick |
 | 10 | AI Analysis |
 | 20 | Hiring |
 | 30 | Developer Adoption |
 | 40 | Consumer & Attention |
 | 50 | Product |
 | 70 | Capital |
-| 80 | Peers |
+| 80 | Signal |
 | 100 | Data & Methods |
 
 ## 7. Config files (one file per owner, so nothing is shared)
 | File | Owner | Content |
 |---|---|---|
-| `config/companies/<slug>.yaml` | 1.1, then `/add-company` | `slug`, `name`, `role` (`target` \| `peer`), `peers` (target only) |
+| `config/companies/<slug>.yaml` | 1.1 | `slug`, `name`, `role` (`target` \| `peer`), `peers` (target only) |
 | `config/identifiers/<page>.yaml` | that page | How to find each company in this page's sources, e.g. `anthropic: {greenhouse: anthropic}`, `openai: {ashby: openai}` |
 | `config/metrics/<page>.yaml` | that page | `<metric_id>: {label, unit, definition, aggregation: last\|sum\|mean, higher_is: good\|bad\|neutral}`. Metric ids are unique across all files, and the core fails on duplicates |
 
@@ -199,7 +200,7 @@ The router loads `import.meta.glob("./pages/*.tsx")`, and the nav is sorted by `
 ```bash
 uv run python -m pipeline.collect [--cadence daily|weekly] [--source ID ...] [--company SLUG]
 uv run python -m pipeline.build                 # raw + manual + ledgers -> data/marts/*.json + data/registry.json
-uv run python -m pipeline.editions freeze       # Phase 3: reports/YYYY-Www/
+uv run python -m pipeline.hot_pick              # Phase 3: reports/YYYY-Www/hot_pick.json
 uv run python -m pipeline.analysis              # Phase 4: bull, bear, neutral
 uv run pytest
 ```
@@ -216,9 +217,9 @@ uv run pytest
 | `GET /api/companies` | `[{slug, name, role}]`: targets first, then their peers in config order. Charts give each company a fixed colour |
 | `GET /api/registry` | `data/registry.json` sources, with `freshness` recomputed live |
 | `GET /api/freshness` | `{source: {freshness, retrieved_at, as_of}}`, live |
-| `GET /api/editions` | Phase 3: `["2026-W41", ...]` |
-| `GET /api/compare?id=&edition=` | Phase 3: `{current, previous, deltas}` |
-| `GET /api/analysis?edition=` | Phase 4: `{bull, bear, neutral}` |
+| `GET /api/hot-pick` | Phase 3: `["2026-W41", ...]`, newest first |
+| `GET /api/hot-pick/{week}` | Phase 3: `{week, picks: [{rank, kind: news\|insight, headline, why, score, url, source, as_of, retrieved_at}]}` |
+| `GET /api/analysis?week=` | Phase 4: `{bull, bear, neutral}` |
 
 **Environment:** see `.env.example`. `DATA_DIR` points the API at the pipeline's `data/` (Render sets `data`). If it's unset, the API serves `tests/fixtures/`.
 

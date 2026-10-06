@@ -5,8 +5,8 @@ An alt-data monitor for private companies, built for the deal team. First compan
 
 - **Provenance on every number.** Automated numbers show their source link, the date the data describes, and when it was retrieved.
   Manual numbers show who entered them, when, and from what evidence.
-- **Comparable over time and across companies.** Shared metric definitions, plus frozen weekly editions.
-- **Easy to refresh.** Daily and weekly GitHub Actions, or ask Claude for `/refresh-data`.
+- **Comparable over time.** Shared metric definitions, plus a weekly Hot Pick that keeps past weeks.
+- **Easy to refresh.** Ask Claude for `/refresh-data`; nothing runs on a schedule.
 - **AI Analysis.** Bull, Bear and Neutral reporters that cite the charts they rely on.
 
 Outputs are drafts for deal-team review, not investment advice. Only public sources and team-supplied data are used.

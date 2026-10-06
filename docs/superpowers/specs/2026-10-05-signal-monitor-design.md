@@ -26,7 +26,7 @@ All outputs, including the AI reporters, are drafts for deal-team review, not in
    Every number traces to an immutable raw snapshot.
 2. **Long-term and comparable.**
    - **Definitions:** one metric dictionary applies across time and across companies.
-   - **Weekly editions:** each week is frozen, so any two dates can be compared.
+   - **Weekly Hot Pick:** each week's hottest insights and news about Anthropic is kept, so past weeks stay readable (R21).
 3. **Easy or near-real-time updates.**
    - **Automated sources** refresh on demand with `/refresh-data` (no scheduled job, R19).
    - **Manual sources** are a single paste into Claude.
@@ -65,8 +65,8 @@ All outputs, including the AI reporters, are drafts for deal-team review, not in
 | Capital | Strategic holders' disclosures | Amazon / Alphabet 10-Q mentions (EDGAR) |
 | Licensed alt-data | YipitData and M Science panels | Placeholder CSVs, filled through `/add-manual-data` |
 
-Peers (OpenAI, Google DeepMind, xAI, Mistral, Cohere) get the same signal pack wherever a source exists.
-Each Anthropic number then also reads as a share.
+Peers (OpenAI, Google DeepMind, xAI, Mistral, Cohere) get the same signal pack wherever a source exists, and the Phase 2 charts keep them as context.
+Phase 3 looks at Anthropic only (R21).
 
 ## Arithmetic insights (labelled "arithmetic, not a model")
 - Run-rate CAGR and doubling time from the ARR ledger.
@@ -151,8 +151,7 @@ On "real-time": most sources only publish at daily resolution. So:
 ## Comparability for the deal team
 - **Metric dictionary.** `config/metrics/<page>.yaml` holds one canonical definition, unit and formula per metric.
   The files are merged at load, and every company is computed the same way.
-- **Weekly editions.** Each week is frozen in `reports/YYYY-Www/`: marts, the 3 AI reports, and `data_pack.xlsx` with provenance columns.
-  A "Compare to" picker shows WoW, MoM and YoY deltas against any edition.
+- **Weekly Hot Pick.** Each week's picks are kept in `reports/YYYY-Www/hot_pick.json`, with the 3 AI reports saved beside them once Phase 4 exists (R21).
 - **Exports.**
   - Every chart: CSV download.
   - The Briefing and AI Analysis pages: a print stylesheet for PDF.
@@ -192,11 +191,11 @@ Shared files have these rules:
 CLAUDE.md · README.md · .env.example · render.yaml · .claude/launch.json (ports via env, one pair per worktree)
 .claude/settings.json         marketplaces + 10 enabledPlugins + permission allowlist
 .claude/agents/               bull-reporter.md · bear-reporter.md · neutral-reporter.md
-.claude/skills/               refresh-data · add-source · add-manual-data · add-company · run-analysis
+.claude/skills/               refresh-data · add-source · hot-pick · run-analysis
 docs/ROADMAP.md · docs/contracts.md · contracts/*.schema.json
 config/companies/anthropic.yaml · config/metrics/<page>.yaml
 pipeline/core/                schema, registry, collect/build CLIs, freshness, company loader
-pipeline/sources/<page>.py    pipeline/marts/<page>.py    pipeline/editions.py    pipeline/analysis.py
+pipeline/sources/<page>.py    pipeline/marts/<page>.py    pipeline/hot_pick.py    pipeline/analysis.py
 app/server.py                 FastAPI
 frontend/src/components/ChartCard.tsx · frontend/src/pages/<Page>.tsx
 tests/fixtures/ · tests/test_<area>.py
@@ -281,41 +280,41 @@ Each implementation covers its page's collectors with backfills, ledgers, marts,
 | 2.7 | `p2/licensed-data` | Licensed Alt-Data + manual input | Yipit/M Science placeholder panels, `/add-manual-data` skill |
 | 2.8 | `p2/data-methods` | Data & Methods + refresh | registry page, gaps list, `/refresh-data` and `/add-source` skills |
 
-### Phase 3: Cross-page synthesis (depends on the Phase 2 marts; 4 parallel implementations)
-Phase 2 shows what each signal says; Phase 3 shows what they add up to. It follows R20: judge a signal by Anthropic's share against peers
-and its direction rather than its level, group signals into families so one verdict replaces several charts, and never let a hand-entered number feed a verdict.
+### Phase 3: Anthropic synthesis (depends on the Phase 2 marts; 3 parallel implementations)
+Phase 2 shows what each signal says; Phase 3 says what they add up to, for Anthropic only (R21). The rules (R20, R21): judge a signal by Anthropic's own direction
+against its own history rather than its level, since levels all trend up together and correlate with anything; group signals into families so one verdict replaces several charts;
+never let a hand-entered number feed a verdict; compute every sentence.
 
-**3.1 Peers grid and add-company** (`p3/peers`)
-- [ ] A "Peers" page: one row per company, one column per kept signal (latest value, share of the peer group, 3-month change, rank), using the metric dictionary.
-- [ ] `/add-company` skill.
-- Done when: adding a company config makes a new row appear in the grid.
-
-**3.2 Briefing page** (`p3/briefing`)
-- [ ] A first page with one verdict per signal family: developer usage, enterprise adoption, consumer attention, build-out. Each is Anthropic's share against OpenAI plus its 3-month direction, in one computed sentence.
-- [ ] Divergence flags, for example consumer attention falling while developer usage rises.
-- [ ] Tripwires from `config/tripwires.yaml`: plain-language rules ("SDK share down three months running") that you review. They answer "what changed".
+**3.1 Briefing page** (`p3/briefing`)
+- [ ] A first page with one verdict per signal family: developer usage, enterprise adoption, consumer attention, build-out. Each reads "accelerating", "steady" or "slowing" from the 3-month change against the 3 months before it and the same months a year earlier. Thresholds live in `config/briefing.yaml`.
+- [ ] Divergence flags, for example consumer attention slowing while developer usage accelerates.
+- [ ] Tripwires from `config/tripwires.yaml`: plain-language rules you review ("SDK downloads down three months running"). They answer "what changed".
 - [ ] Links into each page. No ARR extrapolation: the run-rate ledgers were removed (R18).
 - Done when: every sentence is computed from marts and every number links to its chart.
 
-**3.3 Signal tests** (`p3/signal-tests`)
-- [ ] A "Signal Tests" page: which signals move together (month-on-month changes and detrended levels), which lead which (0 to 3 months), and how stable each is.
-- [ ] Every cell shows n and a multiple-comparison caveat; a lead-lag result is labelled a hypothesis until it holds on new data.
-- Done when: re-running on new data updates the page, and a flat or noisy signal is labelled as such.
+**3.2 Signal page** (`p3/signal`)
+- [ ] `pipeline/marts/signal.py` relates Anthropic's own series: month-on-month changes and detrended levels, lead and lag (0 to 3 months), and stability across windows.
+- [ ] The page shows only the sharpest relationships, ranked by strength, stability and sample size, after a multiple-comparison correction and a holdout check (fit on the earlier two thirds, test on the last third). Each has its scatter, its n and one sentence. Everything else collapses to "no reliable relationship".
+- [ ] A signal-quality table (noise, trend, coverage start, cadence) so you know which series to trust.
+- [ ] A result is labelled a hypothesis until it holds on new data.
+- Done when: a planted noise series never reaches the sharpest list, and re-running on new data refreshes the page.
 
-**3.4 Weekly editions and comparability** (`p3/editions`)
-- [ ] `pipeline/editions.py`: freeze `reports/YYYY-Www/` (every chart spec, plus the Briefing once it exists) and write `data_pack.xlsx` with provenance columns. Run on demand after `/refresh-data`.
-- [ ] `/api/compare` and an "Editions" page.
-- [ ] "Compare to" picker. This is the only Phase 3 implementation allowed to touch `ChartCard`.
-- [ ] Print stylesheet.
+**3.3 Hot Pick** (`p3/hot-pick`)
+- [ ] The week's hottest insights and news about Anthropic, at most seven, each with why it is hot, a published score, its source link, its as-of date and when it was retrieved.
+- [ ] Insights come from the marts (the largest moves, the tripwires that fired). News comes from public headline and discussion feeds (Google News, Hacker News), whose collectors this implementation re-adds.
+- [ ] The score is a published rule (points, distinct outlets, size of the move). No AI-written text in Phase 3.
+- [ ] `pipeline/hot_pick.py` writes `reports/YYYY-Www/hot_pick.json` on demand after `/refresh-data`. The page shows this week, with earlier weeks one click away. `/hot-pick` skill.
+- Done when: every pick's number matches its source, and a week with little news shows fewer picks, not filler.
+- Dropped from the old editions plan: the Compare-to picker, `data_pack.xlsx`, the print stylesheet and any `ChartCard` change.
 
-### Phase 4: AI Analysis (depends on Phase 3: tripwires, edition deltas, peers)
+### Phase 4: AI Analysis (depends on Phase 3: tripwires, signal results, Hot Pick)
 **4.1 AI Analysis page** (`p4/ai-analysis`)
 - [ ] Evidence pack.
 - [ ] The 3 reporter agents.
 - [ ] `analysis.py` with the gates.
 - [ ] The page itself, with case history.
 - [ ] `/run-analysis` skill.
-- [ ] Run on demand (`/run-analysis`), with the reports included in each weekly edition.
+- [ ] Run on demand (`/run-analysis`), with the reports kept beside that week's Hot Pick.
 - Done when: all 3 reports pass the gates, and a planted fake number gets rejected.
 
 ### Phase 5: Team release (depends on Phase 4)
@@ -387,7 +386,7 @@ Out of scope, by your decisions or because the data is missing:
   - You approve.
 - Contracts: `tests/test_contracts.py` validates the fixtures. `test_core.py` rejects rows without provenance, and manual rows without `entered_by`.
 - Collectors: snapshot counts match the live APIs (Greenhouse 640 and Ashby 828 as of 2026-10-05).
-- Editions: a weekly run creates `reports/2026-Www/`. "Compare to" shows deltas, and `data_pack.xlsx` has provenance columns.
+- Hot Pick: a weekly run creates `reports/2026-Www/hot_pick.json`, and every pick has a source link and a published score.
 - AI: the reports pass the gates, and the planted-fake-number test is rejected.
 - Phase gates: `main` is served and checked by you; `/refresh-data` produces a data PR, and Render redeploys when it merges.
 - Release: in a fresh clone, Claude prompts for the 10 plugins, and every skill runs end to end.
@@ -450,9 +449,15 @@ Out of scope, by your decisions or because the data is missing:
   Earlier sections of this spec describe the removed items as originally planned.
 - **R19, 2026-10-06: there is no scheduled data job.** R2 is closed the other way: `daily.yml` and `weekly.yml` are removed, nothing writes to `main` directly,
   and data refreshes through `/refresh-data` on a branch and a PR. `ci.yml` stays. The 365-PR objection to a data branch no longer applies because refreshes are on demand.
-  Consequences: no `main` bypass is needed (R3), editions and AI analysis run on demand, and CLAUDE.md lost its one exception to "never write to `main`".
-- **R20, 2026-10-06: Phase 3 is re-planned after the cut (R18).** Reading 47 charts as a deal team showed four independent signal families and no summary.
+  Consequences: no `main` bypass is needed (R3), Hot Pick and AI analysis run on demand, and CLAUDE.md lost its one exception to "never write to `main`".
+- **R20, 2026-10-06: Phase 3 is re-planned after the cut (R18); the peer and editions parts are superseded by R21.** Reading 47 charts as a deal team showed four independent signal families and no summary.
   - Compare share against peers and direction, not levels. Levels all trend up together, so they correlate with anything: in a test against the company's stated run-rate (run before the ledgers were removed), even incident counts scored r 0.86.
   - Month-on-month changes were mostly uncorrelated (|r| below 0.45) apart from the two Wikipedia series (0.70) and the two download series (0.44). Wikipedia product views led PyPI downloads by one to two months (r about 0.5, n 31, 30 lags tried): a hypothesis to track, not a finding.
   - A market-wide dip (PyPI fell about 25% for Anthropic and 31% for OpenAI in Sep 2026) leaves share intact, which is why verdicts use share.
   - ARR extrapolation is dropped with the run-rate ledgers. Signal tests (3.3) is a new implementation; editions move to 3.4. `config/tripwires.yaml` holds the rules.
+- **R21, 2026-10-06: Phase 3 looks at Anthropic only, and editions become Hot Pick.**
+  - Peers grid and `/add-company` are dropped, and verdicts no longer use share against OpenAI. A verdict is Anthropic's own direction against its own history.
+    The Phase 2 charts still show peer lines as context; stripping them is a separate decision.
+  - Weekly editions become Hot Pick: a short weekly list of the hottest insights and news about Anthropic. Compare-to, the data pack and the print view are dropped.
+  - A Signal page is added for the sharpest relationships among Anthropic's own series, with the corrections that stop it showing noise (R20).
+  - Re-adds a headline collector and a Hacker News story collector, which R18 removed as noise: a short ranked pick list is not a feed.

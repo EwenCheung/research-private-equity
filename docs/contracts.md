@@ -181,9 +181,8 @@ The router loads `import.meta.glob("./pages/*.tsx")`, and the nav is sorted by `
 | 10 | AI Analysis |
 | 20 | Hiring |
 | 30 | Developer Adoption |
-| 40 | Attention |
+| 40 | Customers |
 | 50 | Product |
-| 60 | Customers |
 | 70 | Capital |
 | 80 | Peers |
 | 100 | Data & Methods |

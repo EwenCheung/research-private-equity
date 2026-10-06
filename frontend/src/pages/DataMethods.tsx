@@ -34,7 +34,7 @@ interface MartRow {
 const PAGES: Record<string, string> = {
   hiring: "Hiring & Talent",
   dev_adoption: "Developer Adoption",
-  attention: "Consumer & Attention",
+  attention: "Customers",
   product: "Product & Reliability",
   customers: "Customers",
   capital: "Capital & Valuation",
@@ -115,7 +115,10 @@ export default function DataMethods() {
   }, []);
 
   const byPage = new Map<string, Source[]>();
-  for (const s of sources ?? []) byPage.set(s.page, [...(byPage.get(s.page) ?? []), s]);
+  for (const s of sources ?? []) {
+    const group = PAGES[s.page] ?? s.page; // pages that were merged share one group
+    byPage.set(group, [...(byPage.get(group) ?? []), s]);
+  }
   const liveSources = (sources ?? []).filter((s) => s.method !== "ledger");
   const count = (f: Freshness) => liveSources.filter((s) => s.freshness === f).length;
   const hardcoded = (sources ?? []).filter((s) => s.method === "ledger").length;
@@ -144,9 +147,11 @@ export default function DataMethods() {
                 <FreshnessBadge state={f} /> {count(f)}
               </span>
             ))}
-            <span>
-              <HardcodedBadge /> {hardcoded}
-            </span>
+            {hardcoded ? (
+              <span>
+                <HardcodedBadge /> {hardcoded}
+              </span>
+            ) : null}
             <span>
               {sources.length} sources · {marts.length} charts · {empty.length} awaiting data
             </span>
@@ -155,13 +160,13 @@ export default function DataMethods() {
           <h2 className="section-title">Every source</h2>
           <p className="subtitle" style={{ marginBottom: 14 }}>
             Freshness measures when we last collected or updated a manual feed, not the date the data describes. A source is fresh within
-            its SLA, aging up to twice the SLA, and stale beyond. Cited ledgers are hardcoded and shown separately.
+            its SLA, aging up to twice the SLA, and stale beyond.{hardcoded ? " Cited ledgers are hardcoded and shown separately." : ""}
           </p>
           {[...byPage.entries()]
-            .sort(([a], [b]) => (PAGES[a] ?? a).localeCompare(PAGES[b] ?? b))
+            .sort(([a], [b]) => a.localeCompare(b))
             .map(([page, rows]) => (
               <section key={page} style={{ marginBottom: 22 }}>
-                <h3 style={{ font: "500 17px/1.3 var(--serif)", margin: "0 0 8px" }}>{PAGES[page] ?? page}</h3>
+                <h3 style={{ font: "500 17px/1.3 var(--serif)", margin: "0 0 8px" }}>{page}</h3>
                 <div className="table-wrap" style={{ maxHeight: "none" }}>
                   <table>
                     <thead>

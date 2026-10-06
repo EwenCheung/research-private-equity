@@ -45,12 +45,10 @@ Status: see [docs/ROADMAP.md](docs/ROADMAP.md). Design: [docs/superpowers/specs]
 | Serve the API (needs `.env`) | `uv run uvicorn app.server:app --port 8000 --env-file .env` |
 | Serve the dashboard in dev | `npm --prefix frontend run dev` (opens on port 5173 and proxies `/api` to 8000) |
 | See what changed and what is stale | `uv run python -m pipeline.report` |
-| Enter licensed (YipitData / M Science) figures | ask Claude Code for `/add-manual-data`, or `uv run python -m pipeline.licensed add ...` |
-| Import a quarterly H-1B file | `uv run python -m pipeline.sources.hiring import-lca <file>` (download it from the Department of Labor in a browser) |
 | Run the scheduled jobs on GitHub | `gh workflow run daily.yml` · `gh workflow run weekly.yml` |
 
-- **Claude Code skills** in this repo: `/refresh-data` (update everything and report), `/add-manual-data` (enter licensed figures), `/add-source` (add a new collector).
-- Optional keys in `.env`: `SERPAPI_KEY` turns on the Google Trends chart; `GITHUB_TOKEN` is not needed if you are signed in with `gh auth login`.
+- **Claude Code skills** in this repo: `/refresh-data` (update everything and report), `/add-source` (add a new collector).
+- Optional keys in `.env`: `OPENROUTER_API_KEY` turns on the OpenRouter benchmark charts; `GITHUB_TOKEN` is not needed if you are signed in with `gh auth login`.
 - The API serves the Phase 0 fixtures unless `DATA_DIR=data` is set. Add that to `.env` to see the real collected data.
 - In worktree `n`, use ports `8000+n` and `5173+n` instead. For example, worktree 2 serves the API with `--port 8002` and runs the dashboard with `API_PORT=8002 WEB_PORT=5175 npm --prefix frontend run dev`.
 

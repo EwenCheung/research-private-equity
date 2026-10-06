@@ -1,48 +1,23 @@
 # How each company is found in the attention sources. Verified live on 2026-10-05.
-# appstore: the consumer app's id in Apple's US storefront (Cohere has no consumer app).
 # wiki_product / wiki_company: English Wikipedia titles. Pages get renamed, so every title the topic has had is listed;
 #   views of each title are summed (a reader lands on exactly one title, so nothing is counted twice).
 #   Renames seen: Claude (language model) -> Claude (AI); Bard (chatbot) -> Gemini (chatbot) -> Google Gemini; XAI (company) -> SpaceXAI.
 #   Claude had no article of its own before January 2024 (it was covered inside Anthropic), so its series starts then.
 #   Gemini's model-family article is included so Gemini is comparable with Claude's single model-and-assistant article.
-# news_query: Google News and GDELT search terms. hn_query: Hacker News search text (Algolia matches every word).
-# trends_term: the term compared on Google Trends (needs SERPAPI_KEY). Trends compares at most 5 terms, so Cohere has none.
 anthropic:
-  appstore: {id: "6473753684", name: Claude}
   wiki_product: [Claude (language model), Claude (AI)]
   wiki_company: [Anthropic]
-  news_query: '"Anthropic" AI'
-  hn_query: Anthropic
-  trends_term: Claude AI
 openai:
-  appstore: {id: "6448311069", name: ChatGPT}
   wiki_product: [ChatGPT]
   wiki_company: [OpenAI]
-  news_query: '"OpenAI"'
-  hn_query: OpenAI
-  trends_term: ChatGPT
 google-deepmind:
-  appstore: {id: "6477489729", name: Gemini}
   wiki_product: [Bard (chatbot), Google Bard, Gemini (chatbot), Google Gemini, Gemini (language model)]
   wiki_company: [Google DeepMind]
-  news_query: '"DeepMind"'
-  hn_query: DeepMind
-  trends_term: Google Gemini
 xai:
-  appstore: {id: "6670324846", name: Grok}
   wiki_product: [Grok (chatbot)]
   wiki_company: [XAI (company), SpaceXAI]
-  news_query: '"Grok" xAI'
-  hn_query: Grok
-  trends_term: Grok AI
 mistral:
-  appstore: {id: "6740410176", name: Le Chat}
   wiki_product: [Le Chat]
   wiki_company: [Mistral AI]
-  news_query: '"Mistral AI"'
-  hn_query: '"Mistral AI"'
-  trends_term: Mistral AI
 cohere:
   wiki_company: [Cohere]
-  news_query: '"Cohere" AI'
-  hn_query: Cohere AI

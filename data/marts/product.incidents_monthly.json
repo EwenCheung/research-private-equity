@@ -1,6 +1,6 @@
 {
-  "title": "Claude status incidents per month",
-  "subtitle": "Incidents posted on status.claude.com, by the impact Anthropic assigned, complete months",
+  "title": "Incidents on Claude's status page per month",
+  "subtitle": "Incidents posted on status.claude.com, by the impact Anthropic assigned, complete months. Fewer is better.",
   "kind": "stacked_bar",
   "encoding": {
     "x": {
@@ -525,8 +525,8 @@
   "sources": [
     {
       "source": "status_incidents",
-      "label": "Public status pages (Anthropic and OpenAI)",
-      "url": "https://status.openai.com/incidents/01M45E0JFFJZ6EQ3BWYPW74R2Z",
+      "label": "Claude status page",
+      "url": "https://status.claude.com/incidents/k0h22tsvnydg",
       "method": "api",
       "tier": "company-stated",
       "cadence": "daily",
@@ -537,5 +537,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T08:47:54Z"
+  "generated_at": "2026-10-06T07:49:00Z"
 }

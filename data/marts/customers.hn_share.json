@@ -1,6 +1,6 @@
 {
-  "title": "Share of hiring posts naming each lab",
-  "subtitle": "Top-level posts in Hacker News 'Ask HN: Who is hiring?' that name the lab or its models, by month",
+  "title": "Share of Who-is-hiring posts that name each lab",
+  "subtitle": "Posts in the monthly 'Ask HN: Who is hiring?' thread that name the lab or its models, as a share of all posts that month",
   "kind": "line",
   "encoding": {
     "x": {
@@ -1961,7 +1961,7 @@
     {
       "source": "hn_who_is_hiring",
       "label": "Hacker News 'Who is hiring?' threads (Algolia)",
-      "url": "https://news.ycombinator.com/item?id=49922569",
+      "url": "https://news.ycombinator.com/item?id=49522897",
       "method": "api",
       "tier": "platform",
       "cadence": "weekly",
@@ -1972,5 +1972,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T08:47:54Z"
+  "generated_at": "2026-10-06T07:49:00Z"
 }

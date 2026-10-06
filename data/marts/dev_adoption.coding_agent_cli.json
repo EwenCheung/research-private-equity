@@ -1,6 +1,6 @@
 {
-  "title": "Coding-agent CLI downloads per month",
-  "subtitle": "Claude Code vs OpenAI Codex CLI vs Gemini CLI on npm, complete months",
+  "title": "Coding-tool downloads per month: Claude Code, Codex, Gemini CLI",
+  "subtitle": "Downloads of each company's coding-agent command-line tool on npm, complete months",
   "kind": "line",
   "encoding": {
     "x": {
@@ -456,5 +456,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T08:47:54Z"
+  "generated_at": "2026-10-06T07:49:00Z"
 }

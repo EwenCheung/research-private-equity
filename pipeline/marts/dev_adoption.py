@@ -156,25 +156,6 @@ def lead_takeaway(ctx, df: pd.DataFrame, what: str) -> list[str]:
 SDK_SOURCES = ["pypi_downloads"]
 
 
-@mart(id="dev_adoption.python_sdk_monthly", sources=SDK_SOURCES)
-def python_sdk_monthly(ctx):
-    df = monthly(ctx, "pypi_downloads", "sdk")
-    return line(
-        "Python SDK downloads per month",
-        "Downloads",
-        "downloads",
-        company_rows(ctx, df, "downloads"),
-        lead_takeaway(ctx, df, "Python SDK"),
-        DOWNLOADS
-        + spike_note(ctx, df)
-        + [
-            "Google is google-genai plus the legacy google-generativeai; xAI is xai-sdk.",
-            "The running month is left out until it completes.",
-        ],
-        subtitle="Official API SDKs on PyPI, complete months",
-    )
-
-
 @mart(id="dev_adoption.python_sdk_share", sources=SDK_SOURCES)
 def python_sdk_share(ctx):
     df = monthly(ctx, "pypi_downloads", "sdk")
@@ -203,8 +184,8 @@ def python_sdk_share(ctx):
             )
         ]
     return {
-        "title": "Share of Python SDK downloads",
-        "subtitle": "Each company's share of downloads across the six tracked SDKs, last 18 complete months",
+        "title": "Each company's share of Python SDK downloads",
+        "subtitle": "Share of downloads across the six companies' official Python SDKs on PyPI, last 18 complete months",
         "kind": "stacked_bar",
         "encoding": {
             "x": {"field": "month", "type": "temporal", "label": "Month"},
@@ -231,7 +212,7 @@ def python_sdk_share(ctx):
 def js_sdk_monthly(ctx):
     df = monthly(ctx, "npm_downloads", "sdk")
     return line(
-        "JavaScript SDK downloads per month",
+        "Downloads of each company's JavaScript SDK per month",
         "Downloads",
         "downloads",
         company_rows(ctx, df, "downloads"),
@@ -239,7 +220,7 @@ def js_sdk_monthly(ctx):
         DOWNLOADS
         + spike_note(ctx, df)
         + ["Google is @google/genai plus the legacy @google/generative-ai. xAI publishes no npm SDK."],
-        subtitle="Official API SDKs on npm, complete months",
+        subtitle="Official API software kits on npm, complete months",
     )
 
 
@@ -252,7 +233,7 @@ def coding_agent_cli(ctx):
         if r["dims"].get("role") == "cli"
     }
     spec = line(
-        "Coding-agent CLI downloads per month",
+        "Coding-tool downloads per month: Claude Code, Codex, Gemini CLI",
         "Downloads",
         "downloads",
         company_rows(ctx, df, "downloads"),
@@ -263,7 +244,7 @@ def coding_agent_cli(ctx):
             "Products: " + ", ".join(f"{ctx.names.get(e, e)} = {p}" for e, p in sorted(products.items())) + ".",
             "CLIs update often, and each update is a download, so release cadence inflates counts.",
         ],
-        subtitle="Claude Code vs OpenAI Codex CLI vs Gemini CLI on npm, complete months",
+        subtitle="Downloads of each company's coding-agent command-line tool on npm, complete months",
     )
     return spec
 
@@ -287,8 +268,8 @@ def coauthored_commits(ctx):
             )
         ]
     return {
-        "title": "Public GitHub commits co-authored by Claude",
-        "subtitle": "Weekly commit-search count of the Claude Code co-author trailer",
+        "title": "Public GitHub commits written with Claude Code, per week",
+        "subtitle": "Weekly count of public commits carrying Claude Code's co-author line",
         "kind": "line",
         "encoding": {
             "x": {"field": "week", "type": "temporal", "label": "Week"},
@@ -310,173 +291,4 @@ def coauthored_commits(ctx):
             "Other coding agents add no comparable trailer, so there is no peer series.",
         ],
         "badges": ["arithmetic"],
-    }
-
-
-def snapshot_bar(ctx, metric: str, title: str, label: str, assumptions: list[str], subtitle: str) -> dict:
-    """Latest snapshot per company as bars, with the change since our first snapshot once there is one."""
-    df = latest(ctx.obs(metric=metric), keys=("entity", "as_of")).sort_values("as_of")
-    rows = []
-    for entity, g in df.groupby("entity"):
-        first, last = g.iloc[0], g.iloc[-1]
-        rows.append(
-            {
-                "company": ctx.names.get(entity, entity),
-                "value": int(last.value),
-                "since": first.as_of,
-                "growth": round(last.value / first.value - 1, 4) if first.value and last.as_of != first.as_of else None,
-            }
-        )
-    rows.sort(key=lambda r: -r["value"])
-    takeaway = []
-    if rows:
-        lead = rows[0]
-        takeaway = [f"{lead['company']} leads with {num(lead['value'])} {label.lower()}."]
-        a = next((r for r in rows if r["company"] == ctx.names.get("anthropic")), None)
-        if a and a is not lead:
-            takeaway = [
-                f"Anthropic has {num(a['value'])} {label.lower()}; {lead['company']} leads with {num(lead['value'])}."
-            ]
-        elif a and len(rows) > 1:
-            takeaway = [
-                f"Anthropic leads with {num(a['value'])} {label.lower()}, {a['value'] / rows[1]['value']:.1f}× {rows[1]['company']}."
-            ]
-    return {
-        "title": title,
-        "subtitle": subtitle,
-        "kind": "bar",
-        "encoding": {
-            "x": {"field": "company", "type": "nominal", "label": "Company"},
-            "y": {"field": "value", "type": "quantitative", "label": label, "format": "int"},
-            "color": {"field": "company", "type": "nominal", "label": "Company"},
-        },
-        "columns": [
-            {"field": "company", "label": "Company", "format": "text"},
-            {"field": "value", "label": label, "format": "int"},
-            {"field": "growth", "label": "Change since first snapshot", "format": "pct"},
-            {"field": "since", "label": "First snapshot", "format": "date"},
-        ],
-        "rows": rows,
-        "takeaway": takeaway,
-        "assumptions": assumptions,
-        "badges": [],
-    }
-
-
-@mart(id="dev_adoption.vscode_installs", sources=["vscode_installs"])
-def vscode(ctx):
-    return snapshot_bar(
-        ctx,
-        "vscode_installs",
-        "VS Code extension installs",
-        "Installs",
-        [
-            "Cumulative marketplace installs; uninstalls are not subtracted.",
-            "Extensions: Claude Code (anthropic.claude-code), ChatGPT/Codex (openai.chatgpt), Gemini Code Assist.",
-            "The marketplace publishes no history; growth is measured from our own daily snapshots.",
-        ],
-        "Cumulative installs of each company's coding extension, latest snapshot",
-    )
-
-
-@mart(id="dev_adoption.github_stars", sources=["github_org_stats"])
-def github_stars(ctx):
-    return snapshot_bar(
-        ctx,
-        "org_stars",
-        "GitHub stars across each company's public repos",
-        "Stars",
-        [
-            "Sum of stars on the organisation's public, non-fork repositories on the day collected.",
-            "Orgs: anthropics, openai, google-gemini, xai-org, mistralai, cohere-ai.",
-            "Stars are cumulative interest, not usage; one viral repo can dominate a total.",
-        ],
-        "Stars on public, non-fork repositories, latest snapshot",
-    )
-
-
-@mart(id="dev_adoption.mcp_sdk_downloads", sources=["pypi_downloads", "npm_downloads"])
-def mcp_sdk_downloads(ctx):
-    frames_ = []
-    for metric, name in (
-        ("pypi_downloads", "Python (mcp)"),
-        ("npm_downloads", "TypeScript (@modelcontextprotocol/sdk)"),
-    ):
-        m = monthly(ctx, metric, "mcp")
-        frames_.append(m.assign(series=name))
-    df = pd.concat(frames_) if frames_ else pd.DataFrame()
-    df = df[df["month"] >= "2024-11-01"] if len(df) else df
-    rows = [
-        {"month": r.month, "series": r.series, "downloads": int(r.value)}
-        for r in df.sort_values(["month", "series"]).itertuples()
-    ]
-    takeaway = []
-    if len(df):
-        tot = df.groupby("month")["value"].sum()
-        if len(tot) > 3:
-            takeaway = [
-                (
-                    f"Model Context Protocol SDKs were downloaded {num(tot.iloc[-1])} times in {month_label(tot.index[-1])}, "
-                    f"{change(tot.iloc[-1], tot.iloc[-4])} on {month_label(tot.index[-4])}."
-                )
-            ]
-    return {
-        "title": "Model Context Protocol SDK downloads",
-        "subtitle": "MCP is Anthropic's open protocol for connecting models to tools; complete months since launch",
-        "kind": "line",
-        "encoding": {
-            "x": {"field": "month", "type": "temporal", "label": "Month"},
-            "y": {"field": "downloads", "type": "quantitative", "label": "Downloads", "format": "int"},
-            "color": {"field": "series", "type": "nominal", "label": "SDK"},
-        },
-        "columns": [
-            CHART_DATE,
-            {"field": "series", "label": "SDK", "format": "text"},
-            {"field": "downloads", "label": "Downloads", "format": "int"},
-        ],
-        "rows": rows,
-        "takeaway": takeaway,
-        "assumptions": DOWNLOADS
-        + ["MCP is used by every major AI vendor now, so this measures the protocol's reach, not Claude usage alone."],
-        "badges": [],
-    }
-
-
-@mart(id="dev_adoption.mcp_server_repos", sources=["github_mcp_server_repos"])
-def mcp_server_repos(ctx):
-    df = dims(latest(ctx.obs(metric="mcp_server_repos_new"), keys=("entity", "as_of")), "partial_month").sort_values(
-        "as_of"
-    )
-    rows = [
-        {"month": r.as_of, "repos": int(r.value), "partial": "yes" if r.partial_month else ""} for r in df.itertuples()
-    ]
-    full = df[~df["partial_month"].astype(bool)]
-    takeaway = []
-    if len(full) > 3:
-        takeaway = [
-            (
-                f"{num(full['value'].iloc[-1])} new mcp-server repos were created in {month_label(full['as_of'].iloc[-1])}; "
-                f"{num(full['value'].sum())} since MCP launched."
-            )
-        ]
-    return {
-        "title": "New MCP-server repositories per month",
-        "subtitle": "Public GitHub repos tagged mcp-server, by creation month",
-        "kind": "bar",
-        "encoding": {
-            "x": {"field": "month", "type": "temporal", "label": "Month"},
-            "y": {"field": "repos", "type": "quantitative", "label": "New repos", "format": "int"},
-        },
-        "columns": [
-            CHART_DATE,
-            {"field": "repos", "label": "New repos", "format": "int"},
-            {"field": "partial", "label": "Month still running", "format": "text"},
-        ],
-        "rows": rows,
-        "takeaway": takeaway,
-        "assumptions": [
-            "Only repos that add the mcp-server topic are counted, so this is a lower bound.",
-            "The running month is shown but partial; it is re-counted each run.",
-        ],
-        "badges": [],
     }

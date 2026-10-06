@@ -1,6 +1,4 @@
-import csv
 import json
-from datetime import UTC, datetime
 
 import httpx
 import pytest
@@ -273,34 +271,6 @@ def build(mart_fn, rows):
     return mart_fn(Ctx(rows, NAMES))
 
 
-def test_role_mix_shares_and_rerun_dedupe():
-    rows = [
-        posting("anthropic", "Sales", "AE", "London, UK"),
-        posting("anthropic", "Sales", "AE2", "London, UK"),
-        posting("anthropic", "Finance", "Controller", "San Francisco, CA"),
-        posting("anthropic", "Security", "Eng", "San Francisco, CA"),
-    ]
-    rows += [
-        posting("anthropic", "Sales", "AE", "London, UK", retrieved="2026-10-05T03:00:00Z")
-    ]  # an older re-run of the same day
-    spec = build(marts.role_mix, rows)
-    shares = {r["function"]: r["share"] for r in spec["rows"]}
-    assert shares == {"Go-to-market & support": 0.5, "Safety, security & policy": 0.25, "Corporate & operations": 0.25}
-    assert spec["takeaway"][0].startswith("Anthropic's open roles are led by go-to-market & support (50%)")
-
-
-def test_region_mix_takeaway_excludes_remote_from_the_denominator():
-    rows = [
-        posting("anthropic", "Sales", "a", "London, UK"),
-        posting("anthropic", "Sales", "b", "San Francisco, CA"),
-        posting("anthropic", "Sales", "c", "Remote"),
-        posting("openai", "Sales", "d", "San Francisco"),
-    ]
-    spec = build(marts.region_mix, rows)
-    assert spec["badges"] == ["arithmetic"]
-    assert spec["takeaway"] == ["50% of Anthropic's roles with a stated location are outside the US (OpenAI 0%)."]
-
-
 def test_gtm_to_rd_counts_both_sides():
     rows = [
         posting("anthropic", "Sales", "a", "SF"),
@@ -327,132 +297,9 @@ def test_open_roles_joins_live_and_archive_history():
         ("2026-10-05", "Anthropic", 639),
     ]
     assert "117 roles in 2024-06 to 639 on 2026-10-05 (+446%)" in spec["takeaway"][0]
-    head = build(marts.headline_open_roles, rows)
-    a = next(r for r in head["rows"] if r["company"] == "Anthropic")
-    assert (a["roles"], a["change"], a["since"]) == (639, 522, "2024-06-05")
-    assert next(r for r in head["rows"] if r["company"] == "OpenAI")["change"] is None  # no snapshot 4+ weeks old yet
-    assert head["takeaway"] == ["Anthropic lists 639 open roles, 188 fewer than OpenAI (827)."]
-
-
-def test_h1b_charts_wait_for_data_then_roll_up_by_quarter():
-    empty = build(marts.h1b_filings, [])
-    assert empty["rows"] == [] and empty["takeaway"][0].startswith("Awaiting data")
-    ledger = lambda metric, d, v: {
-        **obs("hiring_h1b_lca", metric, "anthropic", d, v),
-        "method": "ledger",
-        "entered_by": "E",
-        "evidence": "case X",
-    }
-    rows = [ledger("h1b_lca_filing", d, 1) for d in ("2026-01-10", "2026-02-10", "2026-04-10")]
-    rows += [
-        ledger("h1b_offered_wage_annual", d, v)
-        for d, v in (("2026-01-10", 200000), ("2026-02-10", 300000), ("2026-04-10", 250000))
-    ]
-    f = build(marts.h1b_filings, rows)
-    assert [(r["quarter"], r["filings"]) for r in f["rows"]] == [("2026-01-01", 2), ("2026-04-01", 1)]
-    w = build(marts.h1b_wages, rows)
-    assert [(r["quarter"], r["wage"]) for r in w["rows"]] == [("2026-01-01", 250000), ("2026-04-01", 250000)]
 
 
 # ---- H-1B import ----
-
-
-def write_lca(path, rows):
-    cols = [
-        "CASE_NUMBER",
-        "CASE_STATUS",
-        "DECISION_DATE",
-        "VISA_CLASS",
-        "EMPLOYER_NAME",
-        "JOB_TITLE",
-        "SOC_TITLE",
-        "WAGE_RATE_OF_PAY_FROM",
-        "WAGE_UNIT_OF_PAY",
-        "WORKSITE_STATE",
-    ]
-    with path.open("w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=cols)
-        w.writeheader()
-        w.writerows(rows)
-
-
-def test_import_lca_keeps_tracked_employers_annualises_wages_and_never_duplicates(tmp_path):
-    (tmp_path / "config/companies").mkdir(parents=True)
-    (tmp_path / "config/identifiers").mkdir()
-    (tmp_path / "config/companies/anthropic.yaml").write_text("slug: anthropic\nname: Anthropic\nrole: target\n")
-    (tmp_path / "config/identifiers/hiring.yaml").write_text("anthropic: {lca_employers: [ANTHROPIC PBC]}\n")
-    base = {
-        "CASE_STATUS": "Certified",
-        "DECISION_DATE": "2026-02-10",
-        "VISA_CLASS": "H-1B",
-        "JOB_TITLE": "Engineer",
-        "SOC_TITLE": "Software",
-        "WORKSITE_STATE": "CA",
-    }
-    f = tmp_path / "LCA_Disclosure_Data_FY2026_Q2.csv"
-    write_lca(
-        f,
-        [
-            {
-                **base,
-                "CASE_NUMBER": "I-1",
-                "EMPLOYER_NAME": "Anthropic, PBC",
-                "WAGE_RATE_OF_PAY_FROM": "100",
-                "WAGE_UNIT_OF_PAY": "Hour",
-            },
-            {
-                **base,
-                "CASE_NUMBER": "I-2",
-                "EMPLOYER_NAME": "ANTHROPIC PBC",
-                "WAGE_RATE_OF_PAY_FROM": "250,000",
-                "WAGE_UNIT_OF_PAY": "Year",
-            },
-            {
-                **base,
-                "CASE_NUMBER": "I-3",
-                "EMPLOYER_NAME": "Some Other Corp",
-                "WAGE_RATE_OF_PAY_FROM": "1",
-                "WAGE_UNIT_OF_PAY": "Year",
-            },
-            {
-                **base,
-                "CASE_NUMBER": "I-4",
-                "EMPLOYER_NAME": "Anthropic PBC",
-                "VISA_CLASS": "E-3 Australian",
-                "WAGE_RATE_OF_PAY_FROM": "1",
-                "WAGE_UNIT_OF_PAY": "Year",
-            },
-        ],
-    )
-    now = datetime(2026, 10, 5, 12, 0, tzinfo=UTC)
-    added, matched = src.import_lca(f, root=tmp_path, entered_by="EwenCheung", now=now)
-    assert added == 4 and matched == {
-        "Anthropic, PBC": 1,
-        "ANTHROPIC PBC": 1,
-    }  # 2 filings + 2 wages; other employer and E-3 skipped
-    rows = list(csv.DictReader((tmp_path / src.LCA_LEDGER).open()))
-    wage = {
-        json.loads(r["dims"])["case_number"]: float(r["value"])
-        for r in rows
-        if r["metric"] == "h1b_offered_wage_annual"
-    }
-    assert wage == {"I-1": 208000.0, "I-2": 250000.0}  # $100/hour x 2080
-    assert {r["entered_by"] for r in rows} == {"EwenCheung"} and all(
-        "LCA_Disclosure_Data_FY2026_Q2.csv, case" in r["evidence"] for r in rows
-    )
-    assert src.import_lca(f, root=tmp_path, entered_by="EwenCheung", now=now)[0] == 0  # re-importing adds nothing
-    for r in rows:  # the ledger rows are valid observations once the core stamps the source
-        validate(
-            "observation",
-            {
-                **r,
-                "source": "hiring_h1b_lca",
-                "method": "ledger",
-                "tier": "filing",
-                "value": float(r["value"]),
-                "dims": json.loads(r["dims"]),
-            },
-        )
 
 
 def test_patient_get_waits_out_a_refusing_archive(monkeypatch):

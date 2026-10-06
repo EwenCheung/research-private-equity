@@ -10,7 +10,6 @@ from pipeline.core.build import build
 from pipeline.core.collect import collect
 from pipeline.core.companies import load_companies
 from pipeline.core.store import read_observations
-from pipeline.sources import snapshots
 
 META = {
     "id": "fake_jobs",
@@ -327,6 +326,17 @@ def test_a_mart_only_sees_its_declared_sources(clean_registry, root):
     assert [r["value"] for r in build_one(root, NOW)["rows"]] == [640]
 
 
+def test_the_source_link_is_a_row_the_chart_read_not_another_companys(clean_registry, root):
+    def rows(co):  # b's rows are newer, so a link taken from the whole source would point at b
+        day = "2026-10-05" if co.slug == "b" else "2026-10-04"
+        return [{**ROW, "entity": co.slug, "as_of": day, "source_url": f"https://example.com/{co.slug}/jobs"}]
+
+    registry.source(**META)(rows)
+    registry.mart(id="hiring.open_roles", sources=["fake_jobs"])(open_roles)  # reads company a only
+    collect(root=root, now=NOW)
+    assert build_one(root, NOW)["sources"][0]["url"] == "https://example.com/a/jobs"
+
+
 def test_a_broken_mart_is_reported_and_the_others_still_build(clean_registry, root):
     registry.source(**META)(lambda co: [{**ROW, "entity": co.slug}])
     registry.mart(id="hiring.bad", sources=["fake_jobs"])(lambda ctx: {"title": "no columns"})
@@ -344,61 +354,6 @@ def test_duplicate_metric_ids_fail_the_build(clean_registry, root):
     (root / "config/metrics/product.yaml").write_text(spec)
     with pytest.raises(ValueError, match="defined in both"):
         build(root=root, now=NOW)
-
-
-# ---- snapshots ----
-
-
-def test_appstore_snapshot_emits_ranks_for_tracked_apps_only(monkeypatch):
-    feed = {"feed": {"entry": [{"id": {"attributes": {"im:id": i}}} for i in ("111", "6473753684", "222")]}}
-    fake = type("R", (), {"raise_for_status": lambda self: None, "json": lambda self: feed})()
-    monkeypatch.setattr(snapshots.httpx, "get", lambda *a, **k: fake)
-    snapshots._chart.cache_clear()
-    try:
-        cos = load_companies(ROOT)
-        rows = {c: list(snapshots.appstore_top_charts(cos[c])) for c in ("anthropic", "openai", "cohere")}
-    finally:
-        snapshots._chart.cache_clear()
-    [claude] = rows["anthropic"]
-    assert (claude["entity"], claude["metric"], claude["value"]) == ("anthropic", "appstore_rank", 2)
-    assert claude["dims"]["app_name"] == "Claude"
-    assert rows["openai"] == []  # tracked, but not in the chart: no row, never an invented rank
-    assert rows["cohere"] == []  # no app configured
-    validate(
-        "observation",
-        {
-            **claude,
-            "source": "appstore_top_charts",
-            "method": "api",
-            "tier": "platform",
-            "retrieved_at": "2026-10-05T06:02:11Z",
-        },
-    )
-
-
-def test_snapshot_source_is_declared_non_backfillable():
-    meta = registry.SOURCES["appstore_top_charts"].meta
-    assert meta["backfillable"] is False and meta["cadence"] == "daily"
-
-
-def test_appstore_fetch_retries_a_stalled_request(monkeypatch):
-    feed = {"feed": {"entry": [{"id": {"attributes": {"im:id": "9"}}}]}}
-    ok = type("R", (), {"raise_for_status": lambda self: None, "json": lambda self: feed})()
-    calls = []
-
-    def flaky(*a, **k):
-        calls.append(1)
-        if len(calls) < 3:
-            raise snapshots.httpx.ReadTimeout("stalled")
-        return ok
-
-    monkeypatch.setattr(snapshots.httpx, "get", flaky)
-    snapshots._chart.cache_clear()
-    try:
-        assert snapshots._chart() == {"9": 1}
-    finally:
-        snapshots._chart.cache_clear()
-    assert len(calls) == 3
 
 
 # ---- shared http and incremental helpers ----

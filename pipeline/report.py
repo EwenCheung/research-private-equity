@@ -71,7 +71,7 @@ def build_report(root: Path = ROOT, now: datetime | None = None, before: dict | 
 ACTION = {
     "api": "run `uv run python -m pipeline.collect --source {id}` and read its error",
     "scrape": "run `uv run python -m pipeline.collect --source {id}` and read its error",
-    "manual": "enter the latest figures with /add-manual-data",
+    "manual": "enter the latest figures by hand (format in docs/contracts.md)",
     "ledger": "update the ledger: add the new rows with a source link and a verbatim quote",
 }
 

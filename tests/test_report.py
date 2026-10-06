@@ -72,7 +72,7 @@ def test_each_kind_of_source_gets_the_right_next_step(tmp_path):
         ],
     )
     text = report.render(report.build_report(root, NOW, before={"sources": []}))
-    assert "pipeline.collect --source api_x" in text and "/add-manual-data" in text and "verbatim quote" in text
+    assert "pipeline.collect --source api_x" in text and "docs/contracts.md" in text and "verbatim quote" in text
 
 
 def test_empty_charts_are_listed_with_the_reason(tmp_path):

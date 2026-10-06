@@ -16,21 +16,3 @@ sec_filing_mention:
   definition: One 10-K or 10-Q (amendments included) whose main document matches a company's EDGAR full-text query, dated by filing date. A filer can be a customer, supplier, investor or competitor; the metric does not say which.
   aggregation: sum
   higher_is: neutral
-federal_award_obligation_usd:
-  label: Federal award obligation
-  unit: USD
-  definition: Total amount obligated on one federal award (USAspending "Award Amount") to a recipient whose name matches the company, dated by the award start date.
-  aggregation: last
-  higher_is: neutral
-federal_awards_found:
-  label: Federal awards found
-  unit: awards
-  definition: How many USAspending awards (every award type) went to recipients matching the company's name patterns on the retrieval day; 0 is a real result.
-  aggregation: last
-  higher_is: neutral
-customer_kpi_claim:
-  label: Customer metric claimed by the company
-  unit: customers, as worded in dims.what
-  definition: A customer count that Anthropic states about itself in its own newsroom, with the sentence quoted. dims.what says exactly what was counted and dims.threshold the spend or size cut-off, if any.
-  aggregation: last
-  higher_is: good

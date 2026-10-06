@@ -1,6 +1,6 @@
 {
-  "title": "Public GitHub commits co-authored by Claude",
-  "subtitle": "Weekly commit-search count of the Claude Code co-author trailer",
+  "title": "Public GitHub commits written with Claude Code, per week",
+  "subtitle": "Weekly count of public commits carrying Claude Code's co-author line",
   "kind": "line",
   "encoding": {
     "x": {
@@ -895,5 +895,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T08:47:54Z"
+  "generated_at": "2026-10-06T07:49:00Z"
 }

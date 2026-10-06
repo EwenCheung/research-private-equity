@@ -432,3 +432,10 @@ Out of scope, by your decisions or because the data is missing:
     Ledger rows compiled by the assistant carry `entered_by = "EwenCheung via Claude"`. OpenAI's status feed holds only its latest 25 incidents, so its history starts when collection began.
   - **Licensed data.** Entry goes through `pipeline.licensed`, which requires non-blank evidence, never overwrites, and stamps who and when. The contract alone accepted whitespace as evidence.
 - **R17: customers and capital are built in separate sessions** (2.5, 2.6) from prompts that carry these lessons. Their PRs go into `phase/2` like the others.
+- **R18, 2026-10-06: the monitor was cut to what carries signal.** Read as a deal team, 47 charts held 13 that did: the rest were hand-entered,
+  empty, duplicates, snapshots with no history or detail tables. The pages now show 11 charts and two embedded leaderboards.
+  Removed with them: the YipitData and M Science sources and `/add-manual-data`, the H-1B import, the hand-entered capital and customer-claim ledgers,
+  the model release, API price, plan price and adoption ledgers, and the GDELT, Google Trends, Google News, Hacker News story, App Store, Form D,
+  USAspending, GitHub org, VS Code and MCP collectors, and the OpenRouter ranking scrape and benchmarks API (R10 stands: OpenRouter is dropped).
+  Raw snapshots stay in `data/raw`.
+  Earlier sections of this spec describe the removed items as originally planned.

@@ -12,7 +12,7 @@ Every number in the system is one observation row. The schema is `contracts/obse
 | Field | Type | Meaning |
 |---|---|---|
 | `source` | `snake_case` | Registry id, e.g. `greenhouse_jobs` |
-| `source_url` | URI | Exact URL fetched, or `urn:` when there's no URL (e.g. `urn:yipitdata:claude-consumer-weekly`) |
+| `source_url` | URI | Exact URL fetched, or `urn:` when there's no URL (e.g. `urn:analyst-note:2026-10-05`) |
 | `method` | enum | `api` · `scrape` · `manual` · `ledger` |
 | `as_of` | `YYYY-MM-DD` | The date the value **describes** |
 | `retrieved_at` | RFC 3339 UTC | When we fetched it, or when it was entered |
@@ -34,8 +34,8 @@ Tiers, from most to least direct:
 **Raw storage is immutable.**
 - Each collector run writes `data/raw/<source>/<YYYYMMDDTHHMMSSZ>.jsonl.gz`: gzip-compressed, one observation per line.
 - Never edit or delete a raw file. Corrections are new rows.
-- Large corpora keep only the rows we use. For example, the hiring-for-Claude corpus keeps matching postings plus per-company counts,
-  and the H-1B files keep only tracked employers. This keeps repo growth to tens of MB a year.
+- Large corpora keep only the rows we use. For example, the hiring-for-Claude corpus keeps matching postings plus per-company counts.
+  This keeps repo growth to tens of MB a year.
 
 **Manual and ledger input is a CSV.**
 - Location: `data/manual/<source>.csv` (licensed or vendor data) or `data/ledgers/<page>_<name>.csv` (hand-curated public facts).
@@ -72,7 +72,7 @@ The chart shows both dates.
 
 **Freshness is live.** `build` stores freshness in each mart, but the API recomputes it on every request from `data/registry.json`,
 using the current time. If the pipeline stops, badges turn amber and then red on their own, with no rebuild needed.
-(With fixtures the clock is pinned to the fixture build time, so the Sample page keeps showing every state.)
+(With fixtures the clock is pinned to the fixture build time, so every freshness state stays visible.)
 
 **`data/registry.json`** is written by every `build`. It is `{generated_at, sources: [...]}`, where each source is its declared metadata
 (section 2) plus `retrieved_at` (latest), `as_of` (latest), `row_count`, and `readable`. `readable` is false when stored rows failed validation.
@@ -181,14 +181,11 @@ The router loads `import.meta.glob("./pages/*.tsx")`, and the nav is sorted by `
 | 10 | AI Analysis |
 | 20 | Hiring |
 | 30 | Developer Adoption |
-| 40 | Attention |
+| 40 | Consumer & Attention |
 | 50 | Product |
-| 60 | Customers |
 | 70 | Capital |
 | 80 | Peers |
-| 90 | Licensed Alt-Data |
 | 100 | Data & Methods |
-| 999 | Sample |
 
 ## 7. Config files (one file per owner, so nothing is shared)
 | File | Owner | Content |

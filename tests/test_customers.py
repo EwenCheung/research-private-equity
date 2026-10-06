@@ -1,4 +1,3 @@
-import importlib.util
 from datetime import UTC, date, datetime
 
 import httpx
@@ -15,7 +14,7 @@ from pipeline.sources import customers as src
 COMPANIES = load_companies(ROOT)
 NAMES = {c.slug: c.name for c in COMPANIES.values()}
 STAMP = {"method": "api", "tier": "platform", "retrieved_at": "2026-10-05T08:00:00Z"}
-SOURCES = ("hn_who_is_hiring", "sec_filings_naming", "usaspending_awards", "customers_kpi_claims")
+SOURCES = ("hn_who_is_hiring", "sec_filings_naming")
 
 
 def response(body):
@@ -232,103 +231,7 @@ def test_every_search_term_is_declared_with_why_it_is_narrow():
 # ---- USAspending ----
 
 
-def award(name, gid, amount=18960.0, start="2026-02-11"):
-    return {"Recipient Name": name, "generated_internal_id": gid, "Award ID": gid[-5:], "Award Amount": amount, "Start Date": start,
-            "End Date": "2026-03-12", "Awarding Agency": "Department of State", "Awarding Sub Agency": "Department of State",
-            "Contract Award Type": "PURCHASE ORDER", "Award Type": None, "Description": "CLAUDE AI"}  # fmt: skip
-
-
-def test_awards_keep_only_exact_recipient_names_and_record_a_zero(monkeypatch):
-    monkeypatch.setattr(src, "today", lambda: date(2026, 10, 5))
-    seen = []
-
-    def fake_post(url, json=None, **kw):
-        seen.append(json["filters"]["award_type_codes"])
-        found = [
-            award("ANTHROPIC, PBC", "CONT_AWD_19PCRD26K4661_1900_-NONE-_-NONE-"),
-            award("AMERICAN PHILANTHROPIC LLC", "X1"),
-        ]
-        return response(
-            {
-                "results": found if json["filters"]["award_type_codes"] == ["A", "B", "C", "D"] else [],
-                "page_metadata": {"hasNext": False},
-            }
-        )
-
-    monkeypatch.setattr(src, "post", fake_post)
-    rows = list(src.usaspending_awards(COMPANIES["anthropic"]))
-    check(rows, "usaspending_awards", "filing")
-    assert [r["metric"] for r in rows] == ["federal_award_obligation_usd", "federal_awards_found"]
-    assert rows[0]["value"] == 18960.0 and rows[1]["value"] == 1  # PHILANTHROPIC matched the search, not the name
-    assert rows[0]["source_url"] == "https://www.usaspending.gov/award/CONT_AWD_19PCRD26K4661_1900_-NONE-_-NONE-"
-    assert len(seen) == len(src.AWARD_FAMILIES)  # every award family is asked: contracts, IDVs, grants, ...
-    monkeypatch.setattr(
-        src,
-        "post",
-        lambda *a, **k: response({"results": [award("MISTRAL INC", "M1")], "page_metadata": {"hasNext": False}}),
-    )
-    zero = list(src.usaspending_awards(COMPANIES["mistral"]))  # MISTRAL INC is a defence contractor, not Mistral AI
-    assert [(r["metric"], r["value"]) for r in zero] == [("federal_awards_found", 0)]
-
-
-def test_recipient_patterns_on_real_names():
-    import re
-
-    def match(slug, name):
-        return any(
-            re.fullmatch(p, name, re.IGNORECASE) for p in COMPANIES[slug].ids("customers")["usaspending"]["recipient"]
-        )
-
-    assert match("anthropic", "ANTHROPIC, PBC") and not match(
-        "anthropic", "ASSERTIVELY PROMOTING PHILANTHROPIC SERVICES APPS"
-    )
-    assert (
-        match("openai", "OPENAI OPCO, LLC")
-        and not match("openai", "OPENAIR ACADEMY")
-        and not match("openai", "OPEN AIR MRI OF AMARILLO LP")
-    )
-    assert match("xai", "X.AI CORP.") and not match("xai", "PRAXAIR INC") and not match("xai", "EXAI BIO INC")
-    assert (
-        match("cohere", "COHERE INC.") and not match("cohere", "COHERENT CORP") and not match("cohere", "ICOHERE, INC.")
-    )
-    assert not match("mistral", "MISTRAL INC") and match("mistral", "MISTRAL AI")
-
-
 # ---- the KPI ledger ----
-
-
-@pytest.fixture(scope="module")
-def kpi():
-    registry.discover()
-    return read_observations(ROOT, registry.SOURCES["customers_kpi_claims"].meta)
-
-
-def test_every_kpi_row_is_cited_to_anthropics_own_newsroom_with_a_quote(kpi):
-    assert len(kpi) >= 5
-    for r in kpi:  # read_observations already validated the contract; check the human fields are real
-        assert r["source_url"].startswith("https://www.anthropic.com/news/")
-        assert len(r["evidence"]) > 40 and r["entered_by"] == "EwenCheung via Claude"
-        assert r["dims"]["what"] and r["dims"]["threshold"] and r["value"] > 0
-    assert len({(r["as_of"], r["evidence"], r["value"]) for r in kpi}) == len(kpi)
-
-
-def load_builder():
-    spec = importlib.util.spec_from_file_location(
-        "build_ledger", ROOT / ".claude/skills/customers-kpi-ledger/build_ledger.py"
-    )
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod
-
-
-def test_ledger_build_fails_when_a_quote_is_not_on_the_page(monkeypatch, tmp_path, capsys):
-    b = load_builder()
-    monkeypatch.setattr(b, "OUT", tmp_path / "out.csv")
-    monkeypatch.setattr(b, "page_text", lambda slug: "Today that number exceeds 400.")  # the page says something else
-    assert b.main() == 1 and not (tmp_path / "out.csv").exists()
-    assert "not found word for word" in capsys.readouterr().err
-    monkeypatch.setattr(b, "page_text", lambda slug: " ".join([c[6] for c in b.CLAIMS] + [c[1] for c in b.CLAIMS]))
-    assert b.main() == 0 and (tmp_path / "out.csv").exists()
 
 
 # ---- marts ----
@@ -376,30 +279,6 @@ def test_hn_share_is_naming_over_top_level_posts_and_skips_the_running_month():
         "2026-08-03",
         "2026-09-01",
     }  # as_of is not Oct's
-
-
-def test_hn_terms_share_uses_all_posts_in_the_same_months():
-    rows = []
-    for day in ("2025-10-01", "2026-09-01", "2023-01-02"):
-        rows += hn_rows(day, 100, anthropic=(10, "Claude", 8), openai=(5, "GPT", 5))
-    rows = [{**r, "retrieved_at": "2026-10-31T00:00:00Z"} for r in rows]
-    spec = marts.hn_terms(Ctx(rows, NAMES))
-    a = next(r for r in spec["rows"] if r["company"] == "Anthropic" and r["term"].startswith("Any"))
-    assert (a["recent"], a["recent_share"], a["ever"], a["ever_share"]) == (
-        20,
-        20 / 200,
-        30,
-        30 / 300,
-    )  # 2023 is outside the last 12 months
-
-
-def test_sector_table_covers_every_sic_seen_and_the_no_code_bucket():
-    assert marts.sector_of("7372") == "Software & data processing"
-    assert marts.sector_of("2711") == "Manufacturing" and marts.sector_of("3674") == "Manufacturing"
-    assert marts.sector_of("5961") == "Retail" and marts.sector_of("6770") == "Finance, insurance & real estate"
-    assert marts.sector_of("4822") == "Transport, comms & utilities" and marts.sector_of("8200") == "Other services"
-    assert marts.sector_of(None) == marts.sector_of("") == marts.NO_SIC
-    assert marts.sector_of("0100") == "Agriculture" and marts.sector_of("1000") == "Mining"
 
 
 def filing(entity, adsh, cik, as_of, sic="7372", term=None, retrieved="2026-10-31T00:00:00Z"):
@@ -452,64 +331,6 @@ def test_sec_counts_distinct_filers_unions_terms_and_drops_the_running_quarter()
     assert "2026-10-02" not in set(ctx.df.loc[sorted(ctx.used), "as_of"])
 
 
-def test_sector_chart_gives_each_filer_one_sector_and_sums_to_the_total():
-    rows = [
-        filing("anthropic", "a1", "1", "2026-05-10", sic=None),  # SIC blank on one filing...
-        filing("anthropic", "a2", "1", "2026-08-10", sic="6282"),  # ...present on another: the filer is Finance, once
-        filing("anthropic", "a3", "2", "2026-05-10", sic="7372"),
-        filing("anthropic", "a4", "3", "2026-06-10", sic="7370"),
-        filing("anthropic", "a5", "9", "2025-01-10", sic="7372"),  # older than four quarters
-        filing("openai", "o1", "2", "2026-06-10", sic="7372"),
-    ]
-    rows = [{**r, "retrieved_at": "2026-10-05T00:00:00Z"} for r in rows]
-    spec = marts.sec_sectors(Ctx(rows, NAMES))
-    by = {r["sector"]: (r["anthropic"], r["openai"]) for r in spec["rows"]}
-    assert by == {"Software & data processing": (2, 1), "Finance, insurance & real estate": (1, 0)}
-    assert sum(a for a, _ in by.values()) == 3
-    assert spec["takeaway"] == [
-        "3 distinct filers named Anthropic or a Claude product in Q4 2025 to Q3 2026; Software & data processing is the largest sector with 2 (67%)."
-    ]
-
-
-def test_federal_awards_quotes_exact_dollars_and_names_who_has_none():
-    rows = [
-        obs(
-            "federal_award_obligation_usd",
-            "2026-02-11",
-            18960.0,
-            award_id="X",
-            agency="Department of State",
-            type="PURCHASE ORDER",
-            description="CLAUDE AI",
-            recipient="ANTHROPIC, PBC",
-            end="2026-03-12",
-        ),
-        obs("federal_awards_found", "2026-10-05", 1),
-        obs("federal_awards_found", "2026-10-05", 0, "openai"),
-    ]
-    spec = marts.federal_awards(Ctx(rows, NAMES))
-    assert spec["takeaway"] == [
-        "USAspending lists Anthropic: 1 award, $18,960 obligated under exact recipient names, and none for OpenAI."
-    ]
-    assert spec["rows"][0]["type"] == "Purchase Order"
-
-
-def test_kpi_takeaway_computes_the_ratio_from_the_two_ledger_rows():
-    def claim(day, value, what="customers spending over $1M a year (annualized)"):
-        return {**obs("customer_kpi_claim", day, value, what=what, threshold="x"), "evidence": "q", "entered_by": "me"}
-
-    spec = marts.kpi_claims(
-        Ctx(
-            [claim("2026-02-12", 500), claim("2026-04-06", 1000), claim("2026-04-20", 100000, "customers on Bedrock")],
-            NAMES,
-        )
-    )
-    assert spec["takeaway"] == [
-        "Anthropic said customers spending over $1M a year went from over 500 on 2026-02-12 to over 1,000 on 2026-04-06, 2.0× in 53 days; each is a floor ('exceeds'), so the true ratio is not known."
-    ]
-    assert marts.kpi_claims(Ctx([], NAMES))["rows"] == []  # awaiting data, never an invented number
-
-
 # ---- the shipped data ----
 
 
@@ -523,14 +344,11 @@ def shipped():
     }, all_rows
 
 
-def test_all_six_charts_validate_against_the_shipped_data(shipped):
+def test_the_charts_validate_against_the_shipped_data(shipped):
     specs, _ = shipped
-    assert sorted(specs) == [
-        f"customers.{c}" for c in ("federal_awards", "hn_share", "hn_terms", "kpi_claims", "sec_filers", "sec_sectors")
-    ]
+    assert sorted(specs) == [f"customers.{c}" for c in ("hn_share", "sec_filers")]
     for mid, spec in specs.items():
         assert spec["status"] == "ok" and spec["rows"], mid
-    assert all(s["manual"] and s["manual"]["evidence"] for s in specs["customers.kpi_claims"]["sources"])
 
 
 def test_headline_numbers_match_the_source_checked_by_hand(shipped):
@@ -542,27 +360,19 @@ def test_headline_numbers_match_the_source_checked_by_hand(shipped):
         17,
         253,
     )  # 253 top-level posts of the thread's 394 comments; 13 name Claude, 5 Anthropic, 1 both
-    award = specs["customers.federal_awards"]["rows"]
-    assert [(r["recipient"], r["obligated"], r["start"]) for r in award] == [("ANTHROPIC, PBC", 18960.0, "2026-02-11")]
     q3 = next(
         r for r in specs["customers.sec_filers"]["rows"] if r["company"] == "Anthropic" and r["quarter"] == "2026-07-01"
     )
     assert q3["filers"] == 26
-    sectors = specs["customers.sec_sectors"]["rows"]
-    total = int(specs["customers.sec_sectors"]["takeaway"][0].split()[0])
-    assert sum(r["anthropic"] for r in sectors) == total  # each filer in exactly one sector
 
 
-def test_every_shipped_filing_row_has_a_resolvable_filing_url_and_known_sector(shipped):
+def test_every_shipped_filing_row_has_a_resolvable_filing_url(shipped):
     _, all_rows = shipped
     for r in all_rows["sec_filings_naming"]:
         assert r["source_url"].startswith("https://www.sec.gov/Archives/edgar/data/") and " " not in r["source_url"]
-        assert marts.sector_of(r["dims"]["sic"]) != "Unmapped SIC", r["dims"]
 
 
-@pytest.mark.parametrize(
-    "mid", [m for m in ("hn_share", "hn_terms", "federal_awards", "kpi_claims", "sec_filers", "sec_sectors")]
-)
+@pytest.mark.parametrize("mid", ["hn_share", "sec_filers"])
 def test_every_chart_with_no_rows_is_awaiting_data_not_an_error(mid):
     ctx = Ctx([], NAMES)
     ctx.df["retrieved_at"] = ctx.df["retrieved_at"].astype(str)

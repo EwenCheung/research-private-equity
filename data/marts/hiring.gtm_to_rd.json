@@ -1,6 +1,6 @@
 {
-  "title": "Customer-facing hiring against building",
-  "subtitle": "Go-to-market, support and applied AI roles per research or engineering role",
+  "title": "Customer-facing roles per research or engineering role",
+  "subtitle": "Open sales, support and applied AI roles for every research or engineering role. Higher means more of the hiring faces customers.",
   "kind": "bar",
   "encoding": {
     "x": {
@@ -104,5 +104,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T08:47:54Z"
+  "generated_at": "2026-10-06T07:49:00Z"
 }

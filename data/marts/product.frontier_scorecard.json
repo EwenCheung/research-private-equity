@@ -1,0 +1,173 @@
+{
+  "title": "Frontier model scorecard",
+  "subtitle": "Highest-ranked Arena model per company with score, input/output price and context all published",
+  "kind": "table",
+  "encoding": {},
+  "columns": [
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "model",
+      "label": "Model",
+      "format": "text"
+    },
+    {
+      "field": "rank",
+      "label": "Arena rank",
+      "format": "int"
+    },
+    {
+      "field": "score",
+      "label": "Arena score",
+      "format": "float"
+    },
+    {
+      "field": "margin",
+      "label": "±",
+      "format": "float"
+    },
+    {
+      "field": "votes",
+      "label": "Votes",
+      "format": "int"
+    },
+    {
+      "field": "input",
+      "label": "Input USD / MTok",
+      "format": "float"
+    },
+    {
+      "field": "output",
+      "label": "Output USD / MTok",
+      "format": "float"
+    },
+    {
+      "field": "context",
+      "label": "Context tokens",
+      "format": "int"
+    },
+    {
+      "field": "status",
+      "label": "Score status",
+      "format": "text"
+    },
+    {
+      "field": "link",
+      "label": "Source",
+      "format": "url"
+    }
+  ],
+  "rows": [
+    {
+      "company": "Anthropic",
+      "model": "claude-opus-4-6-high",
+      "rank": 2,
+      "score": 1505.0,
+      "margin": 3.0,
+      "votes": 77636,
+      "input": 5.0,
+      "output": 25.0,
+      "context": 1000000,
+      "status": "Ranked",
+      "link": "https://arena.ai/leaderboard/text?styleControl=off"
+    },
+    {
+      "company": "OpenAI",
+      "model": "gpt-5.5-high",
+      "rank": 25,
+      "score": 1481.0,
+      "margin": 4.0,
+      "votes": 69202,
+      "input": 5.0,
+      "output": 30.0,
+      "context": 1100000,
+      "status": "Ranked",
+      "link": "https://arena.ai/leaderboard/text?styleControl=off"
+    },
+    {
+      "company": "Google DeepMind",
+      "model": "gemini-4-argon-high",
+      "rank": 1,
+      "score": 1525.0,
+      "margin": 9.0,
+      "votes": 4932,
+      "input": 2.0,
+      "output": 10.0,
+      "context": 1000000,
+      "status": "Preliminary",
+      "link": "https://arena.ai/leaderboard/text?styleControl=off"
+    },
+    {
+      "company": "xAI",
+      "model": "grok-4.20-beta-0309-reasoning",
+      "rank": 44,
+      "score": 1472.0,
+      "margin": 4.0,
+      "votes": 66334,
+      "input": 1.25,
+      "output": 2.5,
+      "context": 1000000,
+      "status": "Ranked",
+      "link": "https://arena.ai/leaderboard/text?styleControl=off"
+    },
+    {
+      "company": "Mistral AI",
+      "model": "mistral-medium-3.5",
+      "rank": 115,
+      "score": 1427.0,
+      "margin": 6.0,
+      "votes": 11757,
+      "input": 0.75,
+      "output": 3.75,
+      "context": 262100,
+      "status": "Ranked",
+      "link": "https://arena.ai/leaderboard/text?styleControl=off"
+    },
+    {
+      "company": "Cohere",
+      "model": "command-a-03-2025",
+      "rank": 209,
+      "score": 1354.0,
+      "margin": 3.0,
+      "votes": 55467,
+      "input": 2.5,
+      "output": 10.0,
+      "context": 256000,
+      "status": "Ranked",
+      "link": "https://arena.ai/leaderboard/text?styleControl=off"
+    }
+  ],
+  "takeaway": [
+    "gemini-4-argon-high (Google DeepMind) is the highest-ranked fully specified peer model at Arena rank 1.",
+    "Anthropic's selected model is rank 2 with a 1M-token context window."
+  ],
+  "assumptions": [
+    "Selection rule: the highest-ranked entry for each company with an Arena score, input price, output price and context window all present. A higher-ranked row with missing fields is skipped rather than silently mixing specifications from another model.",
+    "Arena is a human-preference leaderboard, not an objective task-accuracy benchmark. Reasoning levels and model variants appear as separate entries.",
+    "Prices and context are Arena's reported fields. Prices are per million tokens and exclude caching, batch and long-context adjustments.",
+    "Preliminary scores can move as votes accumulate; the score margin shown is Arena's published ± value."
+  ],
+  "badges": [],
+  "id": "product.frontier_scorecard",
+  "page": "product",
+  "as_of": "2026-10-02",
+  "sources": [
+    {
+      "source": "arena_text_leaderboard",
+      "label": "Arena text leaderboard",
+      "url": "https://arena.ai/leaderboard/text?styleControl=off",
+      "method": "scrape",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-10-02",
+      "retrieved_at": "2026-10-06T01:50:46Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-06T03:05:27Z"
+}

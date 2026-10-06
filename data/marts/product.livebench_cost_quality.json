@@ -1,0 +1,102 @@
+{
+  "title": "LiveBench quality versus cost per successful task",
+  "subtitle": "Highest-overall model per covered company; upper-left combines a higher objective score with lower success-adjusted cost",
+  "kind": "scatter",
+  "encoding": {
+    "x": {
+      "field": "success_cost",
+      "type": "quantitative",
+      "label": "Cost per successful task (USD)",
+      "format": "float"
+    },
+    "y": {
+      "field": "overall",
+      "type": "quantitative",
+      "label": "LiveBench overall",
+      "format": "float"
+    },
+    "color": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    }
+  },
+  "columns": [
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "model",
+      "label": "Model",
+      "format": "text"
+    },
+    {
+      "field": "success_cost",
+      "label": "Cost / successful task USD",
+      "format": "float"
+    },
+    {
+      "field": "overall",
+      "label": "LiveBench overall",
+      "format": "float"
+    }
+  ],
+  "rows": [
+    {
+      "company": "Anthropic",
+      "model": "claude-fable-5-1-max-effort",
+      "success_cost": 1.2117,
+      "overall": 83.41415476190477
+    },
+    {
+      "company": "OpenAI",
+      "model": "gpt-6-astra-max",
+      "success_cost": 0.7359,
+      "overall": 82.16064285714288
+    },
+    {
+      "company": "Google DeepMind",
+      "model": "gemini-3.7-flash-high",
+      "success_cost": 0.1571,
+      "overall": 78.8260119047619
+    },
+    {
+      "company": "xAI",
+      "model": "grok-4.6",
+      "success_cost": 0.2068,
+      "overall": 78.042
+    }
+  ],
+  "takeaway": [
+    "claude-fable-5-1-max-effort has the highest overall score (83.4); gemini-3.7-flash-high has the lowest cost per successful task ($0.157)."
+  ],
+  "assumptions": [
+    "Mirrors LiveBench's quality-versus-cost view, restricted to one highest-overall model per covered company so a prolific provider does not dominate the chart.",
+    "Cost is success-adjusted only for the LiveBench release workload; it should not be treated as the expected cost of an arbitrary production task.",
+    "Mistral and Cohere have no model in the current LiveBench release and are not plotted."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "product.livebench_cost_quality",
+  "page": "product",
+  "as_of": "2026-06-25",
+  "sources": [
+    {
+      "source": "livebench_leaderboard",
+      "label": "LiveBench objective benchmark and cost",
+      "url": "https://livebench.ai/table_2026_06_25.csv",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-06-25",
+      "retrieved_at": "2026-10-06T03:05:27Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-06T03:05:27Z"
+}

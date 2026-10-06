@@ -1,7 +1,34 @@
-# Public status pages. atlassian_history: Atlassian Statuspage with a history.json feed (full history).
+# Public status pages and exact organization labels used by the peer-comparison platforms.
+# atlassian_history: Atlassian Statuspage with a history.json feed (full history).
 # incident_io: incident.io status page serving /api/v2/incidents.json (only the most recent incidents, so history
 # for it starts when we began collecting). Google DeepMind, xAI, Mistral and Cohere publish no comparable status feed.
 anthropic:
   status: {kind: atlassian_history, host: status.claude.com}
+  arena_org: Anthropic
+  artificial_analysis_creator: Anthropic
+  livebench_prefixes: [claude-]
+  openrouter_author: Anthropic
 openai:
   status: {kind: incident_io, host: status.openai.com}
+  arena_org: OpenAI
+  artificial_analysis_creator: OpenAI
+  livebench_prefixes: [gpt-]
+  openrouter_author: OpenAI
+google-deepmind:
+  arena_org: Google
+  artificial_analysis_creator: Google
+  livebench_prefixes: [gemini-]
+  openrouter_author: Google
+xai:
+  arena_org: SpaceXAI
+  artificial_analysis_creator: SpaceXAI
+  livebench_prefixes: [grok-]
+mistral:
+  arena_org: Mistral
+  artificial_analysis_creator: Mistral
+  openrouter_author: Mistral AI
+cohere:
+  arena_org: Cohere
+  artificial_analysis_creator: Cohere
+  # Artificial Analysis calls the dated Arena entry simply "Command A".
+  artificial_analysis_model_aliases: {Command A: command-a-03-2025}

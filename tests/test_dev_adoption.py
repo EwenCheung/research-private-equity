@@ -45,16 +45,13 @@ def test_pypi_rows_carry_package_and_role(cos, monkeypatch):
 
     def fake_post(url, **kw):
         sent["q"] = kw["content"].decode()
-        lines = [{"d": "2026-10-01", "project": "anthropic", "n": "5"}, {"d": "2026-10-01", "project": "mcp", "n": "9"}]
+        lines = [{"d": "2026-10-01", "project": "anthropic", "n": "5"}]
         return response("\n".join(json.dumps(x) for x in lines))
 
     monkeypatch.setattr(src, "post", fake_post)
     rows = valid(list(src.pypi_downloads(cos["anthropic"])), "pypi_downloads")
-    assert "'anthropic','mcp'" in sent["q"] and "date >= '2023-01-01'" in sent["q"]
-    assert [(r["dims"]["package"], r["dims"]["role"], r["value"]) for r in rows] == [
-        ("anthropic", "sdk", 5),
-        ("mcp", "mcp", 9),
-    ]
+    assert "'anthropic'" in sent["q"] and "mcp" not in sent["q"] and "date >= '2023-01-01'" in sent["q"]
+    assert [(r["dims"]["package"], r["dims"]["role"], r["value"]) for r in rows] == [("anthropic", "sdk", 5)]
 
 
 def test_npm_drops_days_before_a_package_existed_and_chunks_long_ranges(cos, monkeypatch):
@@ -91,21 +88,6 @@ def test_coauthored_commits_walk_whole_weeks_with_valid_urls(cos, monkeypatch):
     assert rows[0]["as_of"] == "2025-02-24" and rows[-1]["as_of"] == "2026-09-28"  # Mondays, last complete week
     assert seen[0] == '"Co-Authored-By: Claude" committer-date:2025-02-24..2025-03-02'
     assert list(src.github_coauthored_commits(cos["openai"])) == []  # no trailer, no series
-
-
-def test_mcp_repos_flag_the_running_month(cos, monkeypatch):
-    monkeypatch.setattr(src, "github_get", lambda url, params: response({"total_count": 3}))
-    rows = valid(list(src.github_mcp_server_repos(cos["anthropic"])), "github_mcp_server_repos")
-    assert rows[0]["as_of"] == "2024-11-01" and rows[-1]["as_of"] == "2026-10-01"
-    assert [r["dims"]["partial_month"] for r in rows[-2:]] == [False, True]
-    assert list(src.github_mcp_server_repos(cos["openai"])) == []  # booked once, to Anthropic
-
-
-def test_org_stats_page_through_repos(cos, monkeypatch):
-    pages = {1: [{"stargazers_count": 2, "forks_count": 1}] * 100, 2: [{"stargazers_count": 5, "forks_count": 0}]}
-    monkeypatch.setattr(src, "github_get", lambda url, params: response(pages[params["page"]]))
-    rows = {r["metric"]: r["value"] for r in valid(list(src.github_org_stats(cos["anthropic"])), "github_org_stats")}
-    assert rows == {"org_stars": 205, "org_forks": 100, "org_public_repos": 101}
 
 
 # ---- marts ----

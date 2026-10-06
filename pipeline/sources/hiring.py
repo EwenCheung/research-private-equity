@@ -1,23 +1,15 @@
-"""Hiring: live job boards (counts daily, every posting weekly), Wayback history of the same boards, and H-1B LCA filings.
+"""Hiring: live job boards (counts daily, every posting weekly) and Wayback history of the same boards."""
 
-H-1B: the DOL site blocks automated downloads, so filings arrive through a local import of the file you download:
-    uv run python -m pipeline.sources.hiring import-lca ~/Downloads/LCA_Disclosure_Data_FY2026_Q3.xlsx
-"""
-
-import csv
 import html
 import json
 import re
-import subprocess
-import sys
 import time
-from datetime import UTC, date, datetime
+from datetime import UTC, datetime
 from functools import cache
-from pathlib import Path
 
 import httpx
 
-from pipeline.core import ROOT, source
+from pipeline.core import source
 from pipeline.core.http import get
 from pipeline.core.store import latest_as_of
 
@@ -25,8 +17,6 @@ PAGE = "hiring"
 GREENHOUSE = "https://boards-api.greenhouse.io/v1/boards/{board}/departments"
 ASHBY = "https://api.ashbyhq.com/posting-api/job-board/{board}"
 CDX = "https://web.archive.org/cdx/search/cdx"
-DOL_LCA = "https://www.dol.gov/agencies/eta/foreign-labor/performance"
-LCA_LEDGER = "data/ledgers/hiring_h1b_lca.csv"
 
 
 def today() -> str:
@@ -249,125 +239,3 @@ def wayback_job_boards(company):
             yield {**stamp, "metric": "open_roles", "value": count, "dims": {**where, "board_url": original}}
             for p in posts:
                 yield {**stamp, "metric": "job_posting", "value": 1, "dims": {**p, **where}}
-
-
-# ---- H-1B LCA (ledger, imported from the DOL file you download) ----
-
-
-@source(
-    id="hiring_h1b_lca",
-    page=PAGE,
-    label="DOL H-1B Labor Condition Applications (imported quarterly file)",
-    url=DOL_LCA,
-    method="ledger",
-    tier="filing",
-    cadence="quarterly",
-    sla_days=100,
-    backfillable=True,
-    caveats="Filed applications, not hires: a certified LCA lets a company sponsor a role. DOL blocks automated "
-    "downloads, so each quarterly file is downloaded in a browser and imported. Google DeepMind files as Google LLC.",
-)
-def hiring_h1b_lca(company):
-    return iter(())  # ledger rows are read from data/ledgers/hiring_h1b_lca.csv by the core
-
-
-WAGE_UNITS = {"YEAR": 1, "MONTH": 12, "BI-WEEKLY": 26, "WEEK": 52, "HOUR": 2080}
-LCA_FIELDS = ("as_of", "entity", "metric", "value", "dims", "source_url", "entered_by", "retrieved_at", "evidence")
-
-
-def normalise(name: str) -> str:
-    return re.sub(r"\s+", " ", re.sub(r"[^A-Z0-9 ]", "", (name or "").upper())).strip()
-
-
-def lca_rows(path: Path):
-    """Yield {column: value} dicts from a DOL LCA .xlsx (streamed, the files are ~80 MB) or .csv."""
-    if path.suffix.lower() == ".csv":
-        with path.open(newline="", encoding="utf-8-sig") as f:
-            yield from ({k.strip().upper(): v for k, v in r.items()} for r in csv.DictReader(f))
-        return
-    from openpyxl import load_workbook
-
-    ws = load_workbook(path, read_only=True, data_only=True).worksheets[0]
-    rows = ws.iter_rows(values_only=True)
-    header = [str(h or "").strip().upper() for h in next(rows)]
-    for r in rows:
-        yield dict(zip(header, r, strict=False))
-
-
-def import_lca(
-    path: Path, root: Path = ROOT, entered_by: str | None = None, now: datetime | None = None
-) -> tuple[int, dict]:
-    """Append tracked employers' H-1B filings from one DOL file to the ledger. Returns (rows added, matched names)."""
-    from pipeline.core.companies import load_companies
-
-    employers = {
-        normalise(n): c.slug for c in load_companies(root).values() for n in c.ids(PAGE).get("lca_employers") or []
-    }
-    ledger = root / LCA_LEDGER
-    seen = set()
-    if ledger.exists():
-        with ledger.open(newline="", encoding="utf-8") as f:
-            seen = {json.loads(r["dims"])["case_number"] for r in csv.DictReader(f)}
-    entered_by = (
-        entered_by
-        or subprocess.run(["git", "config", "user.name"], capture_output=True, text=True, check=False).stdout.strip()
-    )
-    stamp = (now or datetime.now(UTC)).strftime("%Y-%m-%dT%H:%M:%SZ")
-    out, matched = [], {}
-    for r in lca_rows(path):
-        slug = employers.get(normalise(r.get("EMPLOYER_NAME")))
-        case = str(r.get("CASE_NUMBER") or "")
-        if not slug or not case or case in seen or not str(r.get("VISA_CLASS") or "H-1B").upper().startswith("H-1B"):
-            continue
-        decided = r.get("DECISION_DATE") or r.get("RECEIVED_DATE")
-        as_of = (decided.date() if isinstance(decided, datetime) else date.fromisoformat(str(decided)[:10])).isoformat()
-        unit = str(r.get("WAGE_UNIT_OF_PAY") or "").strip().upper()
-        wage = float(str(r.get("WAGE_RATE_OF_PAY_FROM") or 0).replace(",", "").replace("$", "") or 0) * WAGE_UNITS.get(
-            unit, 0
-        )
-        dims = {
-            "case_number": case,
-            "case_status": str(r.get("CASE_STATUS") or ""),
-            "job_title": str(r.get("JOB_TITLE") or ""),
-            "soc_title": str(r.get("SOC_TITLE") or ""),
-            "worksite_state": str(r.get("WORKSITE_STATE") or ""),
-            "employer_name": str(r.get("EMPLOYER_NAME") or ""),
-        }
-        evidence = f"DOL OFLC LCA disclosure file {path.name}, case {case}"
-        base = {
-            "as_of": as_of,
-            "entity": slug,
-            "source_url": DOL_LCA,
-            "entered_by": entered_by,
-            "retrieved_at": stamp,
-            "evidence": evidence,
-        }
-        out.append({**base, "metric": "h1b_lca_filing", "value": 1, "dims": json.dumps(dims)})
-        if wage > 0:
-            out.append({**base, "metric": "h1b_offered_wage_annual", "value": round(wage), "dims": json.dumps(dims)})
-        matched[dims["employer_name"]] = matched.get(dims["employer_name"], 0) + 1
-        seen.add(case)
-    if out:
-        ledger.parent.mkdir(parents=True, exist_ok=True)
-        new = not ledger.exists()
-        with ledger.open("a", newline="", encoding="utf-8") as f:
-            w = csv.DictWriter(f, fieldnames=LCA_FIELDS)
-            if new:
-                w.writeheader()
-            w.writerows(out)
-    return len(out), matched
-
-
-def main(argv=None) -> int:
-    args = sys.argv[1:] if argv is None else argv
-    if len(args) < 2 or args[0] != "import-lca":
-        print(__doc__)
-        return 2
-    for p in args[1:]:
-        added, matched = import_lca(Path(p))
-        print(f"{p}: added {added} rows; matched employers: {matched or 'none'}")
-    return 0
-
-
-if __name__ == "__main__":
-    sys.exit(main())

@@ -1,6 +1,4 @@
-import csv
 import json
-from datetime import UTC, datetime
 
 import httpx
 import pytest
@@ -302,104 +300,6 @@ def test_open_roles_joins_live_and_archive_history():
 
 
 # ---- H-1B import ----
-
-
-def write_lca(path, rows):
-    cols = [
-        "CASE_NUMBER",
-        "CASE_STATUS",
-        "DECISION_DATE",
-        "VISA_CLASS",
-        "EMPLOYER_NAME",
-        "JOB_TITLE",
-        "SOC_TITLE",
-        "WAGE_RATE_OF_PAY_FROM",
-        "WAGE_UNIT_OF_PAY",
-        "WORKSITE_STATE",
-    ]
-    with path.open("w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=cols)
-        w.writeheader()
-        w.writerows(rows)
-
-
-def test_import_lca_keeps_tracked_employers_annualises_wages_and_never_duplicates(tmp_path):
-    (tmp_path / "config/companies").mkdir(parents=True)
-    (tmp_path / "config/identifiers").mkdir()
-    (tmp_path / "config/companies/anthropic.yaml").write_text("slug: anthropic\nname: Anthropic\nrole: target\n")
-    (tmp_path / "config/identifiers/hiring.yaml").write_text("anthropic: {lca_employers: [ANTHROPIC PBC]}\n")
-    base = {
-        "CASE_STATUS": "Certified",
-        "DECISION_DATE": "2026-02-10",
-        "VISA_CLASS": "H-1B",
-        "JOB_TITLE": "Engineer",
-        "SOC_TITLE": "Software",
-        "WORKSITE_STATE": "CA",
-    }
-    f = tmp_path / "LCA_Disclosure_Data_FY2026_Q2.csv"
-    write_lca(
-        f,
-        [
-            {
-                **base,
-                "CASE_NUMBER": "I-1",
-                "EMPLOYER_NAME": "Anthropic, PBC",
-                "WAGE_RATE_OF_PAY_FROM": "100",
-                "WAGE_UNIT_OF_PAY": "Hour",
-            },
-            {
-                **base,
-                "CASE_NUMBER": "I-2",
-                "EMPLOYER_NAME": "ANTHROPIC PBC",
-                "WAGE_RATE_OF_PAY_FROM": "250,000",
-                "WAGE_UNIT_OF_PAY": "Year",
-            },
-            {
-                **base,
-                "CASE_NUMBER": "I-3",
-                "EMPLOYER_NAME": "Some Other Corp",
-                "WAGE_RATE_OF_PAY_FROM": "1",
-                "WAGE_UNIT_OF_PAY": "Year",
-            },
-            {
-                **base,
-                "CASE_NUMBER": "I-4",
-                "EMPLOYER_NAME": "Anthropic PBC",
-                "VISA_CLASS": "E-3 Australian",
-                "WAGE_RATE_OF_PAY_FROM": "1",
-                "WAGE_UNIT_OF_PAY": "Year",
-            },
-        ],
-    )
-    now = datetime(2026, 10, 5, 12, 0, tzinfo=UTC)
-    added, matched = src.import_lca(f, root=tmp_path, entered_by="EwenCheung", now=now)
-    assert added == 4 and matched == {
-        "Anthropic, PBC": 1,
-        "ANTHROPIC PBC": 1,
-    }  # 2 filings + 2 wages; other employer and E-3 skipped
-    rows = list(csv.DictReader((tmp_path / src.LCA_LEDGER).open()))
-    wage = {
-        json.loads(r["dims"])["case_number"]: float(r["value"])
-        for r in rows
-        if r["metric"] == "h1b_offered_wage_annual"
-    }
-    assert wage == {"I-1": 208000.0, "I-2": 250000.0}  # $100/hour x 2080
-    assert {r["entered_by"] for r in rows} == {"EwenCheung"} and all(
-        "LCA_Disclosure_Data_FY2026_Q2.csv, case" in r["evidence"] for r in rows
-    )
-    assert src.import_lca(f, root=tmp_path, entered_by="EwenCheung", now=now)[0] == 0  # re-importing adds nothing
-    for r in rows:  # the ledger rows are valid observations once the core stamps the source
-        validate(
-            "observation",
-            {
-                **r,
-                "source": "hiring_h1b_lca",
-                "method": "ledger",
-                "tier": "filing",
-                "value": float(r["value"]),
-                "dims": json.loads(r["dims"]),
-            },
-        )
 
 
 def test_patient_get_waits_out_a_refusing_archive(monkeypatch):

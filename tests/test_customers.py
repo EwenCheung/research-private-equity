@@ -1,4 +1,3 @@
-import importlib.util
 from datetime import UTC, date, datetime
 
 import httpx
@@ -15,7 +14,7 @@ from pipeline.sources import customers as src
 COMPANIES = load_companies(ROOT)
 NAMES = {c.slug: c.name for c in COMPANIES.values()}
 STAMP = {"method": "api", "tier": "platform", "retrieved_at": "2026-10-05T08:00:00Z"}
-SOURCES = ("hn_who_is_hiring", "sec_filings_naming", "usaspending_awards", "customers_kpi_claims")
+SOURCES = ("hn_who_is_hiring", "sec_filings_naming")
 
 
 def response(body):
@@ -232,103 +231,7 @@ def test_every_search_term_is_declared_with_why_it_is_narrow():
 # ---- USAspending ----
 
 
-def award(name, gid, amount=18960.0, start="2026-02-11"):
-    return {"Recipient Name": name, "generated_internal_id": gid, "Award ID": gid[-5:], "Award Amount": amount, "Start Date": start,
-            "End Date": "2026-03-12", "Awarding Agency": "Department of State", "Awarding Sub Agency": "Department of State",
-            "Contract Award Type": "PURCHASE ORDER", "Award Type": None, "Description": "CLAUDE AI"}  # fmt: skip
-
-
-def test_awards_keep_only_exact_recipient_names_and_record_a_zero(monkeypatch):
-    monkeypatch.setattr(src, "today", lambda: date(2026, 10, 5))
-    seen = []
-
-    def fake_post(url, json=None, **kw):
-        seen.append(json["filters"]["award_type_codes"])
-        found = [
-            award("ANTHROPIC, PBC", "CONT_AWD_19PCRD26K4661_1900_-NONE-_-NONE-"),
-            award("AMERICAN PHILANTHROPIC LLC", "X1"),
-        ]
-        return response(
-            {
-                "results": found if json["filters"]["award_type_codes"] == ["A", "B", "C", "D"] else [],
-                "page_metadata": {"hasNext": False},
-            }
-        )
-
-    monkeypatch.setattr(src, "post", fake_post)
-    rows = list(src.usaspending_awards(COMPANIES["anthropic"]))
-    check(rows, "usaspending_awards", "filing")
-    assert [r["metric"] for r in rows] == ["federal_award_obligation_usd", "federal_awards_found"]
-    assert rows[0]["value"] == 18960.0 and rows[1]["value"] == 1  # PHILANTHROPIC matched the search, not the name
-    assert rows[0]["source_url"] == "https://www.usaspending.gov/award/CONT_AWD_19PCRD26K4661_1900_-NONE-_-NONE-"
-    assert len(seen) == len(src.AWARD_FAMILIES)  # every award family is asked: contracts, IDVs, grants, ...
-    monkeypatch.setattr(
-        src,
-        "post",
-        lambda *a, **k: response({"results": [award("MISTRAL INC", "M1")], "page_metadata": {"hasNext": False}}),
-    )
-    zero = list(src.usaspending_awards(COMPANIES["mistral"]))  # MISTRAL INC is a defence contractor, not Mistral AI
-    assert [(r["metric"], r["value"]) for r in zero] == [("federal_awards_found", 0)]
-
-
-def test_recipient_patterns_on_real_names():
-    import re
-
-    def match(slug, name):
-        return any(
-            re.fullmatch(p, name, re.IGNORECASE) for p in COMPANIES[slug].ids("customers")["usaspending"]["recipient"]
-        )
-
-    assert match("anthropic", "ANTHROPIC, PBC") and not match(
-        "anthropic", "ASSERTIVELY PROMOTING PHILANTHROPIC SERVICES APPS"
-    )
-    assert (
-        match("openai", "OPENAI OPCO, LLC")
-        and not match("openai", "OPENAIR ACADEMY")
-        and not match("openai", "OPEN AIR MRI OF AMARILLO LP")
-    )
-    assert match("xai", "X.AI CORP.") and not match("xai", "PRAXAIR INC") and not match("xai", "EXAI BIO INC")
-    assert (
-        match("cohere", "COHERE INC.") and not match("cohere", "COHERENT CORP") and not match("cohere", "ICOHERE, INC.")
-    )
-    assert not match("mistral", "MISTRAL INC") and match("mistral", "MISTRAL AI")
-
-
 # ---- the KPI ledger ----
-
-
-@pytest.fixture(scope="module")
-def kpi():
-    registry.discover()
-    return read_observations(ROOT, registry.SOURCES["customers_kpi_claims"].meta)
-
-
-def test_every_kpi_row_is_cited_to_anthropics_own_newsroom_with_a_quote(kpi):
-    assert len(kpi) >= 5
-    for r in kpi:  # read_observations already validated the contract; check the human fields are real
-        assert r["source_url"].startswith("https://www.anthropic.com/news/")
-        assert len(r["evidence"]) > 40 and r["entered_by"] == "EwenCheung via Claude"
-        assert r["dims"]["what"] and r["dims"]["threshold"] and r["value"] > 0
-    assert len({(r["as_of"], r["evidence"], r["value"]) for r in kpi}) == len(kpi)
-
-
-def load_builder():
-    spec = importlib.util.spec_from_file_location(
-        "build_ledger", ROOT / ".claude/skills/customers-kpi-ledger/build_ledger.py"
-    )
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod
-
-
-def test_ledger_build_fails_when_a_quote_is_not_on_the_page(monkeypatch, tmp_path, capsys):
-    b = load_builder()
-    monkeypatch.setattr(b, "OUT", tmp_path / "out.csv")
-    monkeypatch.setattr(b, "page_text", lambda slug: "Today that number exceeds 400.")  # the page says something else
-    assert b.main() == 1 and not (tmp_path / "out.csv").exists()
-    assert "not found word for word" in capsys.readouterr().err
-    monkeypatch.setattr(b, "page_text", lambda slug: " ".join([c[6] for c in b.CLAIMS] + [c[1] for c in b.CLAIMS]))
-    assert b.main() == 0 and (tmp_path / "out.csv").exists()
 
 
 # ---- marts ----

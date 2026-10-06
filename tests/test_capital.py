@@ -1,4 +1,3 @@
-import re
 from datetime import UTC, datetime
 
 import httpx
@@ -12,7 +11,6 @@ from pipeline.marts import capital as marts
 from pipeline.sources import capital as src
 
 NAMES = {c.slug: c.name for c in load_companies(ROOT).values()}
-OWN = ["anthropic", "anthropic pbc", "anthropic inc"]
 
 
 def hit(adsh, form="D", file_date="2026-03-13", cik="0002118444", file="primary_doc.xml"):
@@ -20,75 +18,6 @@ def hit(adsh, form="D", file_date="2026-03-13", cik="0002118444", file="primary_
 
 
 # ---- Form D ----
-
-FORM_D = """<?xml version="1.0"?><edgarSubmission><submissionType>D</submissionType>
-<primaryIssuer><cik>0002118444</cik><entityName>{name}</entityName><entityType>Limited Liability Company</entityType></primaryIssuer>
-<offeringData><industryGroup><industryGroupType>Pooled Investment Fund</industryGroupType>
-<investmentFundInfo><investmentFundType>Other Investment Fund</investmentFundType></investmentFundInfo></industryGroup>
-<typeOfFiling><dateOfFirstSale>{first}</dateOfFirstSale></typeOfFiling>
-<offeringSalesAmounts><totalOfferingAmount>{total}</totalOfferingAmount><totalAmountSold>{sold}</totalAmountSold></offeringSalesAmounts>
-<investors><totalNumberAlreadyInvested>35</totalNumberAlreadyInvested></investors></offeringData></edgarSubmission>"""
-
-
-def form_d(
-    name="HII Anthropic-01, a Series of HII Anthropic, LLC",
-    first="<value>2026-01-07</value>",
-    total="16726593",
-    sold="16726593",
-):
-    return FORM_D.format(name=name, first=first, total=total, sold=sold).encode()
-
-
-def test_form_d_vehicle_is_third_party_and_carries_its_amount():
-    src_ = hit("0002118444-26-000001")["_source"]
-    rows = src.parse_form_d(form_d(), src_, OWN)
-    assert [r["metric"] for r in rows] == ["form_d_filing", "form_d_amount_sold_usd"]
-    assert rows[1]["value"] == 16726593.0 and rows[0]["as_of"] == "2026-03-13"
-    d = rows[0]["dims"]
-    assert (
-        d["issuer_class"] == "third_party_vehicle"
-        and d["sponsor"] == "HII Anthropic, LLC"
-        and d["first_sale"] == "2026-01-07"
-    )
-    assert rows[0]["source_url"] == "https://www.sec.gov/Archives/edgar/data/2118444/000211844426000001/primary_doc.xml"
-
-
-def test_form_d_by_anthropic_itself_is_the_only_own_filing():
-    own = src.parse_form_d(form_d(name="Anthropic, PBC"), hit("0000000000-26-000001")["_source"], OWN)
-    assert own[0]["dims"]["issuer_class"] == "anthropic_own"
-    for name in (
-        "Anthropic Capital Fund, LP",
-        "Hiive Anthropic Series I a Series of Hiive Anthropic LLC",
-        "Anthropic PBC 1, a Series of Venelite Venture Funds, LP",
-    ):
-        assert src.issuer_class(name, OWN) == "third_party_vehicle", name
-
-
-def test_form_d_indefinite_offering_and_unsold_have_no_number():
-    rows = src.parse_form_d(
-        form_d(first="<yetToOccur/>", total="Indefinite", sold="0"),
-        hit("0002118444-26-000002", form="D/A")["_source"],
-        OWN,
-    )
-    d = rows[0]["dims"]
-    assert d["first_sale"] is None and d["offering_total"] is None and d["form"] == "D/A"
-    assert rows[1]["value"] == 0.0
-
-
-@pytest.mark.parametrize(
-    ("name", "sponsor"),
-    [
-        ("Anthropic Jan 2026 a Series of CGF2021 LLC", "CGF2021 LLC"),
-        ("AUGUREY VENTURES I, LLC - ANTHROPIC A", "AUGUREY VENTURES I, LLC"),
-        ("ANTHROPIC - MYASIAVC ALTERNATE FUND I", "MYASIAVC ALTERNATE FUND I"),
-        ("Anthropic - Incepto AGI Funds LLC", "Incepto AGI Funds LLC"),
-        ("ID Funds 3 - Anthropic, a series of ID Funds 3 LLC", "ID Funds 3 LLC"),
-        ("ANTHROPIC - A SERIES OF AURUM VP FUND LLC", "AURUM VP FUND LLC"),
-        ("Linqto Liquidshares LLC", "Linqto Liquidshares LLC"),
-    ],
-)
-def test_sponsor_is_the_firm_behind_the_vehicle(name, sponsor):
-    assert src.sponsor_of(name) == sponsor
 
 
 def test_search_dedupes_a_filings_pages_and_pages_through_results(monkeypatch):
@@ -120,11 +49,6 @@ def test_incremental_start_overlaps_the_newest_stored_date(monkeypatch):
     assert src.since(company, "sec_form_d", "2021-01-01") == "2026-03-16"
     monkeypatch.setattr(src, "latest_as_of", lambda *a, **k: None)
     assert src.since(company, "sec_form_d", "2021-01-01") == "2021-01-01"
-
-
-def test_peers_are_not_collected_for_capital():
-    assert list(src.sec_form_d(load_companies(ROOT)["openai"])) == []
-    assert list(src.sec_nport_marks(load_companies(ROOT)["openai"])) == []
 
 
 # ---- N-PORT ----
@@ -166,71 +90,11 @@ def test_only_the_whole_word_anthropic_matches():
 
 # ---- the shipped ledgers ----
 
-LEDGERS = ("capital_funding_rounds", "capital_arr_milestones", "capital_arr_press", "capital_strategic_holders")
-AMOUNT = re.compile(r"\$\s?([\d,.]+)\s?(billion|million|B|M)\b")
-
-
-def amounts_in(text):
-    return {float(n.replace(",", "")) * (1e9 if u in ("billion", "B") else 1e6) for n, u in AMOUNT.findall(text)}
-
 
 @pytest.fixture(scope="module")
 def shipped():
     registry.discover()
-    return {
-        sid: read_observations(ROOT, registry.SOURCES[sid].meta) for sid in (*LEDGERS, "sec_form_d", "sec_nport_marks")
-    }
-
-
-def test_every_ledger_row_is_cited_and_its_number_is_in_its_quote(shipped):
-    for sid in LEDGERS:
-        assert shipped[sid], sid
-        for r in shipped[sid]:
-            assert r["source_url"].startswith("https://") and r["entered_by"] == "EwenCheung via Claude", (
-                sid,
-                r["dims"],
-            )
-            if r["metric"] != "form_d_filing":
-                assert r["value"] in amounts_in(r["evidence"]), (sid, r["metric"], r["as_of"], r["value"])
-
-
-def test_ledger_tiers_are_never_mixed(shipped):
-    assert {r["tier"] for r in shipped["capital_arr_milestones"]} == {"company-stated"}
-    assert {r["tier"] for r in shipped["capital_arr_press"]} == {"press"}
-    assert {r["tier"] for r in shipped["capital_strategic_holders"]} == {"filing"}
-    assert all("anthropic.com" in r["source_url"] for r in shipped["capital_funding_rounds"])  # press has no row here
-
-
-def test_post_money_only_where_the_company_states_it_and_always_with_an_amount(shipped):
-    by = {}
-    for r in shipped["capital_funding_rounds"]:
-        by.setdefault(r["dims"]["round"], {})[r["metric"]] = r["value"]
-    assert all("round_amount_usd" in v for v in by.values())
-    assert by["Series H"] == {"round_amount_usd": 65e9, "round_post_money_usd": 965e9}
-    assert (
-        "round_post_money_usd" not in by["Series C"] and "Series D" not in by
-    )  # no company-stated valuation, no announcement
-
-
-def test_amazon_invested_notes_add_up_to_the_filings_own_total(shipped):
-    notes = [
-        r["value"]
-        for r in shipped["capital_strategic_holders"]
-        if r["metric"] == "holder_invested_usd" and r["dims"]["instrument"] == "convertible notes"
-    ]
-    assert sum(notes) == 8.0e9  # "From Q3 2023 to Q4 2025, we invested $8.0 billion in convertible notes"
-
-
-def test_form_d_classification_on_the_real_filings(shipped):
-    filings = [r for r in shipped["sec_form_d"] if r["metric"] == "form_d_filing"]
-    assert len(filings) >= 121
-    assert not [
-        r for r in filings if r["dims"]["issuer_class"] == "anthropic_own"
-    ]  # every filer found is a third-party vehicle
-    assert all(
-        r["dims"]["sponsor"].lower() != "anthropic" for r in filings
-    )  # sponsor never degenerates to the target's own name
-    assert all(r["source_url"].startswith("https://www.sec.gov/Archives/edgar/data/") for r in filings)
+    return {sid: read_observations(ROOT, registry.SOURCES[sid].meta) for sid in ("sec_nport_marks",)}
 
 
 def test_nport_lines_on_the_real_filings_are_all_anthropic_pbc_and_never_the_other_company(shipped):

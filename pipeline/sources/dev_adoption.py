@@ -14,10 +14,8 @@ PAGE = "dev_adoption"
 CLICKHOUSE = "https://sql-clickhouse.clickhouse.com/"
 NPM_RANGE = "https://api.npmjs.org/downloads/range/{start}:{end}/{package}"
 GITHUB_SEARCH = "https://api.github.com/search/{kind}"
-VSCODE = "https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery"
 HISTORY_START = date(2023, 1, 1)
 CLAUDE_CODE_LAUNCH = date(2025, 2, 24)  # Claude Code research preview; co-authored commits start here
-MCP_LAUNCH = date(2024, 11, 1)  # MCP announced 2024-11-25; count from that month
 PACKAGE = re.compile(r"^(@[a-z0-9-]+/)?[A-Za-z0-9._-]+$")
 
 
@@ -35,7 +33,7 @@ def resume(company, source_id: str, start: date, overlap_days: int, **dims) -> d
 
 
 def packages(company, *keys) -> list[tuple[str, str]]:
-    """(package, role) pairs from config/identifiers/dev_adoption.yaml; role is sdk, cli or mcp."""
+    """(package, role) pairs from config/identifiers/dev_adoption.yaml; role is sdk or cli."""
     ids, out = company.ids(PAGE), []
     for key in keys:
         names = ids.get(key) or []
@@ -60,7 +58,7 @@ def packages(company, *keys) -> list[tuple[str, str]]:
     "ClickHouse mirrors PyPI's public BigQuery logs and lags about a day. Legacy SDKs are summed with their successors.",
 )
 def pypi_downloads(company):
-    pkgs = dict(packages(company, "sdk_pypi", "mcp_pypi"))
+    pkgs = dict(packages(company, "sdk_pypi"))
     if not pkgs:
         return
     since = resume(company, "pypi_downloads", HISTORY_START, overlap_days=3)
@@ -98,7 +96,7 @@ def pypi_downloads(company):
 )
 def npm_downloads(company):
     end = today() - timedelta(days=1)
-    for package, role in packages(company, "sdk_npm", "cli_npm", "mcp_npm"):
+    for package, role in packages(company, "sdk_npm", "cli_npm"):
         start = resume(company, "npm_downloads", HISTORY_START, overlap_days=3, package=package)
         started = False
         while start <= end:
@@ -155,111 +153,3 @@ def github_coauthored_commits(company):
         }
         week += timedelta(days=7)
         time.sleep(6)  # commit search trips GitHub's secondary rate limit well below its 30-a-minute quota
-
-
-@source(
-    id="github_org_stats",
-    page=PAGE,
-    label="GitHub organisation repositories (stars, forks, repos)",
-    url="https://api.github.com/orgs/{org}/repos",
-    method="api",
-    tier="platform",
-    cadence="daily",
-    sla_days=2,
-    backfillable=False,
-    caveats="Totals across the org's public, non-fork repositories on the day collected. "
-    "GitHub keeps no history of these totals, so the series starts when collection started.",
-)
-def github_org_stats(company):
-    org = company.ids(PAGE).get("github_org")
-    if not org:
-        return
-    repos, page = [], 1
-    while True:
-        batch = github_get(
-            f"https://api.github.com/orgs/{org}/repos", params={"type": "sources", "per_page": 100, "page": page}
-        ).json()
-        repos += batch
-        if len(batch) < 100:
-            break
-        page += 1
-    stamp = {"source_url": f"https://github.com/{org}", "as_of": today().isoformat(), "entity": company.slug}
-    for metric, value in (
-        ("org_stars", sum(r["stargazers_count"] for r in repos)),
-        ("org_forks", sum(r["forks_count"] for r in repos)),
-        ("org_public_repos", len(repos)),
-    ):
-        yield {**stamp, "metric": metric, "value": value, "dims": {"org": org}}
-
-
-@source(
-    id="vscode_installs",
-    page=PAGE,
-    label="Visual Studio Marketplace install counts",
-    url=VSCODE,
-    method="api",
-    tier="platform",
-    cadence="daily",
-    sla_days=2,
-    backfillable=False,
-    caveats="Cumulative installs reported by the marketplace (uninstalls are not subtracted). "
-    "No history is published, so growth is measured from our own snapshots.",
-)
-def vscode_installs(company):
-    ext = company.ids(PAGE).get("vscode")
-    if not ext:
-        return
-    body = {"filters": [{"criteria": [{"filterType": 7, "value": ext}]}], "flags": 256}
-    headers = {"Accept": "application/json;api-version=7.2-preview.1"}
-    found = post(VSCODE, json=body, headers=headers).json()["results"][0]["extensions"]
-    for e in found:
-        stats = {s["statisticName"]: s["value"] for s in e.get("statistics", [])}
-        yield {
-            "source_url": f"https://marketplace.visualstudio.com/items?itemName={ext}",
-            "as_of": today().isoformat(),
-            "entity": company.slug,
-            "metric": "vscode_installs",
-            "value": int(stats.get("install", 0)),
-            "dims": {"extension": ext},
-        }
-
-
-def month_start(d: date) -> date:
-    return d.replace(day=1)
-
-
-def next_month(d: date) -> date:
-    return (d.replace(day=28) + timedelta(days=4)).replace(day=1)
-
-
-@source(
-    id="github_mcp_server_repos",
-    page=PAGE,
-    label="GitHub repository search: new repos tagged mcp-server",
-    url="https://api.github.com/search/repositories?q=topic%3Amcp-server",
-    method="api",
-    tier="platform",
-    cadence="weekly",
-    sla_days=8,
-    backfillable=True,
-    caveats="Counts public repos tagged with the mcp-server topic, by creation month. Untagged servers are missed, "
-    "so it is a lower bound; the current and previous month are re-checked each run.",
-)
-def github_mcp_server_repos(company):
-    if not company.ids(PAGE).get("mcp_npm"):  # MCP is Anthropic's protocol; the ecosystem is booked to it once
-        return
-    month = month_start(resume(company, "github_mcp_server_repos", MCP_LAUNCH, overlap_days=40))
-    while month <= today():
-        end = next_month(month) - timedelta(days=1)
-        q = f"topic:mcp-server created:{month}..{end}"
-        body = github_get(GITHUB_SEARCH.format(kind="repositories"), params={"q": q, "per_page": 1}).json()
-        yield {
-            "source_url": "https://github.com/search?" + urlencode({"type": "repositories", "q": q}),
-            "as_of": month.isoformat(),
-            "entity": company.slug,
-            "metric": "mcp_server_repos_new",
-            "value": body["total_count"],
-            "dims": {"topic": "mcp-server", "partial_month": month == month_start(today())},
-        }
-        month = next_month(month)
-        time.sleep(2.2)

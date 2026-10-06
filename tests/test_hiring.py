@@ -273,34 +273,6 @@ def build(mart_fn, rows):
     return mart_fn(Ctx(rows, NAMES))
 
 
-def test_role_mix_shares_and_rerun_dedupe():
-    rows = [
-        posting("anthropic", "Sales", "AE", "London, UK"),
-        posting("anthropic", "Sales", "AE2", "London, UK"),
-        posting("anthropic", "Finance", "Controller", "San Francisco, CA"),
-        posting("anthropic", "Security", "Eng", "San Francisco, CA"),
-    ]
-    rows += [
-        posting("anthropic", "Sales", "AE", "London, UK", retrieved="2026-10-05T03:00:00Z")
-    ]  # an older re-run of the same day
-    spec = build(marts.role_mix, rows)
-    shares = {r["function"]: r["share"] for r in spec["rows"]}
-    assert shares == {"Go-to-market & support": 0.5, "Safety, security & policy": 0.25, "Corporate & operations": 0.25}
-    assert spec["takeaway"][0].startswith("Anthropic's open roles are led by go-to-market & support (50%)")
-
-
-def test_region_mix_takeaway_excludes_remote_from_the_denominator():
-    rows = [
-        posting("anthropic", "Sales", "a", "London, UK"),
-        posting("anthropic", "Sales", "b", "San Francisco, CA"),
-        posting("anthropic", "Sales", "c", "Remote"),
-        posting("openai", "Sales", "d", "San Francisco"),
-    ]
-    spec = build(marts.region_mix, rows)
-    assert spec["badges"] == ["arithmetic"]
-    assert spec["takeaway"] == ["50% of Anthropic's roles with a stated location are outside the US (OpenAI 0%)."]
-
-
 def test_gtm_to_rd_counts_both_sides():
     rows = [
         posting("anthropic", "Sales", "a", "SF"),
@@ -327,31 +299,6 @@ def test_open_roles_joins_live_and_archive_history():
         ("2026-10-05", "Anthropic", 639),
     ]
     assert "117 roles in 2024-06 to 639 on 2026-10-05 (+446%)" in spec["takeaway"][0]
-    head = build(marts.headline_open_roles, rows)
-    a = next(r for r in head["rows"] if r["company"] == "Anthropic")
-    assert (a["roles"], a["change"], a["since"]) == (639, 522, "2024-06-05")
-    assert next(r for r in head["rows"] if r["company"] == "OpenAI")["change"] is None  # no snapshot 4+ weeks old yet
-    assert head["takeaway"] == ["Anthropic lists 639 open roles, 188 fewer than OpenAI (827)."]
-
-
-def test_h1b_charts_wait_for_data_then_roll_up_by_quarter():
-    empty = build(marts.h1b_filings, [])
-    assert empty["rows"] == [] and empty["takeaway"][0].startswith("Awaiting data")
-    ledger = lambda metric, d, v: {
-        **obs("hiring_h1b_lca", metric, "anthropic", d, v),
-        "method": "ledger",
-        "entered_by": "E",
-        "evidence": "case X",
-    }
-    rows = [ledger("h1b_lca_filing", d, 1) for d in ("2026-01-10", "2026-02-10", "2026-04-10")]
-    rows += [
-        ledger("h1b_offered_wage_annual", d, v)
-        for d, v in (("2026-01-10", 200000), ("2026-02-10", 300000), ("2026-04-10", 250000))
-    ]
-    f = build(marts.h1b_filings, rows)
-    assert [(r["quarter"], r["filings"]) for r in f["rows"]] == [("2026-01-01", 2), ("2026-04-01", 1)]
-    w = build(marts.h1b_wages, rows)
-    assert [(r["quarter"], r["wage"]) for r in w["rows"]] == [("2026-01-01", 250000), ("2026-04-01", 250000)]
 
 
 # ---- H-1B import ----

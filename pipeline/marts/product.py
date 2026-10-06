@@ -1,7 +1,7 @@
 """Product, pricing and reliability charts. Every number is computed from collected incidents or from cited ledger rows."""
 
 import calendar
-from datetime import UTC, date, datetime, timedelta
+from datetime import UTC, date, datetime
 
 import pandas as pd
 
@@ -110,7 +110,6 @@ def openrouter_share(ctx):
 
 
 INDEXES = ["openrouter_aa_intelligence_index", "openrouter_aa_coding_index", "openrouter_aa_agentic_index"]
-EVAL_LABELS = {"gpqa_diamond": "GPQA Diamond", "tau_bench_verified_airline": "tau-bench airline"}
 
 
 def cell(x):
@@ -190,65 +189,6 @@ def openrouter_indexes(ctx):
     }
 
 
-@mart(id="product.openrouter_evals", sources=["openrouter_benchmarks"])
-def openrouter_evals(ctx):
-    df = dims(ctx.obs(metric="openrouter_eval_accuracy"), "model", "benchmark", "stddev", "tasks", "cost_per_task_usd")
-    rows, takeaway = [], []
-    if len(df):
-        df = latest(df, keys=("entity", "benchmark", "model"))
-        best = df.sort_values("value", ascending=False).drop_duplicates(["entity", "benchmark"])
-        rows = [
-            {
-                "benchmark": EVAL_LABELS.get(r["benchmark"], r["benchmark"]),
-                "company": peer_name(ctx, r["entity"]),
-                "model": r["model"].split(": ", 1)[
-                    -1
-                ],  # the feed prefixes this one with the provider ("Google: Gemini ...")
-                "accuracy": float(r["value"]),
-                "stddev": cell(r["stddev"]),
-                "tasks": None if pd.isna(r["tasks"]) else int(r["tasks"]),
-                "cost": cell(r["cost_per_task_usd"]),
-                "date": r["as_of"],
-                "link": r["source_url"],
-            }
-            for r in best.sort_values(["benchmark", "value"], ascending=[True, False]).to_dict("records")
-        ]
-    for name in dict.fromkeys(r["benchmark"] for r in rows):
-        group = [r for r in rows if r["benchmark"] == name]
-        top = group[0]
-        text = f"{name}: {top['company']}'s {top['model']} leads at {pct(top['accuracy'], 0)} accuracy."
-        mine = next((r for r in group if r["company"] == "Anthropic"), None)
-        if mine and mine is not top:
-            text += f" Anthropic's best, {mine['model']}, scores {pct(mine['accuracy'], 0)}."
-        takeaway.append(text)
-    return {
-        "title": "OpenRouter's own evaluations",
-        "subtitle": "Accuracy and cost per task on tasks OpenRouter runs itself; the highest-accuracy model per company and benchmark",
-        "kind": "table",
-        "encoding": {},
-        "columns": [
-            {"field": "benchmark", "label": "Benchmark", "format": "text"},
-            {"field": "company", "label": "Company", "format": "text"},
-            {"field": "model", "label": "Model", "format": "text"},
-            {"field": "accuracy", "label": "Accuracy", "format": "pct"},
-            {"field": "stddev", "label": "± std dev", "format": "pct"},
-            {"field": "tasks", "label": "Tasks", "format": "int"},
-            {"field": "cost", "label": "USD per task", "format": "float"},
-            {"field": "date", "label": "Last run", "format": "date"},
-            {"field": "link", "label": "Source", "format": "url"},
-        ],
-        "rows": rows,
-        "takeaway": takeaway,
-        "assumptions": [
-            "OpenRouter runs these evaluations itself (GPQA Diamond and tau-bench verified airline); the feed publishes accuracy, its standard deviation, the task count and average cost per task.",
-            "Selection rule: the highest-accuracy model per company and benchmark. A company's best model on one benchmark need not be its best on another. A model with few tasks or no standard deviation is a noisier reading, so check the Tasks column before ranking.",
-            "Models are matched to companies by OpenRouter's provider prefix; a company absent from a benchmark was not evaluated or does not match a prefix in config/identifiers/product.yaml.",
-            "Cost per task is an average over the tasks run and depends on how long each model reasons; it is not a list price.",
-        ],
-        "badges": [],
-    }
-
-
 # ---- reliability ----
 @mart(id="product.incidents_monthly", sources=["status_incidents"])
 def incidents_monthly(ctx):
@@ -293,50 +233,4 @@ def incidents_monthly(ctx):
             "Counted by the month the incident started. Complete months only.",
         ],
         "badges": [],
-    }
-
-
-@mart(id="product.status_comparison", sources=["status_incidents"])
-def status_comparison(ctx):
-    rows, takeaway = [], []
-    since = (date.fromisoformat(last_collected(ctx)) - timedelta(days=14)).isoformat()
-    for entity in ("anthropic", "openai"):
-        df = incidents(ctx, entity)
-        if df.empty:
-            continue
-        recent = df[(df["as_of"] >= since) & df["impact"].isin(IMPACTS)]
-        done = recent[recent["minutes"].notna()]
-        rows.append(
-            {
-                "company": ctx.names.get(entity, entity),
-                "incidents": len(recent),
-                "severe": int(recent["impact"].isin(["major", "critical"]).sum()),
-                "hours": round(float(done["minutes"].astype(float).sum()) / 60, 1),
-            }
-        )
-    if len(rows) == 2:
-        a, o = rows
-        takeaway = [
-            f"In the last 14 days Anthropic posted {a['incidents']} incidents ({a['severe']} major or critical) and OpenAI {o['incidents']} ({o['severe']})."
-        ]
-    return {
-        "title": "Reliability against OpenAI, last 14 days",
-        "subtitle": "Incidents each company posted on its own status page",
-        "kind": "stat",
-        "encoding": {"y": {"field": "incidents", "type": "quantitative", "label": "Incidents posted", "format": "int"}},
-        "columns": [
-            {"field": "company", "label": "Company", "format": "text"},
-            {"field": "incidents", "label": "Incidents", "format": "int"},
-            {"field": "severe", "label": "Major or critical", "format": "int"},
-            {"field": "hours", "label": "Hours (first post to resolved)", "format": "float"},
-        ],
-        "rows": rows,
-        "takeaway": takeaway,
-        "assumptions": [
-            STATUS_NOTE,
-            "OpenAI's status feed returns only its latest 25 incidents, so a longer comparison is not possible yet; its history builds from our daily collection.",
-            "Google DeepMind, xAI, Mistral and Cohere publish no comparable status feed.",
-            "Informational notices rated 'none' are left out.",
-        ],
-        "badges": ["arithmetic"],
     }

@@ -152,27 +152,6 @@ def test_share_is_arithmetic_sums_to_one_and_skips_the_running_month():
     ]
 
 
-def test_monthly_takeaway_compares_with_the_leader():
-    spec = marts.python_sdk_monthly(Ctx(pypi_rows(), NAMES))
-    assert spec["rows"][0]["company"] in ("Anthropic", "OpenAI")  # display names, not slugs
-    assert spec["takeaway"] == [
-        "In Sep 2026, Python SDK downloads: Anthropic 20 (+100% on Aug 2026), the most of the tracked companies."
-    ]
-
-
-def test_snapshot_bars_report_growth_once_there_is_history():
-    rows = [
-        obs("vscode_installs", "vscode_installs", "anthropic", "2026-10-04", 100, extension="a"),
-        obs("vscode_installs", "vscode_installs", "anthropic", "2026-10-05", 110, extension="a"),
-        obs("vscode_installs", "vscode_installs", "openai", "2026-10-05", 50, extension="o"),
-    ]
-    spec = marts.vscode(Ctx(rows, NAMES))
-    a = spec["rows"][0]
-    assert (a["company"], a["value"], a["growth"], a["since"]) == ("Anthropic", 110, 0.1, "2026-10-04")
-    assert spec["rows"][1]["growth"] is None  # one snapshot: no growth yet
-    assert spec["takeaway"] == ["Anthropic leads with 110 installs, 2.2× OpenAI."]
-
-
 def test_spike_days_are_excluded_from_the_chart_but_kept_in_the_table():
     rows = [
         obs("npm_downloads", "npm_downloads", "openai", f"2026-08-{d:02d}", 100, package="@openai/codex", role="cli")

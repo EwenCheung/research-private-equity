@@ -341,24 +341,12 @@ def test_index_chart_picks_each_companys_top_model_and_keeps_blanks_blank(monkey
     assert marts.openrouter_indexes(Ctx([], NAMES))["rows"] == []
 
 
-def test_eval_chart_reports_accuracy_per_benchmark_and_company(monkeypatch):
-    rows = stamp(collected(monkeypatch, "anthropic") + collected(monkeypatch, "openai"))
-    spec = marts.openrouter_evals(Ctx(rows, NAMES))
-    assert [(r["benchmark"], r["company"], r["model"], r["accuracy"], r["tasks"]) for r in spec["rows"]] == [
-        ("GPQA Diamond", "OpenAI", "GPT X", 0.85, 300),  # the provider prefix the feed adds is dropped
-        ("GPQA Diamond", "Anthropic", "Claude B", 0.8, 300),
-    ]
-    assert spec["takeaway"] == [
-        "GPQA Diamond: OpenAI's GPT X leads at 85% accuracy. Anthropic's best, Claude B, scores 80%."
-    ]
-
-
 def test_benchmark_charts_satisfy_the_chart_contract_with_data_and_without(monkeypatch):
     from pipeline.core.build import build_mart
 
     registry.discover()
     now = datetime(2026, 10, 5, 12, tzinfo=UTC)
     rows = stamp(collected(monkeypatch, "anthropic") + collected(monkeypatch, "openai"))
-    for mid in ("product.openrouter_indexes", "product.openrouter_evals"):
+    for mid in ("product.openrouter_indexes",):
         assert build_mart(registry.MARTS[mid], {"openrouter_benchmarks": rows}, now, NAMES)["status"] == "ok"
         assert build_mart(registry.MARTS[mid], {"openrouter_benchmarks": []}, now, NAMES)["status"] == "awaiting_data"

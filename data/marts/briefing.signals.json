@@ -1,0 +1,331 @@
+{
+  "title": "Underneath the verdicts",
+  "subtitle": "Each signal's latest window, and how it moved",
+  "kind": "table",
+  "encoding": {},
+  "columns": [
+    {
+      "field": "family",
+      "label": "Family",
+      "format": "text"
+    },
+    {
+      "field": "signal",
+      "label": "Signal",
+      "format": "text"
+    },
+    {
+      "field": "latest",
+      "label": "Latest window",
+      "format": "text"
+    },
+    {
+      "field": "based",
+      "label": "Window",
+      "format": "text"
+    },
+    {
+      "field": "chg",
+      "label": "On previous period",
+      "format": "pct"
+    },
+    {
+      "field": "prev",
+      "label": "Period before: its change",
+      "format": "pct"
+    },
+    {
+      "field": "yoy",
+      "label": "On a year earlier",
+      "format": "pct"
+    },
+    {
+      "field": "reading",
+      "label": "Reading",
+      "format": "text"
+    },
+    {
+      "field": "oai_chg",
+      "label": "OpenAI on previous period",
+      "format": "pct"
+    },
+    {
+      "field": "versus",
+      "label": "Anthropic against OpenAI",
+      "format": "text"
+    }
+  ],
+  "rows": [
+    {
+      "family": "Developer usage",
+      "signal": "Python SDK downloads",
+      "latest": "528M",
+      "based": "Jul to Sep 2026",
+      "chg": 0.32528542621866274,
+      "prev": 1.2596841438986737,
+      "yoy": 6.070229303044438,
+      "reading": "Up",
+      "oai_chg": 0.16642400823873205,
+      "versus": "Ahead by 16 pts, 0.5× OpenAI's level"
+    },
+    {
+      "family": "Developer usage",
+      "signal": "JavaScript SDK downloads",
+      "latest": "425M",
+      "based": "Jul to Sep 2026",
+      "chg": 0.7241468525721938,
+      "prev": 2.007788092646617,
+      "yoy": 14.4050964534852,
+      "reading": "Up",
+      "oai_chg": 0.5749917498108668,
+      "versus": "Ahead by 15 pts, 1.0× OpenAI's level"
+    },
+    {
+      "family": "Developer usage",
+      "signal": "Claude Code downloads",
+      "latest": "187M",
+      "based": "Jul to Sep 2026",
+      "chg": 0.4631641148262093,
+      "prev": 0.24802767162297892,
+      "yoy": 2.0532843222270682,
+      "reading": "Up",
+      "oai_chg": 0.9416913795047418,
+      "versus": "Behind by 48 pts, 0.8× OpenAI's level"
+    },
+    {
+      "family": "Developer usage",
+      "signal": "Public commits written with Claude Code",
+      "latest": "4.7M a week",
+      "based": "13 weeks to 2026-10-04",
+      "chg": 0.501193480615824,
+      "prev": 1.0233251508416303,
+      "yoy": 35.58497208263874,
+      "reading": "Up",
+      "oai_chg": null,
+      "versus": "No OpenAI series"
+    },
+    {
+      "family": "Enterprise adoption",
+      "signal": "Hacker News job posts naming Claude or Anthropic",
+      "latest": "7.8%",
+      "based": "Jul to Sep 2026",
+      "chg": 0.0022687079402732833,
+      "prev": 0.5365705622213367,
+      "yoy": 4.0953512747778795,
+      "reading": "Flat",
+      "oai_chg": -0.03276889473264286,
+      "versus": "Level (within 5 pts), 2.4× OpenAI's level"
+    },
+    {
+      "family": "Enterprise adoption",
+      "signal": "Listed companies naming Anthropic in SEC filings",
+      "latest": "26",
+      "based": "Q3 2026",
+      "chg": 0.3,
+      "prev": -0.375,
+      "yoy": 3.3333333333333335,
+      "reading": "Up",
+      "oai_chg": -0.25,
+      "versus": "Ahead by 55 pts, 1.0× OpenAI's level"
+    },
+    {
+      "family": "Consumer attention",
+      "signal": "Wikipedia views of the Claude article",
+      "latest": "514K",
+      "based": "Jul to Sep 2026",
+      "chg": -0.2958648630503914,
+      "prev": -0.02739643882274868,
+      "yoy": 1.51557781073633,
+      "reading": "Down",
+      "oai_chg": -0.1373135030665992,
+      "versus": "Behind by 16 pts, 0.1× OpenAI's level"
+    },
+    {
+      "family": "Consumer attention",
+      "signal": "Wikipedia views of the Anthropic article",
+      "latest": "727K",
+      "based": "Jul to Sep 2026",
+      "chg": -0.32856242503100413,
+      "prev": -0.22230806436196093,
+      "yoy": 1.0643009347387562,
+      "reading": "Down",
+      "oai_chg": -0.052021026946082356,
+      "versus": "Behind by 28 pts, 1.1× OpenAI's level"
+    },
+    {
+      "family": "Build-out",
+      "signal": "Open roles on Anthropic's job board",
+      "latest": "458",
+      "based": "Jul to Sep 2026",
+      "chg": 0.12520458265139117,
+      "prev": 0.09990999099909992,
+      "yoy": 1.3747841105354057,
+      "reading": "Up",
+      "oai_chg": 0.6110716820440026,
+      "versus": "Behind by 49 pts, 0.6× OpenAI's level"
+    },
+    {
+      "family": "Reliability",
+      "signal": "Incidents on Claude's status page",
+      "latest": "87",
+      "based": "Jul to Sep 2026",
+      "chg": -0.30952380952380953,
+      "prev": -0.023255813953488372,
+      "yoy": -0.22321428571428573,
+      "reading": "Down",
+      "oai_chg": null,
+      "versus": "No OpenAI series"
+    },
+    {
+      "family": "What funds say a share is worth",
+      "signal": "Median change in funds' per-share mark",
+      "latest": "127.3% across 19 funds",
+      "based": "marks to 2026-07-31",
+      "chg": 1.272934253929591,
+      "prev": null,
+      "yoy": null,
+      "reading": "Up",
+      "oai_chg": null,
+      "versus": "No OpenAI series"
+    }
+  ],
+  "takeaway": [],
+  "assumptions": [
+    "The latest 3 complete months against the 3 before them and the same 3 months a year earlier. Quarterly series (SEC filings) use the latest complete quarter, the weekly commit series 13 weeks, and fund marks the latest report date against one at least 60 days earlier.",
+    "A change smaller than a signal's band (10% unless its row says otherwise in config/briefing.yaml) counts as flat.",
+    "Blank means the history is too short for that comparison, never zero.",
+    "OpenAI's columns repeat the same arithmetic for OpenAI on the same window: SDK downloads, Codex CLI downloads against Claude Code, views of the ChatGPT and OpenAI articles, Hacker News posts naming OpenAI or GPT, SEC filers naming OpenAI, and open roles. Claude Code commits, status-page incidents and fund marks have no OpenAI series. Ahead means Anthropic's change is better than OpenAI's by more than 5 points, behind the reverse, and level within 5 points. The size is Anthropic's latest window divided by OpenAI's.",
+    "It judges each signal against its own history, never its level: levels trend up together, so they would agree with almost anything. It makes no claim that one signal causes another.",
+    "Every number is computed from the same sources and rules as the chart on its page. Hand-entered data is never used, and no verdict reads OpenAI: its columns are context."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "briefing.signals",
+  "page": "briefing",
+  "as_of": "2026-10-05",
+  "sources": [
+    {
+      "source": "pypi_downloads",
+      "label": "PyPI downloads (ClickHouse public PyPI dataset)",
+      "url": "https://sql-clickhouse.clickhouse.com/",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "npm_downloads",
+      "label": "npm registry download counts",
+      "url": "https://api.npmjs.org/downloads/range/2025-09-29:2026-10-04/@anthropic-ai/sdk",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "github_coauthored_commits",
+      "label": "GitHub commit search: public commits co-authored by Claude",
+      "url": "https://github.com/search?type=commits&q=%22Co-Authored-By%3A+Claude%22+committer-date%3A2026-09-28..2026-10-04",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-09-28",
+      "retrieved_at": "2026-10-05T06:52:42Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "wikipedia_pageviews",
+      "label": "Wikimedia pageviews (English Wikipedia)",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/Claude_%28language_model%29/daily/20260927/20261004",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T07:07:58Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "hn_who_is_hiring",
+      "label": "Hacker News 'Who is hiring?' threads (Algolia)",
+      "url": "https://news.ycombinator.com/item?id=49522897",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-09-01",
+      "retrieved_at": "2026-10-05T07:49:51Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "sec_filings_naming",
+      "label": "SEC EDGAR full-text search (10-K and 10-Q)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1985554/000168316826007169/londax_i10k-053126.htm",
+      "method": "api",
+      "tier": "filing",
+      "cadence": "weekly",
+      "as_of": "2026-09-15",
+      "retrieved_at": "2026-10-05T07:59:10Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "ats_open_roles",
+      "label": "Company job board API (Greenhouse / Ashby)",
+      "url": "https://boards-api.greenhouse.io/v1/boards/anthropic/departments",
+      "method": "api",
+      "tier": "company-stated",
+      "cadence": "daily",
+      "as_of": "2026-10-05",
+      "retrieved_at": "2026-10-05T04:12:39Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "wayback_job_boards",
+      "label": "Internet Archive captures of company job boards",
+      "url": "https://web.archive.org/web/20260923033353/https://jobs.ashbyhq.com/openai",
+      "method": "scrape",
+      "tier": "company-stated",
+      "cadence": "weekly",
+      "as_of": "2026-09-23",
+      "retrieved_at": "2026-10-05T06:59:56Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "status_incidents",
+      "label": "Claude status page",
+      "url": "https://status.claude.com/incidents/k0h22tsvnydg",
+      "method": "api",
+      "tier": "company-stated",
+      "cadence": "daily",
+      "as_of": "2026-10-01",
+      "retrieved_at": "2026-10-05T07:19:13Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "sec_nport_marks",
+      "label": "SEC EDGAR N-PORT-P: mutual-fund holdings of Anthropic",
+      "url": "https://www.sec.gov/Archives/edgar/data/1905088/000094040026036464/primary_doc.xml",
+      "method": "api",
+      "tier": "filing",
+      "cadence": "weekly",
+      "as_of": "2026-07-31",
+      "retrieved_at": "2026-10-05T07:52:42Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-06T08:33:23Z"
+}

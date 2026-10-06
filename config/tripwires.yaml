@@ -1,0 +1,10 @@
+# Plain-language rules the Briefing checks every time it is built. Edit them freely: each one names a signal from
+# config/briefing.yaml and a rule. Rules: consecutive_declines {n}, change_below {value}, change_above {value},
+# below_peak {value, periods}. A change is the latest period against the one before it, as a fraction.
+tripwires:
+  - {id: python_sdk_falls, label: Python SDK downloads fall three months in a row, signal: python_sdk, rule: {type: consecutive_declines, n: 3}}
+  - {id: hn_posts_fall, label: Hacker News job posts naming Claude fall three months in a row, signal: hn_job_posts, rule: {type: consecutive_declines, n: 3}}
+  - {id: roles_fall, label: Open roles fall more than 15% in three months, signal: open_roles, rule: {type: change_below, value: -0.15}}
+  - {id: attention_off_peak, label: Claude article views sit more than 50% below their 12-month peak, signal: wiki_assistant, rule: {type: below_peak, value: 0.5, periods: 12}}
+  - {id: incidents_rise, label: Status-page incidents rise more than 50% in three months, signal: incidents, rule: {type: change_above, value: 0.5}}
+  - {id: marks_fall, label: The median fund marks an Anthropic share lower than three months ago, signal: fund_marks, rule: {type: change_below, value: 0.0}}

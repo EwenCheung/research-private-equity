@@ -1,6 +1,6 @@
 {
-  "title": "Open roles over time",
-  "subtitle": "Daily live collections, plus monthly Internet Archive captures of the same boards",
+  "title": "Open roles on each company's job board",
+  "subtitle": "Postings live on each company's own board: daily since collection began, monthly Internet Archive captures before",
   "kind": "line",
   "encoding": {
     "x": {
@@ -769,5 +769,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-05T08:47:54Z"
+  "generated_at": "2026-10-06T07:10:00Z"
 }

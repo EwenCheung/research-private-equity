@@ -206,8 +206,8 @@ def open_roles(ctx):
             f"Anthropic's board went from {num(first.value)} roles in {first.as_of[:7]} to {num(last.value)} on {last.as_of} ({change(last.value, first.value)})."
         ]
     return {
-        "title": "Open roles over time",
-        "subtitle": "Daily live collections, plus monthly Internet Archive captures of the same boards",
+        "title": "Open roles on each company's job board",
+        "subtitle": "Postings live on each company's own board: daily since collection began, monthly Internet Archive captures before",
         "kind": "line",
         "encoding": {
             "x": {"field": "date", "type": "temporal", "label": "Date"},
@@ -260,8 +260,8 @@ def gtm_to_rd(ctx):
             )
         ]
     return {
-        "title": "Customer-facing hiring against building",
-        "subtitle": "Go-to-market, support and applied AI roles per research or engineering role",
+        "title": "Customer-facing roles per research or engineering role",
+        "subtitle": "Open sales, support and applied AI roles for every research or engineering role. Higher means more of the hiring faces customers.",
         "kind": "bar",
         "encoding": {
             "x": {"field": "company", "type": "nominal", "label": "Company"},

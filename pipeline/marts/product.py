@@ -82,8 +82,8 @@ def openrouter_share(ctx):
                 f"Anthropic is rank {anthropic['rank']} at {pct(anthropic['share'], 1)} in that same table."
             )
     return {
-        "title": "OpenRouter request share by model author",
-        "subtitle": "Trailing seven days among authors shown in OpenRouter's public request-share ranking",
+        "title": "Share of developer requests sent to each company on OpenRouter",
+        "subtitle": "Trailing seven days, among the model authors in OpenRouter's public ranking",
         "kind": "bar",
         "encoding": {
             "x": {"field": "company", "type": "nominal", "label": "Company"},
@@ -155,8 +155,8 @@ def openrouter_indexes(ctx):
                 f"Anthropic's best, {mine['model']}, scores {mine['intelligence']:.1f}: {gap:.1f} points behind."
             )
     return {
-        "title": "Intelligence Index of each company's best model",
-        "subtitle": "Artificial Analysis indexes as relayed by OpenRouter's benchmarks API; the highest-scoring model per company",
+        "title": "Which company has the best model: Intelligence Index",
+        "subtitle": "Artificial Analysis's quality score (higher is better), relayed by OpenRouter's benchmarks API; each company's highest-scoring model",
         "kind": "bar",
         "encoding": {
             "x": {"field": "company", "type": "nominal", "label": "Company"},
@@ -211,8 +211,8 @@ def incidents_monthly(ctx):
             text + (f", against {by_month[prior]} in {month_label(prior)}." if prior in by_month.index else ".")
         ]
     return {
-        "title": "Claude status incidents per month",
-        "subtitle": "Incidents posted on status.claude.com, by the impact Anthropic assigned, complete months",
+        "title": "Incidents on Claude's status page per month",
+        "subtitle": "Incidents posted on status.claude.com, by the impact Anthropic assigned, complete months. Fewer is better.",
         "kind": "stacked_bar",
         "encoding": {
             "x": {"field": "month", "type": "temporal", "label": "Month"},

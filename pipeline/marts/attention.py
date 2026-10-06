@@ -112,8 +112,8 @@ def wiki_products(ctx):
     return wiki_chart(
         ctx,
         "product",
-        "Wikipedia views: the AI assistants",
-        "Monthly views of each assistant's article: Claude, ChatGPT, Gemini (with Bard), Grok, Le Chat",
+        "Consumer interest in each AI assistant",
+        "Wikipedia views per month of each assistant's article: Claude, ChatGPT, Gemini (with Bard), Grok, Le Chat",
         [
             "Claude had no article of its own before January 2024 (it was covered inside Anthropic's), so its series starts then.",
             "Cohere has no consumer assistant. Gemini includes its earlier name Bard and the Gemini model-family article.",

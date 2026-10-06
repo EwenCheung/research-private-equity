@@ -4,8 +4,8 @@ export const meta = { title: "Consumer & Attention", path: "/attention", order: 
 
 const SECTIONS: { title: string; note: string; charts: string[] }[] = [
   {
-    title: "Is the public looking?",
-    note: "Reader curiosity about each company's assistant. Interest is not usage, but it leads and lags it.",
+    title: "Is the public paying attention?",
+    note: "Reader curiosity about each company's assistant, month by month.",
     charts: ["attention.wiki_products"],
   },
 ];
@@ -15,8 +15,11 @@ export default function Attention() {
     <>
       <header className="page-head">
         <h1>Consumer &amp; Attention</h1>
+        <p style={{ marginBottom: 10 }}>
+          <strong>What you are reading.</strong> How much the public is looking up each company's AI assistant. The source is monthly views of each assistant's Wikipedia article.
+        </p>
         <p>
-          How much public attention Anthropic's assistant draws against OpenAI, Google DeepMind, xAI, Mistral and Cohere.
+          <strong>How to read it.</strong> Rising views mean more curiosity. Interest is not usage or revenue, though it tends to lead and lag them. ChatGPT's article draws far more views than Claude's, so read Claude against its own history first.
         </p>
       </header>
       {SECTIONS.map((s) => (

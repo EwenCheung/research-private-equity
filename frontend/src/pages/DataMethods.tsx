@@ -125,9 +125,11 @@ export default function DataMethods() {
     <>
       <header className="page-head">
         <h1>Data &amp; Methods</h1>
+        <p style={{ marginBottom: 10 }}>
+          <strong>What you are reading.</strong> Where every number on this site comes from, when it was last collected, and what it cannot tell you.
+        </p>
         <p>
-          Every number on this site traces to a source below, with when it was last collected or entered and what it cannot tell you.
-          Freshness is recomputed from the clock each time you load this page.
+          <strong>How to read it.</strong> Freshness is recomputed from the clock each time you load this page. &ldquo;Fresh&rdquo; means collected within its schedule; a stale source means the chart above it may be out of date.
         </p>
       </header>
 

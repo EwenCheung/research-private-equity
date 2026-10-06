@@ -24,13 +24,13 @@ const LEADERBOARDS: Embed[] = [
 
 const SECTIONS: { title: string; note: string; charts: string[] }[] = [
   {
-    title: "Who do developers route to?",
-    note: "OpenRouter request share by model author: usage, not quality. It counts requests that pass through OpenRouter only.",
+    title: "Which company do developers send requests to?",
+    note: "Usage, not quality. It counts only requests that pass through OpenRouter.",
     charts: ["product.openrouter_share"],
   },
   {
-    title: "How good are the models?",
-    note: "Artificial Analysis's Intelligence Index, fetched through OpenRouter's benchmarks API.",
+    title: "Which company has the best model?",
+    note: "Artificial Analysis's Intelligence Index for each company's best model, fetched through OpenRouter's benchmarks API.",
     charts: ["product.openrouter_indexes"],
   },
   {
@@ -88,13 +88,15 @@ export default function Product() {
     <>
       <header className="page-head">
         <h1>Product &amp; Reliability</h1>
+        <p style={{ marginBottom: 10 }}>
+          <strong>What you are reading.</strong> Whether Claude's models are competitive and the service dependable: third-party model rankings, where developers route their requests on OpenRouter, and incidents on Claude's own status page.
+        </p>
         <p>
-          Where the frontier models stand, who developers route requests to, and whether the service is holding up. Embedded
-          pages are the sites' own live views; charts are collected by us, with source and caveats on every number.
+          <strong>How to read it.</strong> A higher Intelligence Index is a better model, a higher request share means more developers choose it, and fewer incidents is better. The embedded leaderboards are the sites' own live pages, not our data.
         </p>
       </header>
       <section>
-        <h2 className="section-title">Leaderboards</h2>
+        <h2 className="section-title">How do the models rank?</h2>
         <div className="grid">
           {LEADERBOARDS.map((e) => (
             <EmbedCard key={e.href} {...e} />

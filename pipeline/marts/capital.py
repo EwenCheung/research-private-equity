@@ -117,8 +117,8 @@ def fund_marks(ctx):
             )
         ]
     return {
-        "title": "What mutual funds mark one Anthropic share at",
-        "subtitle": "Each dot is one fund's N-PORT mark: reported value ÷ reported shares, by report date and Anthropic preferred series",
+        "title": "What funds say one Anthropic share is worth",
+        "subtitle": "Each dot is one fund's reported value per share (value ÷ shares from its SEC N-PORT filing), by report date and share series",
         "kind": "scatter",
         "encoding": {
             "x": {"field": "date", "type": "temporal", "label": "Report date"},

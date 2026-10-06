@@ -1,6 +1,6 @@
 {
-  "title": "Intelligence Index of each company's best model",
-  "subtitle": "Artificial Analysis indexes as relayed by OpenRouter's benchmarks API; the highest-scoring model per company",
+  "title": "Which company has the best model: Intelligence Index",
+  "subtitle": "Artificial Analysis's quality score (higher is better), relayed by OpenRouter's benchmarks API; each company's highest-scoring model",
   "kind": "bar",
   "encoding": {
     "x": {
@@ -140,5 +140,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-06T03:59:26Z"
+  "generated_at": "2026-10-06T07:10:00Z"
 }

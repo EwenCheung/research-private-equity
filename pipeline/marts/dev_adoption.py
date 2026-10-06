@@ -184,8 +184,8 @@ def python_sdk_share(ctx):
             )
         ]
     return {
-        "title": "Share of Python SDK downloads",
-        "subtitle": "Each company's share of downloads across the six tracked SDKs, last 18 complete months",
+        "title": "Each company's share of Python SDK downloads",
+        "subtitle": "Share of downloads across the six companies' official Python SDKs on PyPI, last 18 complete months",
         "kind": "stacked_bar",
         "encoding": {
             "x": {"field": "month", "type": "temporal", "label": "Month"},
@@ -212,7 +212,7 @@ def python_sdk_share(ctx):
 def js_sdk_monthly(ctx):
     df = monthly(ctx, "npm_downloads", "sdk")
     return line(
-        "JavaScript SDK downloads per month",
+        "Downloads of each company's JavaScript SDK per month",
         "Downloads",
         "downloads",
         company_rows(ctx, df, "downloads"),
@@ -220,7 +220,7 @@ def js_sdk_monthly(ctx):
         DOWNLOADS
         + spike_note(ctx, df)
         + ["Google is @google/genai plus the legacy @google/generative-ai. xAI publishes no npm SDK."],
-        subtitle="Official API SDKs on npm, complete months",
+        subtitle="Official API software kits on npm, complete months",
     )
 
 
@@ -233,7 +233,7 @@ def coding_agent_cli(ctx):
         if r["dims"].get("role") == "cli"
     }
     spec = line(
-        "Coding-agent CLI downloads per month",
+        "Coding-tool downloads per month: Claude Code, Codex, Gemini CLI",
         "Downloads",
         "downloads",
         company_rows(ctx, df, "downloads"),
@@ -244,7 +244,7 @@ def coding_agent_cli(ctx):
             "Products: " + ", ".join(f"{ctx.names.get(e, e)} = {p}" for e, p in sorted(products.items())) + ".",
             "CLIs update often, and each update is a download, so release cadence inflates counts.",
         ],
-        subtitle="Claude Code vs OpenAI Codex CLI vs Gemini CLI on npm, complete months",
+        subtitle="Downloads of each company's coding-agent command-line tool on npm, complete months",
     )
     return spec
 
@@ -268,8 +268,8 @@ def coauthored_commits(ctx):
             )
         ]
     return {
-        "title": "Public GitHub commits co-authored by Claude",
-        "subtitle": "Weekly commit-search count of the Claude Code co-author trailer",
+        "title": "Public GitHub commits written with Claude Code, per week",
+        "subtitle": "Weekly count of public commits carrying Claude Code's co-author line",
         "kind": "line",
         "encoding": {
             "x": {"field": "week", "type": "temporal", "label": "Week"},

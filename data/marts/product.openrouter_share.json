@@ -1,6 +1,6 @@
 {
-  "title": "OpenRouter request share by model author",
-  "subtitle": "Trailing seven days among authors shown in OpenRouter's public request-share ranking",
+  "title": "Share of developer requests sent to each company on OpenRouter",
+  "subtitle": "Trailing seven days, among the model authors in OpenRouter's public ranking",
   "kind": "bar",
   "encoding": {
     "x": {
@@ -114,5 +114,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-06T03:05:27Z"
+  "generated_at": "2026-10-06T07:10:00Z"
 }

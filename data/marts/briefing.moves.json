@@ -126,34 +126,6 @@
       "based": "Q3 2026"
     },
     {
-      "signal": "Assistant views",
-      "company": "Anthropic",
-      "chg": -0.2958648630503914,
-      "latest": "514K",
-      "based": "Jul to Sep 2026"
-    },
-    {
-      "signal": "Assistant views",
-      "company": "OpenAI",
-      "chg": -0.1373135030665992,
-      "latest": "6.3M",
-      "based": "Jul to Sep 2026"
-    },
-    {
-      "signal": "Company views",
-      "company": "Anthropic",
-      "chg": -0.32856242503100413,
-      "latest": "727K",
-      "based": "Jul to Sep 2026"
-    },
-    {
-      "signal": "Company views",
-      "company": "OpenAI",
-      "chg": -0.052021026946082356,
-      "latest": "670K",
-      "based": "Jul to Sep 2026"
-    },
-    {
       "signal": "Open roles",
       "company": "Anthropic",
       "chg": 0.12520458265139117,
@@ -183,7 +155,7 @@
     }
   ],
   "takeaway": [
-    "Against OpenAI, Anthropic's change is ahead on 3 of 8 comparable signals and behind on 4."
+    "Against OpenAI, Anthropic's change is ahead on 3 of 6 comparable signals and behind on 2."
   ],
   "assumptions": [
     "The latest 3 complete months against the 3 before them and the same 3 months a year earlier. Quarterly series (SEC filings) use the latest complete quarter, the weekly commit series 13 weeks, and fund marks the latest report date against one at least 60 days earlier.",
@@ -236,18 +208,6 @@
       "manual": null
     },
     {
-      "source": "wikipedia_pageviews",
-      "label": "Wikimedia pageviews (English Wikipedia)",
-      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/Claude_%28language_model%29/daily/20260927/20261004",
-      "method": "api",
-      "tier": "platform",
-      "cadence": "daily",
-      "as_of": "2026-10-04",
-      "retrieved_at": "2026-10-05T07:07:58Z",
-      "freshness": "fresh",
-      "manual": null
-    },
-    {
       "source": "hn_who_is_hiring",
       "label": "Hacker News 'Who is hiring?' threads (Algolia)",
       "url": "https://news.ycombinator.com/item?id=49522897",
@@ -280,7 +240,7 @@
       "cadence": "daily",
       "as_of": "2026-10-05",
       "retrieved_at": "2026-10-05T04:12:39Z",
-      "freshness": "fresh",
+      "freshness": "aging",
       "manual": null
     },
     {
@@ -321,5 +281,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-07T03:33:47Z"
+  "generated_at": "2026-10-07T08:39:29Z"
 }

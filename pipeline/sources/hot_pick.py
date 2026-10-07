@@ -230,7 +230,7 @@ def hn_stories(company):
     id="ai_feeds",
     page=PAGE,
     label="AI news sites and blogs: items naming Anthropic or Claude",
-    url="https://en.wikipedia.org/wiki/RSS",
+    url="https://github.com/EwenCheung/research-private-equity/blob/main/config/identifiers/hot_pick.yaml",
     method="api",
     tier="press",
     cadence="weekly",

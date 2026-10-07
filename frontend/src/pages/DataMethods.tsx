@@ -35,17 +35,16 @@ interface MartRow {
 const PAGES: Record<string, string> = {
   hiring: "Hiring & Talent",
   dev_adoption: "Developer Adoption",
-  attention: "Consumer & Attention",
   hot_pick: "Hot Pick",
   product: "Product & Reliability",
-  customers: "Consumer & Attention",
+  customers: "Customers",
   capital: "Capital & Valuation",
 };
 
 const TIERS: [string, string][] = [
   ["company-stated", "The company's own channel: its job board, status page, newsroom or pricing page."],
   ["filing", "A regulatory record: SEC, Department of Labor, federal contract data."],
-  ["platform", "Third-party telemetry: npm, PyPI, GitHub, Wikipedia, Hacker News."],
+  ["platform", "Third-party telemetry: npm, PyPI, GitHub, Hacker News."],
   ["press", "A media report."],
   ["derived", "Computed by us from the rows shown; charts say how."],
 ];

@@ -32,7 +32,7 @@ export default function Briefing() {
         <h1>Briefing</h1>
         <p style={{ marginBottom: 10 }}>
           <strong>What you are reading.</strong> A one-page read of Anthropic. For each area of public evidence (developer usage,
-          enterprise adoption, consumer attention, build-out, reliability, fund marks) it says whether the signals are rising,
+          enterprise adoption, build-out, reliability, fund marks) it says whether the signals are rising,
           falling, flat or mixed. Every verdict is arithmetic on numbers charted on the other pages: no model, no hand-entered data.
         </p>
         <p>

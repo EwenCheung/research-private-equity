@@ -11,13 +11,12 @@ import yaml
 
 from pipeline.core import ROOT, mart
 from pipeline.core.frames import latest, num, pct
-from pipeline.marts import attention, capital, customers, dev_adoption, product
+from pipeline.marts import capital, customers, dev_adoption, product
 
 SOURCES = [
     "pypi_downloads",
     "npm_downloads",
     "github_coauthored_commits",
-    "wikipedia_pageviews",
     "hn_who_is_hiring",
     "sec_filings_naming",
     "ats_open_roles",
@@ -58,12 +57,6 @@ def monthly(df: pd.DataFrame, col: str = "value", month: str = "month") -> dict:
 def download_series(ctx, metric: str, role: str, ent: str = ME) -> dict | None:
     df = dev_adoption.monthly(ctx, metric, role)
     return series("M", "sum", monthly(df[df["entity"] == ent])) if len(df) else None
-
-
-def wiki_series(ctx, kind: str, ent: str = ME) -> dict | None:
-    df, _ = attention.wiki_monthly(ctx, kind)
-    df = df[df["entity"] == ent] if len(df) else df
-    return series("M", "sum", monthly(df, month="as_of")) if len(df) else None
 
 
 def commit_series(ctx, ent: str = ME) -> dict | None:
@@ -145,8 +138,6 @@ def signals(ctx, ent: str = ME) -> dict:
         "claude_code_commits": commit_series(ctx, ent),
         "hn_job_posts": hn_series(ctx, ent),
         "sec_filers": sec_series(ctx, ent),
-        "wiki_assistant": wiki_series(ctx, "product", ent),
-        "wiki_company": wiki_series(ctx, "company", ent),
         "open_roles": roles_series(ctx, ent),
         "incidents": incident_series(ctx, ent),
         "fund_marks": mark_change(ctx, ent),

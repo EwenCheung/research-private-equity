@@ -231,14 +231,6 @@ def world(jump=False) -> dict[str, list[dict]]:
                 obs(source, metric, d.date().isoformat(), float(v), ent, **extra)
                 for d, v in zip(days, level, strict=True)
             ]
-        for kind, title in (("company", ent.title()), ("product", ent.title() + " app")):
-            level = np.exp(np.cumsum(rng.normal(0, 0.03, len(days)))) * 5000
-            rows["wikipedia_pageviews"] += [
-                obs(
-                    "wikipedia_pageviews", "wiki_pageviews", d.date().isoformat(), float(v), ent, title=title, kind=kind
-                )
-                for d, v in zip(days, level, strict=True)
-            ]
     rows["github_coauthored_commits"] = [
         obs(
             "github_coauthored_commits",

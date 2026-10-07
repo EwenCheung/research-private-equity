@@ -139,8 +139,6 @@ def test_openai_has_a_series_for_the_signals_both_companies_share_and_none_for_t
         "claude_code_downloads",
         "hn_job_posts",
         "sec_filers",
-        "wiki_assistant",
-        "wiki_company",
         "open_roles",
     ):
         assert peer[sid] is not None, sid
@@ -225,7 +223,7 @@ def test_the_three_charts_build_from_the_shipped_data(shipped):
         spec = build_mart(registry.MARTS[mid], rows, now, NAMES)
         assert spec["status"] == "ok" and spec["rows"], mid
     verdicts = build_mart(registry.MARTS["briefing.verdicts"], rows, now, NAMES)["rows"]
-    assert [r["family"] for r in verdicts][:3] == ["Developer usage", "Enterprise adoption", "Consumer attention"]
+    assert [r["family"] for r in verdicts][:3] == ["Developer usage", "Enterprise adoption", "Build-out"]
 
 
 def test_the_briefing_reads_the_same_numbers_as_the_chart_on_the_page(shipped):

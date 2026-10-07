@@ -80,7 +80,7 @@
       "rank": 6,
       "kind": "Insight",
       "headline": "Hacker News job posts naming Claude fall three months in a row",
-      "why": "Tripwire fired: down 3 months in a row; it fires when 3 declines in a row. See the Consumer & Attention page.",
+      "why": "Tripwire fired: down 3 months in a row; it fires when 3 declines in a row. See the Customers page.",
       "date": "2026-10-06",
       "link": null
     },
@@ -219,18 +219,6 @@
       "cadence": "weekly",
       "as_of": "2026-09-28",
       "retrieved_at": "2026-10-05T06:52:42Z",
-      "freshness": "fresh",
-      "manual": null
-    },
-    {
-      "source": "wikipedia_pageviews",
-      "label": "Wikimedia pageviews (English Wikipedia)",
-      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/Claude_%28language_model%29/daily/20260927/20261004",
-      "method": "api",
-      "tier": "platform",
-      "cadence": "daily",
-      "as_of": "2026-10-04",
-      "retrieved_at": "2026-10-05T07:07:58Z",
       "freshness": "fresh",
       "manual": null
     },

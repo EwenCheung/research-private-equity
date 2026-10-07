@@ -1,4 +1,3 @@
 # Sources `python -m pipeline.offline fetch` does not call. They stay in the registry and the charts that read them keep the data
 # already collected; name one with `fetch --only <id>` to call it anyway.
-skip:
-  - wikipedia_pageviews   # not needed for the offline copy, and slow: a call per article per company
+skip: []

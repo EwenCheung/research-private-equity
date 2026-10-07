@@ -50,15 +50,7 @@
       "moved": "Hacker News job posts naming Claude or Anthropic +0% (was +54%); Listed companies naming Anthropic in SEC filings +30% (was -38%)",
       "agree": "1 up, 0 down, 1 flat of 2",
       "oai": "Ahead on 1, level on 1, behind on 0 of 2",
-      "where": "Consumer & Attention"
-    },
-    {
-      "family": "Consumer attention",
-      "verdict": "▼ Falling",
-      "moved": "Wikipedia views of the Claude article -30% (was -3%); Wikipedia views of the Anthropic article -33% (was -22%)",
-      "agree": "0 up, 2 down, 0 flat of 2",
-      "oai": "Ahead on 0, level on 0, behind on 2 of 2",
-      "where": "Consumer & Attention"
+      "where": "Customers"
     },
     {
       "family": "Build-out",
@@ -86,8 +78,8 @@
     }
   ],
   "takeaway": [
-    "Developer usage rising, enterprise adoption mixed, consumer attention falling, build-out rising, reliability improving, fund marks rising.",
-    "Consumer attention is falling while developer usage, build-out and fund marks are rising. Against OpenAI, Anthropic's change is ahead on 3 of 8 comparable signals and behind on 4."
+    "Developer usage rising, enterprise adoption mixed, build-out rising, reliability improving, fund marks rising.",
+    "Against OpenAI, Anthropic's change is ahead on 3 of 6 comparable signals and behind on 2."
   ],
   "assumptions": [
     "The latest 3 complete months against the 3 before them and the same 3 months a year earlier. Quarterly series (SEC filings) use the latest complete quarter, the weekly commit series 13 weeks, and fund marks the latest report date against one at least 60 days earlier.",
@@ -143,18 +135,6 @@
       "manual": null
     },
     {
-      "source": "wikipedia_pageviews",
-      "label": "Wikimedia pageviews (English Wikipedia)",
-      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/Claude_%28language_model%29/daily/20260927/20261004",
-      "method": "api",
-      "tier": "platform",
-      "cadence": "daily",
-      "as_of": "2026-10-04",
-      "retrieved_at": "2026-10-05T07:07:58Z",
-      "freshness": "fresh",
-      "manual": null
-    },
-    {
       "source": "hn_who_is_hiring",
       "label": "Hacker News 'Who is hiring?' threads (Algolia)",
       "url": "https://news.ycombinator.com/item?id=49522897",
@@ -187,7 +167,7 @@
       "cadence": "daily",
       "as_of": "2026-10-05",
       "retrieved_at": "2026-10-05T04:12:39Z",
-      "freshness": "fresh",
+      "freshness": "aging",
       "manual": null
     },
     {
@@ -228,5 +208,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-07T03:33:47Z"
+  "generated_at": "2026-10-07T08:39:29Z"
 }

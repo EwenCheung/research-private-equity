@@ -304,7 +304,9 @@ function comboPlot(spec: ChartSpec, series: string[], colors: string[], c: Ink, 
   const banded = layers.some((l) => l.mark === "bar") || x!.type === "nominal" || x!.type === "ordinal";
   const xv = (r: Row) => (banded ? String(r[xf]) : temporal ? toDate(r[xf]) : r[xf]);
   const keys = [...new Set(spec.rows.map((r) => String(r[xf])))];
-  const every = Math.ceil(keys.length / 10);
+  // Names on the axis (models, pairs) are the point of the chart: up to 30 of them are all shown, tilted, rather than every few.
+  const tilted = banded && !temporal && keys.length > 8 && keys.length <= 30;
+  const every = tilted ? 1 : Math.ceil(keys.length / 10);
   const paint = (l: Layer) => (r: Row) => colors[series.indexOf(l.series ? String(r[l.series]) : l.name)] ?? c.ink3;
   const num = (f?: string) => (r: Row) => Number(r[f!]);
   const tipText = (r: Row) => spec.columns.map((col) => `${col.label}: ${fmt(r[col.field], col.format)}`).join("\n");
@@ -345,8 +347,9 @@ function comboPlot(spec: ChartSpec, series: string[], colors: string[], c: Ink, 
     marginLeft: 58,
     marginRight: 16,
     style: { background: "transparent", color: c.ink, fontFamily: "var(--sans)", fontSize: "12px", ["--plot-background" as string]: c.surface },
+    marginBottom: tilted ? 76 : 30,
     x: banded
-      ? { type: "band", label: null, domain: keys, padding: keys.length <= 6 ? 0.75 : 0.3, tickFormat: (d: string) => (keys.indexOf(d) % every === 0 ? (temporal ? shortDate(d) : d) : "") }
+      ? { type: "band", label: null, domain: keys, tickRotate: tilted ? -45 : 0, padding: keys.length <= 6 ? 0.75 : 0.3, tickFormat: (d: string) => (keys.indexOf(d) % every === 0 ? (temporal ? shortDate(d) : d) : "") }
       : { label: temporal ? null : x!.label, ticks: 6 },
     y: { label: y!.label, grid: true, nice: true, tickFormat: (d: number) => axis(d, yFmt) },
     marks,

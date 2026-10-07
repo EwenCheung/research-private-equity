@@ -13,6 +13,63 @@ Outputs are drafts for deal-team review, not investment advice. Only public sour
 
 Status: see [docs/ROADMAP.md](docs/ROADMAP.md). Design: [docs/superpowers/specs](docs/superpowers/specs/2026-10-05-signal-monitor-design.md).
 
+## Quick start
+
+> **The data is in the repo.** `data/offline/signal-monitor.sqlite` holds every collected number, chart and the dashboard itself, so after a `git pull` you can look at everything with no internet and no refresh.
+
+### A. Just look at the dashboard (4 steps)
+You need [uv](https://docs.astral.sh/uv/) (it installs Python for you). No Node, no internet.
+
+**1. Get the code and the data**
+```bash
+git pull
+```
+
+**2. Install the Python packages (once)**
+```bash
+uv sync
+```
+
+**3. Create your `.env` (once).** Copy the example, then open `.env` and set `DASHBOARD_PASSWORD` (the password you will sign in with) and `SESSION_SECRET` (any long random text, for example the output of `python3 -c "import secrets; print(secrets.token_hex(32))"`).
+```bash
+cp .env.example .env
+```
+
+**4. Start the backend and the frontend together**
+```bash
+uv run python -m pipeline.offline serve
+```
+Open **http://127.0.0.1:8000** and sign in. Everything you see comes from the file. Press `Ctrl+C` to stop.
+
+### B. Work on it: frontend, backend and data run separately
+Install the frontend packages once with `npm --prefix frontend ci` (Node 22). Then use three terminals:
+
+**1. Start the backend** (port 8000, reads the committed file)
+```bash
+DATA_DB=data/offline/signal-monitor.sqlite uv run uvicorn app.server:app --port 8000 --env-file .env
+```
+
+**2. Start the frontend** (port 5173, reloads as you edit; it sends `/api` calls to the backend)
+```bash
+npm --prefix frontend run dev
+```
+Open **http://localhost:5173**.
+
+**3. Update the data** (needs internet). Either press **Refresh data** on the *Data & Methods* page, or run:
+```bash
+uv run python -m pipeline.offline fetch
+```
+It calls every source in parallel, rebuilds the charts and replaces the file. If anything fails it keeps the data you had and says why.
+
+**4. Share the new data.** The file is committed, so open a `chore(data)` pull request with `data/offline/signal-monitor.sqlite`. Everyone else then gets it with `git pull`.
+
+**5. Check your work**
+```bash
+uv run pytest
+```
+
+More detail on the file, the rollback rules and the sandbox: [Take everything to a machine with no internet](#take-everything-to-a-machine-with-no-internet).
+
 ## Setup for colleagues
 1. Clone the repo, then open it in Claude Code:
    ```bash

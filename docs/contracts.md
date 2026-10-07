@@ -239,7 +239,7 @@ uv run pytest
 | `GET /api/marts` | Also lists the Phase 3 weekly picks, `hot_pick.month_2026_10`, as ordinary chart specs |
 | `GET /api/analysis?week=` | Phase 4: `{bull, bear, neutral}` |
 
-**Environment:** see `.env.example`. `DATA_DIR` points the API at the pipeline's `data/` (Render sets `data`). If it's unset, the API serves `tests/fixtures/`.
+**Environment:** see `.env.example`. `DATA_DIR` points the API at the pipeline's `data/` (Render sets `data`). If it's unset, the API serves `tests/fixtures/`. `DATA_DB` points it at the offline SQLite file written by `python -m pipeline.offline` instead: the charts and the registry are read from the file, so a machine with no internet needs no `data/` folder and no build.
 
 **Ports:** worktree `n` uses API `8000+n` and Vite `5173+n`.
 - `main` is `n = 0`.

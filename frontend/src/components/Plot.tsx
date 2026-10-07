@@ -2,13 +2,29 @@ import * as Plot from "@observablehq/plot";
 import { useContext, useEffect, useRef, useState } from "react";
 import { axis, fmt, shortDate, toDate } from "../format";
 import { SchemeContext } from "../theme";
-import type { ChartSpec } from "../types";
+import type { ChartSpec, Layer } from "../types";
 
 type Row = ChartSpec["rows"][number];
 const SLOTS = ["--s1", "--s2", "--s3", "--s4", "--s5", "--s6", "--s7", "--s8"];
 
+/** The field that says whether a row belongs to a layer: a layer draws only the rows where it is not null. */
+const valueField = (l: Layer) => (l.mark === "band" ? l.y_low : l.mark === "rule" ? l.label : l.y)!;
+const drawn = (spec: ChartSpec, l: Layer) => spec.rows.filter((r) => r[valueField(l)] != null);
+
+/** Legend entries of a combined chart: one per layer, or one per value of a layer's series field. A band, and a rule
+ *  that is not split by series, are drawn in neutral ink and stay out of the legend. */
+function comboSeries(spec: ChartSpec): string[] {
+  const names: string[] = [];
+  for (const l of spec.layers ?? []) {
+    if (l.mark === "band" || (l.mark === "rule" && !l.series)) continue;
+    for (const n of l.series ? drawn(spec, l).map((r) => String(r[l.series!])) : [l.name]) if (!names.includes(n)) names.push(n);
+  }
+  return names;
+}
+
 /** Series in order of first appearance, so a colour follows its entity and never its rank. */
 export function seriesOf(spec: ChartSpec): string[] {
+  if (spec.kind === "combo") return comboSeries(spec);
   const f = spec.encoding.color?.field;
   return f ? [...new Set(spec.rows.map((r) => String(r[f])))] : [];
 }
@@ -118,6 +134,7 @@ interface Ink {
 }
 
 function build(spec: ChartSpec, series: string[], colors: string[], c: Ink, width: number) {
+  if (spec.kind === "combo") return comboPlot(spec, series, colors, c, width);
   const { x, y, color } = spec.encoding;
   const xf = x!.field;
   const yf = y!.field;
@@ -236,4 +253,58 @@ function build(spec: ChartSpec, series: string[], colors: string[], c: Ink, widt
     default:
       throw new Error(`No plot for kind ${spec.kind}`);
   }
+}
+
+/** Several marks over one shared x axis, so two aspects can be read against each other. Bars put x on a band scale
+ *  (categories, in order of appearance); without bars x is a date or a number. Marks are drawn back to front. */
+function comboPlot(spec: ChartSpec, series: string[], colors: string[], c: Ink, width: number) {
+  const { x, y } = spec.encoding;
+  const xf = x!.field;
+  const yFmt = y!.format ?? "float";
+  const layers = spec.layers ?? [];
+  const temporal = x!.type === "temporal";
+  const banded = layers.some((l) => l.mark === "bar") || x!.type === "nominal" || x!.type === "ordinal";
+  const xv = (r: Row) => (banded ? String(r[xf]) : temporal ? toDate(r[xf]) : r[xf]);
+  const keys = [...new Set(spec.rows.map((r) => String(r[xf])))];
+  const every = Math.ceil(keys.length / 10);
+  const paint = (l: Layer) => (r: Row) => colors[series.indexOf(l.series ? String(r[l.series]) : l.name)] ?? c.ink3;
+  const num = (f?: string) => (r: Row) => Number(r[f!]);
+  const tipText = (r: Row) => spec.columns.map((col) => `${col.label}: ${fmt(r[col.field], col.format)}`).join("\n");
+  const front = ["band", "bar", "rule", "line", "point"];
+  const marks: NonNullable<Plot.PlotOptions["marks"]> = [];
+
+  for (const l of [...layers].sort((a, b) => front.indexOf(a.mark) - front.indexOf(b.mark))) {
+    const rows = drawn(spec, l);
+    if (l.mark === "band") {
+      const edges = { x: xv, y1: num(l.y_low), y2: num(l.y_high), fill: c.ink3, fillOpacity: 0.15 };
+      marks.push(Plot.areaY(rows, edges));
+    } else if (l.mark === "bar") {
+      marks.push(Plot.barY(rows, { x: xv, y: num(l.y), fill: paint(l), ry: 3 }));
+    } else if (l.mark === "rule") {
+      const stroke = l.series ? paint(l) : c.ink3;
+      marks.push(Plot.ruleX(rows, { x: xv, stroke, strokeWidth: 1.5, strokeOpacity: 0.8, title: (r: Row) => String(r[l.label!]) }));
+      if (rows.length <= 16)
+        marks.push(Plot.text(rows, { x: xv, text: (r: Row) => String(r[l.label!]), frameAnchor: "top", rotate: -90, textAnchor: "end", dx: -5, fontSize: 10, fill: c.ink3 }));
+    } else if (l.mark === "line") {
+      marks.push(Plot.line(rows, { x: xv, y: num(l.y), stroke: paint(l), strokeWidth: 2, strokeLinejoin: "round", strokeLinecap: "round", z: l.series ? (r: Row) => String(r[l.series!]) : undefined }));
+    } else {
+      marks.push(Plot.dot(rows, { x: xv, y: num(l.y), fill: paint(l), r: 5, stroke: c.surface, strokeWidth: 2 }));
+    }
+  }
+  const lead = layers.find((l) => ["line", "bar", "point"].includes(l.mark));
+  marks.push(Plot.ruleY([0], { stroke: c.axis }));
+  if (lead) marks.push(Plot.tip(drawn(spec, lead), Plot.pointerX({ x: xv, y: num(lead.y), title: tipText }) as Plot.TipOptions));
+
+  return Plot.plot({
+    width,
+    height: 320,
+    marginLeft: 58,
+    marginRight: 16,
+    style: { background: "transparent", color: c.ink, fontFamily: "var(--sans)", fontSize: "12px", ["--plot-background" as string]: c.surface },
+    x: banded
+      ? { type: "band", label: null, domain: keys, padding: keys.length <= 6 ? 0.75 : 0.3, tickFormat: (d: string) => (keys.indexOf(d) % every === 0 ? (temporal ? shortDate(d) : d) : "") }
+      : { label: temporal ? null : x!.label, ticks: 6 },
+    y: { label: y!.label, grid: true, nice: true, tickFormat: (d: number) => axis(d, yFmt) },
+    marks,
+  });
 }

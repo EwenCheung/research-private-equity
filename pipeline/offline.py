@@ -396,6 +396,10 @@ def plan(root: Path, only: list[str] | None, skip: list[str] | None) -> tuple[li
     return ids, left_out
 
 
+def when(stamp: str) -> str:
+    return stamp.replace("T", " ")[:16] + " UTC"
+
+
 def packed_at(db: Path) -> str:
     con = open_db(db)
     try:
@@ -490,7 +494,7 @@ def refresh(
     def done(state: str, message: str) -> dict:
         return {**report, "state": state, "message": message}
 
-    kept = f"The dashboard keeps the data from {before}." if before else ""
+    kept = f"The dashboard keeps the data from {when(before)}." if before else ""
     log(f"calling {len(ids)} sources once: {', '.join(ids)}")
     if not only and left_out:
         log(f"left out: {', '.join(sorted(left_out))}")
@@ -537,7 +541,9 @@ def refresh(
         if live and not added:
             if report["failed"]:
                 return done("failed", f"Nothing new: {failed} failed. {kept}")
-            return done("unchanged", f"Nothing new since {before}: every source returned what the file already holds.")
+            return done(
+                "unchanged", f"Nothing new since {when(before)}: every source returned what the file already holds."
+            )
         if live:
             shutil.copy2(live, db.with_name(db.name + ".previous"))
         os.replace(stage, db)
@@ -557,7 +563,7 @@ def refresh(
         return done("partial", f"Updated {len(report['updated'])} source(s); {what}.")
     return done(
         "ok",
-        f"Updated {len(report['updated'])} source(s). The dashboard now shows the data from {report['packed_at']}.",
+        f"Updated {len(report['updated'])} source(s). The dashboard now shows the data from {when(report['packed_at'])}.",
     )
 
 

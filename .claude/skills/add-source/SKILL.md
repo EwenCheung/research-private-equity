@@ -7,7 +7,7 @@ description: Use when the user wants to add a new data source or signal to the S
 
 A source is one module in `pipeline/sources/` that declares itself with `@source(...)` and yields observation rows. It is picked up
 automatically: there is no registry file to edit. Copy the nearest existing page: `pipeline/sources/product.py` (status feed + cited ledgers),
-`attention.py` (several APIs with backfill and rate limits), `hiring.py` (parsers and an importer).
+`customers.py` (Hacker News and SEC EDGAR, with backfill and rate limits), `hiring.py` (parsers and an importer).
 
 ## 1. Decide before writing code
 - **Is it allowed?** Read the provider's terms. If they forbid scraping, stop and tell the user (that is why OpenRouter is not collected).

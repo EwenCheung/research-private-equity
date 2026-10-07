@@ -405,31 +405,6 @@ def test_a_planted_lead_reaches_the_tested_chart_and_the_nulls_stay_not_supporte
     assert sum(r["verdict"] == sig.UNSUPPORTED for r in spec["rows"]) >= len(spec["rows"]) // 2
 
 
-def test_every_comparison_chart_carries_openai_so_a_move_reads_as_company_or_market():
-    for mart_id, releaser in (("signal.around_release", "Anthropic"), ("signal.around_openai_release", "OpenAI")):
-        spec = build_mart(registry.MARTS[mart_id], world(), NOW)
-        drawn = [(layer["mark"], layer["name"]) for layer in spec["layers"] if layer["mark"] in ("bar", "line")]
-        assert (
-            sorted(drawn) == [("line", "Anthropic"), ("line", "OpenAI")] and releaser in spec["title"]
-        )  # one measure, one mark
-        assert all(r["other"] is not None for r in spec["rows"])
-        assert "Anthropic" in spec["takeaway"][1] and "OpenAI" in spec["takeaway"][1]
-    for mart_id in ("signal.releases", "signal.valuation"):
-        spec = build_mart(registry.MARTS[mart_id], world(), NOW)
-        assert {layer["name"] for layer in spec["layers"] if layer["mark"] == "line"} == {"Anthropic", "OpenAI"}
-    steps = build_mart(registry.MARTS["signal.valuation_steps"], world(), NOW)
-    assert {"Anthropic", "OpenAI"} <= {r["signal"] for r in steps["rows"]}
-    gap = build_mart(registry.MARTS["signal.vs_openai"], world(), NOW)
-    assert "Anthropic's own" in gap["takeaway"][1] or "market outgrew" in gap["takeaway"][1]
-
-
-def test_both_lead_charts_name_a_pair_and_say_what_a_lead_is():
-    for mart_id, edge in (("signal.lead_lag", False), ("signal.lead_lag_edge", True)):
-        spec = build_mart(registry.MARTS[mart_id], world(), NOW)
-        assert ("(vs OpenAI)" in spec["subtitle"]) == edge
-        assert any("A lead is one signal moving first" in a for a in spec["assumptions"])
-
-
 @pytest.mark.parametrize(
     "text, expected",
     [
@@ -605,3 +580,60 @@ def test_the_change_chart_says_how_many_improved_and_how_many_dropped():
     table = build_mart(registry.MARTS["signal.model_table"], world(), NOW)
     assert table["rows"][0]["listed"] > table["rows"][-1]["listed"]  # newest first
     assert any(r["verdict"] == "First in its line" for r in table["rows"])
+
+
+def kinds(spec):
+    return {layer["name"]: layer["mark"] for layer in spec["layers"]}
+
+
+def test_the_market_or_own_chart_compares_four_dimensions_and_splits_the_gap():
+    spec = build_mart(registry.MARTS["signal.market_or_own"], world(), NOW)
+    assert {r["dimension"] for r in spec["rows"]} == set(sig.DIMENSIONS) and {r["company"] for r in spec["rows"]} == {
+        "Anthropic",
+        "OpenAI",
+    }
+    assert kinds(spec) == {
+        "Anthropic's own (gap to OpenAI)": "bar",
+        "Growth over 13 weeks": "point",
+    }  # companies share one mark, the gap has its own
+    by = {(r["dimension"], r["company"]): r for r in spec["rows"]}
+    for dim in sig.DIMENSIONS:
+        a, o = by[dim, "Anthropic"], by[dim, "OpenAI"]
+        assert a["gap"] == pytest.approx(a["growth"] - o["growth"]) and o["gap"] is None  # the gap is drawn once
+
+
+def test_the_release_effect_chart_has_both_companies_around_both_sets_of_releases_with_one_mark_for_each():
+    spec = build_mart(registry.MARTS["signal.release_effect"], world(), NOW)
+    assert kinds(spec) == {
+        "Normal week": "band",
+        "Around Anthropic's releases": "line",
+        "Around OpenAI's releases": "point",
+    }
+    assert len(spec["rows"]) == 2 * len(list(sig.OFFSETS)) and {r["company"] for r in spec["rows"]} == {
+        "Anthropic",
+        "OpenAI",
+    }
+    assert all(r["around_a"] is not None and r["around_o"] is not None for r in spec["rows"])
+    assert len(spec["takeaway"]) == 2 and "Anthropic" in spec["takeaway"][0] and "OpenAI" in spec["takeaway"][1]
+    assert sum(r["low"] is not None for r in spec["rows"]) == len(
+        list(sig.OFFSETS)
+    )  # the grey range is drawn once per week
+
+
+def test_the_lead_chart_shows_own_signals_and_the_edge_over_openai_and_says_what_a_lead_is():
+    spec = build_mart(registry.MARTS["signal.lead_lag"], world(), NOW)
+    assert kinds(spec) == {"Luck": "band", "Anthropic's own signals": "bar", "Beyond OpenAI": "line"}
+    assert "(vs OpenAI)" in spec["subtitle"] and any(
+        "A lead is one signal moving first" in a for a in spec["assumptions"]
+    )
+    assert (
+        len(spec["takeaway"]) == 2
+        and spec["takeaway"][0].startswith("Own signals")
+        and spec["takeaway"][1].startswith("Beyond OpenAI")
+    )
+
+
+def test_the_valuation_chart_carries_both_companies_and_the_round_to_round_multiples():
+    spec = build_mart(registry.MARTS["signal.valuation"], world(), NOW)
+    assert {n for n, mark in kinds(spec).items() if mark == "line"} == {"Anthropic", "OpenAI"}
+    assert "Round to round" in spec["takeaway"][1] and "x" in spec["takeaway"][1]

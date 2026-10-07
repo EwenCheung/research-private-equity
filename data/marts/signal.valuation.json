@@ -648,7 +648,8 @@
     }
   ],
   "takeaway": [
-    "From Series E to Series H Anthropic's announced valuation rose 15.7x while its SDK downloads rose 14.8x and OpenAI's 5.9x; by the latest week they were up 22.3x and 6.8x."
+    "From Series E to Series H Anthropic's announced valuation rose 15.7x while its SDK downloads rose 14.8x and OpenAI's 5.9x; by the latest week they were up 22.3x and 6.8x.",
+    "Round to round Anthropic's valuation rose 3.0x, 2.1x and 2.5x, its SDK downloads 2.7x, 1.8x and 3.0x and OpenAI's 1.9x, 1.6x and 2.0x."
   ],
   "assumptions": [
     "Only 4 rounds state a valuation, so this is a picture of what moved in the same period, not a measure of what drives valuation.",
@@ -706,5 +707,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-07T02:53:11Z"
+  "generated_at": "2026-10-07T03:03:08Z"
 }

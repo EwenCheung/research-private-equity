@@ -1,6 +1,6 @@
 {
-  "title": "Does one of Anthropic's signals move before another? The closest candidate",
-  "subtitle": "PyPI downloads → Wikipedia: company article. Each bar asks: when the first signal moved, did the second move the same way that many weeks later? Right of 0 the first signal moves first. A bar outside the grey band would be more than luck.",
+  "title": "Does one signal move before another? The closest candidates",
+  "subtitle": "Each bar or line point asks: when the first signal moved, did the second move the same way that many weeks later? Right of 0 the first signal moves first. A point outside the grey band would be more than luck. Bars: Anthropic's own signals. Line: Anthropic's growth beyond OpenAI's, so the market's moves cancel (vs OpenAI).",
   "kind": "combo",
   "layers": [
     {
@@ -11,8 +11,13 @@
     },
     {
       "mark": "bar",
-      "name": "Match",
-      "y": "r"
+      "name": "Anthropic's own signals",
+      "y": "own"
+    },
+    {
+      "mark": "line",
+      "name": "Beyond OpenAI",
+      "y": "edge"
     }
   ],
   "encoding": {
@@ -22,7 +27,7 @@
       "label": "Weeks later (right of 0: the first signal moves first)"
     },
     "y": {
-      "field": "r",
+      "field": "own",
       "type": "quantitative",
       "label": "How closely they match",
       "format": "float"
@@ -35,8 +40,13 @@
       "format": "text"
     },
     {
-      "field": "r",
-      "label": "Match (correlation)",
+      "field": "own",
+      "label": "Match, Anthropic's own signals",
+      "format": "float"
+    },
+    {
+      "field": "edge",
+      "label": "Match, beyond OpenAI",
       "format": "float"
     },
     {
@@ -53,113 +63,130 @@
   "rows": [
     {
       "lag": "-8",
-      "r": 0.1491680809071225,
-      "low": -0.20881718058158302,
-      "high": 0.20881718058158302
+      "own": 0.1491680809071225,
+      "edge": 0.081999246674466,
+      "low": -0.23426932650700386,
+      "high": 0.23426932650700386
     },
     {
       "lag": "-7",
-      "r": 0.017770571343001265,
-      "low": -0.20881718058158302,
-      "high": 0.20881718058158302
+      "own": 0.017770571343001265,
+      "edge": 0.06755325391278032,
+      "low": -0.23426932650700386,
+      "high": 0.23426932650700386
     },
     {
       "lag": "-6",
-      "r": 0.010786107727843289,
-      "low": -0.20881718058158302,
-      "high": 0.20881718058158302
+      "own": 0.010786107727843289,
+      "edge": -0.2277182252429907,
+      "low": -0.23426932650700386,
+      "high": 0.23426932650700386
     },
     {
       "lag": "-5",
-      "r": -0.13795758313951126,
-      "low": -0.20881718058158302,
-      "high": 0.20881718058158302
+      "own": -0.13795758313951126,
+      "edge": -0.16160874437376999,
+      "low": -0.23426932650700386,
+      "high": 0.23426932650700386
     },
     {
       "lag": "-4",
-      "r": -0.09997219079263975,
-      "low": -0.20881718058158302,
-      "high": 0.20881718058158302
+      "own": -0.09997219079263975,
+      "edge": 0.055209732541413974,
+      "low": -0.23426932650700386,
+      "high": 0.23426932650700386
     },
     {
       "lag": "-3",
-      "r": 0.0654539030899834,
-      "low": -0.20881718058158302,
-      "high": 0.20881718058158302
+      "own": 0.0654539030899834,
+      "edge": 0.09979816455644487,
+      "low": -0.23426932650700386,
+      "high": 0.23426932650700386
     },
     {
       "lag": "-2",
-      "r": 0.14335950011398554,
-      "low": -0.20881718058158302,
-      "high": 0.20881718058158302
+      "own": 0.14335950011398554,
+      "edge": 0.062363672528748956,
+      "low": -0.23426932650700386,
+      "high": 0.23426932650700386
     },
     {
       "lag": "-1",
-      "r": 0.037465021169477516,
-      "low": -0.20881718058158302,
-      "high": 0.20881718058158302
+      "own": 0.037465021169477516,
+      "edge": -0.03439481433048301,
+      "low": -0.23426932650700386,
+      "high": 0.23426932650700386
     },
     {
       "lag": "0",
-      "r": 0.11309598854589474,
-      "low": -0.20881718058158302,
-      "high": 0.20881718058158302
+      "own": 0.11309598854589474,
+      "edge": 0.10292010548012352,
+      "low": -0.23426932650700386,
+      "high": 0.23426932650700386
     },
     {
       "lag": "+1",
-      "r": 0.04669759927186671,
-      "low": -0.20881718058158302,
-      "high": 0.20881718058158302
+      "own": 0.04669759927186671,
+      "edge": 0.052213805761545024,
+      "low": -0.23426932650700386,
+      "high": 0.23426932650700386
     },
     {
       "lag": "+2",
-      "r": 0.06251851459193648,
-      "low": -0.20881718058158302,
-      "high": 0.20881718058158302
+      "own": 0.06251851459193648,
+      "edge": 0.003774073242681325,
+      "low": -0.23426932650700386,
+      "high": 0.23426932650700386
     },
     {
       "lag": "+3",
-      "r": -0.22573918267921345,
-      "low": -0.20881718058158302,
-      "high": 0.20881718058158302
+      "own": -0.22573918267921345,
+      "edge": 0.007527505663393,
+      "low": -0.23426932650700386,
+      "high": 0.23426932650700386
     },
     {
       "lag": "+4",
-      "r": -0.06782279949368278,
-      "low": -0.20881718058158302,
-      "high": 0.20881718058158302
+      "own": -0.06782279949368278,
+      "edge": 0.06030334500241527,
+      "low": -0.23426932650700386,
+      "high": 0.23426932650700386
     },
     {
       "lag": "+5",
-      "r": -0.10131558643765401,
-      "low": -0.20881718058158302,
-      "high": 0.20881718058158302
+      "own": -0.10131558643765401,
+      "edge": 0.24787792969660716,
+      "low": -0.23426932650700386,
+      "high": 0.23426932650700386
     },
     {
       "lag": "+6",
-      "r": 0.0011554740183671165,
-      "low": -0.20881718058158302,
-      "high": 0.20881718058158302
+      "own": 0.0011554740183671165,
+      "edge": 0.018471679802921553,
+      "low": -0.23426932650700386,
+      "high": 0.23426932650700386
     },
     {
       "lag": "+7",
-      "r": -0.017194853222057892,
-      "low": -0.20881718058158302,
-      "high": 0.20881718058158302
+      "own": -0.017194853222057892,
+      "edge": 0.0331854268089287,
+      "low": -0.23426932650700386,
+      "high": 0.23426932650700386
     },
     {
       "lag": "+8",
-      "r": -0.054864245843683615,
-      "low": -0.20881718058158302,
-      "high": 0.20881718058158302
+      "own": -0.054864245843683615,
+      "edge": 0.270937248819517,
+      "low": -0.23426932650700386,
+      "high": 0.23426932650700386
     }
   ],
   "takeaway": [
-    "Could be luck: the closest match is 3 weeks later (correlation -0.23, 184 weeks); 1 of 17 bars leaves the grey band, and with this many tries a few are expected by luck.",
-    "In the first half of the history the match was -0.43 and in the second half +0.02."
+    "Own signals: PyPI downloads → Wikipedia: company article. Could be luck: the closest match is 3 weeks later (correlation -0.23, 184 weeks); in the first half of the history it was -0.43 and in the second half +0.02.",
+    "Beyond OpenAI: Wikipedia: product article (vs OpenAI) → PyPI downloads (vs OpenAI). Could be luck: the closest match is 8 weeks later (correlation +0.27, 129 weeks); in the first half of the history it was +0.31 and in the second half +0.22."
   ],
   "assumptions": [
-    "The closest of 30 pairs tested on this basis.",
+    "The closest pair of 30 own and 20 beyond-OpenAI pairs tested.",
     "A lead is one signal moving first and another following some weeks later, for example Wikipedia views jumping before SDK downloads do. Each bar is how closely the second signal's week-to-week changes matched the first's that many weeks earlier.",
     "Weekly growth has its own last two weeks removed, so a series that merely persists is not mistaken for a leader, and weeks are ranked, so one extreme week cannot decide the result.",
     "The grey band is what luck alone reaches for the best of 8 lags: 1,500 surrogate series with the same autocorrelation and random timing (fixed seed). It is corrected for how many pairs were tried before a pair is called anything but luck.",
@@ -224,5 +251,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-07T02:53:11Z"
+  "generated_at": "2026-10-07T03:03:08Z"
 }

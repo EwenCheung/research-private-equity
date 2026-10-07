@@ -57,15 +57,16 @@ export default function Refresh() {
   }, [status, running]);
 
   if (!status) return null;
-  const press = () => {
+  const press = (only?: string[]) => {
     setError("");
-    api("/api/refresh", { method: "POST" }).then(load, (e: Error) => {
+    api("/api/refresh", { method: "POST", body: JSON.stringify({ only }) }).then(load, (e: Error) => {
       setError(e.message);
       load();
     });
   };
   const { last, progress } = status;
-  const details = [...Object.entries(last?.failed ?? {}).map(([id, e]) => `${id}: ${e[0]}`), ...(last?.problems ?? [])];
+  const failed = Object.entries(last?.failed ?? {});
+  const problems = last?.problems ?? [];
   const collecting = progress?.stage === "Collecting sources";
 
   return (
@@ -80,7 +81,7 @@ export default function Refresh() {
             {status.data.observations ? ` · ${Number(status.data.observations).toLocaleString()} observations` : ""}. Nothing is fetched until you press the button.
           </p>
         </div>
-        <button onClick={press} disabled={running}>
+        <button onClick={() => press()} disabled={running}>
           {running ? "Refreshing…" : "Refresh data"}
         </button>
       </div>
@@ -113,13 +114,27 @@ export default function Refresh() {
             <p>
               {sgt(last.finished_at)}: {last.message}
             </p>
-            {details.length > 0 && (
+            {failed.length > 0 && (
+              <>
+                <ul className="refresh-failed">
+                  {failed.map(([id, errors]) => (
+                    <li key={id}>
+                      <code>{id}</code> {errors[0]}
+                    </li>
+                  ))}
+                </ul>
+                <button onClick={() => press(failed.map(([id]) => id))}>
+                  Retry the {failed.length} failed source{failed.length === 1 ? "" : "s"}
+                </button>
+              </>
+            )}
+            {problems.length > 0 && (
               <details>
                 <summary>
-                  {details.length} detail{details.length === 1 ? "" : "s"}
+                  {problems.length} problem{problems.length === 1 ? "" : "s"}
                 </summary>
                 <ul>
-                  {details.map((d) => (
+                  {problems.map((d) => (
                     <li key={d}>{d}</li>
                   ))}
                 </ul>

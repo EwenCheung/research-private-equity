@@ -1,6 +1,6 @@
 # Signal page: research note (3.2)
 
-Status: **research, for the user's sign-off. Nothing is built.** Written 2026-10-06 on `phase/3`.
+Status: **built on `p3/signal` (core chart kind in #31), awaiting the user's review.** Written 2026-10-06; sections 3 to 5 updated 2026-10-07 to match what was built, including a correction to section 4.
 Decisions already made (2026-10-06): charts rather than tables; OpenAI is the main comparison; no private data is supplied now; the OpenRouter models list was allowed only if it helps. It shows no average effect (section 4), but the page keeps it as release markers so each release can be judged by eye (revised after review: charts must combine two aspects).
 
 ## 1. What the page is for
@@ -41,23 +41,24 @@ Levels all trend up together, so any two of them correlate. In a test against An
 
 1. **Weekly grid.** Daily series are summed to complete weeks, spikes removed. A partial first or last week is dropped.
 2. **Growth, not level.** Weekly log-growth `ln(x_t) − ln(x_{t-1})`. Incidents use the weekly change in count.
-3. **Pre-whiten.** An AR(2) fit removes each series' own momentum, so a series that is simply persistent is not mistaken for one that leads.
-4. **Cross-correlate at lags −8…+8 weeks.** Lag 0 means the same week (a duplicate or a market-wide move); +1…+8 means x leads y.
-5. **Null by circular shift.** Rotate y by a random amount (1,500 draws), keep the best-of-17-lags |r| each time, and call the observed value real only if it beats that. This accounts for having tried 17 lags.
+3. **Pre-whiten, then rank.** An AR(2) fit removes each series' own momentum, so a series that is simply persistent is not mistaken for one that leads. The residuals are ranked (Spearman correlation), so one extreme week cannot decide a result: with Pearson, a single launch-era week in each series produced a "lead" that ranks erase.
+4. **Cross-correlate at leads of 1 to 8 weeks.** Pair order is the direction: x leads y by k weeks. The lag chart also shows y leading x and the same week (−8…+8), as context.
+5. **Null by surrogates.** 1,500 surrogate series with the same autocorrelation as y and random timing (phase randomisation); keep the best of the eight lags' |r| each time, and call the observed value real only if it beats that. This accounts for having tried eight lags. Rotating y instead gives only about one surrogate per week of history (about 160), too few to resolve the p-values that a correction across 50 pairs needs (see the correction in section 4). Checked on independent series: about 5% reach p < 0.05, as they should.
 6. **FDR across all tests.** Benjamini-Hochberg over every pair and direction tested, so testing more pairs does not make a fluke more likely to show.
 7. **Stability.** The same lag and sign in the first and second half of the history. A relationship that fades is labelled so.
 8. **Relative to OpenAI.** Repeat on `Anthropic growth − OpenAI growth`. What survives is Anthropic-specific; what disappears was the market.
 9. **Label.** *Finding* (passes 5-7), *Hypothesis* (passes 5-6 but not stability, or n too small to check), *Not supported* (fails). The page says which.
 
-**Power.** After the corrections a pair needs roughly |r| ≥ 0.34 at 80 weeks and ≥ 0.22 at 190 weeks to count. Smaller relationships may exist and cannot be seen with this much history; the page says so rather than reporting weak ones.
+**Power.** After the corrections a pair needs roughly |r| ≥ 0.3 at 190 weeks and ≥ 0.4 at 80 weeks to count. Smaller relationships may exist and cannot be seen with this much history; the page says so rather than reporting weak ones.
 
-## 4. What the probe found (real data, weekly, n 70-190)
+## 4. What the tests found (real data, weekly, n 60-190)
 
-- **132 ordered pairs, lags −8…+8:** 34 pass FDR, but nearly all are duplicates or market-wide moves, not leads: Wikipedia product vs company article (r 0.84), Anthropic PyPI vs OpenAI PyPI (0.58), Anthropic PyPI vs OpenAI npm (0.54), Anthropic npm vs Anthropic CLI (0.46), Anthropic npm vs OpenAI npm (0.41). These belong on a "moves together, do not double-count" chart.
-- **26 lead hypotheses** (x leads y by 1-8 weeks): only **2** pass q < 0.05.
-  - Anthropic npm → Anthropic PyPI at 3 weeks (r 0.34, n 186). Fading: r 0.45 in the first half, 0.13 in the second. *Hypothesis*, weakening.
-  - Relative Wikipedia product views → relative CLI downloads at 4 weeks (r −0.30, n 70). Negative, and too short to check stability. *Hypothesis*.
-- **Retraction.** The earlier note (R20) said "Wikipedia product views led PyPI by one to two months (r about 0.5, n 31, 30 lags tried)". On weekly data it is **not supported**: the best r is +0.16 at 8 weeks, p 0.45. The monthly figure came from 31 points and 30 tries.
+**Correction, 2026-10-07.** My first probe (reported on 2026-10-06) used Pearson correlation and a null made by rotating one series. A series of 190 weeks can be rotated only about 160 distinct ways, so the smallest p-value it could honestly give was about 0.006, and the thousands of "draws" were repeats; the p-values it printed (0.001 and below) were far too small, and a correction across many pairs cannot pass anything at that resolution. Its results, "34 pairs pass" and "2 of 26 leads survive" (Anthropic npm to PyPI at 3 weeks, relative Wikipedia product views to relative CLI at 4 weeks), are **withdrawn**. The built engine (section 3) replaces them.
+
+- **Built engine, 50 pairs** (every ordered pair of Anthropic's own six weekly series, and of its growth relative to OpenAI's across five): **none survives the correction**. The strongest is relative Wikipedia product article views leading relative PyPI downloads at 8 weeks (rank r +0.27, 129 weeks), at 1.2 times the 95% chance line, and its corrected p is 0.52. The chart of everything tested shows all 50 as Not supported; the page says so and still draws the pairs.
+- **Anthropic npm to PyPI at 3 weeks** still shows under Pearson with the corrected null (r 0.33, p 0.001), which alone would not pass a correction across 50 pairs, and falls to p 0.18 once weeks are ranked: it rests on a few extreme weeks. Treat it as a curiosity, not a lead.
+- **Duplicates.** The two Wikipedia articles, and Anthropic's PyPI and npm downloads, share noise and move together in the same week. That is shown as a caveat on the chart of pairs, not as a result.
+- **Retraction.** The earlier note (R20) said "Wikipedia product views led PyPI by one to two months (r about 0.5, n 31, 30 lags tried)". On weekly data it is **not supported**, and nothing in the 50-pair test supports it either. The monthly figure came from 31 points and 30 tries.
 - **Model releases show no average effect** (the OpenRouter public models list: 15 Anthropic and 33 OpenAI release weeks). First test, the four weeks from a release, 11 series: all q ≥ 0.87. Second test, after your review, from 4 weeks before to 12 after and the sum over weeks +4 to +8: for the 11 Anthropic releases (2025-05 on), no series leaves the 95% band at any week, and the "month later" sums are not higher (PyPI +0.15 vs +0.27 for a random 5 weeks, npm +0.25 vs +0.19, CLI +0.32 vs +0.30). For OpenAI's releases the result is the same. Caveats: the list gives when OpenRouter listed a model, not the official release; Anthropic's starts at 2025-05, missing Claude 1 to 3.7 and Claude Code; and 11 events can only see a large effect. The list stays as the marker source for chart 1, with the null result shown, not hidden.
 
 ## 5. The page: combined charts, two aspects in each (revised 2026-10-06 after review)
@@ -77,7 +78,7 @@ Chart 1 and chart 2 are the same question, seen two ways: the first shows the ev
 
 **What the data says about chart 1-2 today.** Tested over the weeks from 4 before to 12 after each of the 11 Anthropic releases the public list holds (2025-05 on), no weekly series (PyPI, npm, CLI, Wikipedia, commits) moves outside what a random week does, and the sum of growth over weeks +4 to +8 ("about a month later") is no higher for any of them. The one hit, commits growing *less* after a release (p 0.03), does not survive correcting for 8 series. A longer list of dated releases (Claude 1 to 3.7, Claude Code) would give about twice the events; each would need a source and a quote (section 6).
 
-**The valuation limit.** There are four funding-round post-money values (Series E 2025-03 $61.5B, F 2025-09 $183B, G 2026-02 $380B, H 2026-05 $965B) and 648 fund marks (per-share value from SEC N-PORT filings, since 2023-04). Four rounds cannot support a correlation. They support charts 5 and 6 as a description, labelled "n = 3 intervals". The fund marks give a denser quarterly valuation series (a mark per fund per report date), which is enough to test "does growth in a signal lead the mark", at a lag of one to four quarters, as a *Hypothesis*. Neither measures how much a signal "affects" valuation; they show what moved in the same period.
+**The valuation limit.** There are four funding-round post-money values (Series E 2025-03 $61.5B, F 2025-09 $183B, G 2026-02 $380B, H 2026-05 $965B) and 648 fund marks (per-share value from SEC N-PORT filings, since 2023-04). Four rounds cannot support a correlation. They support charts 5 and 6 as a description, labelled "n = 3 intervals". The fund marks have 38 report dates since 2023-04, which is too few to test a lead of one to four quarters, so they are **not used** on this page. Neither source measures how much a signal "affects" valuation; they show what moved in the same period.
 
 **Plot first, test second.** Every chart draws its two series whether or not the test finds a pattern, so the reader can see what the analysis could not (a shape the test missed, a relationship that changes over time, a single outlier driving a result). The test is a label beside the plot, never a gate in front of it:
 - *Finding*, *Hypothesis* or *Not supported*, with the correlation, the lag, n and the noise ceiling, sit in the chart's subtitle and takeaway.
@@ -130,10 +131,11 @@ Today the page can relate public signals to each other, but not to anything that
 
 They would give two long attention series to test as leads, and cost nothing but a collector. Say if you want them added.
 
-## 7. Open items
+## 7. What was built, and what is open
 
-1. **Sign-off on the combined-chart design (section 5) and the method (section 3).**
-2. **The core `combo` chart PR** comes first, then Signal on `p3/signal`, ports 8002 and 5175.
-3. **Valuation as a yardstick** (section 5, charts 5 and 6): confirm that restoring the funding-round ledger for this page is wanted.
-4. **Whether to add the free series in 6d.**
-5. **Whether to pursue any item in 6a or the earlier releases in 6b.** Without them the page is still useful (charts 1-4), but cannot tie a public signal to revenue.
+**Built on `p3/signal` (seven charts, no tables):** Anthropic against OpenAI (growth over 13 weeks, the latest eight blocks); each release over weekly SDK growth; the average around a release against random weeks from the same stretch of history; the strongest candidate lead, lag by lag; every pair tested, strongest first; the funding-round valuations over SDK downloads; and the valuation multiple between rounds against how much each signal grew. Differences from the plan above: chart 1 plots growth rather than level, because an exponential level hides any step after an early release; the "everything tested" chart is added so a null is never hidden; the fund marks are not used.
+
+**Open:**
+1. **Review of the page** (the review checkpoint), then the PR into `phase/3`, after the core chart kind (#31) is merged.
+2. **Whether to add the free series in 6d.**
+3. **Whether to pursue any item in 6a or the earlier releases in 6b.** Without them the page cannot tie a public signal to revenue, and with 50 pairs and no survivor it says so.

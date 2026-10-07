@@ -45,8 +45,9 @@ Nothing runs on a schedule (R19); Hot Pick and analysis run on demand.
 | # | Implementation | Branch | Status |
 |---|---|---|---|
 | 3.1 | Briefing: Anthropic's verdict per signal family, OpenAI comparison, tripwires | `p3/briefing` | ☑ (#27, #28) |
-| 3.2 | Signal: Anthropic against OpenAI, and which signals lead which, as combined charts (needs a core combo chart kind first); research note in `docs/research/signal-page.md` | `p3/signal` | ☐ (research written, awaiting sign-off) |
+| 3.2 | Signal: Anthropic against OpenAI, and which signals lead which, as combined charts (core combo chart kind #31); research note in `docs/research/signal-page.md` | `p3/signal` | ◐ built, awaiting review |
 | 3.3 | Hot Pick: the hottest news, blogs, discussion, technology trends and insights about Anthropic, for the last week and month, with saved archives | `p3/hot-pick` | ☑ (#29) |
+| 3.4 | Product: Claude's incidents against OpenAI's, from its feed and the Internet Archive | `p3/product-incidents` | ☑ (#30) |
 
 ## Phase 4: AI Analysis ☐
 | # | Implementation | Branch | Status |

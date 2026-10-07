@@ -2,7 +2,7 @@
 name = "signal-monitor"
 version = "0.1.0"
 description = "Alt-data monitor for private companies, with provenance on every number"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 # Every runtime dependency is declared here, so parallel implementations never edit this file.
 # Adding one later goes through its own chore(deps) PR.
 dependencies = [

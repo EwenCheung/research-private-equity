@@ -3,6 +3,7 @@
 import os
 import shutil
 import subprocess
+import threading
 import time
 from functools import cache
 
@@ -13,6 +14,7 @@ RETRY_STATUS = {429, 500, 502, 503, 504}
 MAX_WAIT = 900  # never sleep longer than 15 minutes on one rate-limit reply
 SEC_MIN_INTERVAL = 0.12  # SEC fair access: at most 10 requests a second
 _last_sec_call = 0.0
+_sec_lock = threading.Lock()  # sources run side by side in a refresh; the SEC limit is shared by all of them
 
 
 class SourceUnavailable(Exception):
@@ -90,6 +92,7 @@ def sec_get(url: str, **kw) -> httpx.Response:
     """SEC EDGAR requires a User-Agent naming a person and contact email, and at most 10 requests a second."""
     global _last_sec_call
     agent = env_key("SEC_USER_AGENT", 'SEC EDGAR fair access, e.g. "Jane Doe jane@example.com"')
-    time.sleep(max(0.0, _last_sec_call + SEC_MIN_INTERVAL - time.monotonic()))
-    _last_sec_call = time.monotonic()
+    with _sec_lock:
+        time.sleep(max(0.0, _last_sec_call + SEC_MIN_INTERVAL - time.monotonic()))
+        _last_sec_call = time.monotonic()
     return get(url, headers={"User-Agent": agent, **kw.pop("headers", {})}, **kw)

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../api";
-import { csvCell, fmt, isNumeric, utc } from "../format";
+import { csvCell, fmt, isNumeric, sgt } from "../format";
 import type { ChartSpec, Column, SourceLine } from "../types";
 import { ArithmeticBadge, ExtrapolationBadge, FreshnessBadge, HardcodedBadge, ManualBadge } from "./Badges";
 import ChartPlot from "./Plot";
@@ -115,7 +115,7 @@ function Card({ spec }: { spec: ChartSpec }) {
           <dt>Data as of</dt>
           <dd>{spec.as_of ?? "no data yet"}</dd>
           <dt>Built</dt>
-          <dd>{utc(spec.generated_at)}</dd>
+          <dd>{sgt(spec.generated_at)}</dd>
           {spec.sources.map((s) => (
             <SourceDetail key={s.source} s={s} />
           ))}
@@ -164,7 +164,7 @@ function Provenance({ s }: { s: SourceLine }) {
     <>
       {label}
       {asOf}
-      <span className="sep">{s.retrieved_at ? `retrieved ${utc(s.retrieved_at)}` : "not retrieved yet"}</span>
+      <span className="sep">{s.retrieved_at ? `retrieved ${sgt(s.retrieved_at)}` : "not retrieved yet"}</span>
       <span className="sep">
         <FreshnessBadge state={s.freshness} />
       </span>

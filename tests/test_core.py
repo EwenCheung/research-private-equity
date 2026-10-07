@@ -1,5 +1,7 @@
 import gzip
 import json
+import threading
+import time
 from datetime import UTC, datetime
 
 import pytest
@@ -9,6 +11,7 @@ from pipeline.core import ROOT, registry
 from pipeline.core.build import build
 from pipeline.core.collect import collect
 from pipeline.core.companies import load_companies
+from pipeline.core.http import SourceUnavailable
 from pipeline.core.store import read_observations
 
 META = {
@@ -125,6 +128,100 @@ def test_collect_stamps_provenance_and_writes_immutable_gzip(clean_registry, roo
     assert rows[0]["retrieved_at"] == "2026-10-05T06:02:11Z"
     with pytest.raises(FileExistsError):  # a raw file is never overwritten
         collect(root=root, now=NOW)
+
+
+def test_collect_reports_progress_company_by_company_and_how_each_source_ended(clean_registry, root):
+    def boom(co):
+        raise RuntimeError("down")
+
+    registry.source(**META)(lambda co: [{**ROW, "entity": co.slug}])
+    registry.source(**{**META, "id": "broken"})(boom)
+    registry.source(**{**META, "id": "no_rows"})(lambda co: [])
+    registry.source(**{**META, "id": "needs_key"})(lambda co: (_ for _ in ()).throw(SourceUnavailable("set KEY")))
+    seen = []
+    collect(root=root, now=NOW, on_progress=lambda *event: seen.append(event))
+    assert [e for e in seen if e[0] == "fake_jobs"] == [
+        ("fake_jobs", 0, 2, "running"),
+        ("fake_jobs", 1, 2, "running"),
+        ("fake_jobs", 2, 2, "running"),
+        ("fake_jobs", 2, 2, "done"),
+    ]
+    ended = {e[0]: e[3] for e in seen if e[1] == e[2] and e[3] != "running"}
+    assert ended == {"fake_jobs": "done", "broken": "failed", "no_rows": "empty", "needs_key": "skipped"}
+
+
+def lane_sources(events):
+    """Registers sources that record which others were running when they started. `barrier` makes two of them wait for each other."""
+    running, lock = {}, threading.Lock()
+
+    def make(sid, url, barrier=None):
+        def fn(co):
+            with lock:
+                running[sid] = True
+                events.append((sid, sorted(k for k, v in running.items() if v and k != sid)))
+            if barrier:
+                barrier.wait(5)  # only passes when both sources are running at the same moment
+            time.sleep(0.02)
+            with lock:
+                running[sid] = False
+            return [{**ROW, "entity": co.slug}]
+
+        registry.source(**{**META, "id": sid, "url": url})(fn)
+
+    return make
+
+
+def test_with_workers_sources_on_different_services_run_side_by_side_and_on_one_service_one_after_another(
+    clean_registry, root
+):
+    events, together = [], threading.Barrier(2)
+    make = lane_sources(events)
+    make("a1", "https://a.example.com/x")
+    make("a2", "https://b.example.com/y")  # same service as a1: example.com
+    make("solo1", "https://one.test/z", together)
+    make("solo2", "https://two.test/z", together)
+    written, errors, _ = collect(
+        root=root, now=NOW, workers=4
+    )  # a barrier that never fills would raise inside the sources
+    assert list(written) == ["a1", "a2", "solo1", "solo2"] and errors == []  # source order, whatever finished first
+    assert all("a2" not in others for sid, others in events if sid == "a1")  # never together with its lane-mate
+    assert all("a1" not in others for sid, others in events if sid == "a2")
+
+
+def test_workers_one_is_the_old_one_at_a_time(clean_registry, root):
+    events = []
+    make = lane_sources(events)
+    make("solo1", "https://one.test/z")
+    make("solo2", "https://two.test/z")
+    collect(root=root, now=NOW, workers=1)
+    assert all(others == [] for _, others in events)
+
+
+def test_a_failure_in_one_lane_does_not_stop_the_others_and_results_keep_source_order(clean_registry, root):
+    def boom(co):
+        raise RuntimeError("down")
+
+    registry.source(**{**META, "id": "broken", "url": "https://x.test/"})(boom)
+    registry.source(**{**META, "id": "fine", "url": "https://y.test/"})(lambda co: [{**ROW, "entity": co.slug}])
+    written, errors, _ = collect(root=root, now=NOW, workers=2)
+    assert list(written) == ["broken", "fine"] and written["broken"] is None and written["fine"]
+    assert [e.split(":")[0] for e in errors] == ["broken/a", "broken/b"]
+
+
+def test_lanes_group_sources_by_the_service_they_call():
+    from types import SimpleNamespace
+
+    from pipeline.core.collect import lane
+
+    def of(url, sid="s"):
+        return lane(SimpleNamespace(id=sid, meta={"url": url}))
+
+    assert of("https://efts.sec.gov/LATEST/search-index") == of("https://www.sec.gov/x") == "sec.gov"
+    assert of("https://web.archive.org/web/x") == "archive.org"
+    assert (
+        of("https://{host}/api/v2/incidents.json", "status_incidents") == "status_incidents"
+    )  # no real host: its own lane
+    assert of("", "nourl") == "nourl"
 
 
 def test_collect_rejects_rows_without_provenance(clean_registry, root):

@@ -382,7 +382,7 @@ def test_the_release_chart_marks_each_release_week_once_and_names_it():
     assert all(r["release"].startswith("GPT-") and "Mini" not in r["release"] for r in theirs)
     assert any("(" in r["release"] for r in mine + theirs)  # a scored model's caption carries its Intelligence Index
     assert spec["rows"][0]["week"] >= "2025-03-01"  # starts 12 weeks before the first Anthropic release, not at launch
-    growth = [r for r in spec["rows"] if not r["release"]]
+    growth = [r for r in spec["rows"] if not r["release"] and not r["line"]]
     assert all(r["anthropic"] is not None or r["openai"] is not None for r in growth)
 
 
@@ -570,13 +570,23 @@ def test_a_mini_model_is_not_compared_with_a_full_size_one():
     assert got == {"o3": "First in its line", "o4": "No like-for-like comparison"}
 
 
-def test_the_change_chart_says_how_many_improved_and_how_many_dropped():
-    spec = build_mart(registry.MARTS["signal.model_change"], world(), NOW)
-    assert "scored higher" in spec["takeaway"][0] and "cost less per task" in spec["takeaway"][1]
-    assert {layer["mark"] for layer in spec["layers"]} == {
-        "bar",
-        "point",
-    }  # two different measures, two different marks
+def test_the_release_chart_carries_each_models_score_and_change_in_panels_under_the_growth_lines():
+    spec = build_mart(registry.MARTS["signal.releases"], world(), NOW)
+    panels = {layer["name"]: layer.get("panel", 0) for layer in spec["layers"]}
+    assert [p["label"] for p in spec["panels"]] == ["Intelligence Index", "Change on previous model"]
+    assert panels == {
+        "Anthropic": 0,
+        "OpenAI": 0,
+        "Release": 0,
+        "Intelligence Index of the model": 1,
+        "Score change on previous model": 2,
+        "Price per task change": 2,
+    }
+    models = [r for r in spec["rows"] if r["line"]]
+    assert models and all(r["index"] is not None and r["company"] in ("Anthropic", "OpenAI") for r in models)
+    assert any(r["d_index"] is not None for r in models) and any(r["d_price"] is not None for r in models)
+    assert "scored higher" in spec["takeaway"][0] and "cost less per task" in spec["takeaway"][0]
+    assert "signal.model_change" not in registry.MARTS  # no separate chart for it
     table = build_mart(registry.MARTS["signal.model_table"], world(), NOW)
     assert table["rows"][0]["listed"] > table["rows"][-1]["listed"]  # newest first
     assert any(r["verdict"] == "First in its line" for r in table["rows"])

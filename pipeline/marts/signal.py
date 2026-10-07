@@ -515,13 +515,13 @@ def empty(title: str, subtitle: str) -> dict:
 # ---- charts ----
 
 
-@mart(id="signal.releases", sources=[*USAGE, "model_releases", "openrouter_benchmarks"])
+@mart(id="signal.releases", sources=[*USAGE, "model_releases", *BENCH])
 def releases(ctx):
     title = "Model releases over weekly growth in SDK downloads, Anthropic and OpenAI"
     sub = (
-        "Weekly growth in each company's SDK downloads (PyPI plus npm, 4-week average). "
-        "Each vertical line is a new model line the company listed, in the company's colour; the number in brackets is its Artificial Analysis Intelligence Index "
-        "(higher is smarter, best model in the line)."
+        "Top: weekly growth in each company's SDK downloads (PyPI plus npm, 4-week average). Each vertical line is a new model line the company listed, "
+        "in the company's colour, running down through the panels. Middle: that model line's Artificial Analysis Intelligence Index (higher is smarter). "
+        "Bottom: how much its score, and its price per task, changed on the previous model of its kind (Opus after Opus, GPT after GPT)."
     )
     a, o = sdk(ctx, ME), sdk(ctx, PEER)
     rel = {ME: release_weeks(ctx, ME), PEER: release_weeks(ctx, PEER)}
@@ -530,13 +530,13 @@ def releases(ctx):
     sa, so = smoothed(a), smoothed(o)
     start = min(rel[ME]) - pd.Timedelta(weeks=12)
     weeks = sorted(w for w in set(sa.index) | set(so.index) if w >= start)
+    blank = {"release": None, "company": None, "line": None, "index": None, "d_index": None, "d_price": None}
     rows = [
         {
             "week": w.date().isoformat(),
             "anthropic": float(sa[w]) if w in sa.index else None,
             "openai": float(so[w]) if w in so.index else None,
-            "release": None,
-            "company": None,
+            **blank,
         }
         for w in weeks
     ]
@@ -550,11 +550,27 @@ def releases(ctx):
                 "week": w.date().isoformat(),
                 "anthropic": None,
                 "openai": None,
+                **blank,
                 "release": ", ".join(f"{k} ({cards[k.lower()]['index']:.0f})" if k.lower() in cards else k for k in n),
                 "company": WHO[ent],
             }
             for w, n in shown.items()
         ]
+    scored = [m for m in new_models(ctx, start) if m["index"] is not None]
+    rows += [
+        {
+            "week": m["week"].date().isoformat(),
+            "anthropic": None,
+            "openai": None,
+            **blank,
+            "company": m["company"],
+            "line": m["release"],
+            "index": m["index"],
+            "d_index": m["d_index"],
+            "d_price": m["d_price"],
+        }
+        for m in scored
+    ]
     rows.sort(key=lambda r: r["week"])
     both = pd.concat([sa[sa.index >= start], so[so.index >= start]], axis=1, join="inner").dropna()
     together = float(ranked(both.iloc[:, 0]).corr(ranked(both.iloc[:, 1])))
@@ -565,14 +581,25 @@ def releases(ctx):
         if together >= 0.3
         else "mostly each company's own"
     )
+    compared = comparable(scored)
+    higher = sum(m["d_index"] > SAME_SCORE for m in compared)
+    lower = sum(m["d_index"] < -SAME_SCORE for m in compared)
+    priced = [m for m in compared if m["d_price"] is not None]
     return {
         "title": title,
         "subtitle": sub,
         "kind": "combo",
+        "panels": [
+            {"label": "Intelligence Index", "format": "float"},
+            {"label": "Change on previous model", "format": "pct"},
+        ],
         "layers": [
             {"mark": "line", "name": "Anthropic", "y": "anthropic"},
             {"mark": "line", "name": "OpenAI", "y": "openai"},
             {"mark": "rule", "name": "Release", "label": "release", "series": "company"},
+            {"mark": "point", "name": "Intelligence Index of the model", "y": "index", "series": "company", "panel": 1},
+            {"mark": "bar", "name": "Score change on previous model", "y": "d_index", "series": "company", "panel": 2},
+            {"mark": "point", "name": "Price per task change", "y": "d_price", "panel": 2},
         ],
         "encoding": {
             "x": {"field": "week", "type": "temporal", "label": "Week ending"},
@@ -582,22 +609,27 @@ def releases(ctx):
             col("week", "Week ending", "date"),
             col("anthropic", "Anthropic SDK growth", "pct"),
             col("openai", "OpenAI SDK growth", "pct"),
-            col("release", "Model line released", "text"),
+            col("release", "Release caption", "text"),
             col("company", "Company", "text"),
+            col("line", "Model line", "text"),
+            col("index", "Intelligence Index", "float"),
+            col("d_index", "Score change on previous model", "pct"),
+            col("d_price", "Price per task change", "pct"),
         ],
         "rows": rows,
         "takeaway": [
             (
                 f"Since {month_label(start)} Anthropic listed {count[ME]} new model lines and OpenAI {count[PEER]}. "
-                "A jump in both lines is the market; a jump in one is that company's own."
+                f"Of {len(compared)} that can be compared with an earlier model of the same kind, {higher} scored higher, {len(compared) - higher - lower} about the same and {lower} lower; "
+                f"of the {len(priced)} with a price for both, {sum(m['d_price'] < -SAME_PRICE for m in priced)} cost less per task."
             ),
             f"The two growth lines move together (match {together:+.2f} over {len(both)} weeks), so the swings are {how}.",
         ],
         "assumptions": [
             "A release is the first time a numbered model line (Opus 4.1, GPT-5, o3) appears on OpenRouter's public list, the same rule for both companies; a variant such as Mini, Pro or Codex is not a new release. The date is when OpenRouter listed it, which can run a few days after the announcement.",
-            "Each line is the average of the last four weekly growth rates. The chart starts 12 weeks before Anthropic's first listed release: earlier weeks are launch-era growth that would flatten the rest.",
+            "Each growth line is the average of the last four weekly growth rates. The chart starts 12 weeks before Anthropic's first listed release: earlier weeks are launch-era growth that would flatten the rest.",
+            *MODEL_NOTES,
             SPIKE_NOTE,
-            *BASE_NOTES,
         ],
         "badges": ["arithmetic"],
     }
@@ -801,60 +833,6 @@ def cents(x: float | None) -> float | None:
 
 def comparable(models: list[dict]) -> list[dict]:
     return [m for m in models if m["d_index"] is not None]
-
-
-@mart(id="signal.model_change", sources=["model_releases", *BENCH])
-def model_change(ctx):
-    title = "Did each new model improve on the one before it?"
-    sub = (
-        "Bars: change in Intelligence Index against the previous model line of the same kind, above 0 is smarter. "
-        "Dots: change in price per task against the same model, below 0 is cheaper."
-    )
-    start = since_first_release(ctx)
-    models = comparable(new_models(ctx, start)) if start is not None else []
-    if not models:
-        return empty(title, sub)
-    rows = [
-        {
-            "release": m["release"],
-            "company": m["company"],
-            "after": m["after"],
-            "d_index": m["d_index"],
-            "d_price": m["d_price"],
-        }
-        for m in models
-    ]
-    up = sum(m["d_index"] > SAME_SCORE for m in models)
-    down = sum(m["d_index"] < -SAME_SCORE for m in models)
-    priced = [m for m in models if m["d_price"] is not None]
-    cheaper = sum(m["d_price"] < -SAME_PRICE for m in priced)
-    return {
-        "title": title,
-        "subtitle": sub,
-        "kind": "combo",
-        "layers": [
-            {"mark": "bar", "name": "Intelligence Index change", "y": "d_index", "series": "company"},
-            {"mark": "point", "name": "Price per task change", "y": "d_price"},
-        ],
-        "encoding": {
-            "x": {"field": "release", "type": "ordinal", "label": "Model line, in release order"},
-            "y": {"field": "d_index", "type": "quantitative", "label": "Change on the previous model", "format": "pct"},
-        },
-        "columns": [
-            col("release", "Model line", "text"),
-            col("company", "Company", "text"),
-            col("after", "Compared with", "text"),
-            col("d_index", "Intelligence Index change", "pct"),
-            col("d_price", "Price per task change", "pct"),
-        ],
-        "rows": rows,
-        "takeaway": [
-            f"Of {len(models)} releases that can be compared with an earlier model, {up} scored higher, {len(models) - up - down} about the same and {down} lower.",
-            f"Of the {len(priced)} with a price per task for both models, {cheaper} cost less per task and {sum(m['d_price'] > SAME_PRICE for m in priced)} cost more.",
-        ],
-        "assumptions": MODEL_NOTES,
-        "badges": ["arithmetic"],
-    }
 
 
 @mart(id="signal.model_table", sources=["model_releases", *BENCH])

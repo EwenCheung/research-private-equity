@@ -9,14 +9,9 @@ const SECTIONS: { title: string; note: string; charts: string[] }[] = [
     charts: ["signal.market_or_own"],
   },
   {
-    title: "Do new models move demand?",
-    note: "Each company's releases drawn over both companies' SDK growth, then averaged around the release. If both companies rise it is the market; if only the releasing company rises it is its own.",
-    charts: ["signal.releases", "signal.release_effect"],
-  },
-  {
-    title: "Did each new model improve on the one before it?",
-    note: "Score from Artificial Analysis's Intelligence Index, human preference from Arena, and the price of a task from OpenRouter's own tests. Each model is compared with the previous one of its kind, so a model that scored lower or cost more shows up as a drop.",
-    charts: ["signal.model_change", "signal.model_table"],
+    title: "Do new models move demand, and did each one improve?",
+    note: "Each company's releases drawn through three aligned panels: demand growth, the model's Intelligence Index (Artificial Analysis), and how much its score and its price per task changed on the previous model of its kind. Below, the same releases averaged around the release date, and the full table with human preference (Arena) and price per task from OpenRouter's own tests.",
+    charts: ["signal.releases", "signal.release_effect", "signal.model_table"],
   },
   {
     title: "Does one public signal move before another?",

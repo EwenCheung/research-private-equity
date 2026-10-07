@@ -9,7 +9,7 @@ The pipeline is: **collect** (public sources → immutable raw files) → **buil
 **report** (what changed, what is stale). Every number keeps its source, the date it describes, and when it was retrieved.
 
 ## Before you start
-- Work on a branch, never directly on `main` (`git switch -c data/refresh-<date>`), unless the user has said the scheduled job writes to `main`.
+- Work on a branch and open a PR, never write directly to `main` (`git switch -c data/refresh-<date>`). No scheduled job refreshes the data; this skill is how it happens.
 - `.env` must exist (copy `.env.example`). `SEC_USER_AGENT` is needed for SEC sources. A source whose key is missing is reported as `SKIP`, not as a failure.
 - Know the cadence: daily sources are cheap; weekly ones (Hacker News, GitHub commit search) are slow and rate-limited.
 

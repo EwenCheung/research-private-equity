@@ -1,0 +1,36 @@
+model_release:
+  label: Model release
+  unit: model (count 1 each)
+  definition: A model a company has on OpenRouter's public list, dated by the day OpenRouter listed it (variants such as batch or free are not counted).
+  aggregation: sum
+  higher_is: neutral
+round_post_money_usd:
+  label: Post-money valuation at a funding round
+  unit: US dollars
+  definition: The post-money valuation Anthropic stated in its own announcement of a funding round, on the announcement date, with the sentence quoted.
+  aggregation: last
+  higher_is: good
+openrouter_aa_intelligence_index:
+  label: Intelligence Index (via OpenRouter)
+  unit: index points
+  definition: Artificial Analysis's composite model-quality score, relayed unchanged by OpenRouter's benchmarks endpoint. Higher is better; attribute it to Artificial Analysis.
+  aggregation: last
+  higher_is: good
+openrouter_eval_accuracy:
+  label: OpenRouter eval accuracy
+  unit: fraction of tasks
+  definition: Share of GPQA Diamond questions (graduate-level science) a model answered correctly in OpenRouter's own evaluation, with the task count and the average cost of one task in USD (reasoning tokens included) in the dims.
+  aggregation: last
+  higher_is: good
+arena_text_score:
+  label: Arena text score
+  unit: Arena score
+  definition: Human-preference score reported for a model on Arena's text leaderboard. Model variants and reasoning levels are separate entries.
+  aggregation: last
+  higher_is: good
+arena_text_votes:
+  label: Arena text votes
+  unit: votes
+  definition: Number of human-preference votes shown for a model on Arena's text leaderboard.
+  aggregation: last
+  higher_is: neutral

@@ -2,26 +2,80 @@ import * as Plot from "@observablehq/plot";
 import { useContext, useEffect, useRef, useState } from "react";
 import { axis, fmt, shortDate, toDate } from "../format";
 import { SchemeContext } from "../theme";
-import type { ChartSpec } from "../types";
+import type { ChartSpec, Field, Layer } from "../types";
 
 type Row = ChartSpec["rows"][number];
 const SLOTS = ["--s1", "--s2", "--s3", "--s4", "--s5", "--s6", "--s7", "--s8"];
 
+/** The field that says whether a row belongs to a layer: a layer draws only the rows where it is not null. */
+const valueField = (l: Layer) => (l.mark === "band" ? l.y_low : l.mark === "rule" ? l.label : l.y)!;
+const drawn = (spec: ChartSpec, l: Layer) => spec.rows.filter((r) => r[valueField(l)] != null);
+
+/** A band, and a rule that is not split by series, are drawn in neutral ink: they have no tick box. */
+const neutral = (l: Layer) => l.mark === "band" || (l.mark === "rule" && !l.series);
+
+/** The rows a layer draws once the unticked entries are removed: the whole layer when its own name is unticked, and the
+ *  rows of any unticked series of a split layer. */
+function visibleRows(spec: ChartSpec, l: Layer, hidden: Set<string>) {
+  if (!neutral(l) && hidden.has(l.name)) return [];
+  return drawn(spec, l).filter((r) => !l.series || !hidden.has(String(r[l.series])));
+}
+
+/** Whether anything but a neutral band or rule is still drawn. */
+const anyDrawn = (spec: ChartSpec, hidden: Set<string>) => (spec.layers ?? []).some((l) => !neutral(l) && visibleRows(spec, l, hidden).length);
+
+/** The dimensions of a combined chart: layers whose name is not a company or a series value, so they stand for a different
+ *  measure drawn with a different mark (a gap as bars, a second measure as dots, releases as lines). */
+function comboDimensions(spec: ChartSpec): Layer[] {
+  const values = new Set(comboSeries(spec));
+  return (spec.layers ?? []).filter((l) => !neutral(l) && (l.series ? !values.has(l.name) : !(l.name in NAME_SLOT)));
+}
+
+/** Legend entries of a combined chart: one per layer, or one per value of a layer's series field. A band, and a rule
+ *  that is not split by series, are drawn in neutral ink and stay out of the legend. */
+function comboSeries(spec: ChartSpec): string[] {
+  const names: string[] = [];
+  for (const l of spec.layers ?? []) {
+    if (neutral(l)) continue;
+    for (const n of l.series ? drawn(spec, l).map((r) => String(r[l.series!])) : [l.name]) if (!names.includes(n)) names.push(n);
+  }
+  return names;
+}
+
 /** Series in order of first appearance, so a colour follows its entity and never its rank. */
 export function seriesOf(spec: ChartSpec): string[] {
+  if (spec.kind === "combo") return comboSeries(spec);
   const f = spec.encoding.color?.field;
   return f ? [...new Set(spec.rows.map((r) => String(r[f])))] : [];
 }
 
-export function Legend({ series, colors }: { series: string[]; colors: string[] }) {
-  if (series.length < 2) return null;
+const GLYPH: Record<string, string> = { line: "▬", bar: "▮", point: "●", rule: "┃", area: "▬" };
+
+export interface LegendGroup {
+  title: string | null;
+  entries: { name: string; color?: string; mark?: string; locked: boolean }[];
+}
+
+/** The legend doubles as tick boxes, in up to two groups: the companies (or other series) and the dimensions, the different
+ *  measures drawn with different marks. A ticked entry is drawn, an unticked one is not, and at least one stays ticked. */
+export function Legend({ groups, hidden, onToggle }: { groups: LegendGroup[]; hidden: Set<string>; onToggle: (s: string) => void }) {
+  if (!groups.length) return null;
   return (
-    <div className="legend">
-      {series.map((s, i) => (
-        <span key={s}>
-          <i style={{ background: colors[i] }} />
-          {s}
-        </span>
+    <div className="legend" role="group" aria-label="Shown on the chart">
+      {groups.map((g) => (
+        <div key={g.title ?? "all"} className="legend-group">
+          {g.title && <span className="legend-title">{g.title}</span>}
+          {g.entries.map((e) => {
+            const on = !hidden.has(e.name);
+            return (
+              <label key={e.name} className={on ? "" : "off"} title={on && e.locked ? "At least one stays ticked" : undefined}>
+                <input type="checkbox" checked={on} disabled={on && e.locked} onChange={() => onToggle(e.name)} />
+                {e.color ? <i style={{ background: e.color }} /> : <b className="glyph">{GLYPH[e.mark ?? ""] ?? "▬"}</b>}
+                {e.name}
+              </label>
+            );
+          })}
+        </div>
       ))}
     </div>
   );
@@ -91,20 +145,57 @@ export function useSeriesColors(spec: ChartSpec) {
 export default function ChartPlot({ spec }: { spec: ChartSpec }) {
   const { ref, width } = useWidth();
   const { series, colors } = useSeriesColors(spec);
+  const [hidden, setHidden] = useState<Set<string>>(new Set());
+  const combo = spec.kind === "combo";
+  const dimensions = combo ? comboDimensions(spec) : [];
+  const dimNames = new Set(dimensions.map((l) => l.name));
+  const kept = (h: Set<string>) => (combo ? anyDrawn(spec, h) : series.some((n) => !h.has(n)));
+  const toggle = (name: string) =>
+    setHidden((h) => {
+      const next = new Set(h);
+      if (next.has(name)) next.delete(name);
+      else next.add(name);
+      return kept(next) ? next : h;
+    });
+  const locked = (name: string) => !kept(new Set([...hidden, name]));
+  const entries = series.filter((n) => !dimNames.has(n));
+  const groups: LegendGroup[] = [];
+  if (entries.length >= (dimensions.length ? 1 : 2))
+    groups.push({
+      title: dimensions.length || entries.every((n) => n in NAME_SLOT) ? (entries.every((n) => n in NAME_SLOT) ? "Companies" : "Series") : null,
+      entries: entries.map((n) => ({ name: n, color: colors[series.indexOf(n)], locked: locked(n) })),
+    });
+  if (dimensions.length) groups.push({ title: "Dimensions", entries: dimensions.map((l) => ({ name: l.name, mark: l.mark, locked: locked(l.name) })) });
+  // A group where every entry is locked (one series, one dimension) offers nothing to tick, so it is left out.
+  const offered = groups.filter((g) => g.entries.some((e) => !e.locked || hidden.has(e.name)));
 
   useEffect(() => {
     const el = ref.current;
     if (!el || !width || colors.length < Math.max(series.length, 1)) return;
     const css = getComputedStyle(document.documentElement);
     const v = (n: string) => css.getPropertyValue(n).trim();
-    const plot = build(spec, series, colors, { ink: v("--ink"), ink3: v("--ink-3"), surface: v("--surface"), axis: v("--axis") }, width);
+    const ink = { ink: v("--ink"), ink3: v("--ink-3"), surface: v("--surface"), axis: v("--axis") };
+    // A combined chart keeps every series and skips the hidden ones layer by layer. Any other chart is drawn from the ticked
+    // series only, each keeping its own colour, so a series never changes colour when another is hidden.
+    const cf = spec.encoding.color?.field;
+    const keep = series.map((_, i) => i).filter((i) => !hidden.has(series[i]));
+    const plot =
+      spec.kind === "combo"
+        ? build(spec, series, colors, ink, width, hidden)
+        : build(
+            cf ? { ...spec, rows: spec.rows.filter((r) => !hidden.has(String(r[cf]))) } : spec,
+            keep.map((i) => series[i]),
+            keep.map((i) => colors[i]),
+            ink,
+            width,
+          );
     el.replaceChildren(plot);
     return () => plot.remove();
-  }, [spec, width, colors]); // eslint-disable-line react-hooks/exhaustive-deps -- colours derive from spec and scheme
+  }, [spec, width, colors, hidden]); // eslint-disable-line react-hooks/exhaustive-deps -- colours derive from spec and scheme
 
   return (
     <>
-      <Legend series={series} colors={colors} />
+      <Legend groups={offered} hidden={hidden} onToggle={toggle} />
       <div ref={ref} role="img" aria-label={`${spec.title}. Use the table view for exact values.`} />
     </>
   );
@@ -117,7 +208,8 @@ interface Ink {
   axis: string;
 }
 
-function build(spec: ChartSpec, series: string[], colors: string[], c: Ink, width: number) {
+function build(spec: ChartSpec, series: string[], colors: string[], c: Ink, width: number, hidden: Set<string> = new Set()) {
+  if (spec.kind === "combo") return comboPlot(spec, series, colors, c, width, hidden);
   const { x, y, color } = spec.encoding;
   const xf = x!.field;
   const yf = y!.field;
@@ -175,6 +267,30 @@ function build(spec: ChartSpec, series: string[], colors: string[], c: Ink, widt
   });
   const line = Plot.line(rows, { x: xs, y: (r: Row) => r[yf], stroke, strokeWidth: 2, strokeLinejoin: "round", strokeLinecap: "round", z: cf ? (r: Row) => r[cf] : undefined });
 
+  // A colour field that is not the x field means several series per category: draw them side by side, one group per category.
+  const groupedBars = () => {
+    const groups = [...new Set(rows.map((r) => String(r[xf])))]; // categories in order of appearance, not alphabetical
+    const crowded = groups.length > 6;
+    const place = { fx: (r: Row) => String(r[xf]), x: (r: Row) => String(r[cf!]) };
+    const value = (r: Row) => Number(r[yf]);
+    const text = (r: Row) => (yFmt === "pct" ? `${Math.round(value(r) * 100)}%` : axis(r[yf], yFmt)); // short, so neighbours do not collide
+    const label = { ...place, y: value, text, fill: c.ink, fontSize: 10 };
+    return Plot.plot({
+      ...base,
+      height: crowded ? 380 : 320,
+      marginBottom: crowded ? 96 : 40,
+      fx: { axis: null, padding: 0.2, domain: groups },
+      x: { axis: null, padding: 0.1, domain: series },
+      marks: [
+        Plot.axisFx({ anchor: "bottom", label: null, tickSize: 0, tickRotate: crowded ? -35 : 0, textAnchor: crowded ? "end" : "middle" }),
+        Plot.barY(rows, { ...place, y: value, fill, ry: 3, title: tipText }),
+        Plot.ruleY([0], { stroke: c.axis }),
+        Plot.text(rows.filter((r) => value(r) >= 0), { ...label, dy: -6 }),
+        Plot.text(rows.filter((r) => value(r) < 0), { ...label, dy: 6, lineAnchor: "top" }),
+      ],
+    });
+  };
+
   switch (spec.kind) {
     case "line":
       return Plot.plot({ ...base, marks: [line, ends, ...(labelEnds ? [endLabel] : []), tip()] });
@@ -184,6 +300,7 @@ function build(spec: ChartSpec, series: string[], colors: string[], c: Ink, widt
         marks: [Plot.areaY(rows, { x: xs, y: (r: Row) => r[yf], fill, fillOpacity: 0.1, z: cf ? (r: Row) => r[cf] : undefined }), line, ends, tip()],
       });
     case "bar":
+      if (cf && cf !== xf) return groupedBars();
       return Plot.plot({
         ...base,
         marks: [
@@ -211,4 +328,108 @@ function build(spec: ChartSpec, series: string[], colors: string[], c: Ink, widt
     default:
       throw new Error(`No plot for kind ${spec.kind}`);
   }
+}
+
+/** Several marks over one shared x axis, so two aspects can be read against each other. Categories (an ordinal axis) are a band
+ *  scale in the order of the rows; dates and numbers are a continuous scale. Marks are drawn back to front. Extra panels stack
+ *  under the main one, each with its own y axis: a panel shares the main x axis (and so lines up with it, with a rule running
+ *  through) unless it names its own, for example one column per model under a timeline. A bar on a continuous axis is drawn as a
+ *  thick stick, since the dates are not evenly spaced. */
+function comboPlot(spec: ChartSpec, series: string[], colors: string[], c: Ink, width: number, hidden: Set<string>) {
+  const { x, y } = spec.encoding;
+  const layers = spec.layers ?? [];
+  const all = [{ label: y!.label, format: y!.format, x: undefined as Field | undefined }, ...(spec.panels ?? [])];
+  const chan = (i: number): Field => all[i].x ?? x!;
+  const isBand = (ch: Field) => ch.type === "nominal" || ch.type === "ordinal";
+  const xvOf = (ch: Field) => (r: Row) => (isBand(ch) ? String(r[ch.field]) : ch.type === "temporal" ? toDate(r[ch.field]) : r[ch.field]);
+  const paint = (l: Layer) => (r: Row) => colors[series.indexOf(l.series ? String(r[l.series]) : l.name)] ?? c.ink3;
+  const num = (f?: string) => (r: Row) => Number(r[f!]);
+  const tipText = (r: Row) => spec.columns.map((col) => `${col.label}: ${fmt(r[col.field], col.format)}`).join("\n");
+  const front = ["band", "bar", "rule", "line", "point"];
+  const shown = (l: Layer) => visibleRows(spec, l, hidden);
+  const inPanel = (i: number) => layers.filter((l) => (l.panel ?? 0) === i);
+  const rules = layers.filter((l) => l.mark === "rule");
+  const sharesMain = (i: number) => chan(i).field === x!.field;
+  const mine = (i: number) => [...inPanel(i), ...(i === 0 || !sharesMain(i) ? [] : rules)];
+  // A panel is drawn while any of its own layers (not a band or a rule) has rows left after the unticking.
+  const live = all.map((_, i) => i).filter((i) => inPanel(i).some((l) => !neutral(l) && shown(l).length));
+  const drawnPanels = live.length ? live : [0];
+  const manyRules = rules.some((l) => drawn(spec, l).length > 12);
+
+  /** The x domain of a panel: the categories of its x field in row order, or the extent of its dates or numbers. Every panel on
+   *  the same x field gets the same domain, so their columns and dates line up, whichever layers are ticked. */
+  const domainOf = (i: number) => {
+    const ch = chan(i);
+    const rows = spec.rows.filter((r) => r[ch.field] != null);
+    if (isBand(ch)) return [...new Set(rows.map((r) => String(r[ch.field])))];
+    const v = rows.map((r) => (ch.type === "temporal" ? toDate(r[ch.field]) : Number(r[ch.field]))) as (Date | number)[];
+    return [v.reduce((p, q) => (p < q ? p : q)), v.reduce((p, q) => (p > q ? p : q))];
+  };
+
+  const panel = (i: number, n: number) => {
+    const ch = chan(i);
+    const xv = xvOf(ch);
+    const banded = isBand(ch);
+    const temporal = ch.type === "temporal";
+    const first = n === 0;
+    // The x axis shows on the bottom panel, and on any panel whose x differs from the one below it.
+    const withAxis = n === drawnPanels.length - 1 || chan(drawnPanels[n + 1]).field !== ch.field;
+    const domain = domainOf(i);
+    const keys = banded ? (domain as string[]) : [];
+    // Names on the axis (models, pairs) are the point of the chart: up to 30 of them are all shown, tilted when they would not
+    // fit side by side, rather than every few.
+    const longest = Math.max(1, ...keys.map((k) => k.length));
+    const tilted = banded && keys.length <= 30 && (keys.length > 8 || longest * 6.5 > (width - 74) / keys.length);
+    const every = tilted ? 1 : Math.ceil(keys.length / 10);
+    const below = withAxis ? (tilted ? Math.min(150, 24 + longest * 5) : 30) : 6; // room under the plot: the axis, or tilted names
+    const marks: NonNullable<Plot.PlotOptions["marks"]> = [];
+    for (const l of mine(i).sort((a, b) => front.indexOf(a.mark) - front.indexOf(b.mark))) {
+      const rows = shown(l);
+      if (l.mark === "band") {
+        marks.push(Plot.areaY(rows, { x: xv, y1: num(l.y_low), y2: num(l.y_high), fill: c.ink3, fillOpacity: 0.15 }));
+      } else if (l.mark === "bar") {
+        marks.push(
+          banded
+            ? Plot.barY(rows, { x: xv, y: num(l.y), fill: paint(l), ry: 3 })
+            : Plot.ruleX(rows, { x: xv, y1: 0, y2: num(l.y), stroke: paint(l), strokeWidth: 8, strokeLinecap: "round" }),
+        );
+      } else if (l.mark === "rule") {
+        const stroke = l.series ? paint(l) : c.ink3;
+        marks.push(
+          Plot.ruleX(rows, { x: xv, stroke, strokeWidth: manyRules ? 1 : 1.5, strokeOpacity: manyRules ? 0.4 : 0.8, title: (r: Row) => String(r[l.label!]) }),
+        );
+        // A few events are captioned on the chart; many would collide, so they are named by hovering (or by the panels under them).
+        if (first && !manyRules)
+          marks.push(Plot.text(rows, { x: xv, text: (r: Row) => String(r[l.label!]), frameAnchor: "top", rotate: -90, textAnchor: "end", dx: -5, fontSize: 10, fill: c.ink3 }));
+      } else if (l.mark === "line") {
+        marks.push(Plot.line(rows, { x: xv, y: num(l.y), stroke: paint(l), strokeWidth: 2, strokeLinejoin: "round", strokeLinecap: "round", z: l.series ? (r: Row) => String(r[l.series!]) : undefined }));
+      } else {
+        marks.push(Plot.dot(rows, { x: xv, y: num(l.y), fill: paint(l), r: 5, stroke: c.surface, strokeWidth: 2 }));
+      }
+    }
+    const lead = inPanel(i).find((l) => ["line", "bar", "point"].includes(l.mark) && shown(l).length);
+    marks.push(Plot.ruleY([0], { stroke: c.axis }));
+    if (lead) marks.push(Plot.tip(shown(lead), Plot.pointerX({ x: xv, y: num(lead.y), title: tipText }) as Plot.TipOptions));
+    const fmtY = all[i].format ?? "float";
+    return Plot.plot({
+      width,
+      height: (first ? 260 : 150) + (first ? 20 : 28) + below,
+      marginLeft: 58,
+      marginRight: 16,
+      marginTop: first ? 20 : 28,
+      marginBottom: below,
+      style: { background: "transparent", color: c.ink, fontFamily: "var(--sans)", fontSize: "12px", ["--plot-background" as string]: c.surface },
+      x: banded
+        ? { type: "band", label: null, axis: withAxis ? "bottom" : null, domain, tickRotate: tilted ? -45 : 0, padding: keys.length <= 6 ? 0.75 : 0.3, tickFormat: (d: string) => (keys.indexOf(d) % every === 0 ? (temporal ? shortDate(d) : d) : "") }
+        : { label: temporal ? null : ch.label, axis: withAxis ? "bottom" : null, domain, ticks: 6 },
+      y: { label: all[i].label, grid: true, nice: true, tickFormat: (d: number) => axis(d, fmtY) },
+      marks,
+    });
+  };
+
+  const plots = drawnPanels.map((i, n) => panel(i, n));
+  if (plots.length === 1) return plots[0];
+  const stack = document.createElement("div");
+  stack.append(...plots);
+  return stack;
 }

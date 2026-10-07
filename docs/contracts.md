@@ -84,7 +84,9 @@ The schema is `contracts/chart_spec.schema.json`. Files are written to `data/mar
 |---|---|---|
 | `id`, `page` | core | `<page>.<chart>`, e.g. `hiring.open_roles` |
 | `title`, `subtitle` | mart | |
-| `kind` | mart | `line` · `area` · `bar` · `stacked_bar` · `scatter` · `table` · `stat` · `timeline` |
+| `kind` | mart | `line` · `area` · `bar` · `stacked_bar` · `scatter` · `table` · `stat` · `timeline` · `combo` |
+| `layers` | mart | Only for `combo`, and required there: the marks drawn over one shared x axis (below) |
+| `panels` | mart | Only for `combo`, optional: extra panels stacked under the main one on the same x axis, each `{label, format}` with its own y axis (below) |
 | `encoding` | mart | `x`, `y`, `color`, `facet` → `{field, type, label, format}`. Every field must be a column |
 | `columns` | mart | Order and format of the table view and CSV. Formats: `int` `float` `pct` `usd` `usd_compact` `multiple` `date` `text` `url` |
 | `rows` | mart | Objects. Each row must have every column field |
@@ -102,6 +104,23 @@ Each entry in `sources` holds:
 - `retrieved_at`: the latest retrieval time
 - `freshness`
 - `manual`: `{entered_by, entered_at, evidence}`. It is required exactly for manual and ledger sources that have rows, and is `null` otherwise.
+
+**Combined charts (`kind: combo`).** Put two aspects on one frame, such as events over a series or bars with a line. `encoding.x` is the shared axis and `encoding.y` names the axis label and number format. Each layer is `{mark, name, ...}`, and every field it names must be a column:
+
+| `mark` | Fields | Draws |
+|---|---|---|
+| `bar` | `y` | a bar per row on a category axis (the rows' order); on a date or number axis a thick stick, since dates are unevenly spaced |
+| `line` | `y` | a line through the rows |
+| `point` | `y` | a dot per row |
+| `band` | `y_low`, `y_high` | a neutral shaded area, for a noise ceiling or confidence range |
+| `rule` | `label` | a vertical line at each row's x, captioned by `label` (a release, a funding round) |
+
+- A layer draws the rows whose value field (`y`, `y_low` or `label`) is not null, so one tidy table can feed several layers.
+- `panel` (a layer's number, 0 by default) puts a layer in the main panel or in `panels[panel - 1]`. `encoding.y` describes panel 0. The panels share the x axis, so a `rule` in panel 0 also runs through every other panel, and a measure on a different scale (a score under a growth line) is read at the same moment as the event. A panel whose layers are all unticked is left out.
+- A panel may name its own x axis (`panels[].x`, a channel like `encoding.x`), for example one column per model in release order under a timeline. It then does not line up with the main axis, and a `rule` is not drawn in it. Panels on the same x field share one domain, so their columns line up whichever layers are ticked.
+- `series` (any mark but `band`) splits a layer into one colour per value of that field. Without it, `name` is the legend entry. A series or layer named for a company takes that company's fixed colour. A `band`, and a `rule` without `series`, are neutral and not in the legend.
+- All layers share one y scale and unit, so two aspects with different units are rebased or expressed as the same unit by the mart. There is no second axis.
+- The table view and CSV list the columns as for any chart; the plot never hides a layer that fails a test, so the mart draws what it tested and says so in its subtitle and takeaway.
 
 From this, ChartCard renders the provenance line:
 - **Automated:** `Greenhouse job board API ↗ · data as of 2026-10-05 · retrieved 2026-10-05 06:02 UTC · ● fresh`
@@ -178,19 +197,20 @@ The router loads `import.meta.glob("./pages/*.tsx")`, and the nav is sorted by `
 | Order | Page |
 |---|---|
 | 0 | Briefing |
+| 5 | Hot Pick |
 | 10 | AI Analysis |
 | 20 | Hiring |
 | 30 | Developer Adoption |
 | 40 | Consumer & Attention |
 | 50 | Product |
 | 70 | Capital |
-| 80 | Peers |
+| 80 | Signal |
 | 100 | Data & Methods |
 
 ## 7. Config files (one file per owner, so nothing is shared)
 | File | Owner | Content |
 |---|---|---|
-| `config/companies/<slug>.yaml` | 1.1, then `/add-company` | `slug`, `name`, `role` (`target` \| `peer`), `peers` (target only) |
+| `config/companies/<slug>.yaml` | 1.1 | `slug`, `name`, `role` (`target` \| `peer`), `peers` (target only) |
 | `config/identifiers/<page>.yaml` | that page | How to find each company in this page's sources, e.g. `anthropic: {greenhouse: anthropic}`, `openai: {ashby: openai}` |
 | `config/metrics/<page>.yaml` | that page | `<metric_id>: {label, unit, definition, aggregation: last\|sum\|mean, higher_is: good\|bad\|neutral}`. Metric ids are unique across all files, and the core fails on duplicates |
 
@@ -199,7 +219,7 @@ The router loads `import.meta.glob("./pages/*.tsx")`, and the nav is sorted by `
 ```bash
 uv run python -m pipeline.collect [--cadence daily|weekly] [--source ID ...] [--company SLUG]
 uv run python -m pipeline.build                 # raw + manual + ledgers -> data/marts/*.json + data/registry.json
-uv run python -m pipeline.editions freeze       # Phase 3: reports/YYYY-Www/
+uv run python -m pipeline.hot_pick freeze       # Phase 3: data/marts/hot_pick.month_YYYY_MM.json
 uv run python -m pipeline.analysis              # Phase 4: bull, bear, neutral
 uv run pytest
 ```
@@ -216,9 +236,8 @@ uv run pytest
 | `GET /api/companies` | `[{slug, name, role}]`: targets first, then their peers in config order. Charts give each company a fixed colour |
 | `GET /api/registry` | `data/registry.json` sources, with `freshness` recomputed live |
 | `GET /api/freshness` | `{source: {freshness, retrieved_at, as_of}}`, live |
-| `GET /api/editions` | Phase 3: `["2026-W41", ...]` |
-| `GET /api/compare?id=&edition=` | Phase 3: `{current, previous, deltas}` |
-| `GET /api/analysis?edition=` | Phase 4: `{bull, bear, neutral}` |
+| `GET /api/marts` | Also lists the Phase 3 weekly picks, `hot_pick.month_2026_10`, as ordinary chart specs |
+| `GET /api/analysis?week=` | Phase 4: `{bull, bear, neutral}` |
 
 **Environment:** see `.env.example`. `DATA_DIR` points the API at the pipeline's `data/` (Render sets `data`). If it's unset, the API serves `tests/fixtures/`.
 

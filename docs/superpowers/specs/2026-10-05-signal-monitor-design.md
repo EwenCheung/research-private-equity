@@ -26,9 +26,9 @@ All outputs, including the AI reporters, are drafts for deal-team review, not in
    Every number traces to an immutable raw snapshot.
 2. **Long-term and comparable.**
    - **Definitions:** one metric dictionary applies across time and across companies.
-   - **Weekly editions:** each week is frozen, so any two dates can be compared.
+   - **Weekly and monthly Hot Pick:** each week and month's hottest news, discussion and insights about Anthropic is kept, so past months stay readable (R21, R22).
 3. **Easy or near-real-time updates.**
-   - **Automated sources** refresh on a schedule or on demand.
+   - **Automated sources** refresh on demand with `/refresh-data` (no scheduled job, R19).
    - **Manual sources** are a single paste into Claude.
 4. **Provenance on every number.**
    - **Automated:** "Source: npm downloads API ↗ · data as of 2026-10-04 · retrieved 2026-10-05 06:02 UTC".
@@ -65,8 +65,8 @@ All outputs, including the AI reporters, are drafts for deal-team review, not in
 | Capital | Strategic holders' disclosures | Amazon / Alphabet 10-Q mentions (EDGAR) |
 | Licensed alt-data | YipitData and M Science panels | Placeholder CSVs, filled through `/add-manual-data` |
 
-Peers (OpenAI, Google DeepMind, xAI, Mistral, Cohere) get the same signal pack wherever a source exists.
-Each Anthropic number then also reads as a share.
+Peers (OpenAI, Google DeepMind, xAI, Mistral, Cohere) get the same signal pack wherever a source exists, and the Phase 2 charts keep them as context.
+Phase 3 looks at Anthropic only (R21).
 
 ## Arithmetic insights (labelled "arithmetic, not a model")
 - Run-rate CAGR and doubling time from the ARR ledger.
@@ -101,7 +101,7 @@ Prompt structure borrows from the private-equity `ic-memo` skill and the equity-
 
 There is one prompt per reporter, and two ways to run it. `.claude/agents/{bull,bear,neutral}-reporter.md` is the single source of each prompt:
 - Colleagues run them interactively in Claude Code, with all plugins available.
-- `pipeline/analysis.py` reads the same file body for the scheduled run, through the Claude API (`claude-opus-5-5`) with structured outputs.
+- `pipeline/analysis.py` reads the same file body for the on-demand run, through the Claude API (`claude-opus-5-5`) with structured outputs.
 
 Quality gates. The run fails and retries, rather than publishing, when any of these fail:
 1. Every cited `chart_id` or metric must exist.
@@ -144,15 +144,14 @@ Manual inputs go through `/add-manual-data`:
 - Git history is the audit trail.
 
 On "real-time": most sources only publish at daily resolution. So:
-- **Daily automated refresh** covers jobs, downloads, GitHub, App Store ranks, the status page and news.
-- **Weekly refresh** covers SEC and Trends. **Quarterly:** H-1B LCA files.
-- **On demand,** anyone can run `gh workflow run daily.yml` or `/refresh-data`.
+- **Daily cadence** covers job boards, downloads, GitHub and the status page.
+- **Weekly cadence** covers SEC filings, Hacker News and GitHub commit search.
+- **Nothing runs by itself.** Anyone runs `/refresh-data` on a branch and opens a PR (R19).
 
 ## Comparability for the deal team
 - **Metric dictionary.** `config/metrics/<page>.yaml` holds one canonical definition, unit and formula per metric.
   The files are merged at load, and every company is computed the same way.
-- **Weekly editions.** Each week is frozen in `reports/YYYY-Www/`: marts, the 3 AI reports, and `data_pack.xlsx` with provenance columns.
-  A "Compare to" picker shows WoW, MoM and YoY deltas against any edition.
+- **Monthly Hot Pick.** Each month's picks are kept as `data/marts/hot_pick.month_YYYY_MM.json`; Phase 4 saves the 3 AI reports for that month beside them (R21, R22).
 - **Exports.**
   - Every chart: CSV download.
   - The Briefing and AI Analysis pages: a print stylesheet for PDF.
@@ -192,16 +191,16 @@ Shared files have these rules:
 CLAUDE.md · README.md · .env.example · render.yaml · .claude/launch.json (ports via env, one pair per worktree)
 .claude/settings.json         marketplaces + 10 enabledPlugins + permission allowlist
 .claude/agents/               bull-reporter.md · bear-reporter.md · neutral-reporter.md
-.claude/skills/               refresh-data · add-source · add-manual-data · add-company · run-analysis
+.claude/skills/               refresh-data · add-source · hot-pick · run-analysis
 docs/ROADMAP.md · docs/contracts.md · contracts/*.schema.json
 config/companies/anthropic.yaml · config/metrics/<page>.yaml
 pipeline/core/                schema, registry, collect/build CLIs, freshness, company loader
-pipeline/sources/<page>.py    pipeline/marts/<page>.py    pipeline/editions.py    pipeline/analysis.py
+pipeline/sources/<page>.py    pipeline/marts/<page>.py    pipeline/hot_pick.py    pipeline/analysis.py
 app/server.py                 FastAPI
 frontend/src/components/ChartCard.tsx · frontend/src/pages/<Page>.tsx
 tests/fixtures/ · tests/test_<area>.py
 data/raw/ data/ledgers/ data/manual/ data/marts/ · reports/YYYY-Www/
-.github/workflows/daily.yml · weekly.yml
+.github/workflows/ci.yml
 ```
 
 `.claude/settings.json` enables these plugins. Colleagues get an install prompt when they trust the folder.
@@ -252,7 +251,7 @@ From `claude-plugins-official`:
 - Uses the dependencies already declared in 0.2 (R4); it never edits `pyproject.toml` or `uv.lock`.
 - [ ] `pipeline/core/*`: schema validation, auto-discovering registry, `collect` and `build` CLIs, freshness, company config loader.
 - [ ] `config/companies/anthropic.yaml` (including peers).
-- [ ] `daily.yml` and `weekly.yml` (collect → build → commit). The cron trigger stays off until R2 is decided; `workflow_dispatch` works from day one.
+- [x] `daily.yml` and `weekly.yml` (collect → build → commit) were built, then removed by R19: there is no scheduled job.
 - [ ] `pipeline/sources/snapshots.py`: raw-only daily capture of App Store top-chart ranks (OpenRouter dropped: its terms forbid scraping).
   Data quality: these can't be backfilled, so their history starts the moment this merges.
 - [ ] `tests/test_core.py`, which rejects rows missing provenance.
@@ -281,38 +280,48 @@ Each implementation covers its page's collectors with backfills, ledgers, marts,
 | 2.7 | `p2/licensed-data` | Licensed Alt-Data + manual input | Yipit/M Science placeholder panels, `/add-manual-data` skill |
 | 2.8 | `p2/data-methods` | Data & Methods + refresh | registry page, gaps list, `/refresh-data` and `/add-source` skills |
 
-### Phase 3: Cross-page synthesis (depends on all Phase 2 marts; 3 parallel implementations)
-**3.1 Peers page and add-company** (`p3/peers`)
-- [ ] Share-of-signal comparisons across peers, using the metric dictionary.
-- [ ] `/add-company` skill.
-- Done when: adding a company config makes it appear on every page.
+### Phase 3: Anthropic synthesis (depends on the Phase 2 marts; 3 parallel implementations)
+Phase 2 shows what each signal says; Phase 3 says what they add up to for Anthropic, with peers kept as context (R21). The rules (R20, R21): judge a signal by Anthropic's own direction
+against its own history rather than its level, since levels all trend up together and correlate with anything; group signals into families so one verdict replaces several charts;
+never let a hand-entered number feed a verdict; compute every sentence.
 
-**3.2 Briefing page** (`p3/briefing`)
-- [ ] Headline numbers.
-- [ ] ARR chart with the log-linear extrapolation band.
-- [ ] Tripwires across all series: "what changed".
-- [ ] Links into each page.
+**3.1 Briefing page** (`p3/briefing`)
+- [ ] A first page with one verdict per signal family: developer usage, enterprise adoption, consumer attention, build-out. Each reads "accelerating", "steady" or "slowing" from the 3-month change against the 3 months before it and the same months a year earlier. Thresholds live in `config/briefing.yaml`.
+- [ ] Divergence flags, for example consumer attention slowing while developer usage accelerates.
+- [ ] Tripwires from `config/tripwires.yaml`: plain-language rules you review ("SDK downloads down three months running"). They answer "what changed".
+- [ ] Links into each page. A peer appears only as context (for example a market-wide dip). No ARR extrapolation: the run-rate ledgers were removed (R18).
+- Done when: every sentence is computed from marts and every number links to its chart.
 
-**3.3 Weekly editions and comparability** (`p3/editions`)
-- [ ] `pipeline/editions.py`: freeze `reports/YYYY-Www/` and write `data_pack.xlsx`.
-- [ ] `/api/compare`.
-- [ ] "Compare to" picker. This is the only Phase 3 implementation allowed to touch `ChartCard`.
-- [ ] Print stylesheet.
+**3.2 Signal page** (`p3/signal`): research note written (`docs/research/signal-page.md`); implementation after your sign-off
+- [ ] Combined charts, not tables or single series (R23): releases over SDK downloads, the average around a release, Anthropic against OpenAI, lead and lag for the strongest pair, valuation over signals, and valuation step against signal growth. Needs a core `combo` chart kind first (own `feat(web)` PR).
+- [ ] `pipeline/marts/signal.py` builds weekly series from the same rows and spike rule as the Developer Adoption and Consumer & Attention pages, then weekly growth, AR(2) pre-whitening, ranks (Spearman), a 1 to 8 week lead test against 1,500 phase-randomised surrogates, Benjamini-Hochberg across every pair tested, and a first-half / second-half stability check.
+- [ ] The same tests run on Anthropic minus OpenAI growth, so a market-wide move is not reported as Anthropic's.
+- [ ] A result is labelled *Finding*, *Hypothesis* or *Not supported*; never causal. "Tested, nothing reliable" is shown, not hidden.
+- [ ] No collector is needed to start. Release dates (OpenRouter's public models list) are the markers; averaged, growth after a release is no different from a random week, and the page says so (R23). Funding rounds and fund marks are a descriptive valuation yardstick, never a verdict input.
+- Done when: a planted lead is recovered, a planted noise series never reaches the findings, a fixed seed gives identical output, and re-running on new data refreshes the page.
 
-### Phase 4: AI Analysis (depends on Phase 3: tripwires, edition deltas, peers)
+**3.3 Hot Pick** (`p3/hot-pick`)
+- [ ] A weekly (7 days) and a monthly (30 days) list, switched by a toggle, of the hottest things about Anthropic (R23). Each kind has its own places and its own score, and is never ranked against another: news (Google News plus the AI and technology sections of publishers' own feeds, scored by distinct outlets), blogs and newsletters (curated authors), community posts (dev.to, scored by reactions), discussion (Hacker News, scored by points), technology trends (new GitHub repositories about Claude, scored by stars), new filings that name Anthropic, and insights from the Briefing. Up to 13 picks, usually fewer, and fewer rather than filler.
+- [ ] Sources are public feeds and official APIs only: RSS and Atom feeds, the Algolia Hacker News search (Anthropic and Claude), the dev.to API and the GitHub search API. Reddit and VentureBeat rate-limit us and Reddit's terms need an agreement, so they are left out; a feed that fails is skipped and reported, never guessed.
+- [ ] `hot_pick.this_week` and `hot_pick.this_month` charts are rebuilt with every build. `pipeline/hot_pick.py freeze` saves them as `data/marts/hot_pick.week_YYYY_WW.json` and `data/marts/hot_pick.month_YYYY_MM.json` (a chart spec, so the existing `/api/marts` and `ChartCard` serve it with provenance). A past month is never overwritten. `/hot-pick` skill.
+- [ ] Each feed keeps only its latest items (a few days for busy sites) and nothing runs on a schedule, so collect at least weekly or the month has holes.
+- Done when: every pick's number matches its source, and a quiet month shows fewer picks, not filler.
+- Dropped from the old editions plan: the Compare-to picker, `data_pack.xlsx`, the print stylesheet and any `ChartCard` change.
+
+### Phase 4: AI Analysis (depends on Phase 3: tripwires, signal results, Hot Pick)
 **4.1 AI Analysis page** (`p4/ai-analysis`)
 - [ ] Evidence pack.
 - [ ] The 3 reporter agents.
 - [ ] `analysis.py` with the gates.
 - [ ] The page itself, with case history.
 - [ ] `/run-analysis` skill.
-- [ ] Daily tripwire trigger, and reports included in each weekly edition.
+- [ ] Run on demand (`/run-analysis`), with the reports kept beside that week's Hot Pick.
 - Done when: all 3 reports pass the gates, and a planted fake number gets rejected.
 
 ### Phase 5: Team release (depends on Phase 4)
 **5.1 Handover** (`p5/release`)
 - [ ] Final README walkthrough.
-- [ ] A fresh-clone test run as a colleague would, covering `/refresh-data`, `/add-manual-data` and `/run-analysis`.
+- [ ] A fresh-clone test run as a colleague would, covering `/refresh-data` and `/run-analysis`.
 - [ ] Production deploy check on Render.
 
 ## Review checkpoints
@@ -338,7 +347,7 @@ Each implementation covers its page's collectors with backfills, ledgers, marts,
   - Implementation branches (`pN/<name>`) open PRs into the phase integration branch `phase/N`.
   - At the phase gate, one PR `phase/N` → `main`.
   - Merge with merge commits, not squash, so the conventional history survives.
-  - The only direct writer to `main` is the scheduled data job, and it only touches `data/` and `reports/` (see revision R2).
+  - Nothing writes to `main` directly, not even data (see revision R19).
 - **Author is only you** (EwenCheung).
   No `Co-Authored-By`, no "Generated with Claude", and no AI tags in commits or PR descriptions. This overrides the default attribution.
 
@@ -378,9 +387,9 @@ Out of scope, by your decisions or because the data is missing:
   - You approve.
 - Contracts: `tests/test_contracts.py` validates the fixtures. `test_core.py` rejects rows without provenance, and manual rows without `entered_by`.
 - Collectors: snapshot counts match the live APIs (Greenhouse 640 and Ashby 828 as of 2026-10-05).
-- Editions: a weekly run creates `reports/2026-Www/`. "Compare to" shows deltas, and `data_pack.xlsx` has provenance columns.
+- Hot Pick: a monthly save creates `data/marts/hot_pick.month_2026_10.json`, and every pick has a source link and a published score.
 - AI: the reports pass the gates, and the planted-fake-number test is rejected.
-- Phase gates: `main` is served and checked by you; `gh workflow run daily.yml` produces a data commit, and Render redeploys.
+- Phase gates: `main` is served and checked by you; `/refresh-data` produces a data PR, and Render redeploys when it merges.
 - Release: in a fresh clone, Claude prompts for the 10 plugins, and every skill runs end to end.
 
 ## Revisions (newest last; the plan is updated whenever something changes or proves unrealistic)
@@ -391,9 +400,9 @@ Out of scope, by your decisions or because the data is missing:
   - The daily and weekly jobs must land data somewhere the dashboard deploys from.
   - Proposal: they are the only direct writer to `main`, and they only touch `data/` and `reports/`. Code never bypasses a PR.
   - Alternative: a separate `data` branch merged by a daily PR (heavier: 365 PRs a year).
-  - **Decision needed** before 1.1 enables the schedule.
+  - **Closed by R19: there is no scheduled job.**
 - **R3, 2026-10-05: branch protection is available on this private repo.** It's optional; turning it on is your call.
-  It would need a bypass for the data job (R2), e.g. a deploy key.
+  With no scheduled data job (R19) it needs no bypass.
 - **R4: all Python dependencies are declared in 0.2,** not Phase 1, so 1.1 and 1.2 never both edit `pyproject.toml`.
 - **R5: per-page company identifiers** go in `config/identifiers/<page>.yaml`, so Phase 2 pages don't share company files.
 - **R6: login.** `SESSION_SECRET` env var and a `GET /api/session` route.
@@ -439,3 +448,50 @@ Out of scope, by your decisions or because the data is missing:
   USAspending, GitHub org, VS Code and MCP collectors, and the OpenRouter ranking scrape and benchmarks API (R10 stands: OpenRouter is dropped).
   Raw snapshots stay in `data/raw`.
   Earlier sections of this spec describe the removed items as originally planned.
+- **R19, 2026-10-06: there is no scheduled data job.** R2 is closed the other way: `daily.yml` and `weekly.yml` are removed, nothing writes to `main` directly,
+  and data refreshes through `/refresh-data` on a branch and a PR. `ci.yml` stays. The 365-PR objection to a data branch no longer applies because refreshes are on demand.
+  Consequences: no `main` bypass is needed (R3), Hot Pick and AI analysis run on demand, and CLAUDE.md lost its one exception to "never write to `main`".
+- **R20, 2026-10-06: Phase 3 is re-planned after the cut (R18); the peer and editions parts are superseded by R21.** Reading 47 charts as a deal team showed four independent signal families and no summary.
+  - Compare share against peers and direction, not levels. Levels all trend up together, so they correlate with anything: in a test against the company's stated run-rate (run before the ledgers were removed), even incident counts scored r 0.86.
+  - Month-on-month changes were mostly uncorrelated (|r| below 0.45) apart from the two Wikipedia series (0.70) and the two download series (0.44). Wikipedia product views led PyPI downloads by one to two months (r about 0.5, n 31, 30 lags tried): a hypothesis to track, not a finding.
+  - A market-wide dip (PyPI fell about 25% for Anthropic and 31% for OpenAI in Sep 2026) leaves share intact, which is why verdicts use share.
+  - ARR extrapolation is dropped with the run-rate ledgers. Signal tests (3.3) is a new implementation; editions move to 3.4. `config/tripwires.yaml` holds the rules.
+- **R21, 2026-10-06: Phase 3 is about Anthropic, and editions become Hot Pick.**
+  - The peers grid and `/add-company` are dropped, and a verdict is Anthropic's own direction against its own history. Peers stay on the Phase 2 charts (decided 2026-10-06):
+    comparison matters, and a peer's model release can move Claude's signals, which the Signal page should test.
+  - Build order: Briefing, then Hot Pick. Signal starts with research and a discussion, and is implemented only after your sign-off.
+  - Weekly editions become Hot Pick: a short weekly list of the hottest insights and news about Anthropic. Compare-to, the data pack and the print view are dropped.
+  - A Signal page is added for the sharpest relationships among Anthropic's own series, with the corrections that stop it showing noise (R20).
+  - Re-adds a headline collector and a Hacker News story collector, which R18 removed as noise: a short ranked pick list is not a feed.
+  - Hot Pick fills a fixed number of places per kind (news, discussion, filing, insight) and shows fewer picks rather than filler. Each kind is scored in its own unit (outlets, points, filings, size of the move), never on one scale.
+- **R22, 2026-10-06: Hot Pick covers a month and many more sources.** A week was too thin: Google News returns about 100 recent items that reach back only two or three days.
+  - The window is 30 days and a month is saved at a time. News adds publishers' own AI and technology feeds; blogs and community posts, Hacker News (now searching Claude as well as Anthropic,
+    which found the month's biggest story) and new GitHub repositories about Claude add discussion and technology trends. Checked on 2026-10-06: 16 of 34 candidate feeds named Anthropic or Claude in the last month.
+  - Left out: Reddit (rate-limited, terms need an agreement), VentureBeat (rate-limited), and sites with no feed (The Batch, Anthropic's own site) or a stale one (WSJ, SemiAnalysis).
+  - Every kind keeps its own places and unit, so a month with little news shows fewer picks.
+- **R23, 2026-10-06: Signal is charts-first with OpenAI as the main comparison; Hot Pick has a week and a month.** Research note: `docs/research/signal-page.md`.
+  - Decisions: the page uses charts that combine two aspects, not tables; OpenAI is the main comparison, so Anthropic doing badly while OpenAI does worse still reads as a good sign; no private data is supplied for now (the note lists what would help and how it would be used); release dates from OpenRouter were allowed only if useful.
+  - **Retracted:** R20's "Wikipedia product views led PyPI downloads by one to two months (r about 0.5)". On weekly data (n 70-190, 17 lags, circular-shift null, FDR) the best r is +0.16 at 8 weeks, p 0.45. The monthly figure came from 31 points and 30 tries.
+  - Probe on weekly data: 132 ordered pairs, 34 pass FDR but nearly all are duplicates or market-wide moves; of 26 lead hypotheses only 2 pass q < 0.05 (Anthropic npm to PyPI at 3 weeks, fading from r 0.45 to 0.13 between the halves; relative Wikipedia product views to relative CLI downloads at 4 weeks, n 70). Both are Hypotheses.
+  - Model releases (OpenRouter public models list, 15 Anthropic and 33 OpenAI release weeks) do not move any of 11 weekly series more than a random week, tested over weeks −4 to +12 (all q ≥ 0.87 for the first four weeks; no week outside the 95% band, and no "month later" gain). Kept as chart markers so each release can be judged by eye; the null result is shown.
+  - Plot first, test second: every chart draws both series whether or not a pattern is found, and the verdict (Finding, Hypothesis, Not supported) is a label beside the plot, never a gate in front of it.
+  - Review feedback: single charts hid the connection, so every Signal chart puts two aspects together (events over a series, bars with a line); valuation history is added as a descriptive yardstick (four rounds, 648 fund marks).
+  - Hot Pick now has a Week and a Month window with a toggle (supersedes R22's single month); R22's sources are unchanged.
+- **R24, 2026-10-07: Signal is built; the first probe's results are withdrawn.**
+  - The probe behind R23 rotated one series to make its null. A series of 190 weeks has only about 160 distinct rotations, so its p-values were far too small and a correction across many pairs could not be applied honestly. The engine now uses ranks (so one extreme week cannot decide a result) and 1,500 phase-randomised surrogates, and was checked on independent series (about 5% reach p < 0.05).
+  - Result on real data: 50 pairs (Anthropic's own six weekly series, and its growth relative to OpenAI's across five), none survives the correction; the strongest is 1.2 times the 95% chance line. "2 of 26 survive" is withdrawn; nothing else in R23 changes, including that releases show no average effect on SDK downloads.
+  - Built as seven combined charts on a core `combo` chart kind (#31): Anthropic against OpenAI, releases over SDK growth, the average around a release, the strongest candidate lead, every pair tested, valuation over SDK downloads, and valuation steps against signal growth. Fund marks are not used (38 report dates are too few to test a lead). OpenRouter's list is kept as release markers.
+  - Also in Phase 3: the Product incidents chart compares Claude with OpenAI (#30), with OpenAI's history from its feed and the Internet Archive's monthly copies.
+- **R25, 2026-10-07: Signal compares Anthropic with OpenAI on every chart, and scores each new model.**
+  - Every chart carries both companies; the same measure uses the same mark (two lines, not a bar and a line), and a different mark means a different dimension (a bar for a gap, a band for what luck reaches, a dot for a second measure). Each chart has tick boxes to show or hide a series (core, #32).
+  - A release is the first listing of a numbered model line on OpenRouter's public list, by one rule for both companies. Anthropic's 15 and OpenAI's 12 since March 2025 are drawn over both companies' SDK growth; the two are 0.74 correlated week to week, so most swings are the market's.
+  - Each model line is scored by its best model: Artificial Analysis Intelligence Index (relayed by OpenRouter, needs `OPENROUTER_API_KEY` to refresh), human preference from Arena, and price per task from OpenRouter's own GPQA Diamond evaluation (reasoning tokens included). Of 24 releases that can be compared with the previous line of the same kind, 20 scored higher, 4 about the same and none lower; of the 15 with a price for both, 10 cost less per task and 4 more. A Mini model is not compared with a full-size one.
+  - The benchmark and Arena collectors removed in the cut are restored, trimmed to these inputs, because a chart now reads them.
+- **R26, 2026-10-07: Signal is consolidated from twelve charts to eight, one per question.**
+  - The overlap was real: six charts redrew the same SDK growth line, three showed the same model scores, two the same lead and lag. They are merged, with the different measures kept as dimensions that can be ticked on and off, and the companies as a second tick group.
+  - The SDK-only view is replaced at the top by "Is Anthropic's growth the market's or its own?", across four dimensions (SDK downloads, coding-agent CLI downloads, Wikipedia product article and company article views). Over the latest 13 weeks Anthropic grew faster than OpenAI in one of the four (SDK downloads, +22 points); OpenAI's coding CLI grew +112% against Anthropic's +37%, and both companies' Wikipedia views fell, Anthropic's by more. The Briefing already compares every signal, so SDK growth against OpenAI is no longer repeated here.
+  - Merged: the two "around a release" charts into one (both companies, both sets of releases: lines for Anthropic's, dots for OpenAI's); the two lead and lag charts into one (bars for Anthropic's own signals, a line for its growth beyond OpenAI's); model scores into the model table and the release captions; the valuation steps into the valuation chart's takeaway.
+  - Kept: releases over growth, did each model improve, the model table, every pair tested, valuation over usage.
+- **R27, 2026-10-07: a model's score goes on the release chart, not in a chart of its own.**
+  - The releases chart now has three panels: the growth lines on a time axis with faint release lines, then one column per new model in release order (so the names are readable and nothing overlaps): SDK growth for both companies, each new model's Intelligence Index, and its change on the previous model of its kind (score as a stick, price per task as a dot). The release lines run through all three. The separate "did each model improve" chart and the scores chart are gone; the model table keeps the Arena score, the GPQA accuracy and the price per task.
+  - Of 24 releases that can be compared with an earlier model of the same kind, 20 scored higher, 4 about the same and none lower; of the 15 with a price for both, 10 cost less per task. Signal is now seven charts.

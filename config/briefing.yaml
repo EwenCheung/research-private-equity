@@ -1,0 +1,47 @@
+# The Briefing's signals and how it groups them. Every number comes from the same helpers as the page charts.
+# band: a change smaller than this (a fraction) counts as flat. better: which direction is good news (default up).
+# short: the name on a chart axis.
+# words: how a family verdict is worded. volume = Rising / Falling, quality = Improving / Worsening.
+families:
+  developer_usage:
+    short: developer usage
+    label: Developer usage
+    page: Developer Adoption
+    signals:
+      python_sdk: {label: Python SDK downloads, short: Python SDK, band: 0.10}
+      js_sdk: {label: JavaScript SDK downloads, short: JS SDK, band: 0.10}
+      claude_code_downloads: {label: Claude Code downloads, short: Coding CLI, band: 0.10}
+      claude_code_commits: {label: Public commits written with Claude Code, short: Claude Code commits, band: 0.10}
+  enterprise_adoption:
+    short: enterprise adoption
+    label: Enterprise adoption
+    page: Consumer & Attention
+    signals:
+      hn_job_posts: {label: Hacker News job posts naming Claude or Anthropic, short: HN job posts, band: 0.15}
+      sec_filers: {label: Listed companies naming Anthropic in SEC filings, short: SEC filers, band: 0.15}
+  consumer_attention:
+    short: consumer attention
+    label: Consumer attention
+    page: Consumer & Attention
+    signals:
+      wiki_assistant: {label: Wikipedia views of the Claude article, short: Assistant views, band: 0.10}
+      wiki_company: {label: Wikipedia views of the Anthropic article, short: Company views, band: 0.10}
+  build_out:
+    short: build-out
+    label: Build-out
+    page: Hiring & Talent
+    signals:
+      open_roles: {label: Open roles on Anthropic's job board, short: Open roles, band: 0.05}
+  reliability:
+    short: reliability
+    label: Reliability
+    page: Product & Reliability
+    words: quality
+    signals:
+      incidents: {label: Incidents on Claude's status page, short: Incidents, band: 0.15, better: down}
+  fund_marks:
+    short: fund marks
+    label: What funds say a share is worth
+    page: Capital & Valuation
+    signals:
+      fund_marks: {label: Median change in funds' per-share mark, short: Fund marks, band: 0.02}

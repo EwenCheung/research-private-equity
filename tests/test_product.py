@@ -1,3 +1,5 @@
+from datetime import UTC, datetime
+
 import httpx
 import pytest
 
@@ -92,6 +94,91 @@ def test_history_pages_until_the_cutoff_and_dedupes_nothing_it_does_not_need(mon
     ]
 
 
+# ---- OpenAI status feed ----
+
+
+def rss(*items):
+    """Items are (title, link) or (title, link, pubDate)."""
+
+    def item(title, link, pub=None):
+        date = f"<pubDate>{pub}</pubDate>" if pub else ""
+        return f"<item><title><![CDATA[{title}]]></title><link>{link}</link>{date}</item>"
+
+    body = "".join(item(*i) for i in items)
+    return f'<?xml version="1.0"?><rss version="2.0"><channel><title>OpenAI</title>{body}</channel></rss>'
+
+
+A, B, C = "01M2GA8XTS6VB3QCDEGZ0HNAQ5", "01M3Q4RK1SM4EMK445GGPG7C0N", "01KWDW344V7XWEQERJSEW62W57"
+
+
+def OPENAI():
+    return load_companies(ROOT)["openai"]
+
+
+def test_ulid_time_matches_the_start_time_the_json_feed_gives():
+    got = src.ulid_time(A)  # the JSON feed says this incident was created at 2026-09-14T15:58:48Z
+    assert abs((got - datetime(2026, 9, 14, 15, 58, 48, tzinfo=UTC)).total_seconds()) < 5
+
+
+def test_parse_feed_reads_the_start_from_the_id_and_skips_items_without_one():
+    feed = rss(("Elevated errors", f"https://status.openai.com//incidents/{A}"), ("Odd item", "https://x/y/not-an-id"))
+    rows = list(src.parse_feed(feed, OPENAI(), "status.openai.com"))
+    assert len(rows) == 1
+    assert rows[0]["as_of"] == "2026-09-14" and rows[0]["entity"] == "openai" and rows[0]["dims"]["impact"] == "unrated"
+    assert rows[0]["source_url"] == f"https://status.openai.com/incidents/{A}" and rows[0]["dims"]["minutes"] is None
+
+
+def test_a_migrated_incident_is_dated_by_the_feed_not_by_its_new_id():
+    # an old incident re-imported on 2025-02-25 got a new id (minted that day) but its feed date is the real one
+    migrated = "01JMXBRMFE6N2NNT7DG6XZQ6PW"
+    feed = rss(
+        ("Old", f"https://status.openai.com//incidents/{migrated}", "Thu, 12 Dec 2024 11:19:05 GMT"),
+        ("New", f"https://status.openai.com//incidents/{A}", "Mon, 15 Sep 2026 03:00:00 GMT"),
+    )
+    rows = {r["dims"]["code"]: r["as_of"] for r in src.parse_feed(feed, OPENAI(), "status.openai.com")}
+    assert rows == {migrated: "2024-12-12", A: "2026-09-14"}
+
+
+def test_openai_live_collection_keeps_the_rated_row_and_adds_only_the_incidents_the_json_lacks(monkeypatch):
+    api = {
+        "incidents": [
+            {"id": A, "name": "Rated", "created_at": "2026-09-14T15:58:48Z", "resolved_at": None, "impact": "major"}
+        ]
+    }
+    feed = rss(
+        ("Rated", f"https://status.openai.com//incidents/{A}"), ("Older", f"https://status.openai.com//incidents/{C}")
+    )
+    monkeypatch.setattr(src, "get", lambda url, **k: response(api if url.endswith("incidents.json") else feed))
+    rows = list(src.status_incidents(OPENAI()))
+    assert [(r["dims"]["code"], r["dims"]["impact"]) for r in rows] == [(A, "major"), (C, "unrated")]
+
+
+def test_archive_reads_one_copy_a_month_and_stamps_each_row_with_the_copy_it_came_from(monkeypatch):
+    copies = {
+        "20250301100550": rss(("Old", f"https://status.openai.com//incidents/{C}")),
+        "20250609153537": rss(("New", f"https://status.openai.com//incidents/{B}")),
+    }
+    asked = []
+
+    def fake_get(url, **k):
+        asked.append(url)
+        if url == src.CDX:
+            return response([["timestamp"], ["20250101000000"], *[[t] for t in copies]])
+        return response(copies[url.split("/web/")[1].split("id_/")[0]])
+
+    monkeypatch.setattr(src, "get", fake_get)
+    monkeypatch.setattr(src.time, "sleep", lambda s: None)
+    monkeypatch.setattr(src, "latest_as_of", lambda *a, **k: None)
+    rows = list(src.status_incidents_archive(OPENAI()))
+    assert [r["dims"]["code"] for r in rows] == [C, B]  # the copy from before the page existed is not read
+    assert rows[0]["dims"]["capture"] == "20250301100550"
+    assert rows[0]["source_url"] == "https://web.archive.org/web/20250301100550/https://status.openai.com/feed.rss"
+    # a re-run starts about three months before the newest incident it already holds
+    monkeypatch.setattr(src, "latest_as_of", lambda *a, **k: "2026-09-14")
+    assert list(src.status_incidents_archive(OPENAI())) == []
+    assert not list(src.status_incidents_archive(load_companies(ROOT)["anthropic"]))
+
+
 # ---- peer-comparison parsing ----
 
 
@@ -134,18 +221,30 @@ def incident(code, day, impact, minutes, entity="anthropic", retrieved="2026-10-
     )
 
 
-def test_incidents_by_month_counts_each_incident_once_and_skips_none_and_the_running_month():
+def test_incidents_compared_by_month_count_every_posted_incident_the_same_way_for_both_companies():
+    live, later = "2026-10-20T00:00:00Z", "2026-10-25T00:00:00Z"
     rows = [
-        incident("a", "2026-08-03", "minor", 30),
-        incident("a", "2026-08-03", "minor", 30, retrieved="2026-10-30T00:00:00Z"),  # a re-collection
-        incident("b", "2026-08-09", "major", 60),
-        incident("c", "2026-08-20", "none", 5),
-        incident("d", "2025-08-09", "minor", 10),
+        incident("a", "2026-08-03", "minor", 30, retrieved=live),
+        incident("a", "2026-08-03", "minor", 30, retrieved=later),  # a re-collection
+        incident("b", "2026-08-09", "major", 60, retrieved=live),
+        incident("c", "2026-08-20", "none", 5, retrieved=live),  # rated none, still an incident
+        incident("m", "2026-08-21", "maintenance", 5, retrieved=live),  # a notice, not an incident
+        incident("d", "2025-02-09", "minor", 10, retrieved=live),  # before the comparison starts
+        incident("e", "2026-10-03", "minor", 10, retrieved=live),  # the running month
+        incident("x", "2026-08-05", "major", 20, entity="openai", retrieved=live),
+        incident("x", "2026-08-05", "unrated", None, entity="openai", retrieved=later),  # the rated copy wins
+        incident("y", "2026-08-06", "unrated", None, entity="openai", retrieved=later),
+        incident("z", "2026-09-02", "unrated", None, entity="openai", retrieved=later),
     ]
-    ctx = Ctx(rows, NAMES)
-    spec = marts.incidents_monthly(ctx)
-    got = {(r["month"], r["impact"]): r["incidents"] for r in spec["rows"]}
-    assert got == {("2026-08-01", "Minor"): 1, ("2026-08-01", "Major"): 1, ("2025-08-01", "Minor"): 1}
+    spec = marts.incidents_monthly(Ctx(rows, NAMES))
+    got = {(r["month"], r["company"]): (r["incidents"], r["severe"]) for r in spec["rows"]}
+    assert got == {
+        ("2026-08-01", "Anthropic"): (3, 1),
+        ("2026-08-01", "OpenAI"): (2, None),  # one incident has no rating, so the month's rating is unknown
+        ("2026-09-01", "Anthropic"): (0, 0),
+        ("2026-09-01", "OpenAI"): (1, None),
+    }
     assert spec["takeaway"] == [
-        "Claude's status page logged 2 incidents in Aug 2026 (1 major or critical), against 1 in Aug 2025."
+        "In Sep 2026, Claude's status page posted 0 incidents and OpenAI's posted 1.",
+        "Since Aug 2026, Claude's page posted 3 incidents against OpenAI's 3, and posted more in 1 of 2 months.",
     ]

@@ -1,0 +1,325 @@
+{
+  "title": "How each signal moved: Anthropic against OpenAI",
+  "subtitle": "Change in the latest window on the one before it, with OpenAI where it has a comparable series",
+  "kind": "bar",
+  "encoding": {
+    "x": {
+      "field": "signal",
+      "type": "nominal",
+      "label": "Signal"
+    },
+    "y": {
+      "field": "chg",
+      "type": "quantitative",
+      "label": "Change on the previous period",
+      "format": "pct"
+    },
+    "color": {
+      "field": "company",
+      "type": "nominal",
+      "label": "Company"
+    }
+  },
+  "columns": [
+    {
+      "field": "signal",
+      "label": "Signal",
+      "format": "text"
+    },
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "chg",
+      "label": "Change on previous period",
+      "format": "pct"
+    },
+    {
+      "field": "latest",
+      "label": "Latest window",
+      "format": "text"
+    },
+    {
+      "field": "based",
+      "label": "Window",
+      "format": "text"
+    }
+  ],
+  "rows": [
+    {
+      "signal": "Python SDK",
+      "company": "Anthropic",
+      "chg": 0.32528542621866274,
+      "latest": "528M",
+      "based": "Jul to Sep 2026"
+    },
+    {
+      "signal": "Python SDK",
+      "company": "OpenAI",
+      "chg": 0.16642400823873205,
+      "latest": "1.1B",
+      "based": "Jul to Sep 2026"
+    },
+    {
+      "signal": "JS SDK",
+      "company": "Anthropic",
+      "chg": 0.7241468525721938,
+      "latest": "425M",
+      "based": "Jul to Sep 2026"
+    },
+    {
+      "signal": "JS SDK",
+      "company": "OpenAI",
+      "chg": 0.5749917498108668,
+      "latest": "441M",
+      "based": "Jul to Sep 2026"
+    },
+    {
+      "signal": "Coding CLI",
+      "company": "Anthropic",
+      "chg": 0.4631641148262093,
+      "latest": "187M",
+      "based": "Jul to Sep 2026"
+    },
+    {
+      "signal": "Coding CLI",
+      "company": "OpenAI",
+      "chg": 0.9416913795047418,
+      "latest": "226M",
+      "based": "Jul to Sep 2026"
+    },
+    {
+      "signal": "Claude Code commits",
+      "company": "Anthropic",
+      "chg": 0.501193480615824,
+      "latest": "4.7M a week",
+      "based": "13 weeks to 2026-10-04"
+    },
+    {
+      "signal": "HN job posts",
+      "company": "Anthropic",
+      "chg": 0.0022687079402732833,
+      "latest": "7.8%",
+      "based": "Jul to Sep 2026"
+    },
+    {
+      "signal": "HN job posts",
+      "company": "OpenAI",
+      "chg": -0.03276889473264286,
+      "latest": "3.2%",
+      "based": "Jul to Sep 2026"
+    },
+    {
+      "signal": "SEC filers",
+      "company": "Anthropic",
+      "chg": 0.3,
+      "latest": "26",
+      "based": "Q3 2026"
+    },
+    {
+      "signal": "SEC filers",
+      "company": "OpenAI",
+      "chg": -0.25,
+      "latest": "27",
+      "based": "Q3 2026"
+    },
+    {
+      "signal": "Assistant views",
+      "company": "Anthropic",
+      "chg": -0.2958648630503914,
+      "latest": "514K",
+      "based": "Jul to Sep 2026"
+    },
+    {
+      "signal": "Assistant views",
+      "company": "OpenAI",
+      "chg": -0.1373135030665992,
+      "latest": "6.3M",
+      "based": "Jul to Sep 2026"
+    },
+    {
+      "signal": "Company views",
+      "company": "Anthropic",
+      "chg": -0.32856242503100413,
+      "latest": "727K",
+      "based": "Jul to Sep 2026"
+    },
+    {
+      "signal": "Company views",
+      "company": "OpenAI",
+      "chg": -0.052021026946082356,
+      "latest": "670K",
+      "based": "Jul to Sep 2026"
+    },
+    {
+      "signal": "Open roles",
+      "company": "Anthropic",
+      "chg": 0.12520458265139117,
+      "latest": "458",
+      "based": "Jul to Sep 2026"
+    },
+    {
+      "signal": "Open roles",
+      "company": "OpenAI",
+      "chg": 0.6110716820440026,
+      "latest": "757",
+      "based": "Jun to Sep 2026"
+    },
+    {
+      "signal": "Incidents",
+      "company": "Anthropic",
+      "chg": -0.30952380952380953,
+      "latest": "87",
+      "based": "Jul to Sep 2026"
+    },
+    {
+      "signal": "Fund marks",
+      "company": "Anthropic",
+      "chg": 1.272934253929591,
+      "latest": "127.3% across 19 funds",
+      "based": "marks to 2026-07-31"
+    }
+  ],
+  "takeaway": [
+    "Against OpenAI, Anthropic's change is ahead on 3 of 8 comparable signals and behind on 4."
+  ],
+  "assumptions": [
+    "The latest 3 complete months against the 3 before them and the same 3 months a year earlier. Quarterly series (SEC filings) use the latest complete quarter, the weekly commit series 13 weeks, and fund marks the latest report date against one at least 60 days earlier.",
+    "A change smaller than a signal's band (10% unless its row says otherwise in config/briefing.yaml) counts as flat.",
+    "Where only Anthropic has a bar, OpenAI has no comparable series (see the note below).",
+    "OpenAI's columns repeat the same arithmetic for OpenAI on the same window: SDK downloads, Codex CLI downloads against Claude Code, views of the ChatGPT and OpenAI articles, Hacker News posts naming OpenAI or GPT, SEC filers naming OpenAI, and open roles. Claude Code commits, status-page incidents and fund marks have no OpenAI series. Ahead means Anthropic's change is better than OpenAI's by more than 5 points, behind the reverse, and level within 5 points. The size is Anthropic's latest window divided by OpenAI's.",
+    "Every number is computed from the same sources and rules as the chart on its page. Hand-entered data is never used, and no verdict reads OpenAI: its columns are context."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "briefing.moves",
+  "page": "briefing",
+  "as_of": "2026-10-05",
+  "sources": [
+    {
+      "source": "pypi_downloads",
+      "label": "PyPI downloads (ClickHouse public PyPI dataset)",
+      "url": "https://sql-clickhouse.clickhouse.com/",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "npm_downloads",
+      "label": "npm registry download counts",
+      "url": "https://api.npmjs.org/downloads/range/2025-09-29:2026-10-04/@anthropic-ai/sdk",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "github_coauthored_commits",
+      "label": "GitHub commit search: public commits co-authored by Claude",
+      "url": "https://github.com/search?type=commits&q=%22Co-Authored-By%3A+Claude%22+committer-date%3A2026-09-28..2026-10-04",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-09-28",
+      "retrieved_at": "2026-10-05T06:52:42Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "wikipedia_pageviews",
+      "label": "Wikimedia pageviews (English Wikipedia)",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/Claude_%28language_model%29/daily/20260927/20261004",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T07:07:58Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "hn_who_is_hiring",
+      "label": "Hacker News 'Who is hiring?' threads (Algolia)",
+      "url": "https://news.ycombinator.com/item?id=49522897",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-09-01",
+      "retrieved_at": "2026-10-05T07:49:51Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "sec_filings_naming",
+      "label": "SEC EDGAR full-text search (10-K and 10-Q)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1985554/000168316826007169/londax_i10k-053126.htm",
+      "method": "api",
+      "tier": "filing",
+      "cadence": "weekly",
+      "as_of": "2026-09-15",
+      "retrieved_at": "2026-10-05T07:59:10Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "ats_open_roles",
+      "label": "Company job board API (Greenhouse / Ashby)",
+      "url": "https://boards-api.greenhouse.io/v1/boards/anthropic/departments",
+      "method": "api",
+      "tier": "company-stated",
+      "cadence": "daily",
+      "as_of": "2026-10-05",
+      "retrieved_at": "2026-10-05T04:12:39Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "wayback_job_boards",
+      "label": "Internet Archive captures of company job boards",
+      "url": "https://web.archive.org/web/20260923033353/https://jobs.ashbyhq.com/openai",
+      "method": "scrape",
+      "tier": "company-stated",
+      "cadence": "weekly",
+      "as_of": "2026-09-23",
+      "retrieved_at": "2026-10-05T06:59:56Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "status_incidents",
+      "label": "Claude and OpenAI status pages",
+      "url": "https://status.claude.com/incidents/bhphxz3vr58g",
+      "method": "api",
+      "tier": "company-stated",
+      "cadence": "daily",
+      "as_of": "2026-10-05",
+      "retrieved_at": "2026-10-06T09:46:53Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "sec_nport_marks",
+      "label": "SEC EDGAR N-PORT-P: mutual-fund holdings of Anthropic",
+      "url": "https://www.sec.gov/Archives/edgar/data/1905088/000094040026036464/primary_doc.xml",
+      "method": "api",
+      "tier": "filing",
+      "cadence": "weekly",
+      "as_of": "2026-07-31",
+      "retrieved_at": "2026-10-05T07:52:42Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-07T03:33:47Z"
+}

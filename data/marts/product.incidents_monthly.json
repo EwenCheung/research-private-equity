@@ -1,7 +1,7 @@
 {
-  "title": "Incidents on Claude's status page per month",
-  "subtitle": "Incidents posted on status.claude.com, by the impact Anthropic assigned, complete months. Fewer is better.",
-  "kind": "stacked_bar",
+  "title": "Incidents on the Claude and OpenAI status pages, per month",
+  "subtitle": "Every incident each company posted on its own status page, by the month it started, complete months. Fewer is better.",
+  "kind": "line",
   "encoding": {
     "x": {
       "field": "month",
@@ -15,9 +15,9 @@
       "format": "int"
     },
     "color": {
-      "field": "impact",
+      "field": "company",
       "type": "nominal",
-      "label": "Impact"
+      "label": "Company"
     }
   },
   "columns": [
@@ -27,515 +27,291 @@
       "format": "date"
     },
     {
-      "field": "impact",
-      "label": "Impact",
+      "field": "company",
+      "label": "Company",
       "format": "text"
     },
     {
       "field": "incidents",
       "label": "Incidents",
       "format": "int"
+    },
+    {
+      "field": "severe",
+      "label": "Rated major or critical",
+      "format": "int"
     }
   ],
   "rows": [
     {
-      "month": "2023-03-01",
-      "impact": "Critical",
-      "incidents": 2
-    },
-    {
-      "month": "2023-06-01",
-      "impact": "Minor",
-      "incidents": 2
-    },
-    {
-      "month": "2023-06-01",
-      "impact": "Critical",
-      "incidents": 1
-    },
-    {
-      "month": "2023-07-01",
-      "impact": "Minor",
-      "incidents": 2
-    },
-    {
-      "month": "2023-07-01",
-      "impact": "Critical",
-      "incidents": 1
-    },
-    {
-      "month": "2023-08-01",
-      "impact": "Minor",
-      "incidents": 1
-    },
-    {
-      "month": "2023-08-01",
-      "impact": "Major",
-      "incidents": 1
-    },
-    {
-      "month": "2023-10-01",
-      "impact": "Minor",
-      "incidents": 2
-    },
-    {
-      "month": "2023-11-01",
-      "impact": "Minor",
-      "incidents": 3
-    },
-    {
-      "month": "2024-01-01",
-      "impact": "Minor",
-      "incidents": 1
-    },
-    {
-      "month": "2024-01-01",
-      "impact": "Major",
-      "incidents": 2
-    },
-    {
-      "month": "2024-02-01",
-      "impact": "Minor",
-      "incidents": 1
-    },
-    {
-      "month": "2024-03-01",
-      "impact": "Minor",
-      "incidents": 12
-    },
-    {
-      "month": "2024-03-01",
-      "impact": "Major",
-      "incidents": 3
-    },
-    {
-      "month": "2024-04-01",
-      "impact": "Minor",
-      "incidents": 4
-    },
-    {
-      "month": "2024-04-01",
-      "impact": "Major",
-      "incidents": 9
-    },
-    {
-      "month": "2024-05-01",
-      "impact": "Minor",
-      "incidents": 1
-    },
-    {
-      "month": "2024-05-01",
-      "impact": "Major",
-      "incidents": 4
-    },
-    {
-      "month": "2024-06-01",
-      "impact": "Minor",
-      "incidents": 7
-    },
-    {
-      "month": "2024-06-01",
-      "impact": "Major",
-      "incidents": 4
-    },
-    {
-      "month": "2024-06-01",
-      "impact": "Critical",
-      "incidents": 1
-    },
-    {
-      "month": "2024-07-01",
-      "impact": "Minor",
-      "incidents": 6
-    },
-    {
-      "month": "2024-07-01",
-      "impact": "Major",
-      "incidents": 11
-    },
-    {
-      "month": "2024-08-01",
-      "impact": "Minor",
-      "incidents": 6
-    },
-    {
-      "month": "2024-08-01",
-      "impact": "Major",
-      "incidents": 9
-    },
-    {
-      "month": "2024-09-01",
-      "impact": "Minor",
-      "incidents": 8
-    },
-    {
-      "month": "2024-09-01",
-      "impact": "Major",
-      "incidents": 9
-    },
-    {
-      "month": "2024-09-01",
-      "impact": "Critical",
-      "incidents": 2
-    },
-    {
-      "month": "2024-10-01",
-      "impact": "Minor",
-      "incidents": 6
-    },
-    {
-      "month": "2024-10-01",
-      "impact": "Major",
-      "incidents": 16
-    },
-    {
-      "month": "2024-11-01",
-      "impact": "Minor",
-      "incidents": 12
-    },
-    {
-      "month": "2024-11-01",
-      "impact": "Major",
-      "incidents": 9
-    },
-    {
-      "month": "2024-11-01",
-      "impact": "Critical",
-      "incidents": 2
-    },
-    {
-      "month": "2024-12-01",
-      "impact": "Minor",
-      "incidents": 3
-    },
-    {
-      "month": "2024-12-01",
-      "impact": "Major",
-      "incidents": 3
-    },
-    {
-      "month": "2025-01-01",
-      "impact": "Major",
-      "incidents": 10
-    },
-    {
-      "month": "2025-01-01",
-      "impact": "Critical",
-      "incidents": 1
-    },
-    {
-      "month": "2025-02-01",
-      "impact": "Minor",
-      "incidents": 9
-    },
-    {
-      "month": "2025-02-01",
-      "impact": "Major",
-      "incidents": 7
+      "month": "2025-03-01",
+      "company": "Anthropic",
+      "incidents": 24,
+      "severe": 12
     },
     {
       "month": "2025-03-01",
-      "impact": "Minor",
-      "incidents": 6
-    },
-    {
-      "month": "2025-03-01",
-      "impact": "Major",
-      "incidents": 5
-    },
-    {
-      "month": "2025-03-01",
-      "impact": "Critical",
-      "incidents": 7
+      "company": "OpenAI",
+      "incidents": 28,
+      "severe": null
     },
     {
       "month": "2025-04-01",
-      "impact": "Minor",
-      "incidents": 8
+      "company": "Anthropic",
+      "incidents": 33,
+      "severe": 17
     },
     {
       "month": "2025-04-01",
-      "impact": "Major",
-      "incidents": 16
-    },
-    {
-      "month": "2025-04-01",
-      "impact": "Critical",
-      "incidents": 1
+      "company": "OpenAI",
+      "incidents": 36,
+      "severe": null
     },
     {
       "month": "2025-05-01",
-      "impact": "Minor",
-      "incidents": 18
+      "company": "Anthropic",
+      "incidents": 35,
+      "severe": 15
     },
     {
       "month": "2025-05-01",
-      "impact": "Major",
-      "incidents": 13
-    },
-    {
-      "month": "2025-05-01",
-      "impact": "Critical",
-      "incidents": 2
+      "company": "OpenAI",
+      "incidents": 23,
+      "severe": null
     },
     {
       "month": "2025-06-01",
-      "impact": "Minor",
-      "incidents": 14
+      "company": "Anthropic",
+      "incidents": 20,
+      "severe": 4
     },
     {
       "month": "2025-06-01",
-      "impact": "Major",
-      "incidents": 3
-    },
-    {
-      "month": "2025-06-01",
-      "impact": "Critical",
-      "incidents": 1
+      "company": "OpenAI",
+      "incidents": 30,
+      "severe": null
     },
     {
       "month": "2025-07-01",
-      "impact": "Minor",
-      "incidents": 23
+      "company": "Anthropic",
+      "incidents": 50,
+      "severe": 20
     },
     {
       "month": "2025-07-01",
-      "impact": "Major",
-      "incidents": 17
-    },
-    {
-      "month": "2025-07-01",
-      "impact": "Critical",
-      "incidents": 3
+      "company": "OpenAI",
+      "incidents": 29,
+      "severe": null
     },
     {
       "month": "2025-08-01",
-      "impact": "Minor",
-      "incidents": 29
+      "company": "Anthropic",
+      "incidents": 39,
+      "severe": 7
     },
     {
       "month": "2025-08-01",
-      "impact": "Major",
-      "incidents": 6
-    },
-    {
-      "month": "2025-08-01",
-      "impact": "Critical",
-      "incidents": 1
+      "company": "OpenAI",
+      "incidents": 41,
+      "severe": null
     },
     {
       "month": "2025-09-01",
-      "impact": "Minor",
-      "incidents": 28
+      "company": "Anthropic",
+      "incidents": 35,
+      "severe": 5
     },
     {
       "month": "2025-09-01",
-      "impact": "Major",
-      "incidents": 4
-    },
-    {
-      "month": "2025-09-01",
-      "impact": "Critical",
-      "incidents": 1
+      "company": "OpenAI",
+      "incidents": 29,
+      "severe": null
     },
     {
       "month": "2025-10-01",
-      "impact": "Minor",
-      "incidents": 10
+      "company": "Anthropic",
+      "incidents": 19,
+      "severe": 8
     },
     {
       "month": "2025-10-01",
-      "impact": "Major",
-      "incidents": 7
-    },
-    {
-      "month": "2025-10-01",
-      "impact": "Critical",
-      "incidents": 1
+      "company": "OpenAI",
+      "incidents": 28,
+      "severe": null
     },
     {
       "month": "2025-11-01",
-      "impact": "Minor",
-      "incidents": 14
+      "company": "Anthropic",
+      "incidents": 26,
+      "severe": 7
     },
     {
       "month": "2025-11-01",
-      "impact": "Major",
-      "incidents": 6
-    },
-    {
-      "month": "2025-11-01",
-      "impact": "Critical",
-      "incidents": 1
+      "company": "OpenAI",
+      "incidents": 30,
+      "severe": null
     },
     {
       "month": "2025-12-01",
-      "impact": "Minor",
-      "incidents": 11
+      "company": "Anthropic",
+      "incidents": 21,
+      "severe": 8
     },
     {
       "month": "2025-12-01",
-      "impact": "Major",
-      "incidents": 5
-    },
-    {
-      "month": "2025-12-01",
-      "impact": "Critical",
-      "incidents": 3
+      "company": "OpenAI",
+      "incidents": 22,
+      "severe": null
     },
     {
       "month": "2026-01-01",
-      "impact": "Minor",
-      "incidents": 20
+      "company": "Anthropic",
+      "incidents": 26,
+      "severe": 6
     },
     {
       "month": "2026-01-01",
-      "impact": "Major",
-      "incidents": 5
-    },
-    {
-      "month": "2026-01-01",
-      "impact": "Critical",
-      "incidents": 1
+      "company": "OpenAI",
+      "incidents": 14,
+      "severe": null
     },
     {
       "month": "2026-02-01",
-      "impact": "Minor",
-      "incidents": 38
+      "company": "Anthropic",
+      "incidents": 58,
+      "severe": 15
     },
     {
       "month": "2026-02-01",
-      "impact": "Major",
-      "incidents": 13
-    },
-    {
-      "month": "2026-02-01",
-      "impact": "Critical",
-      "incidents": 2
+      "company": "OpenAI",
+      "incidents": 24,
+      "severe": null
     },
     {
       "month": "2026-03-01",
-      "impact": "Minor",
-      "incidents": 29
+      "company": "Anthropic",
+      "incidents": 51,
+      "severe": 21
     },
     {
       "month": "2026-03-01",
-      "impact": "Major",
-      "incidents": 19
-    },
-    {
-      "month": "2026-03-01",
-      "impact": "Critical",
-      "incidents": 2
+      "company": "OpenAI",
+      "incidents": 37,
+      "severe": null
     },
     {
       "month": "2026-04-01",
-      "impact": "Minor",
-      "incidents": 25
+      "company": "Anthropic",
+      "incidents": 49,
+      "severe": 16
     },
     {
       "month": "2026-04-01",
-      "impact": "Major",
-      "incidents": 11
-    },
-    {
-      "month": "2026-04-01",
-      "impact": "Critical",
-      "incidents": 5
+      "company": "OpenAI",
+      "incidents": 29,
+      "severe": null
     },
     {
       "month": "2026-05-01",
-      "impact": "Minor",
-      "incidents": 23
+      "company": "Anthropic",
+      "incidents": 41,
+      "severe": 17
     },
     {
       "month": "2026-05-01",
-      "impact": "Major",
-      "incidents": 17
+      "company": "OpenAI",
+      "incidents": 30,
+      "severe": null
     },
     {
       "month": "2026-06-01",
-      "impact": "Minor",
-      "incidents": 35
+      "company": "Anthropic",
+      "incidents": 48,
+      "severe": 10
     },
     {
       "month": "2026-06-01",
-      "impact": "Major",
-      "incidents": 8
-    },
-    {
-      "month": "2026-06-01",
-      "impact": "Critical",
-      "incidents": 2
+      "company": "OpenAI",
+      "incidents": 30,
+      "severe": null
     },
     {
       "month": "2026-07-01",
-      "impact": "Minor",
-      "incidents": 35
+      "company": "Anthropic",
+      "incidents": 54,
+      "severe": 16
     },
     {
       "month": "2026-07-01",
-      "impact": "Major",
-      "incidents": 12
-    },
-    {
-      "month": "2026-07-01",
-      "impact": "Critical",
-      "incidents": 4
+      "company": "OpenAI",
+      "incidents": 36,
+      "severe": null
     },
     {
       "month": "2026-08-01",
-      "impact": "Minor",
-      "incidents": 16
+      "company": "Anthropic",
+      "incidents": 25,
+      "severe": 8
     },
     {
       "month": "2026-08-01",
-      "impact": "Major",
-      "incidents": 7
-    },
-    {
-      "month": "2026-08-01",
-      "impact": "Critical",
-      "incidents": 1
+      "company": "OpenAI",
+      "incidents": 20,
+      "severe": null
     },
     {
       "month": "2026-09-01",
-      "impact": "Minor",
-      "incidents": 4
+      "company": "Anthropic",
+      "incidents": 13,
+      "severe": 8
     },
     {
       "month": "2026-09-01",
-      "impact": "Major",
-      "incidents": 8
+      "company": "OpenAI",
+      "incidents": 40,
+      "severe": null
     }
   ],
   "takeaway": [
-    "Claude's status page logged 12 incidents in Sep 2026 (8 major or critical), against 33 in Sep 2025."
+    "In Sep 2026, Claude's status page posted 13 incidents and OpenAI's posted 40.",
+    "Since Mar 2025, Claude's page posted 667 incidents against OpenAI's 556, and posted more in 11 of 19 months."
   ],
   "assumptions": [
     "Incidents are the ones the company chose to post, with its own impact rating, so a company that posts more freely looks worse.",
-    "Impact is Anthropic's own rating: minor, major or critical. Notices rated 'none' (maintenance, information) are left out.",
-    "Growth in incidents partly reflects growth in usage and in how much Anthropic reports, not only in failures. Compare with hours below.",
-    "Counted by the month the incident started. Complete months only."
+    "Both companies are counted the same way: every incident posted, whatever its impact rating, with maintenance notices left out. The Briefing counts only Claude incidents rated minor or above, so its figure is lower.",
+    "OpenAI's history before July 2026 is read from monthly Internet Archive copies of its status feed. They overlap, so no month is missing, but they carry no impact rating, so the rated column is blank for OpenAI except where its own page gave a rating for every incident that month.",
+    "More incidents partly reflects more usage and how freely a company posts, not only more failures."
   ],
   "badges": [],
   "id": "product.incidents_monthly",
   "page": "product",
-  "as_of": "2026-10-01",
+  "as_of": "2026-10-06",
   "sources": [
     {
       "source": "status_incidents",
-      "label": "Claude status page",
-      "url": "https://status.claude.com/incidents/k0h22tsvnydg",
+      "label": "Claude and OpenAI status pages",
+      "url": "https://status.openai.com/incidents/01M47HC9SGHGFPBN44KGC6SKAQ",
       "method": "api",
       "tier": "company-stated",
       "cadence": "daily",
-      "as_of": "2026-10-01",
-      "retrieved_at": "2026-10-05T07:19:13Z",
+      "as_of": "2026-10-06",
+      "retrieved_at": "2026-10-06T09:46:53Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "status_incidents_archive",
+      "label": "Internet Archive copies of the OpenAI status feed",
+      "url": "https://web.archive.org/web/20260911144508/https://status.openai.com/feed.rss",
+      "method": "scrape",
+      "tier": "company-stated",
+      "cadence": "quarterly",
+      "as_of": "2026-09-11",
+      "retrieved_at": "2026-10-06T09:46:55Z",
       "freshness": "fresh",
       "manual": null
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-06T07:49:00Z"
+  "generated_at": "2026-10-07T03:33:47Z"
 }

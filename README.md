@@ -5,8 +5,8 @@ An alt-data monitor for private companies, built for the deal team. First compan
 
 - **Provenance on every number.** Automated numbers show their source link, the date the data describes, and when it was retrieved.
   Manual numbers show who entered them, when, and from what evidence.
-- **Comparable over time and across companies.** Shared metric definitions, plus frozen weekly editions.
-- **Easy to refresh.** Daily and weekly GitHub Actions, or ask Claude for `/refresh-data`.
+- **Comparable over time.** Shared metric definitions, plus a weekly Hot Pick that keeps past weeks.
+- **Easy to refresh.** Ask Claude for `/refresh-data`; nothing runs on a schedule.
 - **AI Analysis.** Bull, Bear and Neutral reporters that cite the charts they rely on.
 
 Outputs are drafts for deal-team review, not investment advice. Only public sources and team-supplied data are used.
@@ -45,9 +45,9 @@ Status: see [docs/ROADMAP.md](docs/ROADMAP.md). Design: [docs/superpowers/specs]
 | Serve the API (needs `.env`) | `uv run uvicorn app.server:app --port 8000 --env-file .env` |
 | Serve the dashboard in dev | `npm --prefix frontend run dev` (opens on port 5173 and proxies `/api` to 8000) |
 | See what changed and what is stale | `uv run python -m pipeline.report` |
-| Run the scheduled jobs on GitHub | `gh workflow run daily.yml` · `gh workflow run weekly.yml` |
+| Save the Hot Pick (week and month) | `uv run python -m pipeline.hot_pick freeze`, or ask Claude for `/hot-pick` |
 
-- **Claude Code skills** in this repo: `/refresh-data` (update everything and report), `/add-source` (add a new collector).
+- **Claude Code skills** in this repo: `/refresh-data` (update everything and report), `/hot-pick` (the week's and month's picks), `/signal` (Anthropic against OpenAI, leads and lags, valuation), `/add-source` (add a new collector).
 - Optional keys in `.env`: `GITHUB_TOKEN` is not needed if you are signed in with `gh auth login`.
 - The API serves the Phase 0 fixtures unless `DATA_DIR=data` is set. Add that to `.env` to see the real collected data.
 - In worktree `n`, use ports `8000+n` and `5173+n` instead. For example, worktree 2 serves the API with `--port 8002` and runs the dashboard with `API_PORT=8002 WEB_PORT=5175 npm --prefix frontend run dev`.

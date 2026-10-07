@@ -1,0 +1,161 @@
+{
+  "title": "Is Anthropic's growth the market's or its own?",
+  "subtitle": "Dots: each company's growth over the latest 13 weeks against the 13 weeks before, in four dimensions. Bars: Anthropic minus OpenAI, the part that is Anthropic's own once the market (OpenAI) is taken out.",
+  "kind": "combo",
+  "layers": [
+    {
+      "mark": "bar",
+      "name": "Anthropic's own (gap to OpenAI)",
+      "y": "gap"
+    },
+    {
+      "mark": "point",
+      "name": "Growth over 13 weeks",
+      "y": "growth",
+      "series": "company"
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "dimension",
+      "type": "ordinal",
+      "label": "Dimension"
+    },
+    "y": {
+      "field": "growth",
+      "type": "quantitative",
+      "label": "Growth over 13 weeks",
+      "format": "pct"
+    }
+  },
+  "columns": [
+    {
+      "field": "dimension",
+      "label": "Dimension",
+      "format": "text"
+    },
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "growth",
+      "label": "Growth over 13 weeks",
+      "format": "pct"
+    },
+    {
+      "field": "gap",
+      "label": "Anthropic minus OpenAI",
+      "format": "pct"
+    }
+  ],
+  "rows": [
+    {
+      "dimension": "SDK downloads",
+      "company": "Anthropic",
+      "growth": 0.43931392182159246,
+      "gap": 0.2211109140035621
+    },
+    {
+      "dimension": "SDK downloads",
+      "company": "OpenAI",
+      "growth": 0.21820300781803037,
+      "gap": null
+    },
+    {
+      "dimension": "Coding-agent CLI downloads",
+      "company": "Anthropic",
+      "growth": 0.37339200920987436,
+      "gap": -0.7449918666822082
+    },
+    {
+      "dimension": "Coding-agent CLI downloads",
+      "company": "OpenAI",
+      "growth": 1.1183838758920825,
+      "gap": null
+    },
+    {
+      "dimension": "Wikipedia: product article",
+      "company": "Anthropic",
+      "growth": -0.3007037703567933,
+      "gap": -0.11767390184519988
+    },
+    {
+      "dimension": "Wikipedia: product article",
+      "company": "OpenAI",
+      "growth": -0.18302986851159342,
+      "gap": null
+    },
+    {
+      "dimension": "Wikipedia: company article",
+      "company": "Anthropic",
+      "growth": -0.3196209003897198,
+      "gap": -0.2779934862690647
+    },
+    {
+      "dimension": "Wikipedia: company article",
+      "company": "OpenAI",
+      "growth": -0.04162741412065507,
+      "gap": null
+    }
+  ],
+  "takeaway": [
+    "Anthropic grew faster than OpenAI in 1 of 4 dimensions over the latest 13 weeks.",
+    "Its widest lead is in SDK downloads (+22 points) and its narrowest in Coding-agent CLI downloads (-74 points)."
+  ],
+  "assumptions": [
+    "OpenAI stands in for the market: what both share is market growth, and the difference is Anthropic's own. A negative bar means OpenAI grew faster, or fell less.",
+    "Each dimension is a weekly series summed over the latest 13 complete weeks and compared with the 13 before: SDK downloads (PyPI plus npm), coding-agent CLI downloads (npm), and English Wikipedia views of the company article and of the product article.",
+    "The Briefing compares every signal over 3 months; this page takes the same view across four dimensions and splits it into market and own.",
+    "Download spikes are removed as on the Developer Adoption page (a day above 10 times the median around it). A week left with 5 or 6 clean days is scaled to 7; with fewer it is dropped.",
+    "Weeks run Monday to Sunday and only complete weeks are used.",
+    "Correlation is not cause. A lead shows what moved first, not why."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "signal.market_or_own",
+  "page": "signal",
+  "as_of": "2026-10-04",
+  "sources": [
+    {
+      "source": "pypi_downloads",
+      "label": "PyPI downloads (ClickHouse public PyPI dataset)",
+      "url": "https://sql-clickhouse.clickhouse.com/",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "npm_downloads",
+      "label": "npm registry download counts",
+      "url": "https://api.npmjs.org/downloads/range/2025-09-29:2026-10-04/@anthropic-ai/sdk",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "wikipedia_pageviews",
+      "label": "Wikimedia pageviews (English Wikipedia)",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/Claude_%28language_model%29/daily/20260927/20261004",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T07:07:58Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-07T03:33:47Z"
+}

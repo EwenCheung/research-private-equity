@@ -143,3 +143,98 @@ def test_freshness_rule():
     assert freshness(now - timedelta(days=3), 2, now) == "aging"
     assert freshness(now - timedelta(days=4), 2, now) == "aging"
     assert freshness(now - timedelta(days=4, seconds=1), 2, now) == "stale"
+
+
+# --- combined charts: several marks over one shared x axis ---
+
+
+def combo():
+    """Releases over a weekly series, the shape the Signal page uses."""
+    m = mart()
+    m["kind"] = "combo"
+    m["encoding"] = {
+        "x": {"field": "week", "type": "temporal", "label": "Week"},
+        "y": {"field": "downloads", "type": "quantitative", "label": "Downloads", "format": "int"},
+    }
+    m["columns"] = [
+        {"field": "week", "label": "Week", "format": "date"},
+        {"field": "downloads", "label": "Downloads", "format": "int"},
+        {"field": "low", "label": "Low", "format": "int"},
+        {"field": "high", "label": "High", "format": "int"},
+        {"field": "release", "label": "Release", "format": "text"},
+        {"field": "company", "label": "Company", "format": "text"},
+    ]
+    m["rows"] = [
+        {"week": "2026-08-02", "downloads": 10, "low": 8, "high": 12, "release": None, "company": None},
+        {
+            "week": "2026-08-09",
+            "downloads": None,
+            "low": None,
+            "high": None,
+            "release": "Opus 5",
+            "company": "Anthropic",
+        },
+    ]
+    m["layers"] = [
+        {"mark": "band", "name": "Noise", "y_low": "low", "y_high": "high"},
+        {"mark": "line", "name": "Downloads", "y": "downloads"},
+        {"mark": "rule", "name": "Release", "label": "release", "series": "company"},
+    ]
+    return m
+
+
+def test_a_combined_chart_is_valid():
+    validate("chart_spec", combo())
+
+
+def test_a_combined_chart_needs_layers_and_other_kinds_must_not_have_them():
+    m = combo()
+    del m["layers"]
+    with pytest.raises(ContractError):
+        validate("chart_spec", m)
+    m = combo()
+    m["kind"] = "line"
+    with pytest.raises(ContractError):
+        validate("chart_spec", m)
+
+
+@pytest.mark.parametrize(
+    "layer, message",
+    [
+        ({"mark": "bar", "name": "x"}, "needs y"),
+        ({"mark": "band", "name": "x", "y_low": "low"}, "needs y_high"),
+        ({"mark": "line", "name": "x", "y": "nope"}, "not a column"),
+        ({"mark": "rule", "name": "x"}, "needs label"),
+        ({"mark": "rule", "name": "x", "label": "nope"}, "not a column"),
+        ({"mark": "area", "name": "x", "y": "downloads"}, "area"),
+    ],
+)
+def test_a_bad_layer_is_rejected(layer, message):
+    m = combo()
+    m["layers"].append(layer)
+    with pytest.raises(ContractError, match=message):
+        validate("chart_spec", m)
+
+
+def test_extra_panels_stack_under_the_main_one_and_a_layer_must_name_a_panel_that_exists():
+    m = combo()
+    m["panels"] = [{"label": "Intelligence Index", "format": "float"}]
+    m["layers"].append({"mark": "point", "name": "Score", "y": "downloads", "panel": 1})
+    validate("chart_spec", m)
+    m["layers"][-1]["panel"] = 2
+    with pytest.raises(ContractError, match="has no panel 2"):
+        validate("chart_spec", m)
+    m = mart()
+    m["panels"] = [{"label": "x"}]
+    with pytest.raises(ContractError):
+        validate("chart_spec", m)  # panels belong to combined charts only
+
+
+def test_a_panel_may_have_its_own_x_axis_but_it_must_be_a_column():
+    m = combo()
+    m["panels"] = [{"label": "Score", "x": {"field": "release", "type": "ordinal", "label": "Model"}}]
+    m["layers"].append({"mark": "point", "name": "Score", "y": "downloads", "panel": 1})
+    validate("chart_spec", m)
+    m["panels"][0]["x"]["field"] = "nope"
+    with pytest.raises(ContractError, match="is not a column"):
+        validate("chart_spec", m)

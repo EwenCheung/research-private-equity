@@ -1,0 +1,8 @@
+# openrouter: the organisation prefix of this company's model ids on OpenRouter (https://openrouter.ai/api/v1/models), used for the release list and the benchmarks.
+# arena_org: the organisation label on Arena's text leaderboard.
+anthropic:
+  openrouter: anthropic
+  arena_org: Anthropic
+openai:
+  openrouter: openai
+  arena_org: OpenAI

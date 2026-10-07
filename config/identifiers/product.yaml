@@ -1,4 +1,7 @@
 # Public status pages. atlassian_history: Atlassian Statuspage with a history.json feed (full history).
-# Only Anthropic is collected: the monitor charts Claude's own reliability.
+# incident_io: incident.io page serving /api/v2/incidents.json (latest 25 incidents, with impact) and feed.rss (about three months, no impact);
+# older history comes from the Internet Archive's copies of the feed (source status_incidents_archive).
 anthropic:
   status: {kind: atlassian_history, host: status.claude.com}
+openai:
+  status: {kind: incident_io, host: status.openai.com}

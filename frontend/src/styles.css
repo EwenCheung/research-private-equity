@@ -327,6 +327,19 @@ button {
   border-radius: 3px;
   vertical-align: -1px;
 }
+.legend label {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+.legend label.off {
+  color: var(--ink-3);
+  text-decoration: line-through;
+}
+.legend input {
+  margin: 0 8px 0 0;
+  accent-color: var(--ink-2);
+}
 .awaiting {
   display: grid;
   place-items: center;

@@ -29,16 +29,32 @@ export function seriesOf(spec: ChartSpec): string[] {
   return f ? [...new Set(spec.rows.map((r) => String(r[f])))] : [];
 }
 
-export function Legend({ series, colors }: { series: string[]; colors: string[] }) {
+/** The legend doubles as a set of tick boxes: a ticked series is drawn, an unticked one is not. At least one stays ticked. */
+export function Legend({
+  series,
+  colors,
+  hidden,
+  onToggle,
+}: {
+  series: string[];
+  colors: string[];
+  hidden: Set<string>;
+  onToggle: (s: string) => void;
+}) {
   if (series.length < 2) return null;
+  const onlyOne = series.length - hidden.size === 1;
   return (
-    <div className="legend">
-      {series.map((s, i) => (
-        <span key={s}>
-          <i style={{ background: colors[i] }} />
-          {s}
-        </span>
-      ))}
+    <div className="legend" role="group" aria-label="Series shown">
+      {series.map((s, i) => {
+        const on = !hidden.has(s);
+        return (
+          <label key={s} className={on ? "" : "off"} title={on && onlyOne ? "At least one stays ticked" : undefined}>
+            <input type="checkbox" checked={on} disabled={on && onlyOne} onChange={() => onToggle(s)} />
+            <i style={{ background: colors[i] }} />
+            {s}
+          </label>
+        );
+      })}
     </div>
   );
 }
@@ -107,20 +123,42 @@ export function useSeriesColors(spec: ChartSpec) {
 export default function ChartPlot({ spec }: { spec: ChartSpec }) {
   const { ref, width } = useWidth();
   const { series, colors } = useSeriesColors(spec);
+  const [hidden, setHidden] = useState<Set<string>>(new Set());
+  const toggle = (s: string) =>
+    setHidden((h) => {
+      const next = new Set(h);
+      if (next.has(s)) next.delete(s);
+      else if (series.length - next.size > 1) next.add(s);
+      return next;
+    });
 
   useEffect(() => {
     const el = ref.current;
     if (!el || !width || colors.length < Math.max(series.length, 1)) return;
     const css = getComputedStyle(document.documentElement);
     const v = (n: string) => css.getPropertyValue(n).trim();
-    const plot = build(spec, series, colors, { ink: v("--ink"), ink3: v("--ink-3"), surface: v("--surface"), axis: v("--axis") }, width);
+    const ink = { ink: v("--ink"), ink3: v("--ink-3"), surface: v("--surface"), axis: v("--axis") };
+    // A combined chart keeps every series and skips the hidden ones layer by layer. Any other chart is drawn from the ticked
+    // series only, each keeping its own colour, so a series never changes colour when another is hidden.
+    const cf = spec.encoding.color?.field;
+    const keep = series.map((_, i) => i).filter((i) => !hidden.has(series[i]));
+    const plot =
+      spec.kind === "combo"
+        ? build(spec, series, colors, ink, width, hidden)
+        : build(
+            cf ? { ...spec, rows: spec.rows.filter((r) => !hidden.has(String(r[cf]))) } : spec,
+            keep.map((i) => series[i]),
+            keep.map((i) => colors[i]),
+            ink,
+            width,
+          );
     el.replaceChildren(plot);
     return () => plot.remove();
-  }, [spec, width, colors]); // eslint-disable-line react-hooks/exhaustive-deps -- colours derive from spec and scheme
+  }, [spec, width, colors, hidden]); // eslint-disable-line react-hooks/exhaustive-deps -- colours derive from spec and scheme
 
   return (
     <>
-      <Legend series={series} colors={colors} />
+      <Legend series={series} colors={colors} hidden={hidden} onToggle={toggle} />
       <div ref={ref} role="img" aria-label={`${spec.title}. Use the table view for exact values.`} />
     </>
   );
@@ -133,8 +171,8 @@ interface Ink {
   axis: string;
 }
 
-function build(spec: ChartSpec, series: string[], colors: string[], c: Ink, width: number) {
-  if (spec.kind === "combo") return comboPlot(spec, series, colors, c, width);
+function build(spec: ChartSpec, series: string[], colors: string[], c: Ink, width: number, hidden: Set<string> = new Set()) {
+  if (spec.kind === "combo") return comboPlot(spec, series, colors, c, width, hidden);
   const { x, y, color } = spec.encoding;
   const xf = x!.field;
   const yf = y!.field;
@@ -257,7 +295,7 @@ function build(spec: ChartSpec, series: string[], colors: string[], c: Ink, widt
 
 /** Several marks over one shared x axis, so two aspects can be read against each other. Bars put x on a band scale
  *  (categories, in order of appearance); without bars x is a date or a number. Marks are drawn back to front. */
-function comboPlot(spec: ChartSpec, series: string[], colors: string[], c: Ink, width: number) {
+function comboPlot(spec: ChartSpec, series: string[], colors: string[], c: Ink, width: number, hidden: Set<string>) {
   const { x, y } = spec.encoding;
   const xf = x!.field;
   const yFmt = y!.format ?? "float";
@@ -273,8 +311,14 @@ function comboPlot(spec: ChartSpec, series: string[], colors: string[], c: Ink, 
   const front = ["band", "bar", "rule", "line", "point"];
   const marks: NonNullable<Plot.PlotOptions["marks"]> = [];
 
+  // A layer named in the legend goes when its name is unticked; a split layer drops the rows of the unticked series.
+  const shown = (l: Layer) => {
+    if (!l.series && l.mark !== "band" && l.mark !== "rule" && hidden.has(l.name)) return [];
+    return drawn(spec, l).filter((r) => !l.series || !hidden.has(String(r[l.series])));
+  };
+
   for (const l of [...layers].sort((a, b) => front.indexOf(a.mark) - front.indexOf(b.mark))) {
-    const rows = drawn(spec, l);
+    const rows = shown(l);
     if (l.mark === "band") {
       const edges = { x: xv, y1: num(l.y_low), y2: num(l.y_high), fill: c.ink3, fillOpacity: 0.15 };
       marks.push(Plot.areaY(rows, edges));
@@ -291,9 +335,9 @@ function comboPlot(spec: ChartSpec, series: string[], colors: string[], c: Ink, 
       marks.push(Plot.dot(rows, { x: xv, y: num(l.y), fill: paint(l), r: 5, stroke: c.surface, strokeWidth: 2 }));
     }
   }
-  const lead = layers.find((l) => ["line", "bar", "point"].includes(l.mark));
+  const lead = layers.find((l) => ["line", "bar", "point"].includes(l.mark) && shown(l).length);
   marks.push(Plot.ruleY([0], { stroke: c.axis }));
-  if (lead) marks.push(Plot.tip(drawn(spec, lead), Plot.pointerX({ x: xv, y: num(lead.y), title: tipText }) as Plot.TipOptions));
+  if (lead) marks.push(Plot.tip(shown(lead), Plot.pointerX({ x: xv, y: num(lead.y), title: tipText }) as Plot.TipOptions));
 
   return Plot.plot({
     width,

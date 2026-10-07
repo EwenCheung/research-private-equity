@@ -32,6 +32,11 @@ class DbStore:
             row = con.execute("SELECT spec FROM charts WHERE id = ?", (chart_id,)).fetchone()
         return json.loads(row[0]) if row else None
 
+    def meta(self) -> dict[str, str]:
+        """What the pack recorded about itself: packed_at, the counts, the git commit."""
+        with self._open() as con:
+            return dict(con.execute("SELECT key, value FROM meta"))
+
     def registry(self) -> dict | None:
         with self._open() as con:
             row = con.execute("SELECT content FROM files WHERE kind = 'registry'").fetchone()

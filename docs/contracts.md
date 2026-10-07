@@ -238,8 +238,10 @@ uv run pytest
 | `GET /api/freshness` | `{source: {freshness, retrieved_at, as_of}}`, live |
 | `GET /api/marts` | Also lists the Phase 3 weekly picks, `hot_pick.month_2026_10`, as ordinary chart specs |
 | `GET /api/analysis?week=` | Phase 4: `{bull, bear, neutral}` |
+| `GET /api/refresh` | Only with `DATA_DB` (else `404`): `{running, started_at, data: {packed_at, observations, charts}, last}`. `last` is the previous refresh's report: `{state, swapped, message, started_at, finished_at, ...}` with `state` one of `ok`, `partial`, `unchanged`, `offline`, `failed` |
+| `POST /api/refresh` | Only with `DATA_DB`: starts a refresh in the background (`202`; `409` when one is running). It fetches every source again and replaces the file only when the new one is sound, so the dashboard never shows half a refresh |
 
-**Environment:** see `.env.example`. `DATA_DIR` points the API at the pipeline's `data/` (Render sets `data`). If it's unset, the API serves `tests/fixtures/`. `DATA_DB` points it at the offline SQLite file written by `python -m pipeline.offline` instead: the charts and the registry are read from the file, so a machine with no internet needs no `data/` folder and no build.
+**Environment:** see `.env.example`. `DATA_DIR` points the API at the pipeline's `data/` (Render sets `data`). If it's unset, the API serves `tests/fixtures/`. `DATA_DB` points it at the offline SQLite file written by `python -m pipeline.offline` instead: the charts and the registry are read from the file, so a machine with no internet needs no `data/` folder and no build. The data is then a snapshot until someone presses **Refresh data** in the sidebar.
 
 **Ports:** worktree `n` uses API `8000+n` and Vite `5173+n`.
 - `main` is `n = 0`.

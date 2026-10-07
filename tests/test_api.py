@@ -1,5 +1,7 @@
 import json
 import sqlite3
+import threading
+import time
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
@@ -143,6 +145,8 @@ def offline_db(path, registry=None, version=1):
     con.executescript(
         "CREATE TABLE charts (id TEXT PRIMARY KEY, spec TEXT NOT NULL);"
         "CREATE TABLE files (path TEXT PRIMARY KEY, kind TEXT NOT NULL, content BLOB NOT NULL);"
+        "CREATE TABLE meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);"
+        "INSERT INTO meta VALUES ('packed_at', '2026-10-07T06:45:00Z'), ('observations', '70788'), ('charts', '26'), ('git_head', 'abc');"
     )
     con.executemany(
         "INSERT INTO charts VALUES (?, ?)", [(i, (FIXTURES / "marts" / f"{i}.json").read_text()) for i in MART_IDS]
@@ -209,3 +213,92 @@ def test_a_missing_or_wrong_version_sqlite_file_stops_the_app_with_a_clear_messa
         create_app(frontend_dir=tmp_path, db=tmp_path / "nope.sqlite")
     with pytest.raises(RuntimeError, match="another schema version"):
         create_app(frontend_dir=tmp_path, db=offline_db(tmp_path / "old.sqlite", version=99))
+
+
+def refresh_client(monkeypatch, tmp_path, work):
+    monkeypatch.setenv("DASHBOARD_PASSWORD", PASSWORD)
+    monkeypatch.setenv("SESSION_SECRET", "test-secret")
+    c = TestClient(create_app(frontend_dir=tmp_path, db=offline_db(tmp_path / "offline.sqlite"), refresh=work))
+    c.post("/api/login", json={"password": PASSWORD})
+    return c
+
+
+def until_idle(c):
+    for _ in range(200):
+        status = c.get("/api/refresh").json()
+        if not status["running"]:
+            return status
+        time.sleep(0.02)
+    raise AssertionError("the refresh never ended")
+
+
+def test_the_refresh_button_exists_only_behind_the_session_and_only_when_serving_from_a_file(monkeypatch, tmp_path):
+    c = refresh_client(monkeypatch, tmp_path, lambda db: {"state": "ok", "swapped": True, "message": "done"})
+    assert TestClient(c.app).get("/api/refresh").status_code == 401  # a fresh client has no session
+    assert TestClient(c.app).post("/api/refresh").status_code == 401
+    status = c.get("/api/refresh").json()
+    assert status["running"] is False and status["last"] is None
+    assert status["data"] == {
+        "packed_at": "2026-10-07T06:45:00Z",
+        "observations": "70788",
+        "charts": "26",
+    }  # no git_head
+    plain = TestClient(create_app(frontend_dir=tmp_path))  # fixtures, no file
+    plain.post("/api/login", json={"password": PASSWORD})
+    assert plain.get("/api/refresh").status_code == 404 and plain.post("/api/refresh").status_code == 404
+
+
+def test_a_refresh_runs_in_the_background_one_at_a_time_and_reports_how_it_ended(monkeypatch, tmp_path):
+    gate = threading.Event()
+
+    def work(db):
+        gate.wait(5)
+        return {
+            "state": "partial",
+            "swapped": True,
+            "message": "Updated 18 sources; 1 failed",
+            "failed": {"x": ["boom"]},
+        }
+
+    c = refresh_client(monkeypatch, tmp_path, work)
+    assert c.post("/api/refresh").status_code == 202
+    assert c.get("/api/refresh").json()["running"] is True
+    assert c.post("/api/refresh").status_code == 409  # a second press while one runs
+    assert len(c.get("/api/marts").json()) == len(MART_IDS)  # the dashboard keeps serving meanwhile
+    gate.set()
+    last = until_idle(c)["last"]
+    assert (
+        last["state"] == "partial" and last["failed"] == {"x": ["boom"]} and last["finished_at"] >= last["started_at"]
+    )
+    assert json.loads((tmp_path / "offline.sqlite.refresh.json").read_text())["message"] == last["message"]
+    assert c.post("/api/refresh").status_code == 202  # free again
+    until_idle(c)
+
+
+def test_a_refresh_that_crashes_is_reported_not_lost_and_the_next_one_can_start(monkeypatch, tmp_path):
+    calls = []
+
+    def work(db):
+        calls.append(db)
+        if len(calls) == 1:
+            raise RuntimeError("collector blew up")
+        raise SystemExit("no source matches")
+
+    c = refresh_client(monkeypatch, tmp_path, work)
+    c.post("/api/refresh")
+    last = until_idle(c)["last"]
+    assert last["state"] == "failed" and last["swapped"] is False and "collector blew up" in last["message"]
+    c.post("/api/refresh")
+    assert "no source matches" in until_idle(c)["last"]["message"]
+    assert len(c.get("/api/marts").json()) == len(MART_IDS)
+
+
+def test_the_last_refresh_report_survives_a_restart(monkeypatch, tmp_path):
+    c = refresh_client(
+        monkeypatch, tmp_path, lambda db: {"state": "offline", "swapped": False, "message": "No internet"}
+    )
+    c.post("/api/refresh")
+    until_idle(c)
+    again = TestClient(create_app(frontend_dir=tmp_path, db=tmp_path / "offline.sqlite", refresh=lambda db: {}))
+    again.post("/api/login", json={"password": PASSWORD})
+    assert again.get("/api/refresh").json()["last"]["message"] == "No internet"

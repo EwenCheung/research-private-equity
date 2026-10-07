@@ -8,6 +8,7 @@ import json
 import os
 import re
 import time
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -18,6 +19,7 @@ from itsdangerous import BadSignature, URLSafeTimedSerializer
 from pydantic import BaseModel
 
 from app.db_store import DbStore
+from app.refresh import Refresher
 from contracts import freshness as freshness_rule
 from pipeline.core.companies import load_companies
 
@@ -33,17 +35,31 @@ class Login(BaseModel):
     password: str
 
 
-def create_app(data_dir: Path | None = None, frontend_dir: Path | None = None, db: Path | None = None) -> FastAPI:
+def refresh_everything(db: Path) -> dict:
+    """What the refresh button runs: every source again, then a new SQLite file that replaces this one only if it is sound."""
+    from pipeline import offline  # imported on the first press: reading the file needs no collectors
+
+    return offline.refresh(ROOT, db, rebuild_web=False)
+
+
+def create_app(
+    data_dir: Path | None = None,
+    frontend_dir: Path | None = None,
+    db: Path | None = None,
+    refresh: Callable[[Path], dict] | None = None,
+) -> FastAPI:
     """data_dir (or DATA_DIR) is the pipeline's data/: marts/ plus registry.json, written by `pipeline.build`.
 
     Unset means the Phase 0 fixtures. Their clock is pinned to the registry's generated_at so the Sample page keeps
     showing every freshness state; with real data, freshness is recomputed against the current time on every request.
 
     db (or DATA_DB) is the offline SQLite file written by `python -m pipeline.offline`: the charts and the registry are read from it
-    instead of from data_dir, so a machine with no internet needs nothing else.
+    instead of from data_dir, so a machine with no internet needs nothing else. With a file, the dashboard's Refresh button fetches
+    every source again and swaps in a new file (`refresh` is that job; the default is pipeline.offline.refresh).
     """
     store = DbStore(db or os.environ["DATA_DB"]) if db or os.environ.get("DATA_DB") else None
     data_dir = Path(data_dir or os.environ.get("DATA_DIR") or FIXTURES)
+    refresher = Refresher(store.path, refresh or refresh_everything) if store else None
     pinned_clock = not store and data_dir.resolve() == FIXTURES.resolve()
     marts_dir, registry_file = data_dir / "marts", data_dir / "registry.json"
     frontend_dir = Path(frontend_dir or os.environ.get("FRONTEND_DIR") or ROOT / "frontend" / "dist")
@@ -149,6 +165,20 @@ def create_app(data_dir: Path | None = None, frontend_dir: Path | None = None, d
     @app.get("/api/freshness", dependencies=[Depends(require_session)])
     def freshness():
         return {sid: {k: s[k] for k in ("freshness", "retrieved_at", "as_of")} for sid, s in load_registry().items()}
+
+    # --- the Refresh button: only when serving from a SQLite file ---
+    if refresher:
+
+        @app.get("/api/refresh", dependencies=[Depends(require_session)])
+        def refresh_status():
+            data = {k: v for k, v in store.meta().items() if k in ("packed_at", "observations", "charts")}
+            return {**refresher.status(), "data": data}
+
+        @app.post("/api/refresh", status_code=202, dependencies=[Depends(require_session)])
+        def refresh_start():
+            if not refresher.start():
+                raise HTTPException(409, "A refresh is already running")
+            return refresh_status()
 
     @app.get("/api/companies", dependencies=[Depends(require_session)])
     def companies():

@@ -36,21 +36,21 @@ Status: see [docs/ROADMAP.md](docs/ROADMAP.md). Design: [docs/superpowers/specs]
    npm --prefix frontend ci
    ```
 
-## Take the data to a machine with no internet
-One command calls every source once and keeps everything in a single SQLite file, so a server that cannot reach the internet still has all of it.
+## Take everything to a machine with no internet
+One command calls every source once and keeps everything in a single SQLite file: the collected data, the cited ledgers, the charts and the built dashboard. A sandbox that blocks all access shows the dashboard from that file alone.
 
 | Step | Where | Command |
 |---|---|---|
 | 1. Call everything once, rebuild, pack | online | `uv run python -m pipeline.offline fetch` |
 | 2. Copy the repo and `data/offline/signal-monitor.sqlite` | any way you like | `scp`, a USB stick, `git bundle` |
-| 3. Unpack into the repo's `data/` | offline | `uv run python -m pipeline.offline restore` |
-| 4. Serve, or rebuild the charts | offline | `DATA_DIR=data uv run uvicorn app.server:app --port 8000 --env-file .env` |
+| 3. Show the dashboard from the file | sandbox | `uv run python -m pipeline.offline serve --db signal-monitor.sqlite` |
 
-- `fetch` reads your `.env` for keys (a source that needs a missing key is skipped and named, never fatal). `--only ID ...` and `--skip ID ...` pick sources; the Internet Archive ones are slow.
-- `pack` makes the file from what is already in `data/` without calling anything; `check` says whether the file and `data/` still agree.
-- The file holds every collector snapshot byte for byte (so a restore is exact and never overwrites a raw file that differs), every observation as a row, the cited ledgers, the charts and the registry. Query it with any SQLite tool, for example `sqlite3 data/offline/signal-monitor.sqlite "select entity, metric, max(as_of) from observations group by 1, 2"`.
+- `fetch` reads your `.env` for keys (a source that needs a missing key is skipped and named, never fatal), builds the frontend if Node is there, rebuilds the charts and packs. `--only ID ...` and `--skip ID ...` pick sources; the Internet Archive ones are slow. `config/offline.yaml` lists sources left out by default (Wikipedia); `--only wikipedia_pageviews` calls it anyway.
+- `serve` needs `DASHBOARD_PASSWORD` and `SESSION_SECRET` (in `.env` or the environment) and nothing else: the API reads the charts and registry from the file (`DATA_DB`) and the page comes out of the file too. No collector runs and no `data/` folder is needed.
+- Other commands: `pack` makes the file from what is already in `data/` without calling anything; `restore` unpacks the raw snapshots, ledgers, charts and registry into `data/` (so `pipeline.build` runs offline too, and a raw file that differs is never overwritten); `check` says whether the file and `data/` still agree.
+- The file holds every collector snapshot byte for byte, and every observation as a row. Query it with any SQLite tool, for example `sqlite3 data/offline/signal-monitor.sqlite "select entity, metric, max(as_of) from observations group by 1, 2"`.
 - Vendor files in `data/manual/` stay out unless you pass `--include-manual`: licensed data stays private.
-- The offline machine still needs the code's own dependencies (`uv sync`, and `npm --prefix frontend ci && npm --prefix frontend run build` for the dashboard). Install those while it can reach a package index, or copy a built `.venv` and `frontend/dist` from a machine of the same operating system.
+- The sandbox still needs Python 3.11 with the project's packages (`uv sync` needs a package index, so install them while one is reachable, or copy a `.venv` built on the same operating system). Two things on the page reach for the internet and are blank or in system fonts there: the two live leaderboard embeds on Product & Reliability, and the web fonts.
 
 ## Everyday commands
 | What | Command |

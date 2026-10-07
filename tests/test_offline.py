@@ -79,7 +79,7 @@ def rows(db, sql, *args):
 
 def test_pack_keeps_every_observation_as_a_row_and_every_file_byte_for_byte(world, tmp_path):
     db = tmp_path / "out.sqlite"
-    counts = offline.pack(world, db)
+    counts = offline.pack(world, db, with_rows=True)
     assert (counts["observations"], counts["files"], counts["charts"]) == (3, 5 - 1, 1)  # the vendor file is left out
     assert rows(db, "SELECT source, metric, value FROM observations ORDER BY source, as_of") == [
         ("pypi_downloads", "pypi_downloads", 1234.0),
@@ -97,7 +97,7 @@ def test_pack_keeps_every_observation_as_a_row_and_every_file_byte_for_byte(worl
 
 def test_a_retired_source_in_an_old_shape_is_kept_as_a_file_and_not_as_rows(world, tmp_path):
     db = tmp_path / "out.sqlite"
-    counts = offline.pack(world, db)
+    counts = offline.pack(world, db, with_rows=True)
     assert counts["unparsed"] == 1
     assert rows(db, "SELECT rows FROM files WHERE source = 'retired_source'") == [(None,)]
     assert rows(db, "SELECT COUNT(*) FROM observations WHERE source = 'retired_source'") == [(0,)]
@@ -350,8 +350,9 @@ def snapshot(root, source, stamp="20261008T000000Z", value=7):
     return raw(root, source, stamp, [{**ROW, "source": source, "as_of": "2026-10-08", "value": value}])
 
 
-def count(db, table="observations"):
-    return rows(db, f"SELECT COUNT(*) FROM {table}")[0][0]
+def count(db):
+    """Observations the file holds, whether or not it also lists them as rows."""
+    return rows(db, "SELECT COALESCE(SUM(rows), 0) FROM files")[0][0]
 
 
 def test_a_refresh_replaces_the_file_with_the_new_data_and_keeps_the_old_file_as_previous(world, live, monkeypatch):
@@ -608,3 +609,47 @@ def test_retrying_only_the_failed_sources_collects_exactly_those_and_the_report_
     )
     stored = {p for (p,) in rows(live, "SELECT path FROM files WHERE kind = 'raw'")}
     assert "data/raw/hn_stories/20261009T000000Z.jsonl.gz" in stored  # the retry's data reached the file
+
+
+def test_the_default_file_leaves_the_row_table_empty_so_it_is_small_enough_to_commit(world, tmp_path):
+    slim, full = tmp_path / "slim.sqlite", tmp_path / "full.sqlite"
+    offline.pack(world, slim)
+    counts = offline.pack(world, full, with_rows=True)
+    assert rows(slim, "SELECT COUNT(*) FROM observations") == [(0,)] and rows(
+        full, "SELECT COUNT(*) FROM observations"
+    ) == [(3,)]
+    assert (
+        counts["observations"] == offline.pack(world, tmp_path / "again.sqlite")["observations"] == 3
+    )  # still counted and validated
+    assert rows(slim, "SELECT value FROM meta WHERE key = 'includes_rows'") == [("false",)]
+    assert dict(rows(slim, "SELECT path, sha256 FROM files")) == dict(
+        rows(full, "SELECT path, sha256 FROM files")
+    )  # same raw data
+    assert offline.check(slim, world) == [] and offline.check(full, world) == []
+
+
+def test_a_file_without_rows_still_restores_exactly_and_serves_the_dashboard(world, tmp_path, monkeypatch):
+    from fastapi.testclient import TestClient
+
+    from app.server import create_app
+
+    db = tmp_path / "slim.sqlite"
+    offline.pack(world, db)
+    offline.restore(db, tmp_path / "server")
+    assert offline.check(db, tmp_path / "server") == []
+    monkeypatch.setenv("DASHBOARD_PASSWORD", "pw")
+    monkeypatch.setenv("SESSION_SECRET", "s")
+    client = TestClient(create_app(frontend_dir=tmp_path, db=db))
+    client.post("/api/login", json={"password": "pw"})
+    assert [m["id"] for m in client.get("/api/marts").json()] == ["x.y"]
+
+
+def test_a_refresh_writes_the_small_file_unless_rows_are_asked_for(world, live, monkeypatch):
+    fake_run(monkeypatch, lambda **kw: ({"pypi_downloads": snapshot(kw["root"], "pypi_downloads")}, [], []))
+    assert offline.refresh(world, live)["state"] == "ok" and rows(live, "SELECT COUNT(*) FROM observations") == [(0,)]
+    fake_run(
+        monkeypatch,
+        lambda **kw: ({"pypi_downloads": snapshot(kw["root"], "pypi_downloads", "20261009T000000Z")}, [], []),
+    )
+    assert offline.refresh(world, live, with_rows=True)["state"] == "ok"
+    assert rows(live, "SELECT COUNT(*) FROM observations") == [(5,)]

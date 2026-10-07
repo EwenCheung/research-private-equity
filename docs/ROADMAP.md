@@ -58,6 +58,7 @@ Nothing runs on a schedule (R19); Hot Pick and analysis run on demand.
 | 4.3 | Wikipedia removed from every page; Consumer & Attention becomes Customers (spec R28) | `p4/prune-wikipedia` | ✓ merged (#39) |
 | 4.4 | Cleanup: unused code and constants, one `month_label`, four unused dependencies | `p4/cleanup-dead-code`, `p4/core-cleanup`, `p4/deps-unused` | ✓ merged (#40, #41, #42) |
 | 4.5 | The SQLite dataset is committed (3.6 MB, rows table optional) so a clone shows the same data offline; README quick start | `p4/dataset-in-git` | ✓ merged (#44) |
+| 4.6 | Python 3.12 replaces 3.11 as the minimum | `p4/python-312` | ✓ merged (#46) |
 
 ## Phase 5: Team release ☐
 | # | Implementation | Branch | Status |

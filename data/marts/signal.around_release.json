@@ -1,0 +1,214 @@
+{
+  "title": "Average weekly growth in SDK downloads around a model release",
+  "subtitle": "Weeks before and after each Anthropic release, against what a randomly chosen week would show (shaded: the middle 95% of random weeks).",
+  "kind": "combo",
+  "layers": [
+    {
+      "mark": "band",
+      "name": "Random weeks",
+      "y_low": "low",
+      "y_high": "high"
+    },
+    {
+      "mark": "bar",
+      "name": "After a release",
+      "y": "growth"
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "week",
+      "type": "ordinal",
+      "label": "Weeks from the release"
+    },
+    "y": {
+      "field": "growth",
+      "type": "quantitative",
+      "label": "Average weekly growth",
+      "format": "pct"
+    }
+  },
+  "columns": [
+    {
+      "field": "week",
+      "label": "Weeks from release",
+      "format": "text"
+    },
+    {
+      "field": "growth",
+      "label": "Average growth",
+      "format": "pct"
+    },
+    {
+      "field": "low",
+      "label": "Random weeks, low",
+      "format": "pct"
+    },
+    {
+      "field": "high",
+      "label": "Random weeks, high",
+      "format": "pct"
+    }
+  ],
+  "rows": [
+    {
+      "week": "-4",
+      "growth": 0.06177934208744353,
+      "low": -0.004964902510864746,
+      "high": 0.09518211054419672
+    },
+    {
+      "week": "-3",
+      "growth": 0.043480092222045415,
+      "low": -0.006989359710506358,
+      "high": 0.09154284696928242
+    },
+    {
+      "week": "-2",
+      "growth": 0.051421648655134274,
+      "low": -0.00539267750922309,
+      "high": 0.0921144776325643
+    },
+    {
+      "week": "-1",
+      "growth": 0.054618417485240815,
+      "low": -0.0060872409569273965,
+      "high": 0.09268233857821306
+    },
+    {
+      "week": "0",
+      "growth": 0.045117687595920615,
+      "low": -0.006735143858314488,
+      "high": 0.09420805025698199
+    },
+    {
+      "week": "+1",
+      "growth": 0.06142607977899462,
+      "low": -0.004504966573593452,
+      "high": 0.0936235164054753
+    },
+    {
+      "week": "+2",
+      "growth": 0.04486247250257672,
+      "low": -0.003029245968989007,
+      "high": 0.09626711211943036
+    },
+    {
+      "week": "+3",
+      "growth": 0.0354690996593307,
+      "low": -0.004615553525672766,
+      "high": 0.09675703998582215
+    },
+    {
+      "week": "+4",
+      "growth": 0.004551129796873968,
+      "low": -0.002708962833421525,
+      "high": 0.09648832866607486
+    },
+    {
+      "week": "+5",
+      "growth": 0.03688159128149706,
+      "low": -0.0050048414875311946,
+      "high": 0.09497100940042578
+    },
+    {
+      "week": "+6",
+      "growth": 0.04401051160548681,
+      "low": -0.0027828818718858813,
+      "high": 0.09629144120971725
+    },
+    {
+      "week": "+7",
+      "growth": 0.07986596004997973,
+      "low": -0.011708891006737682,
+      "high": 0.09174142967786668
+    },
+    {
+      "week": "+8",
+      "growth": 0.020909757879535397,
+      "low": -0.009533326351383938,
+      "high": 0.09410644190151327
+    },
+    {
+      "week": "+9",
+      "growth": 0.05916572596820932,
+      "low": -0.017208704333750338,
+      "high": 0.09176866863115897
+    },
+    {
+      "week": "+10",
+      "growth": 0.0032460014029622123,
+      "low": -0.016508215809972554,
+      "high": 0.08977930777163569
+    },
+    {
+      "week": "+11",
+      "growth": 0.013040391173276721,
+      "low": -0.010811503315154024,
+      "high": 0.0942185203250084
+    },
+    {
+      "week": "+12",
+      "growth": 0.05329170219030679,
+      "low": -0.00967683055587887,
+      "high": 0.09472675200775296
+    }
+  ],
+  "takeaway": [
+    "Across 11 releases, no week fell outside what a random week shows.",
+    "In the weeks +4 to +8 growth added up to +19% after a release against +22% for random weeks (p 0.50)."
+  ],
+  "assumptions": [
+    "11 releases had a full window. With so few, only a large and quick effect would show.",
+    "Growth is the weekly log change in PyPI plus npm downloads.",
+    "The shaded band is the middle 95% of the same average taken over randomly chosen weeks from the same stretch of history as the releases (3,000 draws, fixed seed).",
+    "Weeks run Monday to Sunday and only complete weeks are used.",
+    "Correlation is not cause. A lead shows what moved first, not why."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "signal.around_release",
+  "page": "signal",
+  "as_of": "2026-10-04",
+  "sources": [
+    {
+      "source": "pypi_downloads",
+      "label": "PyPI downloads (ClickHouse public PyPI dataset)",
+      "url": "https://sql-clickhouse.clickhouse.com/",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "npm_downloads",
+      "label": "npm registry download counts",
+      "url": "https://api.npmjs.org/downloads/range/2025-09-29:2026-10-04/@anthropic-ai/sdk",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "model_releases",
+      "label": "OpenRouter's public list of models",
+      "url": "https://openrouter.ai/anthropic/claude-sonnet-5.5",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-09-28",
+      "retrieved_at": "2026-10-07T01:56:18Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-07T02:06:42Z"
+}

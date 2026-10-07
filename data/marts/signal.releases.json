@@ -1,0 +1,704 @@
+{
+  "title": "Claude model releases over weekly growth in SDK downloads",
+  "subtitle": "Weekly growth in Anthropic's SDK downloads (PyPI plus npm, 4-week average); each line is a model Anthropic released.",
+  "kind": "combo",
+  "layers": [
+    {
+      "mark": "line",
+      "name": "Anthropic",
+      "y": "growth"
+    },
+    {
+      "mark": "rule",
+      "name": "Anthropic release",
+      "label": "release",
+      "series": "company"
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "week",
+      "type": "temporal",
+      "label": "Week ending"
+    },
+    "y": {
+      "field": "growth",
+      "type": "quantitative",
+      "label": "Average weekly growth",
+      "format": "pct"
+    }
+  },
+  "columns": [
+    {
+      "field": "week",
+      "label": "Week ending",
+      "format": "date"
+    },
+    {
+      "field": "growth",
+      "label": "Growth, 4-week average",
+      "format": "pct"
+    },
+    {
+      "field": "downloads",
+      "label": "SDK downloads that week",
+      "format": "int"
+    },
+    {
+      "field": "release",
+      "label": "Model released",
+      "format": "text"
+    },
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    }
+  ],
+  "rows": [
+    {
+      "week": "2025-03-02",
+      "growth": 0.03468631581379452,
+      "downloads": 3348308,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-03-09",
+      "growth": 0.05263878166869008,
+      "downloads": 3841754,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-03-16",
+      "growth": 0.03155095919380173,
+      "downloads": 3591008,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-03-23",
+      "growth": 0.04110265312533942,
+      "downloads": 3684025,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-03-30",
+      "growth": 0.02438414296044601,
+      "downloads": 3687031,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-04-06",
+      "growth": -0.020960844399023223,
+      "downloads": 3529635,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-04-13",
+      "growth": 0.005670864816359189,
+      "downloads": 3673160,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-04-20",
+      "growth": -0.0027453185913239777,
+      "downloads": 3643736,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-04-27",
+      "growth": 0.006151656590759586,
+      "downloads": 3778597,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-05-04",
+      "growth": 0.013102926163755977,
+      "downloads": 3718297,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-05-11",
+      "growth": 0.008200752780762516,
+      "downloads": 3795141,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-05-18",
+      "growth": 0.02547001374656414,
+      "downloads": 4029385,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-05-25",
+      "growth": 0.024248025843858694,
+      "downloads": 4158638,
+      "release": "Sonnet 4",
+      "company": "Anthropic"
+    },
+    {
+      "week": "2025-06-01",
+      "growth": 0.028076182711787655,
+      "downloads": 4153797,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-06-08",
+      "growth": 0.05211665173724803,
+      "downloads": 4650327,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-06-15",
+      "growth": 0.04307143806744886,
+      "downloads": 4769743,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-06-22",
+      "growth": 0.049187205086704884,
+      "downloads": 5039217,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-06-29",
+      "growth": 0.07469083554561948,
+      "downloads": 5540889,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-07-06",
+      "growth": 0.02767576884290964,
+      "downloads": 5186901,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-07-13",
+      "growth": 0.03612961895762426,
+      "downloads": 5497324,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-07-20",
+      "growth": 0.04100168863095735,
+      "downloads": 5917916,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-07-27",
+      "growth": 0.04641793141307177,
+      "downloads": 6643549,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-08-03",
+      "growth": 0.09599833198639068,
+      "downloads": 7484237,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-08-10",
+      "growth": 0.09875124484388664,
+      "downloads": 8012146,
+      "release": "Opus 4.1",
+      "company": "Anthropic"
+    },
+    {
+      "week": "2025-08-17",
+      "growth": 0.11402947938986914,
+      "downloads": 9114976,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-08-24",
+      "growth": 0.07646313765067095,
+      "downloads": 8920656,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-08-31",
+      "growth": 0.05958490231895519,
+      "downloads": 9433885,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-09-07",
+      "growth": 0.02503647619759396,
+      "downloads": 8845169,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-09-14",
+      "growth": -0.02063235169455467,
+      "downloads": 8385685,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-09-21",
+      "growth": -0.02391131464738397,
+      "downloads": 8097555,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-09-28",
+      "growth": -0.027229952805763832,
+      "downloads": 8447561,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-10-05",
+      "growth": 0.012141458734915827,
+      "downloads": 9282629,
+      "release": "Sonnet 4.5",
+      "company": "Anthropic"
+    },
+    {
+      "week": "2025-10-12",
+      "growth": 0.009033326954537825,
+      "downloads": 8692818,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-10-19",
+      "growth": 0.0292159852131641,
+      "downloads": 9086152,
+      "release": "Haiku 4.5",
+      "company": "Anthropic"
+    },
+    {
+      "week": "2025-10-26",
+      "growth": 0.03220864661070274,
+      "downloads": 9589618,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-11-02",
+      "growth": 0.030502676290794607,
+      "downloads": 10468091,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-11-09",
+      "growth": 0.03346553381975113,
+      "downloads": 9916184,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-11-16",
+      "growth": 0.029308095562636482,
+      "downloads": 10199093,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-11-23",
+      "growth": 0.03345397671810925,
+      "downloads": 10938704,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-11-30",
+      "growth": -0.010078339293979473,
+      "downloads": 10052424,
+      "release": "Opus 4.5",
+      "company": "Anthropic"
+    },
+    {
+      "week": "2025-12-07",
+      "growth": 0.06173436799081189,
+      "downloads": 12601089,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-12-14",
+      "growth": 0.031829557939501964,
+      "downloads": 11560947,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-12-21",
+      "growth": 0.016598139237712046,
+      "downloads": 11683235,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2025-12-28",
+      "growth": -0.03994692617898827,
+      "downloads": 8539880,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-01-04",
+      "growth": -0.10498159732806465,
+      "downloads": 8086041,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-01-11",
+      "growth": 0.009256882188006403,
+      "downloads": 11995001,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-01-18",
+      "growth": 0.026205265932724497,
+      "downloads": 12956869,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-01-25",
+      "growth": 0.12416455586637509,
+      "downloads": 13638648,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-02-01",
+      "growth": 0.18977898516624142,
+      "downloads": 16203212,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-02-08",
+      "growth": 0.10454433786762081,
+      "downloads": 17853892,
+      "release": "Opus 4.6",
+      "company": "Anthropic"
+    },
+    {
+      "week": "2026-02-15",
+      "growth": 0.09981232573471688,
+      "downloads": 18957209,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-02-22",
+      "growth": 0.08233030760349623,
+      "downloads": 18715895,
+      "release": "Sonnet 4.6",
+      "company": "Anthropic"
+    },
+    {
+      "week": "2026-03-01",
+      "growth": 0.08450790409249108,
+      "downloads": 22414652,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-03-08",
+      "growth": 0.07466964007028187,
+      "downloads": 23814026,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-03-15",
+      "growth": 0.09348957631766627,
+      "downloads": 27103975,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-03-22",
+      "growth": 0.11505622730387274,
+      "downloads": 28933280,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-03-29",
+      "growth": 0.08023704305175273,
+      "downloads": 30521668,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-04-05",
+      "growth": 0.09093049865076108,
+      "downloads": 33730374,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-04-12",
+      "growth": 0.07870018800745665,
+      "downloads": 36697460,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-04-19",
+      "growth": 0.08216710267292879,
+      "downloads": 39680303,
+      "release": "Opus 4.7",
+      "company": "Anthropic"
+    },
+    {
+      "week": "2026-04-26",
+      "growth": 0.09423730286236635,
+      "downloads": 43757684,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-05-03",
+      "growth": 0.08382671846157148,
+      "downloads": 46543664,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-05-10",
+      "growth": 0.059535018834575563,
+      "downloads": 46248459,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-05-17",
+      "growth": 0.047736425995198326,
+      "downloads": 47817091,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-05-24",
+      "growth": 0.03935191144676944,
+      "downloads": 51062821,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-05-31",
+      "growth": 0.04063861271863111,
+      "downloads": 54583366,
+      "release": "Opus 4.8",
+      "company": "Anthropic"
+    },
+    {
+      "week": "2026-06-07",
+      "growth": 0.039908905408038646,
+      "downloads": 54085202,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-06-14",
+      "growth": 0.06364921935008513,
+      "downloads": 61203584,
+      "release": "Fable 5",
+      "company": "Anthropic"
+    },
+    {
+      "week": "2026-06-21",
+      "growth": 0.044708830231450246,
+      "downloads": 60825525,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-06-28",
+      "growth": 0.027954335377189964,
+      "downloads": 60947459,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-07-05",
+      "growth": 0.027706606984319728,
+      "downloads": 60333018,
+      "release": "Sonnet 5",
+      "company": "Anthropic"
+    },
+    {
+      "week": "2026-07-12",
+      "growth": -0.0008591445467994839,
+      "downloads": 60993524,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-07-19",
+      "growth": 0.03148686837079494,
+      "downloads": 68855824,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-07-26",
+      "growth": 0.03394476837785253,
+      "downloads": 69653824,
+      "release": "Opus 5",
+      "company": "Anthropic"
+    },
+    {
+      "week": "2026-08-02",
+      "growth": 0.05884313154283635,
+      "downloads": 75837070,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-08-09",
+      "growth": 0.06744794366230936,
+      "downloads": 79190037,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-08-16",
+      "growth": 0.033702605634943684,
+      "downloads": 78618205,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-08-23",
+      "growth": 0.04894909995132333,
+      "downloads": 84326218,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-08-30",
+      "growth": -0.017115574678795705,
+      "downloads": 70776871,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-09-06",
+      "growth": -0.04257472069892085,
+      "downloads": 66541120,
+      "release": "Fable 5.1",
+      "company": "Anthropic"
+    },
+    {
+      "week": "2026-09-13",
+      "growth": -0.05992074310679055,
+      "downloads": 61401786,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-09-20",
+      "growth": -0.0513081692362366,
+      "downloads": 68306694,
+      "release": null,
+      "company": null
+    },
+    {
+      "week": "2026-09-27",
+      "growth": 0.038626746342670486,
+      "downloads": 82362471,
+      "release": "Opus 5.5",
+      "company": "Anthropic"
+    },
+    {
+      "week": "2026-10-04",
+      "growth": 0.07399649674566047,
+      "downloads": 88532263,
+      "release": "Sonnet 5.5",
+      "company": "Anthropic"
+    }
+  ],
+  "takeaway": [
+    "15 Anthropic models were listed in 15 weeks since May 2025; each is drawn over the growth line so you can judge it."
+  ],
+  "assumptions": [
+    "A release is the date OpenRouter listed the model, which can run a few days after Anthropic's announcement, and its list starts in May 2025.",
+    "The line is the average of the last four weekly growth rates, so a one-week blip is spread over a month. The chart starts 12 weeks before the first release: earlier weeks are launch-era growth that would flatten the rest.",
+    "Download spikes are removed as on the Developer Adoption page (a day above 10 times the median around it). A week left with 5 or 6 clean days is scaled to 7; with fewer it is dropped.",
+    "Weeks run Monday to Sunday and only complete weeks are used.",
+    "Correlation is not cause. A lead shows what moved first, not why."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "signal.releases",
+  "page": "signal",
+  "as_of": "2026-10-04",
+  "sources": [
+    {
+      "source": "pypi_downloads",
+      "label": "PyPI downloads (ClickHouse public PyPI dataset)",
+      "url": "https://sql-clickhouse.clickhouse.com/",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "npm_downloads",
+      "label": "npm registry download counts",
+      "url": "https://api.npmjs.org/downloads/range/2025-09-29:2026-10-04/@anthropic-ai/sdk",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "model_releases",
+      "label": "OpenRouter's public list of models",
+      "url": "https://openrouter.ai/anthropic/claude-sonnet-5.5",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-09-28",
+      "retrieved_at": "2026-10-07T01:56:18Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-07T02:06:42Z"
+}

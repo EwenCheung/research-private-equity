@@ -1,0 +1,305 @@
+{
+  "title": "Every lead we tested, strongest first",
+  "subtitle": "Each bar is the best lagged correlation of a pair, as a multiple of what chance gives (1 = the 95% line; shaded is within chance). Hover a bar, or open the table, to see the pair.",
+  "kind": "combo",
+  "layers": [
+    {
+      "mark": "band",
+      "name": "Within chance",
+      "y_low": "low",
+      "y_high": "high"
+    },
+    {
+      "mark": "bar",
+      "name": "Strength",
+      "y": "strength",
+      "series": "verdict"
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "rank",
+      "type": "ordinal",
+      "label": "Rank (hover for the pair; the table names them all)"
+    },
+    "y": {
+      "field": "strength",
+      "type": "quantitative",
+      "label": "Multiple of the chance line",
+      "format": "float"
+    }
+  },
+  "columns": [
+    {
+      "field": "rank",
+      "label": "Rank",
+      "format": "text"
+    },
+    {
+      "field": "pair",
+      "label": "Pair (leader → follower, best lead)",
+      "format": "text"
+    },
+    {
+      "field": "strength",
+      "label": "Multiple of chance line",
+      "format": "float"
+    },
+    {
+      "field": "r",
+      "label": "Correlation",
+      "format": "float"
+    },
+    {
+      "field": "q",
+      "label": "Corrected p",
+      "format": "float"
+    },
+    {
+      "field": "verdict",
+      "label": "Verdict",
+      "format": "text"
+    },
+    {
+      "field": "low",
+      "label": "Within chance, from",
+      "format": "float"
+    },
+    {
+      "field": "high",
+      "label": "Within chance, to",
+      "format": "float"
+    }
+  ],
+  "rows": [
+    {
+      "rank": "1",
+      "pair": "relative to OpenAI: Wikipedia: product article → PyPI downloads (8 weeks)",
+      "strength": 1.1565203727659876,
+      "r": 0.270937248819517,
+      "q": 0.52187430601821,
+      "verdict": "Not supported",
+      "low": 0.0,
+      "high": 1.0
+    },
+    {
+      "rank": "2",
+      "pair": "PyPI downloads → Wikipedia: company article (3 weeks)",
+      "strength": 1.0810374033903745,
+      "r": -0.22573918267921342,
+      "q": 0.52187430601821,
+      "verdict": "Not supported",
+      "low": 0.0,
+      "high": 1.0
+    },
+    {
+      "rank": "3",
+      "pair": "relative to OpenAI: Coding-agent CLI downloads → npm downloads (8 weeks)",
+      "strength": 1.0295527013587775,
+      "r": -0.3503630614444929,
+      "q": 0.52187430601821,
+      "verdict": "Not supported",
+      "low": 0.0,
+      "high": 1.0
+    },
+    {
+      "rank": "4",
+      "pair": "relative to OpenAI: Wikipedia: company article → npm downloads (7 weeks)",
+      "strength": 1.0063171631416912,
+      "r": 0.2033701968190987,
+      "q": 0.52187430601821,
+      "verdict": "Not supported",
+      "low": 0.0,
+      "high": 1.0
+    },
+    {
+      "rank": "5",
+      "pair": "Commits written with Claude Code → Coding-agent CLI downloads (4 weeks)",
+      "strength": 0.9847001330078269,
+      "r": 0.2987010229125742,
+      "q": 0.52187430601821,
+      "verdict": "Not supported",
+      "low": 0.0,
+      "high": 1.0
+    },
+    {
+      "rank": "6",
+      "pair": "relative to OpenAI: PyPI downloads → Wikipedia: product article (6 weeks)",
+      "strength": 0.9696181504420225,
+      "r": -0.2277182252429906,
+      "q": 0.52187430601821,
+      "verdict": "Not supported",
+      "low": 0.0,
+      "high": 1.0
+    },
+    {
+      "rank": "7",
+      "pair": "Commits written with Claude Code → Wikipedia: product article (1 weeks)",
+      "strength": 0.9244124764978396,
+      "r": 0.25493328431927587,
+      "q": 0.661463786047397,
+      "verdict": "Not supported",
+      "low": 0.0,
+      "high": 1.0
+    },
+    {
+      "rank": "8",
+      "pair": "relative to OpenAI: npm downloads → Coding-agent CLI downloads (8 weeks)",
+      "strength": 0.8668894482862336,
+      "r": 0.289834141240555,
+      "q": 0.8105707306240285,
+      "verdict": "Not supported",
+      "low": 0.0,
+      "high": 1.0
+    },
+    {
+      "rank": "9",
+      "pair": "npm downloads → Wikipedia: company article (5 weeks)",
+      "strength": 0.8439588529839942,
+      "r": -0.16465620076958398,
+      "q": 0.8105707306240285,
+      "verdict": "Not supported",
+      "low": 0.0,
+      "high": 1.0
+    },
+    {
+      "rank": "10",
+      "pair": "npm downloads → PyPI downloads (8 weeks)",
+      "strength": 0.837748747411289,
+      "r": 0.19847734424000538,
+      "q": 0.8105707306240285,
+      "verdict": "Not supported",
+      "low": 0.0,
+      "high": 1.0
+    },
+    {
+      "rank": "11",
+      "pair": "Wikipedia: company article → npm downloads (7 weeks)",
+      "strength": 0.8230013680824527,
+      "r": 0.16747899835954197,
+      "q": 0.8105707306240285,
+      "verdict": "Not supported",
+      "low": 0.0,
+      "high": 1.0
+    },
+    {
+      "rank": "12",
+      "pair": "relative to OpenAI: npm downloads → PyPI downloads (2 weeks)",
+      "strength": 0.8104747609370531,
+      "r": 0.15585157398273278,
+      "q": 0.8105707306240285,
+      "verdict": "Not supported",
+      "low": 0.0,
+      "high": 1.0
+    },
+    {
+      "rank": "13",
+      "pair": "relative to OpenAI: Coding-agent CLI downloads → Wikipedia: product article (6 weeks)",
+      "strength": 0.8056960260407029,
+      "r": -0.24404460401607547,
+      "q": 0.8276533592989289,
+      "verdict": "Not supported",
+      "low": 0.0,
+      "high": 1.0
+    },
+    {
+      "rank": "14",
+      "pair": "PyPI downloads → Commits written with Claude Code (6 weeks)",
+      "strength": 0.797640306281049,
+      "r": -0.2591544834284312,
+      "q": 0.8392955421023666,
+      "verdict": "Not supported",
+      "low": 0.0,
+      "high": 1.0
+    },
+    {
+      "rank": "15",
+      "pair": "relative to OpenAI: Wikipedia: company article → Wikipedia: product article (4 weeks)",
+      "strength": 0.7768535009569868,
+      "r": 0.19297858797029868,
+      "q": 0.8392955421023666,
+      "verdict": "Not supported",
+      "low": 0.0,
+      "high": 1.0
+    },
+    {
+      "rank": "16",
+      "pair": "relative to OpenAI: PyPI downloads → Coding-agent CLI downloads (6 weeks)",
+      "strength": 0.7523374497320143,
+      "r": -0.2658962523272516,
+      "q": 0.8392955421023666,
+      "verdict": "Not supported",
+      "low": 0.0,
+      "high": 1.0
+    }
+  ],
+  "takeaway": [
+    "50 pairs were tested: 0 Findings, 0 Hypotheses and 50 Not supported.",
+    "The strongest is relative to OpenAI: Wikipedia: product article → PyPI downloads, 1.2 times the chance line."
+  ],
+  "assumptions": [
+    "The 16 strongest of 50 pairs are drawn; the weakest of all is 0.4 times the chance line.",
+    "Pairs are every ordered pair of Anthropic's own series, and of its growth relative to OpenAI's, tested for a lead of 1 to 8 weeks.",
+    "Pairs from the same source (the two Wikipedia articles, the two download counts) share noise and can look related for that reason alone.",
+    "Weeks run Monday to Sunday and only complete weeks are used.",
+    "Correlation is not cause. A lead shows what moved first, not why."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "signal.tested",
+  "page": "signal",
+  "as_of": "2026-10-04",
+  "sources": [
+    {
+      "source": "pypi_downloads",
+      "label": "PyPI downloads (ClickHouse public PyPI dataset)",
+      "url": "https://sql-clickhouse.clickhouse.com/",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "npm_downloads",
+      "label": "npm registry download counts",
+      "url": "https://api.npmjs.org/downloads/range/2025-09-29:2026-10-04/@anthropic-ai/sdk",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "wikipedia_pageviews",
+      "label": "Wikimedia pageviews (English Wikipedia)",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/Claude_%28language_model%29/daily/20260927/20261004",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T07:07:58Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "github_coauthored_commits",
+      "label": "GitHub commit search: public commits co-authored by Claude",
+      "url": "https://github.com/search?type=commits&q=%22Co-Authored-By%3A+Claude%22+committer-date%3A2026-09-28..2026-10-04",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-09-28",
+      "retrieved_at": "2026-10-05T06:52:42Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-07T02:06:42Z"
+}

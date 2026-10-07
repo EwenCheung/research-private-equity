@@ -1,0 +1,617 @@
+{
+  "title": "Anthropic's funding-round valuations over SDK downloads",
+  "subtitle": "Post-money valuation at each announced round and weekly SDK downloads, both rebased to 100 at the first round.",
+  "kind": "combo",
+  "layers": [
+    {
+      "mark": "line",
+      "name": "SDK downloads",
+      "y": "signal"
+    },
+    {
+      "mark": "rule",
+      "name": "Funding round",
+      "label": "round"
+    },
+    {
+      "mark": "point",
+      "name": "Valuation",
+      "y": "valuation"
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "date",
+      "type": "temporal",
+      "label": "Week ending"
+    },
+    "y": {
+      "field": "signal",
+      "type": "quantitative",
+      "label": "Rebased to 100",
+      "format": "int"
+    }
+  },
+  "columns": [
+    {
+      "field": "date",
+      "label": "Week ending",
+      "format": "date"
+    },
+    {
+      "field": "signal",
+      "label": "SDK downloads (rebased)",
+      "format": "float"
+    },
+    {
+      "field": "round",
+      "label": "Funding round",
+      "format": "text"
+    },
+    {
+      "field": "valuation",
+      "label": "Valuation (rebased)",
+      "format": "float"
+    }
+  ],
+  "rows": [
+    {
+      "date": "2025-03-09",
+      "signal": 100.0,
+      "round": "Series E $61.5B",
+      "valuation": 100.0
+    },
+    {
+      "date": "2025-03-16",
+      "signal": 103.10869278042001,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-03-23",
+      "signal": 107.17043677167275,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-03-30",
+      "signal": 109.68000147585279,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-04-06",
+      "signal": 107.36754313702146,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-04-13",
+      "signal": 107.97619905816586,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-04-20",
+      "signal": 107.67770190159041,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-04-27",
+      "signal": 108.35610520370733,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-05-04",
+      "signal": 109.7538830228103,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-05-11",
+      "signal": 110.65762800670743,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-05-18",
+      "signal": 113.51486273420551,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-05-25",
+      "signal": 116.33054835266452,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-06-01",
+      "signal": 119.55712413485354,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-06-08",
+      "signal": 125.89311136072516,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-06-15",
+      "signal": 131.3783494616434,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-06-22",
+      "signal": 137.9024708754304,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-06-29",
+      "signal": 148.17929625974298,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-07-06",
+      "signal": 152.1547191615852,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-07-13",
+      "signal": 157.54529375212684,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-07-20",
+      "signal": 164.0554864346382,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-07-27",
+      "signal": 172.22498368375082,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-08-03",
+      "signal": 189.2457154889196,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-08-10",
+      "signal": 207.8777792356846,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-08-17",
+      "signal": 231.56447583776315,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-08-24",
+      "signal": 248.43533301262676,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-08-31",
+      "signal": 262.88007932856993,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-09-07",
+      "signal": 269.05186311228164,
+      "round": "Series F $183B",
+      "valuation": 297.5609756097561
+    },
+    {
+      "date": "2025-09-14",
+      "signal": 263.64861930339896,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-09-21",
+      "signal": 257.550346621664,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-09-28",
+      "signal": 250.2427711181237,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-10-05",
+      "signal": 253.4838683435575,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-10-12",
+      "signal": 255.7593859089101,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-10-19",
+      "signal": 263.0838018412745,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-10-26",
+      "signal": 271.54518750850633,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-11-02",
+      "signal": 280.3281564635129,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-11-09",
+      "signal": 289.391952349514,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-11-16",
+      "signal": 297.637620495565,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-11-23",
+      "signal": 307.6328632411224,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-11-30",
+      "signal": 304.55322816499114,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-12-07",
+      "signal": 324.44541978491816,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-12-14",
+      "signal": 334.5352593607557,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-12-21",
+      "signal": 340.05141479976595,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2025-12-28",
+      "signal": 328.8451281409937,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-01-04",
+      "signal": 295.39359075357476,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-01-11",
+      "signal": 298.609453266921,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-01-18",
+      "signal": 308.04567971875224,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-01-25",
+      "signal": 345.82193998924674,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-02-01",
+      "signal": 405.96124508336163,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-02-08",
+      "signal": 449.36918035565833,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-02-15",
+      "signal": 493.8250970695505,
+      "round": "Series G $380B",
+      "valuation": 617.8861788617886
+    },
+    {
+      "date": "2026-02-22",
+      "signal": 531.4419104114377,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-03-01",
+      "signal": 577.4618458339869,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-03-08",
+      "signal": 621.6198803299717,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-03-15",
+      "signal": 681.9784518081826,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-03-22",
+      "signal": 757.6780315976232,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-03-29",
+      "signal": 817.7420993161512,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-04-05",
+      "signal": 891.2113261922901,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-04-12",
+      "signal": 962.2884935121376,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-04-19",
+      "signal": 1041.9121080756931,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-04-26",
+      "signal": 1139.9764219178662,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-05-03",
+      "signal": 1234.9088012615282,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-05-10",
+      "signal": 1305.671194072347,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-05-17",
+      "signal": 1365.9558395502029,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-05-24",
+      "signal": 1420.0788662546183,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-05-31",
+      "signal": 1479.644211304484,
+      "round": "Series H $965B",
+      "valuation": 1569.1056910569107
+    },
+    {
+      "date": "2026-06-07",
+      "signal": 1537.7058534974562,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-06-14",
+      "signal": 1636.8850363269462,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-06-21",
+      "signal": 1709.2159302306886,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-06-28",
+      "signal": 1756.366856406116,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-07-05",
+      "signal": 1802.6562979610485,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-07-12",
+      "signal": 1801.099984507991,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-07-19",
+      "signal": 1860.59566367478,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-07-26",
+      "signal": 1925.1002479684612,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-08-02",
+      "signal": 2039.9682128570935,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-08-09",
+      "signal": 2174.7843510111406,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-08-16",
+      "signal": 2247.1128518403075,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-08-23",
+      "signal": 2355.8191460932017,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-08-30",
+      "signal": 2318.3286396719454,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-09-06",
+      "signal": 2224.614083384646,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-09-13",
+      "signal": 2097.0593632895398,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-09-20",
+      "signal": 1978.372318098734,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-09-27",
+      "signal": 2064.208865474461,
+      "round": null,
+      "valuation": null
+    },
+    {
+      "date": "2026-10-04",
+      "signal": 2227.139036373326,
+      "round": null,
+      "valuation": null
+    }
+  ],
+  "takeaway": [
+    "From Series E to Series H the announced valuation rose 15.7x while four-week SDK downloads rose 22.3x."
+  ],
+  "assumptions": [
+    "Only 4 rounds state a valuation, so this is a picture of what moved in the same period, not a measure of what drives valuation.",
+    "Valuations are the post-money figures Anthropic quoted in its own announcements (a cited ledger). Series A to C stated none and Series D was never announced.",
+    "SDK downloads are the four-week average ending that week, compared with the same average at the first round.",
+    "Weeks run Monday to Sunday and only complete weeks are used.",
+    "Correlation is not cause. A lead shows what moved first, not why."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "signal.valuation",
+  "page": "signal",
+  "as_of": "2026-10-04",
+  "sources": [
+    {
+      "source": "pypi_downloads",
+      "label": "PyPI downloads (ClickHouse public PyPI dataset)",
+      "url": "https://sql-clickhouse.clickhouse.com/",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "npm_downloads",
+      "label": "npm registry download counts",
+      "url": "https://api.npmjs.org/downloads/range/2025-09-29:2026-10-04/@anthropic-ai/sdk",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "signal_funding_rounds",
+      "label": "Anthropic post-money valuations, from Anthropic's newsroom (cited ledger)",
+      "url": "https://www.anthropic.com/news/series-h",
+      "method": "ledger",
+      "tier": "company-stated",
+      "cadence": "quarterly",
+      "as_of": "2026-05-28",
+      "retrieved_at": "2026-10-05T07:48:16Z",
+      "freshness": "fresh",
+      "manual": {
+        "entered_by": "EwenCheung via Claude",
+        "entered_at": "2026-10-05T07:48:16Z",
+        "evidence": "Anthropic has raised $65 billion in Series H funding led by Altimeter Capital, Dragoneer, Greenoaks, and Sequoia Capital, valuing the company at $965 billion post-money. | The round was co-led by Capital Group, Coatue, D1 Capital Partners, GIC, ICONIQ, and XN. | It also includes $15 billion of previously committed investments from hyperscalers, including $5 billion from Amazon ."
+      }
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-07T02:06:42Z"
+}

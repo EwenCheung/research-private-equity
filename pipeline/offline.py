@@ -22,6 +22,8 @@ import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
+import yaml
+
 from contracts import ContractError, validate
 from pipeline.core import ROOT, registry
 from pipeline.core.store import read_observations
@@ -291,10 +293,14 @@ def fetch(
 
     load_env(root / ".env")
     registry.discover()
+    config = root / "config" / "offline.yaml"
+    left_out = set((yaml.safe_load(config.read_text()) or {}).get("skip") or []) if config.exists() else set()
+    left_out |= set(skip or [])
+    # Naming sources with --only calls exactly those, even one that is left out by default.
     ids = [
         s.id
         for s in registry.SOURCES.values()
-        if s.meta["method"] in registry.AUTOMATED and (not only or s.id in only) and s.id not in (skip or [])
+        if s.meta["method"] in registry.AUTOMATED and (s.id in only if only else s.id not in left_out)
     ]
     if not ids:
         raise SystemExit(
@@ -302,6 +308,8 @@ def fetch(
             + ", ".join(s.id for s in registry.SOURCES.values() if s.meta["method"] in registry.AUTOMATED)
         )
     print(f"calling {len(ids)} sources once: {', '.join(ids)}")
+    if not only and left_out:
+        print(f"left out: {', '.join(sorted(left_out))}")
     written, errors, skipped = collector.collect(source_ids=ids, root=root)
     for sid, path in written.items():
         print(f"  {sid}: " + (f"wrote {path.relative_to(root)}" if path else "no rows"))

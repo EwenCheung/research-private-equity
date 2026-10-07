@@ -20,6 +20,7 @@ export interface Layer {
   y_high?: string;
   label?: string;
   series?: string;
+  panel?: number;
 }
 
 export interface Column {
@@ -48,6 +49,7 @@ export interface ChartSpec {
   subtitle: string;
   kind: Kind;
   layers?: Layer[];
+  panels?: { label: string; format?: Format }[];
   encoding: { x?: Field; y?: Field; color?: Field; facet?: Field };
   columns: Column[];
   rows: Record<string, string | number | null>[];

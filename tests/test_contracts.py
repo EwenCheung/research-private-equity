@@ -214,3 +214,17 @@ def test_a_bad_layer_is_rejected(layer, message):
     m["layers"].append(layer)
     with pytest.raises(ContractError, match=message):
         validate("chart_spec", m)
+
+
+def test_extra_panels_stack_under_the_main_one_and_a_layer_must_name_a_panel_that_exists():
+    m = combo()
+    m["panels"] = [{"label": "Intelligence Index", "format": "float"}]
+    m["layers"].append({"mark": "point", "name": "Score", "y": "downloads", "panel": 1})
+    validate("chart_spec", m)
+    m["layers"][-1]["panel"] = 2
+    with pytest.raises(ContractError, match="has no panel 2"):
+        validate("chart_spec", m)
+    m = mart()
+    m["panels"] = [{"label": "x"}]
+    with pytest.raises(ContractError):
+        validate("chart_spec", m)  # panels belong to combined charts only

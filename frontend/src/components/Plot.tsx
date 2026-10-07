@@ -330,61 +330,84 @@ function build(spec: ChartSpec, series: string[], colors: string[], c: Ink, widt
   }
 }
 
-/** Several marks over one shared x axis, so two aspects can be read against each other. Bars put x on a band scale
- *  (categories, in order of appearance); without bars x is a date or a number. Marks are drawn back to front. */
+/** Several marks over one shared x axis, so two aspects can be read against each other. Categories (an ordinal axis) are a band
+ *  scale in the order of the rows; dates and numbers are a continuous scale. Marks are drawn back to front. Extra panels stack
+ *  under the main one on the same x axis, each with its own y axis, and a rule runs through every panel, so one event can be read
+ *  against several measures. A bar on a continuous axis is drawn as a thick stick, since the dates are not evenly spaced. */
 function comboPlot(spec: ChartSpec, series: string[], colors: string[], c: Ink, width: number, hidden: Set<string>) {
   const { x, y } = spec.encoding;
   const xf = x!.field;
-  const yFmt = y!.format ?? "float";
   const layers = spec.layers ?? [];
   const temporal = x!.type === "temporal";
-  const banded = layers.some((l) => l.mark === "bar") || x!.type === "nominal" || x!.type === "ordinal";
+  const banded = x!.type === "nominal" || x!.type === "ordinal";
   const xv = (r: Row) => (banded ? String(r[xf]) : temporal ? toDate(r[xf]) : r[xf]);
   const keys = [...new Set(spec.rows.map((r) => String(r[xf])))];
   // Names on the axis (models, pairs) are the point of the chart: up to 30 of them are all shown, tilted, rather than every few.
-  const tilted = banded && !temporal && keys.length > 8 && keys.length <= 30;
+  const tilted = banded && keys.length > 8 && keys.length <= 30;
   const every = tilted ? 1 : Math.ceil(keys.length / 10);
   const paint = (l: Layer) => (r: Row) => colors[series.indexOf(l.series ? String(r[l.series]) : l.name)] ?? c.ink3;
   const num = (f?: string) => (r: Row) => Number(r[f!]);
   const tipText = (r: Row) => spec.columns.map((col) => `${col.label}: ${fmt(r[col.field], col.format)}`).join("\n");
   const front = ["band", "bar", "rule", "line", "point"];
-  const marks: NonNullable<Plot.PlotOptions["marks"]> = [];
-
   const shown = (l: Layer) => visibleRows(spec, l, hidden);
+  const all = [{ label: y!.label, format: y!.format }, ...(spec.panels ?? [])];
+  const inPanel = (i: number) => layers.filter((l) => (l.panel ?? 0) === i);
+  // A panel is drawn while any of its own layers (not a band or a rule) has rows left after the unticking.
+  const live = all.map((_, i) => i).filter((i) => inPanel(i).some((l) => !neutral(l) && shown(l).length));
+  const rules = layers.filter((l) => l.mark === "rule");
+  const domain = banded ? keys : (() => {
+    const v = spec.rows.map((r) => (temporal ? toDate(r[xf]) : Number(r[xf]))) as (Date | number)[];
+    return [v.reduce((a, b) => (a < b ? a : b)), v.reduce((a, b) => (a > b ? a : b))];
+  })();
 
-  for (const l of [...layers].sort((a, b) => front.indexOf(a.mark) - front.indexOf(b.mark))) {
-    const rows = shown(l);
-    if (l.mark === "band") {
-      const edges = { x: xv, y1: num(l.y_low), y2: num(l.y_high), fill: c.ink3, fillOpacity: 0.15 };
-      marks.push(Plot.areaY(rows, edges));
-    } else if (l.mark === "bar") {
-      marks.push(Plot.barY(rows, { x: xv, y: num(l.y), fill: paint(l), ry: 3 }));
-    } else if (l.mark === "rule") {
-      const stroke = l.series ? paint(l) : c.ink3;
-      marks.push(Plot.ruleX(rows, { x: xv, stroke, strokeWidth: 1.5, strokeOpacity: 0.8, title: (r: Row) => String(r[l.label!]) }));
-      if (rows.length <= 30)
-        marks.push(Plot.text(rows, { x: xv, text: (r: Row) => String(r[l.label!]), frameAnchor: "top", rotate: -90, textAnchor: "end", dx: -5, fontSize: 10, fill: c.ink3 }));
-    } else if (l.mark === "line") {
-      marks.push(Plot.line(rows, { x: xv, y: num(l.y), stroke: paint(l), strokeWidth: 2, strokeLinejoin: "round", strokeLinecap: "round", z: l.series ? (r: Row) => String(r[l.series!]) : undefined }));
-    } else {
-      marks.push(Plot.dot(rows, { x: xv, y: num(l.y), fill: paint(l), r: 5, stroke: c.surface, strokeWidth: 2 }));
+  const panel = (i: number, last: boolean, first: boolean) => {
+    const marks: NonNullable<Plot.PlotOptions["marks"]> = [];
+    const own = [...inPanel(i), ...(i === 0 ? [] : rules)];
+    for (const l of own.sort((a, b) => front.indexOf(a.mark) - front.indexOf(b.mark))) {
+      const rows = shown(l);
+      if (l.mark === "band") {
+        marks.push(Plot.areaY(rows, { x: xv, y1: num(l.y_low), y2: num(l.y_high), fill: c.ink3, fillOpacity: 0.15 }));
+      } else if (l.mark === "bar") {
+        marks.push(
+          banded
+            ? Plot.barY(rows, { x: xv, y: num(l.y), fill: paint(l), ry: 3 })
+            : Plot.ruleX(rows, { x: xv, y1: 0, y2: num(l.y), stroke: paint(l), strokeWidth: 8, strokeLinecap: "round" }),
+        );
+      } else if (l.mark === "rule") {
+        const stroke = l.series ? paint(l) : c.ink3;
+        marks.push(Plot.ruleX(rows, { x: xv, stroke, strokeWidth: 1.5, strokeOpacity: 0.8, title: (r: Row) => String(r[l.label!]) }));
+        if (first && rows.length <= 30)
+          marks.push(Plot.text(rows, { x: xv, text: (r: Row) => String(r[l.label!]), frameAnchor: "top", rotate: -90, textAnchor: "end", dx: -5, fontSize: 10, fill: c.ink3 }));
+      } else if (l.mark === "line") {
+        marks.push(Plot.line(rows, { x: xv, y: num(l.y), stroke: paint(l), strokeWidth: 2, strokeLinejoin: "round", strokeLinecap: "round", z: l.series ? (r: Row) => String(r[l.series!]) : undefined }));
+      } else {
+        marks.push(Plot.dot(rows, { x: xv, y: num(l.y), fill: paint(l), r: 5, stroke: c.surface, strokeWidth: 2 }));
+      }
     }
-  }
-  const lead = layers.find((l) => ["line", "bar", "point"].includes(l.mark) && shown(l).length);
-  marks.push(Plot.ruleY([0], { stroke: c.axis }));
-  if (lead) marks.push(Plot.tip(shown(lead), Plot.pointerX({ x: xv, y: num(lead.y), title: tipText }) as Plot.TipOptions));
+    const lead = inPanel(i).find((l) => ["line", "bar", "point"].includes(l.mark) && shown(l).length);
+    marks.push(Plot.ruleY([0], { stroke: c.axis }));
+    if (lead) marks.push(Plot.tip(shown(lead), Plot.pointerX({ x: xv, y: num(lead.y), title: tipText }) as Plot.TipOptions));
+    const fmtY = all[i].format ?? "float";
+    return Plot.plot({
+      width,
+      height: first ? 300 : 150,
+      marginLeft: 58,
+      marginRight: 16,
+      marginTop: first ? 20 : 10,
+      marginBottom: last ? (tilted ? 76 : 30) : 6,
+      style: { background: "transparent", color: c.ink, fontFamily: "var(--sans)", fontSize: "12px", ["--plot-background" as string]: c.surface },
+      x: banded
+        ? { type: "band", label: null, axis: last ? "bottom" : null, domain, tickRotate: tilted ? -45 : 0, padding: keys.length <= 6 ? 0.75 : 0.3, tickFormat: (d: string) => (keys.indexOf(d) % every === 0 ? (temporal ? shortDate(d) : d) : "") }
+        : { label: temporal ? null : x!.label, axis: last ? "bottom" : null, domain, ticks: 6 },
+      y: { label: all[i].label, grid: true, nice: true, tickFormat: (d: number) => axis(d, fmtY) },
+      marks,
+    });
+  };
 
-  return Plot.plot({
-    width,
-    height: 320,
-    marginLeft: 58,
-    marginRight: 16,
-    style: { background: "transparent", color: c.ink, fontFamily: "var(--sans)", fontSize: "12px", ["--plot-background" as string]: c.surface },
-    marginBottom: tilted ? 76 : 30,
-    x: banded
-      ? { type: "band", label: null, domain: keys, tickRotate: tilted ? -45 : 0, padding: keys.length <= 6 ? 0.75 : 0.3, tickFormat: (d: string) => (keys.indexOf(d) % every === 0 ? (temporal ? shortDate(d) : d) : "") }
-      : { label: temporal ? null : x!.label, ticks: 6 },
-    y: { label: y!.label, grid: true, nice: true, tickFormat: (d: number) => axis(d, yFmt) },
-    marks,
-  });
+  const drawn = live.length ? live : [0];
+  const plots = drawn.map((i, n) => panel(i, n === drawn.length - 1, n === 0));
+  if (plots.length === 1) return plots[0];
+  const stack = document.createElement("div");
+  stack.append(...plots);
+  return stack;
 }

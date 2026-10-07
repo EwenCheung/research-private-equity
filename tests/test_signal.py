@@ -382,7 +382,7 @@ def test_the_release_chart_marks_each_release_week_once_and_names_it():
     assert all(r["release"].startswith("GPT-") and "Mini" not in r["release"] for r in theirs)
     assert any("(" in r["release"] for r in mine + theirs)  # a scored model's caption carries its Intelligence Index
     assert spec["rows"][0]["week"] >= "2025-03-01"  # starts 12 weeks before the first Anthropic release, not at launch
-    growth = [r for r in spec["rows"] if not r["release"] and not r["line"]]
+    growth = [r for r in spec["rows"] if not r["release"] and not r["model"]]
     assert all(r["anthropic"] is not None or r["openai"] is not None for r in growth)
 
 
@@ -574,6 +574,7 @@ def test_the_release_chart_carries_each_models_score_and_change_in_panels_under_
     spec = build_mart(registry.MARTS["signal.releases"], world(), NOW)
     panels = {layer["name"]: layer.get("panel", 0) for layer in spec["layers"]}
     assert [p["label"] for p in spec["panels"]] == ["Intelligence Index", "Change on previous model"]
+    assert all(p["x"]["field"] == "model" for p in spec["panels"])  # one column per model, not a share of the time axis
     assert panels == {
         "Anthropic": 0,
         "OpenAI": 0,
@@ -582,7 +583,7 @@ def test_the_release_chart_carries_each_models_score_and_change_in_panels_under_
         "Score change on previous model": 2,
         "Price per task change": 2,
     }
-    models = [r for r in spec["rows"] if r["line"]]
+    models = [r for r in spec["rows"] if r["model"]]
     assert models and all(r["index"] is not None and r["company"] in ("Anthropic", "OpenAI") for r in models)
     assert any(r["d_index"] is not None for r in models) and any(r["d_price"] is not None for r in models)
     assert "scored higher" in spec["takeaway"][0] and "cost less per task" in spec["takeaway"][0]

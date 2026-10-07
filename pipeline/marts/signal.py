@@ -519,9 +519,9 @@ def empty(title: str, subtitle: str) -> dict:
 def releases(ctx):
     title = "Model releases over weekly growth in SDK downloads, Anthropic and OpenAI"
     sub = (
-        "Top: weekly growth in each company's SDK downloads (PyPI plus npm, 4-week average). Each vertical line is a new model line the company listed, "
-        "in the company's colour, running down through the panels. Middle: that model line's Artificial Analysis Intelligence Index (higher is smarter). "
-        "Bottom: how much its score, and its price per task, changed on the previous model of its kind (Opus after Opus, GPT after GPT)."
+        "Top: weekly growth in each company's SDK downloads (PyPI plus npm, 4-week average); each faint vertical line is a new model line, in its company's colour (hover for its name). "
+        "Below, one column per new model in release order. Middle: its Artificial Analysis Intelligence Index (higher is smarter). "
+        "Bottom: how much its score (bar) and its price per task (dot) changed on the previous model of its kind (Opus after Opus, GPT after GPT)."
     )
     a, o = sdk(ctx, ME), sdk(ctx, PEER)
     rel = {ME: release_weeks(ctx, ME), PEER: release_weeks(ctx, PEER)}
@@ -530,7 +530,7 @@ def releases(ctx):
     sa, so = smoothed(a), smoothed(o)
     start = min(rel[ME]) - pd.Timedelta(weeks=12)
     weeks = sorted(w for w in set(sa.index) | set(so.index) if w >= start)
-    blank = {"release": None, "company": None, "line": None, "index": None, "d_index": None, "d_price": None}
+    blank = {"release": None, "company": None, "model": None, "index": None, "d_index": None, "d_price": None}
     rows = [
         {
             "week": w.date().isoformat(),
@@ -564,7 +564,7 @@ def releases(ctx):
             "openai": None,
             **blank,
             "company": m["company"],
-            "line": m["release"],
+            "model": f"{m['release']} ({m['week'].strftime('%b %Y')})",
             "index": m["index"],
             "d_index": m["d_index"],
             "d_price": m["d_price"],
@@ -581,6 +581,7 @@ def releases(ctx):
         if together >= 0.3
         else "mostly each company's own"
     )
+    models_axis = {"field": "model", "type": "ordinal", "label": "New model line, in release order"}
     compared = comparable(scored)
     higher = sum(m["d_index"] > SAME_SCORE for m in compared)
     lower = sum(m["d_index"] < -SAME_SCORE for m in compared)
@@ -590,8 +591,8 @@ def releases(ctx):
         "subtitle": sub,
         "kind": "combo",
         "panels": [
-            {"label": "Intelligence Index", "format": "float"},
-            {"label": "Change on previous model", "format": "pct"},
+            {"label": "Intelligence Index", "format": "float", "x": models_axis},
+            {"label": "Change on previous model", "format": "pct", "x": models_axis},
         ],
         "layers": [
             {"mark": "line", "name": "Anthropic", "y": "anthropic"},
@@ -611,7 +612,7 @@ def releases(ctx):
             col("openai", "OpenAI SDK growth", "pct"),
             col("release", "Release caption", "text"),
             col("company", "Company", "text"),
-            col("line", "Model line", "text"),
+            col("model", "New model (listed)", "text"),
             col("index", "Intelligence Index", "float"),
             col("d_index", "Score change on previous model", "pct"),
             col("d_price", "Price per task change", "pct"),

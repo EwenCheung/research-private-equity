@@ -2,7 +2,6 @@ import type { ComponentType } from "react";
 import { NavLink, Navigate, Route, Routes } from "react-router-dom";
 import { useAuth } from "./auth";
 import Login from "./Login";
-import Refresh from "./components/Refresh";
 import { SchemeContext, useTheme } from "./theme";
 
 interface PageModule {
@@ -42,7 +41,6 @@ export default function App() {
               </NavLink>
             ))}
           </nav>
-          <Refresh />
           <div className="side-foot">
             <button className="linkish" onClick={theme.cycle}>
               Theme: {theme.pref}

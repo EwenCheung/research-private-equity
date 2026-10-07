@@ -233,7 +233,7 @@ def until_idle(c):
 
 
 def test_the_refresh_button_exists_only_behind_the_session_and_only_when_serving_from_a_file(monkeypatch, tmp_path):
-    c = refresh_client(monkeypatch, tmp_path, lambda db: {"state": "ok", "swapped": True, "message": "done"})
+    c = refresh_client(monkeypatch, tmp_path, lambda db, progress: {"state": "ok", "swapped": True, "message": "done"})
     assert TestClient(c.app).get("/api/refresh").status_code == 401  # a fresh client has no session
     assert TestClient(c.app).post("/api/refresh").status_code == 401
     status = c.get("/api/refresh").json()
@@ -251,7 +251,15 @@ def test_the_refresh_button_exists_only_behind_the_session_and_only_when_serving
 def test_a_refresh_runs_in_the_background_one_at_a_time_and_reports_how_it_ended(monkeypatch, tmp_path):
     gate = threading.Event()
 
-    def work(db):
+    def work(db, progress):
+        progress(
+            {
+                "stage": "Collecting",
+                "finished": 1,
+                "total": 2,
+                "sources": [{"id": "a", "state": "done", "percent": 100}],
+            }
+        )
         gate.wait(5)
         return {
             "state": "partial",
@@ -262,11 +270,15 @@ def test_a_refresh_runs_in_the_background_one_at_a_time_and_reports_how_it_ended
 
     c = refresh_client(monkeypatch, tmp_path, work)
     assert c.post("/api/refresh").status_code == 202
-    assert c.get("/api/refresh").json()["running"] is True
+    while (status := c.get("/api/refresh").json())["progress"] is None:  # the work reports as it goes
+        time.sleep(0.02)
+    assert status["running"] is True and status["progress"]["finished"] == 1
     assert c.post("/api/refresh").status_code == 409  # a second press while one runs
     assert len(c.get("/api/marts").json()) == len(MART_IDS)  # the dashboard keeps serving meanwhile
     gate.set()
-    last = until_idle(c)["last"]
+    status = until_idle(c)
+    last = status["last"]
+    assert status["progress"] is None  # nothing in flight once it ends
     assert (
         last["state"] == "partial" and last["failed"] == {"x": ["boom"]} and last["finished_at"] >= last["started_at"]
     )
@@ -278,7 +290,7 @@ def test_a_refresh_runs_in_the_background_one_at_a_time_and_reports_how_it_ended
 def test_a_refresh_that_crashes_is_reported_not_lost_and_the_next_one_can_start(monkeypatch, tmp_path):
     calls = []
 
-    def work(db):
+    def work(db, progress):
         calls.append(db)
         if len(calls) == 1:
             raise RuntimeError("collector blew up")
@@ -295,10 +307,12 @@ def test_a_refresh_that_crashes_is_reported_not_lost_and_the_next_one_can_start(
 
 def test_the_last_refresh_report_survives_a_restart(monkeypatch, tmp_path):
     c = refresh_client(
-        monkeypatch, tmp_path, lambda db: {"state": "offline", "swapped": False, "message": "No internet"}
+        monkeypatch, tmp_path, lambda db, progress: {"state": "offline", "swapped": False, "message": "No internet"}
     )
     c.post("/api/refresh")
     until_idle(c)
-    again = TestClient(create_app(frontend_dir=tmp_path, db=tmp_path / "offline.sqlite", refresh=lambda db: {}))
+    again = TestClient(
+        create_app(frontend_dir=tmp_path, db=tmp_path / "offline.sqlite", refresh=lambda db, progress: {})
+    )
     again.post("/api/login", json={"password": PASSWORD})
     assert again.get("/api/refresh").json()["last"]["message"] == "No internet"

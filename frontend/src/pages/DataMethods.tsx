@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { api } from "../api";
 import { FreshnessBadge, HardcodedBadge, ManualBadge } from "../components/Badges";
-import { utc } from "../format";
+import Refresh from "../components/Refresh";
+import { sgt } from "../format";
 import type { Freshness } from "../types";
 
 export const meta = { title: "Data & Methods", path: "/data", order: 100 };
@@ -91,7 +92,7 @@ function SourceRow({ s }: { s: Source }) {
         <small>SLA {s.sla_days} d{s.backfillable ? "" : " · no backfill"}</small>
       </td>
       <td>
-        {s.retrieved_at ? utc(s.retrieved_at) : "never"}
+        {s.retrieved_at ? sgt(s.retrieved_at) : "never"}
         <br />
         {s.method === "ledger" ? <HardcodedBadge /> : <FreshnessBadge state={s.freshness} />}
       </td>
@@ -136,6 +137,8 @@ export default function DataMethods() {
           <strong>How to read it.</strong> Freshness is recomputed from the clock each time you load this page. &ldquo;Fresh&rdquo; means collected within its schedule; a stale source means the charts built from it may be out of date.
         </p>
       </header>
+
+      <Refresh />
 
       {error ? <p className="error">{error}</p> : null}
       {sources === null && !error ? <div className="skeleton" style={{ height: 160 }} /> : null}

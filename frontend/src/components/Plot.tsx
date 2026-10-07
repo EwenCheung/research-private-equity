@@ -381,6 +381,7 @@ function comboPlot(spec: ChartSpec, series: string[], colors: string[], c: Ink, 
     const longest = Math.max(1, ...keys.map((k) => k.length));
     const tilted = banded && keys.length <= 30 && (keys.length > 8 || longest * 6.5 > (width - 74) / keys.length);
     const every = tilted ? 1 : Math.ceil(keys.length / 10);
+    const below = withAxis ? (tilted ? Math.min(150, 24 + longest * 5) : 30) : 6; // room under the plot: the axis, or tilted names
     const marks: NonNullable<Plot.PlotOptions["marks"]> = [];
     for (const l of mine(i).sort((a, b) => front.indexOf(a.mark) - front.indexOf(b.mark))) {
       const rows = shown(l);
@@ -412,11 +413,11 @@ function comboPlot(spec: ChartSpec, series: string[], colors: string[], c: Ink, 
     const fmtY = all[i].format ?? "float";
     return Plot.plot({
       width,
-      height: first ? 280 : 170,
+      height: (first ? 260 : 150) + (first ? 20 : 28) + below,
       marginLeft: 58,
       marginRight: 16,
       marginTop: first ? 20 : 28,
-      marginBottom: withAxis ? (tilted ? Math.min(150, 24 + longest * 5) : 30) : 6,
+      marginBottom: below,
       style: { background: "transparent", color: c.ink, fontFamily: "var(--sans)", fontSize: "12px", ["--plot-background" as string]: c.surface },
       x: banded
         ? { type: "band", label: null, axis: withAxis ? "bottom" : null, domain, tickRotate: tilted ? -45 : 0, padding: keys.length <= 6 ? 0.75 : 0.3, tickFormat: (d: string) => (keys.indexOf(d) % every === 0 ? (temporal ? shortDate(d) : d) : "") }

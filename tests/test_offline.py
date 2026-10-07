@@ -532,13 +532,14 @@ def test_a_refresh_shows_each_source_as_it_goes_for_the_command_line_and_the_das
     lines, snapshots = [], []
     offline.refresh(world, live, log=lambda *a, **k: lines.append(" ".join(map(str, a))), progress=snapshots.append)
     total = len(snapshots[0]["sources"])
-    assert lines[1:7] == [
+    assert lines[1:8] == [
         f"data collected (0/{total}):",
         "  collect pypi_downloads 50%…",
         "  collect pypi_downloads 100%…",
         "  collect pypi_downloads DONE",
         f"data collected (1/{total}):",
         "  collect hn_stories FAILED",
+        f"data collected (2/{total}):",
     ]
     collecting = [s for s in snapshots if s["stage"] == "Collecting sources"]
     last = {x["id"]: x for x in collecting[-1]["sources"]}
@@ -555,3 +556,55 @@ def test_a_refresh_shows_each_source_as_it_goes_for_the_command_line_and_the_das
 def test_times_in_messages_are_singapore_time():
     assert offline.when("2026-10-07T07:08:39Z") == "2026-10-07 15:08 SGT"
     assert offline.when("2026-10-07T20:00:00Z") == "2026-10-08 04:00 SGT"  # across midnight
+
+
+def test_a_refresh_fetches_in_parallel_by_default_and_the_command_line_can_turn_it_off(world, live, monkeypatch):
+    seen = []
+    fake_run(monkeypatch, lambda **kw: seen.append(kw["workers"]) or ({"pypi_downloads": None}, [], []))
+    offline.refresh(world, live)
+    offline.refresh(world, live, workers=1)
+    assert seen == [offline.WORKERS, 1] and offline.WORKERS > 1
+
+
+def test_only_names_that_are_not_automated_sources_are_refused_even_next_to_good_ones(world, live):
+    with pytest.raises(SystemExit, match="no source matches not_a_source"):
+        offline.refresh(world, live, only=["pypi_downloads", "not_a_source"])
+
+
+def test_retrying_only_the_failed_sources_collects_exactly_those_and_the_report_shrinks(world, live, monkeypatch):
+    calls = []
+
+    def first(source_ids, root, **kw):
+        calls.append(sorted(source_ids))
+        return (
+            {
+                "pypi_downloads": snapshot(root, "pypi_downloads", "20261008T000000Z"),
+                "hn_stories": None,
+                "npm_downloads": None,
+            },
+            ["hn_stories/anthropic: HTTPError: 503", "npm_downloads/openai: ConnectError: down"],
+            [],
+        )
+
+    fake_run(monkeypatch, first)
+    report = offline.refresh(world, live)
+    assert report["state"] == "partial" and sorted(report["failed"]) == ["hn_stories", "npm_downloads"]
+
+    def second(source_ids, root, **kw):
+        calls.append(sorted(source_ids))
+        return (
+            {"hn_stories": snapshot(root, "hn_stories", "20261009T000000Z"), "npm_downloads": None},
+            ["npm_downloads/openai: ConnectError: still down"],
+            [],
+        )
+
+    fake_run(monkeypatch, second)
+    again = offline.refresh(world, live, only=sorted(report["failed"]))
+    assert calls[1] == ["hn_stories", "npm_downloads"]  # nothing else is called again
+    assert (
+        again["state"] == "partial"
+        and again["updated"] == ["hn_stories"]
+        and list(again["failed"]) == ["npm_downloads"]
+    )
+    stored = {p for (p,) in rows(live, "SELECT path FROM files WHERE kind = 'raw'")}
+    assert "data/raw/hn_stories/20261009T000000Z.jsonl.gz" in stored  # the retry's data reached the file

@@ -23,6 +23,7 @@ import sqlite3
 import subprocess
 import sys
 import tempfile
+import threading
 from datetime import UTC, datetime, timedelta, timezone
 from pathlib import Path
 
@@ -363,6 +364,7 @@ def build_web(root: Path) -> None:
         )
 
 
+WORKERS = 16  # sources on different services run side by side (see pipeline.core.collect.lane); this caps how many
 STATE_WORD = {"done": "DONE", "failed": "FAILED", "skipped": "SKIPPED", "empty": "NO ROWS"}
 PROBES = ("https://api.github.com", "https://pypi.org", "https://registry.npmjs.org")
 
@@ -381,19 +383,15 @@ def online() -> bool:
 def plan(root: Path, only: list[str] | None, skip: list[str] | None) -> tuple[list[str], set[str]]:
     """The automated sources to call, and those left out (config/offline.yaml plus --skip). Naming sources with --only calls exactly those."""
     registry.discover()
+    automated = [s.id for s in registry.SOURCES.values() if s.meta["method"] in registry.AUTOMATED]
+    if unknown := sorted(set(only or []) - set(automated)):
+        raise SystemExit(f"no source matches {', '.join(unknown)}; the automated sources are: {', '.join(automated)}")
     config = root / "config" / "offline.yaml"
     left_out = set((yaml.safe_load(config.read_text()) or {}).get("skip") or []) if config.exists() else set()
     left_out |= set(skip or [])
-    ids = [
-        s.id
-        for s in registry.SOURCES.values()
-        if s.meta["method"] in registry.AUTOMATED and (s.id in only if only else s.id not in left_out)
-    ]
+    ids = [sid for sid in automated if (sid in only if only else sid not in left_out)]
     if not ids:
-        raise SystemExit(
-            "no source matches; the automated sources are: "
-            + ", ".join(s.id for s in registry.SOURCES.values() if s.meta["method"] in registry.AUTOMATED)
-        )
+        raise SystemExit(f"no source matches; the automated sources are: {', '.join(automated)}")
     return ids, left_out
 
 
@@ -467,6 +465,7 @@ def refresh(
     skip: list[str] | None = None,
     include_manual: bool = False,
     rebuild_web: bool = True,
+    workers: int = WORKERS,
     log=print,
     progress=None,
 ) -> dict:
@@ -515,16 +514,19 @@ def refresh(
                 {"stage": stage, "finished": finished, "total": len(ids), "sources": [dict(s) for s in steps.values()]}
             )
 
+    lock = threading.Lock()  # sources report from several threads at once
+
     def on_progress(sid: str, done: int, total: int, state: str) -> None:
-        steps[sid] = {**steps[sid], "state": state, "percent": round(100 * done / total) if total else 100}
-        if state == "running" and done == 0:
-            finished = sum(s["state"] not in ("waiting", "running") for s in steps.values())
-            log(f"data collected ({finished}/{len(ids)}):")
-        elif state == "running":
-            log(f"  collect {sid} {steps[sid]['percent']}%…")
-        else:
-            log(f"  collect {sid} {STATE_WORD[state]}")
-        announce("Collecting sources")
+        with lock:
+            steps[sid] = {**steps[sid], "state": state, "percent": round(100 * done / total) if total else 100}
+            if state == "running" and done:
+                log(f"  collect {sid} {steps[sid]['percent']}%…")
+            elif state != "running":
+                log(f"  collect {sid} {STATE_WORD[state]}")
+                log(
+                    f"data collected ({sum(s['state'] not in ('waiting', 'running') for s in steps.values())}/{len(ids)}):"
+                )
+            announce("Collecting sources")
 
     kept = f"The dashboard keeps the data from {when(before)}." if before else ""
     log(f"calling {len(ids)} sources once: {', '.join(ids)}")
@@ -536,7 +538,8 @@ def refresh(
     if live and (n := restore_missing(live, root)):
         log(f"put back {n} raw snapshots that the file holds and this checkout lacked")
     announce("Collecting sources")
-    written, errors, skipped = collector.collect(source_ids=ids, root=root, on_progress=on_progress)
+    log(f"data collected (0/{len(ids)}):")
+    written, errors, skipped = collector.collect(source_ids=ids, root=root, on_progress=on_progress, workers=workers)
     for e in errors:
         report["failed"].setdefault(e.partition("/")[0].partition(":")[0], []).append(e)
     for sid in report["failed"]:
@@ -610,9 +613,10 @@ def fetch(
     only: list[str] | None = None,
     skip: list[str] | None = None,
     include_manual: bool = False,
+    workers: int = WORKERS,
 ) -> int:
     """The command line's fetch: `refresh`, printing how it ended. 0 when the file is current, 1 when anything failed."""
-    report = refresh(root, db, only, skip, include_manual)
+    report = refresh(root, db, only, skip, include_manual, workers=workers)
     print(report["message"], file=sys.stderr if report["state"] in ("failed", "offline", "partial") else sys.stdout)
     return 0 if report["state"] in ("ok", "unchanged") else 1
 
@@ -646,6 +650,12 @@ def main(argv=None) -> int:
             p.add_argument(
                 "--skip", nargs="+", metavar="ID", help="leave these sources out (the Internet Archive ones are slow)"
             )
+            p.add_argument(
+                "--workers",
+                type=int,
+                default=WORKERS,
+                help="sources on different services run side by side, at most this many at once; 1 runs them one by one",
+            )
     args = ap.parse_args(argv)
     sys.stdout.reconfigure(
         line_buffering=True
@@ -653,7 +663,7 @@ def main(argv=None) -> int:
     root = args.root.resolve()
     db = args.db or root / DEFAULT_DB
     if args.cmd == "fetch":
-        return fetch(root, db, args.only, args.skip, args.include_manual)
+        return fetch(root, db, args.only, args.skip, args.include_manual, args.workers)
     if args.cmd == "pack":
         c = pack(root, db, args.include_manual)
         print(

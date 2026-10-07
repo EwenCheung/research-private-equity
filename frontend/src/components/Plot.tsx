@@ -2,7 +2,7 @@ import * as Plot from "@observablehq/plot";
 import { useContext, useEffect, useRef, useState } from "react";
 import { axis, fmt, shortDate, toDate } from "../format";
 import { SchemeContext } from "../theme";
-import type { ChartSpec, Layer } from "../types";
+import type { ChartSpec, Field, Layer } from "../types";
 
 type Row = ChartSpec["rows"][number];
 const SLOTS = ["--s1", "--s2", "--s3", "--s4", "--s5", "--s6", "--s7", "--s8"];
@@ -332,41 +332,57 @@ function build(spec: ChartSpec, series: string[], colors: string[], c: Ink, widt
 
 /** Several marks over one shared x axis, so two aspects can be read against each other. Categories (an ordinal axis) are a band
  *  scale in the order of the rows; dates and numbers are a continuous scale. Marks are drawn back to front. Extra panels stack
- *  under the main one on the same x axis, each with its own y axis, and a rule runs through every panel, so one event can be read
- *  against several measures. A bar on a continuous axis is drawn as a thick stick, since the dates are not evenly spaced. */
+ *  under the main one, each with its own y axis: a panel shares the main x axis (and so lines up with it, with a rule running
+ *  through) unless it names its own, for example one column per model under a timeline. A bar on a continuous axis is drawn as a
+ *  thick stick, since the dates are not evenly spaced. */
 function comboPlot(spec: ChartSpec, series: string[], colors: string[], c: Ink, width: number, hidden: Set<string>) {
   const { x, y } = spec.encoding;
-  const xf = x!.field;
   const layers = spec.layers ?? [];
-  const temporal = x!.type === "temporal";
-  const banded = x!.type === "nominal" || x!.type === "ordinal";
-  const xv = (r: Row) => (banded ? String(r[xf]) : temporal ? toDate(r[xf]) : r[xf]);
-  const keys = [...new Set(spec.rows.map((r) => String(r[xf])))];
-  // Names on the axis (models, pairs) are the point of the chart: up to 30 of them are all shown, tilted when they would not
-  // fit side by side, rather than every few.
-  const longest = Math.max(...keys.map((k) => k.length));
-  const tilted = banded && keys.length <= 30 && (keys.length > 8 || longest * 6.5 > (width - 74) / keys.length);
-  const tiltRoom = Math.min(150, 24 + longest * 5);
-  const every = tilted ? 1 : Math.ceil(keys.length / 10);
+  const all = [{ label: y!.label, format: y!.format, x: undefined as Field | undefined }, ...(spec.panels ?? [])];
+  const chan = (i: number): Field => all[i].x ?? x!;
+  const isBand = (ch: Field) => ch.type === "nominal" || ch.type === "ordinal";
+  const xvOf = (ch: Field) => (r: Row) => (isBand(ch) ? String(r[ch.field]) : ch.type === "temporal" ? toDate(r[ch.field]) : r[ch.field]);
   const paint = (l: Layer) => (r: Row) => colors[series.indexOf(l.series ? String(r[l.series]) : l.name)] ?? c.ink3;
   const num = (f?: string) => (r: Row) => Number(r[f!]);
   const tipText = (r: Row) => spec.columns.map((col) => `${col.label}: ${fmt(r[col.field], col.format)}`).join("\n");
   const front = ["band", "bar", "rule", "line", "point"];
   const shown = (l: Layer) => visibleRows(spec, l, hidden);
-  const all = [{ label: y!.label, format: y!.format }, ...(spec.panels ?? [])];
   const inPanel = (i: number) => layers.filter((l) => (l.panel ?? 0) === i);
+  const rules = layers.filter((l) => l.mark === "rule");
+  const sharesMain = (i: number) => chan(i).field === x!.field;
+  const mine = (i: number) => [...inPanel(i), ...(i === 0 || !sharesMain(i) ? [] : rules)];
   // A panel is drawn while any of its own layers (not a band or a rule) has rows left after the unticking.
   const live = all.map((_, i) => i).filter((i) => inPanel(i).some((l) => !neutral(l) && shown(l).length));
-  const rules = layers.filter((l) => l.mark === "rule");
-  const domain = banded ? keys : (() => {
-    const v = spec.rows.map((r) => (temporal ? toDate(r[xf]) : Number(r[xf]))) as (Date | number)[];
-    return [v.reduce((a, b) => (a < b ? a : b)), v.reduce((a, b) => (a > b ? a : b))];
-  })();
+  const drawnPanels = live.length ? live : [0];
+  const manyRules = rules.some((l) => drawn(spec, l).length > 12);
 
-  const panel = (i: number, last: boolean, first: boolean) => {
+  /** The x domain of a panel: the categories of its x field in row order, or the extent of its dates or numbers. Every panel on
+   *  the same x field gets the same domain, so their columns and dates line up, whichever layers are ticked. */
+  const domainOf = (i: number) => {
+    const ch = chan(i);
+    const rows = spec.rows.filter((r) => r[ch.field] != null);
+    if (isBand(ch)) return [...new Set(rows.map((r) => String(r[ch.field])))];
+    const v = rows.map((r) => (ch.type === "temporal" ? toDate(r[ch.field]) : Number(r[ch.field]))) as (Date | number)[];
+    return [v.reduce((p, q) => (p < q ? p : q)), v.reduce((p, q) => (p > q ? p : q))];
+  };
+
+  const panel = (i: number, n: number) => {
+    const ch = chan(i);
+    const xv = xvOf(ch);
+    const banded = isBand(ch);
+    const temporal = ch.type === "temporal";
+    const first = n === 0;
+    // The x axis shows on the bottom panel, and on any panel whose x differs from the one below it.
+    const withAxis = n === drawnPanels.length - 1 || chan(drawnPanels[n + 1]).field !== ch.field;
+    const domain = domainOf(i);
+    const keys = banded ? (domain as string[]) : [];
+    // Names on the axis (models, pairs) are the point of the chart: up to 30 of them are all shown, tilted when they would not
+    // fit side by side, rather than every few.
+    const longest = Math.max(1, ...keys.map((k) => k.length));
+    const tilted = banded && keys.length <= 30 && (keys.length > 8 || longest * 6.5 > (width - 74) / keys.length);
+    const every = tilted ? 1 : Math.ceil(keys.length / 10);
     const marks: NonNullable<Plot.PlotOptions["marks"]> = [];
-    const own = [...inPanel(i), ...(i === 0 ? [] : rules)];
-    for (const l of own.sort((a, b) => front.indexOf(a.mark) - front.indexOf(b.mark))) {
+    for (const l of mine(i).sort((a, b) => front.indexOf(a.mark) - front.indexOf(b.mark))) {
       const rows = shown(l);
       if (l.mark === "band") {
         marks.push(Plot.areaY(rows, { x: xv, y1: num(l.y_low), y2: num(l.y_high), fill: c.ink3, fillOpacity: 0.15 }));
@@ -378,8 +394,11 @@ function comboPlot(spec: ChartSpec, series: string[], colors: string[], c: Ink, 
         );
       } else if (l.mark === "rule") {
         const stroke = l.series ? paint(l) : c.ink3;
-        marks.push(Plot.ruleX(rows, { x: xv, stroke, strokeWidth: 1.5, strokeOpacity: 0.8, title: (r: Row) => String(r[l.label!]) }));
-        if (first && rows.length <= 30)
+        marks.push(
+          Plot.ruleX(rows, { x: xv, stroke, strokeWidth: manyRules ? 1 : 1.5, strokeOpacity: manyRules ? 0.4 : 0.8, title: (r: Row) => String(r[l.label!]) }),
+        );
+        // A few events are captioned on the chart; many would collide, so they are named by hovering (or by the panels under them).
+        if (first && !manyRules)
           marks.push(Plot.text(rows, { x: xv, text: (r: Row) => String(r[l.label!]), frameAnchor: "top", rotate: -90, textAnchor: "end", dx: -5, fontSize: 10, fill: c.ink3 }));
       } else if (l.mark === "line") {
         marks.push(Plot.line(rows, { x: xv, y: num(l.y), stroke: paint(l), strokeWidth: 2, strokeLinejoin: "round", strokeLinecap: "round", z: l.series ? (r: Row) => String(r[l.series!]) : undefined }));
@@ -393,22 +412,21 @@ function comboPlot(spec: ChartSpec, series: string[], colors: string[], c: Ink, 
     const fmtY = all[i].format ?? "float";
     return Plot.plot({
       width,
-      height: first ? 300 : 150,
+      height: first ? 280 : 170,
       marginLeft: 58,
       marginRight: 16,
-      marginTop: first ? 20 : 10,
-      marginBottom: last ? (tilted ? tiltRoom : 30) : 6,
+      marginTop: first ? 20 : 28,
+      marginBottom: withAxis ? (tilted ? Math.min(150, 24 + longest * 5) : 30) : 6,
       style: { background: "transparent", color: c.ink, fontFamily: "var(--sans)", fontSize: "12px", ["--plot-background" as string]: c.surface },
       x: banded
-        ? { type: "band", label: null, axis: last ? "bottom" : null, domain, tickRotate: tilted ? -45 : 0, padding: keys.length <= 6 ? 0.75 : 0.3, tickFormat: (d: string) => (keys.indexOf(d) % every === 0 ? (temporal ? shortDate(d) : d) : "") }
-        : { label: temporal ? null : x!.label, axis: last ? "bottom" : null, domain, ticks: 6 },
+        ? { type: "band", label: null, axis: withAxis ? "bottom" : null, domain, tickRotate: tilted ? -45 : 0, padding: keys.length <= 6 ? 0.75 : 0.3, tickFormat: (d: string) => (keys.indexOf(d) % every === 0 ? (temporal ? shortDate(d) : d) : "") }
+        : { label: temporal ? null : ch.label, axis: withAxis ? "bottom" : null, domain, ticks: 6 },
       y: { label: all[i].label, grid: true, nice: true, tickFormat: (d: number) => axis(d, fmtY) },
       marks,
     });
   };
 
-  const drawn = live.length ? live : [0];
-  const plots = drawn.map((i, n) => panel(i, n === drawn.length - 1, n === 0));
+  const plots = drawnPanels.map((i, n) => panel(i, n));
   if (plots.length === 1) return plots[0];
   const stack = document.createElement("div");
   stack.append(...plots);

@@ -117,6 +117,7 @@ Each entry in `sources` holds:
 
 - A layer draws the rows whose value field (`y`, `y_low` or `label`) is not null, so one tidy table can feed several layers.
 - `panel` (a layer's number, 0 by default) puts a layer in the main panel or in `panels[panel - 1]`. `encoding.y` describes panel 0. The panels share the x axis, so a `rule` in panel 0 also runs through every other panel, and a measure on a different scale (a score under a growth line) is read at the same moment as the event. A panel whose layers are all unticked is left out.
+- A panel may name its own x axis (`panels[].x`, a channel like `encoding.x`), for example one column per model in release order under a timeline. It then does not line up with the main axis, and a `rule` is not drawn in it. Panels on the same x field share one domain, so their columns line up whichever layers are ticked.
 - `series` (any mark but `band`) splits a layer into one colour per value of that field. Without it, `name` is the legend entry. A series or layer named for a company takes that company's fixed colour. A `band`, and a `rule` without `series`, are neutral and not in the legend.
 - All layers share one y scale and unit, so two aspects with different units are rebased or expressed as the same unit by the mart. There is no second axis.
 - The table view and CSV list the columns as for any chart; the plot never hides a layer that fails a test, so the mart draws what it tested and says so in its subtitle and takeaway.

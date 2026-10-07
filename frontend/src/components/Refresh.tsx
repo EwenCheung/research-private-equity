@@ -99,8 +99,8 @@ export default function Refresh() {
           {progress && (
             <ul>
               {progress.sources.map((s) => (
-                <li key={s.id} className={s.state}>
-                  <span>collect {s.label}</span>
+                <li key={s.id} className={s.state} title={s.label}>
+                  <span>collect {s.id}</span>
                   <span>{word(s)}</span>
                 </li>
               ))}

@@ -13,11 +13,15 @@ from pipeline.core.store import write_raw
 
 
 def collect(
-    *, cadence=None, source_ids=(), company=None, root: Path = ROOT, now: datetime | None = None
+    *, cadence=None, source_ids=(), company=None, root: Path = ROOT, now: datetime | None = None, on_progress=None
 ) -> tuple[dict[str, Path | None], list[str], list[str]]:
     """Return ({source_id: file written, or None when it produced no rows}, errors, skipped).
 
     A source raising SourceUnavailable (e.g. no API key) is skipped for every company and is not an error.
+
+    on_progress(source_id, done, total, state), if given, is called as each source starts (0 of N companies), after each company,
+    and once more when the source ends. `state` is "running" until then, and at the end one of "done" (rows written), "empty"
+    (no rows), "failed" (a company errored) or "skipped" (the source can't run here).
     """
     now = (now or datetime.now(UTC)).replace(microsecond=0)
     registry.discover()
@@ -36,9 +40,11 @@ def collect(
     ]
     stamp = {"retrieved_at": now.strftime("%Y-%m-%dT%H:%M:%SZ")}
     written, errors, skipped = {}, [], []
+    notify = on_progress or (lambda *args: None)
     for s in sources:
-        rows = []
-        for co in scope:
+        rows, state = [], "running"
+        notify(s.id, 0, len(scope), state)
+        for n, co in enumerate(scope, 1):
             produced = []
             # A failure stops this company's collection only. Rows already yielded are complete, provenance-stamped
             # observations, so they are kept (a long backfill that hits a limit keeps its progress); the error is reported.
@@ -52,13 +58,17 @@ def collect(
                     )
             except SourceUnavailable as e:
                 skipped.append(f"{s.id}: {e}")
+                state = "skipped"
                 break
             except Exception as e:  # noqa: BLE001 - any collector failure must not stop the other sources
                 kept = f" (kept {len(produced)} rows collected before it)" if produced else ""
                 errors.append(f"{s.id}/{co.slug}: {type(e).__name__}: {e}{kept}")
+                state = "failed"
             finally:
                 rows += produced
+            notify(s.id, n, len(scope), state)
         written[s.id] = write_raw(root, s.id, rows, now) if rows else None
+        notify(s.id, len(scope), len(scope), state if state != "running" else "done" if rows else "empty")
     return written, errors, skipped
 
 

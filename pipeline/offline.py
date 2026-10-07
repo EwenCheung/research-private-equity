@@ -260,7 +260,7 @@ def restore(db: Path, root: Path = ROOT) -> dict:
             + "\n  ".join(conflicts)
         )
     written = kept = 0
-    for p, kind, digest, content in files:
+    for p, kind, _, content in files:
         t = target(root, p)
         if kind not in regenerated and t.exists():
             kept += 1

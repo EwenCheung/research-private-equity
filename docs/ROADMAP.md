@@ -38,16 +38,17 @@ The full design is in [the spec](superpowers/specs/2026-10-05-signal-monitor-des
 
 | core | Shared http, frame helpers, rate-limit patience, concrete provenance links from rows the chart read, hardcoded-ledger labels, and fixed company colours by name (Anthropic orange, OpenAI dark green, Google blue) | `p2/core`, `p2/core-ratelimit`, `p2/core-source-provenance`, `p2/core-provenance-used`, `p2/core-company-colours` | ☑ (#6, #7, #17, #24, #25) |
 
-## Phase 3: Cross-page synthesis ◐ (branch `phase/3`)
+## Phase 3: Cross-page synthesis ☑ (tag `phase-3`)
 Re-planned after the cut (spec R20, R21): about Anthropic, judged by its own direction against its own history, with peers kept as context; signals grouped into families; no hand-entered number in any verdict. Build order: Briefing, Hot Pick, then Signal after research.
 Nothing runs on a schedule (R19); Hot Pick and analysis run on demand.
 
 | # | Implementation | Branch | Status |
 |---|---|---|---|
 | 3.1 | Briefing: Anthropic's verdict per signal family, OpenAI comparison, tripwires | `p3/briefing` | ☑ (#27, #28) |
-| 3.2 | Signal: Anthropic against OpenAI, and which signals lead which, as combined charts (core combo chart kind #31); research note in `docs/research/signal-page.md` | `p3/signal` | ◐ PR open, stacked on #31, #32, #33 |
+| 3.2 | Signal: seven charts comparing Anthropic with OpenAI: market or own across four dimensions, releases with each model's score and change, the release effect, every new model, leads and lags, and valuation over usage; research note in `docs/research/signal-page.md` | `p3/signal` | ☑ (#34) |
 | 3.3 | Hot Pick: the hottest news, blogs, discussion, technology trends and insights about Anthropic, for the last week and month, with saved archives | `p3/hot-pick` | ☑ (#29) |
 | 3.4 | Product: Claude's incidents against OpenAI's, from its feed and the Internet Archive | `p3/product-incidents` | ☑ (#30) |
+| core | Combined charts for Signal: the `combo` chart kind, tick boxes for companies and dimensions, stacked panels with their own axes | `p3/core-combo-chart`, `p3/core-series-toggle`, `p3/core-panels` | ☑ (#31, #32, #33) |
 
 ## Phase 4: AI Analysis ☐
 | # | Implementation | Branch | Status |

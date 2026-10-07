@@ -1,0 +1,12 @@
+model_release:
+  label: Model release
+  unit: model (count 1 each)
+  definition: A model a company has on OpenRouter's public list, dated by the day OpenRouter listed it (variants such as batch or free are not counted).
+  aggregation: sum
+  higher_is: neutral
+round_post_money_usd:
+  label: Post-money valuation at a funding round
+  unit: US dollars
+  definition: The post-money valuation Anthropic stated in its own announcement of a funding round, on the announcement date, with the sentence quoted.
+  aggregation: last
+  higher_is: good

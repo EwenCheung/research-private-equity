@@ -1,0 +1,5 @@
+# openrouter: the organisation prefix of this company's model ids on OpenRouter's public models list (https://openrouter.ai/api/v1/models).
+anthropic:
+  openrouter: anthropic
+openai:
+  openrouter: openai

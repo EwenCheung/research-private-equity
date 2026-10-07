@@ -7,8 +7,8 @@
     uv run python -m pipeline.offline check     compare the SQLite file with data/
     uv run python -m pipeline.offline serve     show the dashboard from the SQLite file alone (no network, no data/ folder)
 
-The file holds the collectors' raw snapshots byte for byte (the source of truth, so a restore is exact), every observation as a row
-you can query with SQL, the cited ledgers, the charts, the registry and the built dashboard. `serve` runs the dashboard from the file
+The file holds the collectors' raw snapshots byte for byte (the source of truth, so a restore is exact), the cited ledgers, the charts,
+the registry and the built dashboard; it is small enough to commit. `--with-rows` also lists every observation as a row for SQL. `serve` runs the dashboard from the file
 alone. A fetch or refresh never overwrites a good file with a worse one: see `refresh`. After a `restore`, `python -m pipeline.build` and the API also run from the unpacked files: no collector is called. Vendor files in data/manual are left out unless you ask, because licensed data
 stays private.
 """
@@ -107,8 +107,17 @@ def obs_row(r: dict, source: str, file: str) -> tuple:
     )
 
 
-def pack(root: Path = ROOT, db: Path | None = None, include_manual: bool = False, web_from: Path | None = None) -> dict:
+def pack(
+    root: Path = ROOT,
+    db: Path | None = None,
+    include_manual: bool = False,
+    web_from: Path | None = None,
+    with_rows: bool = False,
+) -> dict:
     """Write the SQLite file from what is already under data/. Returns the counts.
+
+    The `observations` table (every row, for SQL) is derived from the raw snapshots and about ten times their size, and the dashboard
+    never reads it, so it stays empty unless `with_rows`: a file without it is small enough to commit.
 
     The built dashboard comes from frontend/dist; a machine that only serves the file has none, so `web_from` (the file it serves)
     supplies it."""
@@ -149,10 +158,11 @@ def pack(root: Path = ROOT, db: Path | None = None, include_manual: bool = False
         if rows is None and has_rows:
             counts["unparsed"] += 1
         for r in rows or []:
-            con.execute(
-                "INSERT INTO observations (source, file, source_url, method, as_of, retrieved_at, tier, entity, metric, value, dims, entered_by, evidence) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                obs_row(r, source or r["source"], rel),
-            )
+            if with_rows:
+                con.execute(
+                    "INSERT INTO observations (source, file, source_url, method, as_of, retrieved_at, tier, entity, metric, value, dims, entered_by, evidence) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    obs_row(r, source or r["source"], rel),
+                )
             counts["observations"] += 1
 
     # Raw snapshots, including those of retired sources: history is never dropped.
@@ -216,6 +226,7 @@ def pack(root: Path = ROOT, db: Path | None = None, include_manual: bool = False
         "packed_at": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "git_head": sha_head,
         "includes_manual": str(include_manual).lower(),
+        "includes_rows": str(with_rows).lower(),
         **{k: str(v) for k, v in counts.items() if k != "skipped"},
     }
     con.executemany("INSERT INTO meta VALUES (?,?)", meta.items())
@@ -282,6 +293,7 @@ def check(db: Path, root: Path = ROOT) -> list[str]:
     con = open_db(db)
     problems = []
     stored = {}
+    has_rows = (con.execute("SELECT value FROM meta WHERE key = 'includes_rows'").fetchone() or ("false",))[0] == "true"
     for p, kind, digest, rows in con.execute("SELECT path, kind, sha256, rows FROM files"):
         stored[p] = kind
         t = root / p
@@ -291,7 +303,7 @@ def check(db: Path, root: Path = ROOT) -> list[str]:
             problems.append(f"missing on disk: {p}")
         elif sha(t.read_bytes()) != digest:
             problems.append(f"differs from the file: {p}")
-        elif rows is not None:
+        elif rows is not None and has_rows:
             n = con.execute("SELECT COUNT(*) FROM observations WHERE file = ?", (p,)).fetchone()[0]
             if n != rows:
                 problems.append(f"{p}: {n} observation rows, expected {rows}")
@@ -466,6 +478,7 @@ def refresh(
     include_manual: bool = False,
     rebuild_web: bool = True,
     workers: int = WORKERS,
+    with_rows: bool = False,
     log=print,
     progress=None,
 ) -> dict:
@@ -566,7 +579,7 @@ def refresh(
     announce("Packing the new file")
     stage = db.with_name(db.name + ".new")
     try:
-        counts = pack(root, stage, include_manual, web_from=live)
+        counts = pack(root, stage, include_manual, web_from=live, with_rows=with_rows)
         announce("Checking the new file")
         problems, added = compare(stage, live)
         report["problems"] = [f"build: {e}" for e in build_errors] + problems
@@ -614,9 +627,10 @@ def fetch(
     skip: list[str] | None = None,
     include_manual: bool = False,
     workers: int = WORKERS,
+    with_rows: bool = False,
 ) -> int:
     """The command line's fetch: `refresh`, printing how it ended. 0 when the file is current, 1 when anything failed."""
-    report = refresh(root, db, only, skip, include_manual, workers=workers)
+    report = refresh(root, db, only, skip, include_manual, workers=workers, with_rows=with_rows)
     print(report["message"], file=sys.stderr if report["state"] in ("failed", "offline", "partial") else sys.stdout)
     return 0 if report["state"] in ("ok", "unchanged") else 1
 
@@ -642,6 +656,11 @@ def main(argv=None) -> int:
                 action="store_true",
                 help="also pack data/manual (vendor files: licensed data stays private)",
             )
+            p.add_argument(
+                "--with-rows",
+                action="store_true",
+                help="also fill the observations table (every row, for SQL); about ten times bigger, so not for a file you commit",
+            )
         if name == "serve":
             p.add_argument("--host", default="127.0.0.1")
             p.add_argument("--port", type=int, default=8000)
@@ -663,9 +682,9 @@ def main(argv=None) -> int:
     root = args.root.resolve()
     db = args.db or root / DEFAULT_DB
     if args.cmd == "fetch":
-        return fetch(root, db, args.only, args.skip, args.include_manual, args.workers)
+        return fetch(root, db, args.only, args.skip, args.include_manual, args.workers, args.with_rows)
     if args.cmd == "pack":
-        c = pack(root, db, args.include_manual)
+        c = pack(root, db, args.include_manual, with_rows=args.with_rows)
         print(
             f"packed {c['observations']:,} observations, {c['files']} files and {c['charts']} charts into {c['db']} ({c['bytes'] / 1e6:.1f} MB)"
         )

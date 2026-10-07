@@ -1,5 +1,3 @@
-from datetime import date
-
 import pandas as pd
 
 from pipeline.core import frames
@@ -32,7 +30,6 @@ def test_roll_and_partial_periods():
     )
     m = frames.roll(d, "month")
     assert m[["as_of", "value"]].values.tolist() == [["2026-08-01", 3], ["2026-09-01", 5], ["2026-10-01", 7]]
-    assert frames.drop_partial(m, "month", date(2026, 10, 5))["as_of"].tolist() == ["2026-08-01", "2026-09-01"]
     w = frames.roll(d, "week")
     assert w["as_of"].tolist() == ["2026-08-24", "2026-08-31", "2026-09-28"]  # Monday starts
     assert frames.roll(d, "quarter")["as_of"].tolist() == ["2026-07-01", "2026-10-01"]
@@ -48,3 +45,7 @@ def test_number_formats():
     assert [frames.num(x) for x in (640, 12_345, 147_328_552, 2.5e9, 1e6)] == ["640", "12.3K", "147M", "2.5B", "1M"]
     assert frames.usd(183e9) == "$183B" and frames.pct(0.412) == "41%" and frames.change(110, 100) == "+10%"
     assert frames.change(5, 0) == "n/a"
+
+
+def test_month_label_names_the_month_and_year():
+    assert frames.month_label("2026-09-01") == "Sep 2026" and frames.month_label("2025-01-31") == "Jan 2025"

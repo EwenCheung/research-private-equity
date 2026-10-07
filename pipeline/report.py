@@ -106,7 +106,7 @@ def render(rep: dict) -> str:
     return "\n".join(lines)
 
 
-def main(argv=None) -> int:
+def main() -> int:
     rep = build_report()
     print(render(rep))
     return 1 if rep["needs_attention"] else 0

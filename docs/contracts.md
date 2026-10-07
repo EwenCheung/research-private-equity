@@ -178,7 +178,7 @@ def open_roles(ctx):                   # ctx.obs(...) -> pandas DataFrame of obs
   - `latest()`: one row per key, the newest retrieval. Use it on every snapshot source.
   - `dims()`: dims as columns.
   - `roll()`: totals or averages per week, month or quarter.
-  - `drop_partial()`: drops the still-running period.
+  - `month_label()`: "2026-09-01" as "Sep 2026".
   - `num`, `usd`, `pct`, `change`: number formats for takeaways.
 - NaN in rows is written as `null`. The file is always valid JSON.
 - `ctx.names` maps each slug to its display name from `config/companies/`. Label series with it ("Anthropic", not "anthropic"),

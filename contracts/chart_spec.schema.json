@@ -6,12 +6,21 @@
   "type": "object",
   "required": ["id", "page", "title", "kind", "encoding", "columns", "rows", "takeaway", "assumptions", "badges", "as_of", "sources", "status", "generated_at"],
   "additionalProperties": false,
+  "if": { "properties": { "kind": { "const": "combo" } }, "required": ["kind"] },
+  "then": { "required": ["layers"] },
+  "else": { "not": { "required": ["layers"] } },
   "properties": {
     "id": { "description": "<page>.<chart>", "type": "string", "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*$" },
     "page": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
     "title": { "type": "string", "minLength": 1 },
     "subtitle": { "type": "string" },
-    "kind": { "enum": ["line", "area", "bar", "stacked_bar", "scatter", "table", "stat", "timeline"] },
+    "kind": { "enum": ["line", "area", "bar", "stacked_bar", "scatter", "table", "stat", "timeline", "combo"] },
+    "layers": {
+      "description": "Only for kind 'combo': marks drawn over one shared x axis. A layer draws the rows whose value field is not null, so one tidy table can feed several layers.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/layer" }
+    },
     "encoding": {
       "type": "object",
       "additionalProperties": false,
@@ -57,6 +66,21 @@
     "generated_at": { "type": "string", "format": "date-time" }
   },
   "$defs": {
+    "layer": {
+      "description": "bar, line and point draw the field y; band shades between y_low and y_high; rule draws a vertical line at each row's x, captioned by label. series splits a layer into one colour per value of that field, otherwise name is its legend entry.",
+      "type": "object",
+      "required": ["mark", "name"],
+      "additionalProperties": false,
+      "properties": {
+        "mark": { "enum": ["bar", "line", "point", "band", "rule"] },
+        "name": { "type": "string", "minLength": 1 },
+        "y": { "type": "string" },
+        "y_low": { "type": "string" },
+        "y_high": { "type": "string" },
+        "label": { "type": "string" },
+        "series": { "type": "string" }
+      }
+    },
     "channel": {
       "type": "object",
       "required": ["field", "type"],

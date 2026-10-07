@@ -84,7 +84,8 @@ The schema is `contracts/chart_spec.schema.json`. Files are written to `data/mar
 |---|---|---|
 | `id`, `page` | core | `<page>.<chart>`, e.g. `hiring.open_roles` |
 | `title`, `subtitle` | mart | |
-| `kind` | mart | `line` · `area` · `bar` · `stacked_bar` · `scatter` · `table` · `stat` · `timeline` |
+| `kind` | mart | `line` · `area` · `bar` · `stacked_bar` · `scatter` · `table` · `stat` · `timeline` · `combo` |
+| `layers` | mart | Only for `combo`, and required there: the marks drawn over one shared x axis (below) |
 | `encoding` | mart | `x`, `y`, `color`, `facet` → `{field, type, label, format}`. Every field must be a column |
 | `columns` | mart | Order and format of the table view and CSV. Formats: `int` `float` `pct` `usd` `usd_compact` `multiple` `date` `text` `url` |
 | `rows` | mart | Objects. Each row must have every column field |
@@ -102,6 +103,21 @@ Each entry in `sources` holds:
 - `retrieved_at`: the latest retrieval time
 - `freshness`
 - `manual`: `{entered_by, entered_at, evidence}`. It is required exactly for manual and ledger sources that have rows, and is `null` otherwise.
+
+**Combined charts (`kind: combo`).** Put two aspects on one frame, such as events over a series or bars with a line. `encoding.x` is the shared axis and `encoding.y` names the axis label and number format. Each layer is `{mark, name, ...}`, and every field it names must be a column:
+
+| `mark` | Fields | Draws |
+|---|---|---|
+| `bar` | `y` | a bar per row; x becomes a set of categories in the order of the rows |
+| `line` | `y` | a line through the rows |
+| `point` | `y` | a dot per row |
+| `band` | `y_low`, `y_high` | a neutral shaded area, for a noise ceiling or confidence range |
+| `rule` | `label` | a vertical line at each row's x, captioned by `label` (a release, a funding round) |
+
+- A layer draws the rows whose value field (`y`, `y_low` or `label`) is not null, so one tidy table can feed several layers.
+- `series` (any mark but `band`) splits a layer into one colour per value of that field. Without it, `name` is the legend entry. A series or layer named for a company takes that company's fixed colour. A `band`, and a `rule` without `series`, are neutral and not in the legend.
+- All layers share one y scale and unit, so two aspects with different units are rebased or expressed as the same unit by the mart. There is no second axis.
+- The table view and CSV list the columns as for any chart; the plot never hides a layer that fails a test, so the mart draws what it tested and says so in its subtitle and takeaway.
 
 From this, ChartCard renders the provenance line:
 - **Automated:** `Greenhouse job board API ↗ · data as of 2026-10-05 · retrieved 2026-10-05 06:02 UTC · ● fresh`

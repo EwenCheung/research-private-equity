@@ -15,7 +15,7 @@ services:
     autoDeploy: true
     envVars:
       - key: PYTHON_VERSION
-        value: "3.11"  # matches .python-version
+        value: "3.12"  # matches .python-version
       - key: NODE_VERSION
         value: "22"
       - key: COOKIE_SECURE

@@ -120,7 +120,7 @@ The file is committed (`data/offline/signal-monitor.sqlite`, a few MB), so a clo
 - Other commands: `pack` makes the file from what is already in `data/` without calling anything; `restore` unpacks the raw snapshots, ledgers, charts and registry into `data/` (so `pipeline.build` runs offline too, and a raw file that differs is never overwritten); `check` says whether the file and `data/` still agree.
 - The file holds every collector snapshot byte for byte, the ledgers, the charts, the registry and the dashboard. The `observations` table (every row, for SQL) is left empty by default because it would make the file about ten times bigger: add `--with-rows` to `pack` or `fetch` for a local file you can query, for example `sqlite3 signal-monitor.sqlite "select entity, metric, max(as_of) from observations group by 1, 2"`, and do not commit that one.
 - Vendor files in `data/manual/` stay out unless you pass `--include-manual`: licensed data stays private.
-- The sandbox still needs Python 3.11 with the project's packages (`uv sync` needs a package index, so install them while one is reachable, or copy a `.venv` built on the same operating system). Two things on the page reach for the internet and are blank or in system fonts there: the two live leaderboard embeds on Product & Reliability, and the web fonts.
+- The sandbox still needs Python 3.12 with the project's packages (`uv sync` needs a package index, so install them while one is reachable, or copy a `.venv` built on the same operating system). Two things on the page reach for the internet and are blank or in system fonts there: the two live leaderboard embeds on Product & Reliability, and the web fonts.
 
 ## Everyday commands
 | What | Command |

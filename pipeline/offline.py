@@ -1,6 +1,7 @@
 """Carry the monitor's data to a machine with no internet: fetch everything once, keep it in one SQLite file, unpack it anywhere.
 
-    uv run python -m pipeline.offline fetch     run every collector once (needs internet), rebuild the charts, then pack
+    uv run python -m pipeline.offline fetch     run every collector once (needs internet), rebuild the charts, then pack;
+                                                the dashboard's Refresh data button runs the same thing
     uv run python -m pipeline.offline pack      write the SQLite file from what is already in data/ (no network)
     uv run python -m pipeline.offline restore   rebuild data/ from the SQLite file (no network)
     uv run python -m pipeline.offline check     compare the SQLite file with data/
@@ -8,7 +9,7 @@
 
 The file holds the collectors' raw snapshots byte for byte (the source of truth, so a restore is exact), every observation as a row
 you can query with SQL, the cited ledgers, the charts, the registry and the built dashboard. `serve` runs the dashboard from the file
-alone. After a `restore`, `python -m pipeline.build` and the API also run from the unpacked files: no collector is called. Vendor files in data/manual are left out unless you ask, because licensed data
+alone. A fetch or refresh never overwrites a good file with a worse one: see `refresh`. After a `restore`, `python -m pipeline.build` and the API also run from the unpacked files: no collector is called. Vendor files in data/manual are left out unless you ask, because licensed data
 stays private.
 """
 
@@ -25,6 +26,7 @@ import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
 
+import httpx
 import yaml
 
 from contracts import ContractError, validate
@@ -104,14 +106,17 @@ def obs_row(r: dict, source: str, file: str) -> tuple:
     )
 
 
-def pack(root: Path = ROOT, db: Path | None = None, include_manual: bool = False) -> dict:
-    """Write the SQLite file from what is already under data/. Returns the counts."""
+def pack(root: Path = ROOT, db: Path | None = None, include_manual: bool = False, web_from: Path | None = None) -> dict:
+    """Write the SQLite file from what is already under data/. Returns the counts.
+
+    The built dashboard comes from frontend/dist; a machine that only serves the file has none, so `web_from` (the file it serves)
+    supplies it."""
     registry.discover()
     db = Path(db) if db else root / DEFAULT_DB
     db.parent.mkdir(parents=True, exist_ok=True)
     tmp = db.with_name(db.name + ".tmp")
     tmp.unlink(missing_ok=True)
-    con = sqlite3.connect(tmp)
+    con = sqlite3.connect(tmp, uri=True)
     con.executescript(SCHEMA)
     counts = {"files": 0, "observations": 0, "charts": 0, "unparsed": 0, "skipped": []}
 
@@ -169,6 +174,16 @@ def pack(root: Path = ROOT, db: Path | None = None, include_manual: bool = False
     for path in sorted(p for p in dist.rglob("*") if p.is_file()) if dist.is_dir() else []:
         add_file(path, "web", None, None, has_rows=False)
     counts["web"] = sum(1 for _ in dist.rglob("*") if _.is_file()) if dist.is_dir() else 0
+    if not dist.is_dir() and web_from and Path(web_from).is_file():
+        con.execute("ATTACH ? AS previous", (f"{Path(web_from).resolve().as_uri()}?mode=ro",))
+        con.execute(
+            "INSERT INTO files (path, kind, source, sha256, size, rows, content) "
+            "SELECT path, kind, source, sha256, size, rows, content FROM previous.files WHERE kind = 'web'"
+        )
+        counts["web"] = con.execute("SELECT COUNT(*) FROM files WHERE kind = 'web'").fetchone()[0]
+        counts["files"] += counts["web"]
+        con.commit()
+        con.execute("DETACH previous")
 
     registry_file = root / "data" / "registry.json"
     if registry_file.exists():
@@ -348,23 +363,26 @@ def build_web(root: Path) -> None:
         )
 
 
-def fetch(
-    root: Path = ROOT,
-    db: Path | None = None,
-    only: list[str] | None = None,
-    skip: list[str] | None = None,
-    include_manual: bool = False,
-) -> int:
-    """Run every automated collector once, rebuild the charts, then pack. Collectors that cannot run (no key) are reported, never fatal."""
-    from pipeline.core import build as builder
-    from pipeline.core import collect as collector
+PROBES = ("https://api.github.com", "https://pypi.org", "https://registry.npmjs.org")
 
-    load_env(root / ".env")
+
+def online() -> bool:
+    """True when the internet answers. A machine behind a wall gets a quick no, instead of every collector retrying into it."""
+    for url in PROBES:
+        try:
+            httpx.head(url, timeout=4, follow_redirects=True)
+            return True
+        except httpx.TransportError:
+            continue
+    return False
+
+
+def plan(root: Path, only: list[str] | None, skip: list[str] | None) -> tuple[list[str], set[str]]:
+    """The automated sources to call, and those left out (config/offline.yaml plus --skip). Naming sources with --only calls exactly those."""
     registry.discover()
     config = root / "config" / "offline.yaml"
     left_out = set((yaml.safe_load(config.read_text()) or {}).get("skip") or []) if config.exists() else set()
     left_out |= set(skip or [])
-    # Naming sources with --only calls exactly those, even one that is left out by default.
     ids = [
         s.id
         for s in registry.SOURCES.values()
@@ -375,30 +393,185 @@ def fetch(
             "no source matches; the automated sources are: "
             + ", ".join(s.id for s in registry.SOURCES.values() if s.meta["method"] in registry.AUTOMATED)
         )
-    print(f"calling {len(ids)} sources once: {', '.join(ids)}")
+    return ids, left_out
+
+
+def packed_at(db: Path) -> str:
+    con = open_db(db)
+    try:
+        return con.execute("SELECT value FROM meta WHERE key = 'packed_at'").fetchone()[0]
+    finally:
+        con.close()
+
+
+def restore_missing(db: Path, root: Path) -> int:
+    """Put back the raw snapshots the file holds and this checkout lacks (a fresh clone, a copy without data/raw), never overwriting one.
+
+    A refresh packs data/raw, so without them the new file would drop history the old one has."""
+    con = open_db(db)
+    try:
+        missing = [
+            (p, c)
+            for p, c in con.execute("SELECT path, content FROM files WHERE kind = 'raw'")
+            if not target(root, p).exists()
+        ]
+    finally:
+        con.close()
+    for p, content in missing:
+        t = target(root, p)
+        t.parent.mkdir(parents=True, exist_ok=True)
+        t.write_bytes(content)
+    return len(missing)
+
+
+def compare(new: Path, old: Path | None) -> tuple[list[str], int]:
+    """What stops `new` from replacing `old` (damage, a raw snapshot lost or changed, a chart lost), and how many raw snapshots it adds."""
+    con = sqlite3.connect(new, uri=True)
+    try:
+        problems = [] if con.execute("PRAGMA integrity_check").fetchone()[0] == "ok" else ["the new file is damaged"]
+        added = con.execute("SELECT COUNT(*) FROM files WHERE kind = 'raw'").fetchone()[0]
+        if old:
+            con.execute("ATTACH ? AS old", (f"{Path(old).resolve().as_uri()}?mode=ro",))
+            problems += [
+                f"raw snapshot lost or changed: {p}"
+                for (p,) in con.execute(
+                    "SELECT o.path FROM old.files o LEFT JOIN main.files n ON n.path = o.path AND n.sha256 = o.sha256 "
+                    "WHERE o.kind = 'raw' AND n.path IS NULL"
+                )
+            ]
+            problems += [
+                f"chart lost: {c}"
+                for (c,) in con.execute("SELECT id FROM old.charts WHERE id NOT IN (SELECT id FROM main.charts)")
+            ]
+            added = con.execute(
+                "SELECT COUNT(*) FROM main.files WHERE kind = 'raw' AND path NOT IN (SELECT path FROM old.files)"
+            ).fetchone()[0]
+        return problems, added
+    finally:
+        con.close()
+
+
+def refresh(
+    root: Path = ROOT,
+    db: Path | None = None,
+    only: list[str] | None = None,
+    skip: list[str] | None = None,
+    include_manual: bool = False,
+    rebuild_web: bool = True,
+    log=print,
+) -> dict:
+    """Fetch every source again, rebuild the charts and replace the SQLite file, without ever making it worse. Returns a report.
+
+    The new file is written beside the old one and the old one is replaced only when the new one is sound:
+      * no internet: nothing is called, the file stays.
+      * a source that errors keeps the data it had: what it collected before failing is set aside in data/raw/_rejected/ (never deleted).
+      * a failed build, a damaged file, or a lost raw snapshot or chart: the whole refresh is rolled back, the file stays.
+      * otherwise the file is replaced, and the one it replaced is kept as <file>.previous.
+    The first file ever written has nothing to protect, so it is always written.
+    """
+    from pipeline.core import build as builder
+    from pipeline.core import collect as collector
+
+    load_env(root / ".env")
+    db = Path(db) if db else root / DEFAULT_DB
+    ids, left_out = plan(root, only, skip)
+    live = db if db.is_file() else None
+    before = packed_at(live) if live else None
+    report = {
+        "swapped": False,
+        "updated": [],
+        "failed": {},
+        "unchanged": [],
+        "skipped": [],
+        "set_aside": [],
+        "problems": [],
+    }
+
+    def done(state: str, message: str) -> dict:
+        return {**report, "state": state, "message": message}
+
+    kept = f"The dashboard keeps the data from {before}." if before else ""
+    log(f"calling {len(ids)} sources once: {', '.join(ids)}")
     if not only and left_out:
-        print(f"left out: {', '.join(sorted(left_out))}")
+        log(f"left out: {', '.join(sorted(left_out))}")
+    if not online():
+        return done("offline", f"No internet from this machine, so nothing was fetched. {kept}".strip())
+
+    if live and (n := restore_missing(live, root)):
+        log(f"put back {n} raw snapshots that the file holds and this checkout lacked")
     written, errors, skipped = collector.collect(source_ids=ids, root=root)
-    for sid, path in written.items():
-        print(f"  {sid}: " + (f"wrote {path.relative_to(root)}" if path else "no rows"))
-    for s in skipped:
-        print(f"  SKIP {s}")
     for e in errors:
-        print(f"  ERROR {e}", file=sys.stderr)
-    build_web(root)
+        report["failed"].setdefault(e.partition("/")[0].partition(":")[0], []).append(e)
+    for sid in report["failed"]:
+        if path := written.pop(sid, None):
+            aside = root / "data" / "raw" / "_rejected" / sid / path.name
+            aside.parent.mkdir(parents=True, exist_ok=True)
+            os.replace(path, aside)
+            report["set_aside"].append(aside.relative_to(root).as_posix())
+    report["updated"] = [sid for sid, path in written.items() if path]
+    report["unchanged"] = [sid for sid, path in written.items() if not path]
+    report["skipped"] = skipped
+    for sid, path in written.items():
+        log(f"  {sid}: " + (f"wrote {path.relative_to(root)}" if path else "no rows"))
+    for s in skipped:
+        log(f"  SKIP {s}")
+    for e in errors:
+        log(f"  ERROR {e}", file=sys.stderr)
+
+    if rebuild_web:
+        build_web(root)
     _, build_errors = builder.build(root=root)
-    for e in build_errors:
-        print(f"  BUILD ERROR {e}", file=sys.stderr)
-    counts = pack(root, db, include_manual)
-    print(
-        f"packed {counts['observations']:,} observations, {counts['files']} files and {counts['charts']} charts into {counts['db']} ({counts['bytes'] / 1e6:.1f} MB)"
+    stage = db.with_name(db.name + ".new")
+    try:
+        counts = pack(root, stage, include_manual, web_from=live)
+        problems, added = compare(stage, live)
+        report["problems"] = [f"build: {e}" for e in build_errors] + problems
+        for p in report["problems"]:
+            log(f"  PROBLEM {p}", file=sys.stderr)
+        failed = ", ".join(report["failed"])
+        if report["problems"] and live:
+            return done(
+                "failed",
+                f"Rolled back: {report['problems'][0]}. {kept} Snapshots collected now stay in data/raw and join the next refresh.",
+            )
+        if live and not added:
+            if report["failed"]:
+                return done("failed", f"Nothing new: {failed} failed. {kept}")
+            return done("unchanged", f"Nothing new since {before}: every source returned what the file already holds.")
+        if live:
+            shutil.copy2(live, db.with_name(db.name + ".previous"))
+        os.replace(stage, db)
+    finally:
+        stage.unlink(missing_ok=True)
+    report["swapped"] = True
+    report |= {"observations": counts["observations"], "charts": counts["charts"], "packed_at": packed_at(db)}
+    log(
+        f"packed {counts['observations']:,} observations, {counts['files']} files and {counts['charts']} charts into {db} ({counts['bytes'] / 1e6:.1f} MB)"
     )
-    if errors:
-        print(
-            f"{len(errors)} source(s) failed: their last stored snapshot is what the file holds. Re-run with --only <id> after fixing.",
-            file=sys.stderr,
+    if report["failed"] or report["problems"]:
+        what = (
+            f"{len(report['failed'])} source(s) failed and keep their previous data: {failed}"
+            if report["failed"]
+            else "problems were found"
         )
-    return 1 if errors or build_errors else 0
+        return done("partial", f"Updated {len(report['updated'])} source(s); {what}.")
+    return done(
+        "ok",
+        f"Updated {len(report['updated'])} source(s). The dashboard now shows the data from {report['packed_at']}.",
+    )
+
+
+def fetch(
+    root: Path = ROOT,
+    db: Path | None = None,
+    only: list[str] | None = None,
+    skip: list[str] | None = None,
+    include_manual: bool = False,
+) -> int:
+    """The command line's fetch: `refresh`, printing how it ended. 0 when the file is current, 1 when anything failed."""
+    report = refresh(root, db, only, skip, include_manual)
+    print(report["message"], file=sys.stderr if report["state"] in ("failed", "offline", "partial") else sys.stdout)
+    return 0 if report["state"] in ("ok", "unchanged") else 1
 
 
 def main(argv=None) -> int:

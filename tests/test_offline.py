@@ -38,6 +38,12 @@ def raw(root, source, stamp, rows):
     return path
 
 
+@pytest.fixture(autouse=True)
+def internet(monkeypatch):
+    """The tests never touch the network: `online` is answered here, and the collectors are replaced where one runs."""
+    monkeypatch.setattr(offline, "online", lambda: True)
+
+
 @pytest.fixture
 def world(tmp_path):
     """A tiny data/: a raw snapshot, a retired source in an old shape, a ledger, a vendor file, a chart and a registry."""
@@ -319,3 +325,183 @@ def test_serve_needs_a_password_and_starts_the_app_on_the_file(world, tmp_path, 
     assert started["args"] == ("app.server:app",) and started["kwargs"]["port"] == 8123
     assert started["db"] == str(db.resolve()) and started["files"] == ["assets", "index.html"]
     assert not Path(started["web"]).exists()  # the temporary dashboard folder is cleaned up
+
+
+# --- refresh: replace the file only with a better one ---
+
+
+@pytest.fixture
+def live(world, tmp_path):
+    """A file already packed from `world`, as the dashboard would be serving it."""
+    db = tmp_path / "live.sqlite"
+    offline.pack(world, db)
+    return db
+
+
+def fake_run(monkeypatch, collect, build=lambda **kw: ([], [])):
+    from pipeline.core import build as builder
+    from pipeline.core import collect as collector
+
+    monkeypatch.setattr(collector, "collect", collect)
+    monkeypatch.setattr(builder, "build", build)
+
+
+def snapshot(root, source, stamp="20261008T000000Z", value=7):
+    return raw(root, source, stamp, [{**ROW, "source": source, "as_of": "2026-10-08", "value": value}])
+
+
+def count(db, table="observations"):
+    return rows(db, f"SELECT COUNT(*) FROM {table}")[0][0]
+
+
+def test_a_refresh_replaces_the_file_with_the_new_data_and_keeps_the_old_file_as_previous(world, live, monkeypatch):
+    old = live.read_bytes()
+    fake_run(monkeypatch, lambda **kw: ({"pypi_downloads": snapshot(kw["root"], "pypi_downloads")}, [], []))
+    report = offline.refresh(world, live)
+    assert report["state"] == "ok" and report["swapped"] and report["updated"] == ["pypi_downloads"]
+    assert (
+        count(live) == 4 and report["observations"] == 4
+    )  # the two snapshot rows and the ledger row it had, plus the new one
+    assert (live.with_name("live.sqlite.previous")).read_bytes() == old
+    assert not live.with_name("live.sqlite.new").exists()
+
+
+def test_with_no_internet_nothing_is_called_and_the_file_stays(world, live, monkeypatch):
+    monkeypatch.setattr(offline, "online", lambda: False)
+    fake_run(monkeypatch, lambda **kw: pytest.fail("a collector ran with no internet"))
+    old = live.read_bytes()
+    report = offline.refresh(world, live)
+    assert report["state"] == "offline" and not report["swapped"] and "No internet" in report["message"]
+    assert live.read_bytes() == old and not live.with_name("live.sqlite.previous").exists()
+
+
+def test_a_source_that_errors_keeps_its_previous_data_and_what_it_collected_is_set_aside(world, live, monkeypatch):
+    def collect(source_ids, root, **kw):
+        return (
+            {
+                "pypi_downloads": snapshot(root, "pypi_downloads", value=1),
+                "hn_stories": snapshot(root, "hn_stories", value=5),
+            },
+            ["pypi_downloads/anthropic: HTTPError: 500"],
+            [],
+        )
+
+    fake_run(monkeypatch, collect)
+    report = offline.refresh(world, live)
+    assert report["state"] == "partial" and report["swapped"] and report["updated"] == ["hn_stories"]
+    assert list(report["failed"]) == ["pypi_downloads"] and "keep their previous data" in report["message"]
+    stored = {p for (p,) in rows(live, "SELECT path FROM files WHERE kind = 'raw'")}
+    assert "data/raw/hn_stories/20261008T000000Z.jsonl.gz" in stored
+    assert (
+        "data/raw/pypi_downloads/20261008T000000Z.jsonl.gz" not in stored
+    )  # the partial snapshot did not reach the file
+    assert "data/raw/pypi_downloads/20261002T000000Z.jsonl.gz" in stored  # the data it had is still there
+    aside = world / "data" / "raw" / "_rejected" / "pypi_downloads" / "20261008T000000Z.jsonl.gz"
+    assert aside.exists() and report["set_aside"] == [aside.relative_to(world).as_posix()]
+
+
+def test_when_every_source_fails_the_file_is_untouched(world, live, monkeypatch):
+    old = live.read_bytes()
+    fake_run(monkeypatch, lambda **kw: ({"pypi_downloads": None}, ["pypi_downloads/anthropic: ConnectError: down"], []))
+    report = offline.refresh(world, live)
+    assert report["state"] == "failed" and not report["swapped"] and "pypi_downloads failed" in report["message"]
+    assert live.read_bytes() == old
+
+
+def test_nothing_new_is_not_a_swap(world, live, monkeypatch):
+    old = live.read_bytes()
+    fake_run(monkeypatch, lambda **kw: ({"pypi_downloads": None}, [], []))
+    report = offline.refresh(world, live)
+    assert report["state"] == "unchanged" and not report["swapped"] and live.read_bytes() == old
+
+
+def test_a_build_that_fails_rolls_the_whole_refresh_back(world, live, monkeypatch):
+    old = live.read_bytes()
+    fake_run(
+        monkeypatch,
+        lambda **kw: ({"pypi_downloads": snapshot(kw["root"], "pypi_downloads")}, [], []),
+        build=lambda **kw: ([], ["signal.tested: ValueError: boom"]),
+    )
+    report = offline.refresh(world, live)
+    assert (
+        report["state"] == "failed"
+        and not report["swapped"]
+        and "Rolled back: build: signal.tested" in report["message"]
+    )
+    assert live.read_bytes() == old and not live.with_name("live.sqlite.new").exists()
+    # the new snapshot stays on disk, and the next refresh that builds fine puts it in
+    fake_run(monkeypatch, lambda **kw: ({"pypi_downloads": None}, [], []))
+    assert offline.refresh(world, live)["state"] == "ok" and count(live) == 4
+
+
+def test_a_refresh_that_would_change_a_raw_snapshot_is_rolled_back(world, live, monkeypatch):
+    def collect(source_ids, root, **kw):
+        raw(root, "pypi_downloads", "20261002T000000Z", [{**ROW, "value": 1}]).write_bytes(
+            b"tampered"
+        )  # raw files are immutable
+        return {"pypi_downloads": snapshot(root, "pypi_downloads")}, [], []
+
+    old = live.read_bytes()
+    fake_run(monkeypatch, collect)
+    report = offline.refresh(world, live)
+    assert (
+        report["state"] == "failed" and "raw snapshot lost or changed" in report["message"] and live.read_bytes() == old
+    )
+
+
+def test_a_checkout_without_the_raw_files_gets_the_history_back_before_it_refreshes(world, live, monkeypatch):
+    shutil.rmtree(world / "data" / "raw")  # a fresh clone does not hold what earlier refreshes collected
+    fake_run(monkeypatch, lambda **kw: ({"pypi_downloads": snapshot(kw["root"], "pypi_downloads")}, [], []))
+    report = offline.refresh(world, live)
+    assert report["state"] == "ok" and count(live) == 4  # nothing the file held was lost
+
+
+def test_a_refresh_carries_the_dashboard_over_when_the_machine_has_no_build(world, tmp_path, monkeypatch):
+    with_dashboard(world)
+    live = tmp_path / "live.sqlite"
+    offline.pack(world, live)
+    shutil.rmtree(world / "frontend")  # a machine that only serves the file
+    fake_run(monkeypatch, lambda **kw: ({"pypi_downloads": snapshot(kw["root"], "pypi_downloads")}, [], []))
+    assert offline.refresh(world, live, rebuild_web=False)["state"] == "ok"
+    assert offline.extract_web(live, tmp_path / "web") == 2
+
+
+def test_the_first_file_is_written_even_when_a_source_failed(world, tmp_path, monkeypatch):
+    fake_run(monkeypatch, lambda **kw: ({"pypi_downloads": None}, ["pypi_downloads/anthropic: boom"], []))
+    db = tmp_path / "first.sqlite"
+    assert offline.refresh(world, db)["state"] == "partial" and db.exists()
+
+
+def test_the_online_probe_answers_no_when_nothing_is_reachable(monkeypatch):
+    import httpx
+
+    monkeypatch.undo()  # this test is about the real probe, with the network call stubbed to fail
+    monkeypatch.setattr(httpx, "head", lambda *a, **k: (_ for _ in ()).throw(httpx.ConnectError("blocked")))
+    assert offline.online() is False
+    monkeypatch.setattr(httpx, "head", lambda *a, **k: object())
+    assert offline.online() is True
+
+
+def test_the_refresh_button_runs_the_refresh_on_the_file_the_api_serves(world, live, tmp_path, monkeypatch):
+    import time
+
+    from fastapi.testclient import TestClient
+
+    from app import server
+
+    called = []
+    monkeypatch.setattr(
+        offline,
+        "refresh",
+        lambda root, db, **kw: called.append((root, db, kw)) or {"state": "ok", "swapped": False, "message": "m"},
+    )
+    monkeypatch.setenv("DASHBOARD_PASSWORD", "pw")
+    monkeypatch.setenv("SESSION_SECRET", "s")
+    client = TestClient(server.create_app(frontend_dir=tmp_path, db=live))
+    client.post("/api/login", json={"password": "pw"})
+    assert client.post("/api/refresh").status_code == 202
+    while client.get("/api/refresh").json()["running"]:
+        time.sleep(0.02)
+    assert called == [
+        (server.ROOT, live.resolve(), {"rebuild_web": False})
+    ]  # no Node needed on the machine that serves

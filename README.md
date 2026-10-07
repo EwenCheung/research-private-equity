@@ -39,6 +39,12 @@ Status: see [docs/ROADMAP.md](docs/ROADMAP.md). Design: [docs/superpowers/specs]
 ## Take everything to a machine with no internet
 One command calls every source once and keeps everything in a single SQLite file: the collected data, the cited ledgers, the charts and the built dashboard. A sandbox that blocks all access shows the dashboard from that file alone.
 
+```
+online, when you press Refresh or run `fetch`:  sources ─▶ collectors ─▶ new SQLite file ─▶ checked ─▶ replaces the old file
+every other time, also in the sandbox:           browser ─▶ backend API ─▶ SQLite file          (nothing is fetched)
+```
+The dashboard shows the data in the file until you press **Refresh data** in the sidebar. A page load never calls a source.
+
 | Step | Where | Command |
 |---|---|---|
 | 1. Call everything once, rebuild, pack | online | `uv run python -m pipeline.offline fetch` |
@@ -47,6 +53,11 @@ One command calls every source once and keeps everything in a single SQLite file
 
 - `fetch` reads your `.env` for keys (a source that needs a missing key is skipped and named, never fatal), builds the frontend if Node is there, rebuilds the charts and packs. `--only ID ...` and `--skip ID ...` pick sources; the Internet Archive ones are slow. `config/offline.yaml` lists sources left out by default (Wikipedia); `--only wikipedia_pageviews` calls it anyway.
 - `serve` needs `DASHBOARD_PASSWORD` and `SESSION_SECRET` (in `.env` or the environment) and nothing else: the API reads the charts and registry from the file (`DATA_DB`) and the page comes out of the file too. No collector runs and no `data/` folder is needed.
+- **Refresh data** (sidebar, only when the API serves a file) fetches every source again in the background while the charts keep showing the current data, then replaces the file and reloads the page. `fetch` on the command line does the same. A refresh never makes the file worse:
+  - no internet: nothing is called and the file stays;
+  - a source that errors keeps the data it had. What it collected before the error goes to `data/raw/_rejected/`, never deleted;
+  - a failed build, a damaged file, or a raw snapshot or chart that would be lost or changed rolls the whole refresh back;
+  - otherwise the old file is kept as `<file>.previous` and the report of the run as `<file>.refresh.json`.
 - Other commands: `pack` makes the file from what is already in `data/` without calling anything; `restore` unpacks the raw snapshots, ledgers, charts and registry into `data/` (so `pipeline.build` runs offline too, and a raw file that differs is never overwritten); `check` says whether the file and `data/` still agree.
 - The file holds every collector snapshot byte for byte, and every observation as a row. Query it with any SQLite tool, for example `sqlite3 data/offline/signal-monitor.sqlite "select entity, metric, max(as_of) from observations group by 1, 2"`.
 - Vendor files in `data/manual/` stay out unless you pass `--include-manual`: licensed data stays private.

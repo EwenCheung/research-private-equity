@@ -152,6 +152,56 @@ button {
   gap: 8px;
   padding: 0 10px;
 }
+.refresh {
+  margin-top: auto;
+  padding: 0 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12.5px;
+}
+.refresh + .side-foot {
+  margin-top: 0;
+}
+.refresh-when {
+  color: var(--ink-3);
+}
+.refresh button {
+  padding: 7px 12px;
+  border: 1px solid var(--axis);
+  border-radius: 7px;
+  background: var(--surface);
+  cursor: pointer;
+}
+.refresh button:hover:not(:disabled) {
+  background: var(--accent-wash);
+}
+.refresh button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+.refresh-note {
+  margin: 0;
+  color: var(--ink-3);
+  line-height: 1.4;
+}
+.refresh-note p {
+  margin: 0;
+}
+.refresh-note.failed,
+.refresh-note.offline {
+  color: var(--crit);
+}
+.refresh-note.partial {
+  color: var(--manual-ink);
+}
+.refresh-note ul {
+  margin: 4px 0 0;
+  padding-left: 16px;
+}
+.refresh-note summary {
+  cursor: pointer;
+}
 .linkish {
   background: none;
   border: 0;

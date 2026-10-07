@@ -35,18 +35,18 @@ class Login(BaseModel):
     password: str
 
 
-def refresh_everything(db: Path) -> dict:
+def refresh_everything(db: Path, progress: Callable[[dict], None]) -> dict:
     """What the refresh button runs: every source again, then a new SQLite file that replaces this one only if it is sound."""
     from pipeline import offline  # imported on the first press: reading the file needs no collectors
 
-    return offline.refresh(ROOT, db, rebuild_web=False)
+    return offline.refresh(ROOT, db, rebuild_web=False, progress=progress)
 
 
 def create_app(
     data_dir: Path | None = None,
     frontend_dir: Path | None = None,
     db: Path | None = None,
-    refresh: Callable[[Path], dict] | None = None,
+    refresh: Callable[[Path, Callable[[dict], None]], dict] | None = None,
 ) -> FastAPI:
     """data_dir (or DATA_DIR) is the pipeline's data/: marts/ plus registry.json, written by `pipeline.build`.
 

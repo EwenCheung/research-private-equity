@@ -9,6 +9,7 @@ from pipeline.core import ROOT, registry
 from pipeline.core.build import build
 from pipeline.core.collect import collect
 from pipeline.core.companies import load_companies
+from pipeline.core.http import SourceUnavailable
 from pipeline.core.store import read_observations
 
 META = {
@@ -125,6 +126,26 @@ def test_collect_stamps_provenance_and_writes_immutable_gzip(clean_registry, roo
     assert rows[0]["retrieved_at"] == "2026-10-05T06:02:11Z"
     with pytest.raises(FileExistsError):  # a raw file is never overwritten
         collect(root=root, now=NOW)
+
+
+def test_collect_reports_progress_company_by_company_and_how_each_source_ended(clean_registry, root):
+    def boom(co):
+        raise RuntimeError("down")
+
+    registry.source(**META)(lambda co: [{**ROW, "entity": co.slug}])
+    registry.source(**{**META, "id": "broken"})(boom)
+    registry.source(**{**META, "id": "no_rows"})(lambda co: [])
+    registry.source(**{**META, "id": "needs_key"})(lambda co: (_ for _ in ()).throw(SourceUnavailable("set KEY")))
+    seen = []
+    collect(root=root, now=NOW, on_progress=lambda *event: seen.append(event))
+    assert [e for e in seen if e[0] == "fake_jobs"] == [
+        ("fake_jobs", 0, 2, "running"),
+        ("fake_jobs", 1, 2, "running"),
+        ("fake_jobs", 2, 2, "running"),
+        ("fake_jobs", 2, 2, "done"),
+    ]
+    ended = {e[0]: e[3] for e in seen if e[1] == e[2] and e[3] != "running"}
+    assert ended == {"fake_jobs": "done", "broken": "failed", "no_rows": "empty", "needs_key": "skipped"}
 
 
 def test_collect_rejects_rows_without_provenance(clean_registry, root):

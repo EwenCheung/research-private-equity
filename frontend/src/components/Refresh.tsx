@@ -1,7 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "../api";
-import { utc } from "../format";
+import { sgt } from "../format";
 
+interface Step {
+  id: string;
+  label: string;
+  state: "waiting" | "running" | "done" | "failed" | "skipped" | "empty";
+  percent: number;
+}
+interface Progress {
+  stage: string;
+  finished: number;
+  total: number;
+  sources: Step[];
+}
 interface Report {
   state: "ok" | "partial" | "unchanged" | "offline" | "failed";
   message: string;
@@ -12,12 +24,15 @@ interface Report {
 }
 interface Status {
   running: boolean;
-  started_at: string | null;
+  progress: Progress | null;
   last: Report | null;
-  data: { packed_at?: string };
+  data: { packed_at?: string; observations?: string };
 }
 
-/** The data is a snapshot in a SQLite file until this button fetches every source again. It shows nothing when the API isn't serving from a file. */
+const WORD = { waiting: "waiting", done: "DONE", failed: "FAILED", skipped: "SKIPPED", empty: "NO ROWS" };
+const word = (s: Step) => (s.state === "running" ? `${s.percent}%…` : WORD[s.state]);
+
+/** The data is a snapshot in a SQLite file until this fetches every source again. It shows nothing when the API isn't serving from a file. */
 export default function Refresh() {
   const [status, setStatus] = useState<Status | null>(null);
   const [error, setError] = useState("");
@@ -31,7 +46,7 @@ export default function Refresh() {
   const running = status?.running ?? false;
   useEffect(() => {
     if (!running) return;
-    const timer = setInterval(load, 4000);
+    const timer = setInterval(load, 1500);
     return () => clearInterval(timer);
   }, [running, load]);
 
@@ -49,28 +64,60 @@ export default function Refresh() {
       load();
     });
   };
-  const last = status.last;
+  const { last, progress } = status;
   const details = [...Object.entries(last?.failed ?? {}).map(([id, e]) => `${id}: ${e[0]}`), ...(last?.problems ?? [])];
+  const collecting = progress?.stage === "Collecting sources";
 
   return (
-    <div className="refresh">
-      <div className="refresh-when">Data from {status.data.packed_at ? utc(status.data.packed_at) : "an unknown time"}</div>
-      <button onClick={press} disabled={running}>
-        {running ? "Refreshing…" : "Refresh data"}
-      </button>
+    <section className="refresh" aria-label="Refresh the data">
+      <div className="refresh-top">
+        <div>
+          <h2 className="section-title" style={{ margin: 0 }}>
+            Refresh the data
+          </h2>
+          <p className="refresh-when">
+            Showing the data saved at {status.data.packed_at ? sgt(status.data.packed_at) : "an unknown time"}
+            {status.data.observations ? ` · ${Number(status.data.observations).toLocaleString()} observations` : ""}. Nothing is fetched until you press the button.
+          </p>
+        </div>
+        <button onClick={press} disabled={running}>
+          {running ? "Refreshing…" : "Refresh data"}
+        </button>
+      </div>
+
       {running ? (
-        <p className="refresh-note">
-          Fetching every source again. This can take several minutes; the charts keep showing the current data until it is done.
-        </p>
+        <div className="refresh-progress" aria-live="polite">
+          <p>
+            {progress
+              ? collecting
+                ? `Data collected (${progress.finished}/${progress.total})`
+                : progress.stage
+              : "Starting…"}
+            . The charts keep showing the current data until it is done.
+          </p>
+          {progress && <progress value={progress.finished} max={progress.total} />}
+          {progress && (
+            <ul>
+              {progress.sources.map((s) => (
+                <li key={s.id} className={s.state}>
+                  <span>collect {s.label}</span>
+                  <span>{word(s)}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       ) : (
         last && (
           <div className={`refresh-note ${last.state}`}>
             <p>
-              {utc(last.finished_at)}: {last.message}
+              {sgt(last.finished_at)}: {last.message}
             </p>
             {details.length > 0 && (
               <details>
-                <summary>{details.length} detail{details.length === 1 ? "" : "s"}</summary>
+                <summary>
+                  {details.length} detail{details.length === 1 ? "" : "s"}
+                </summary>
                 <ul>
                   {details.map((d) => (
                     <li key={d}>{d}</li>
@@ -82,6 +129,6 @@ export default function Refresh() {
         )
       )}
       {error && <p className="refresh-note failed">{error}</p>}
-    </div>
+    </section>
   );
 }

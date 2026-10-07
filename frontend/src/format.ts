@@ -45,8 +45,11 @@ export const toDate = (v: Cell) => (typeof v === "string" && DATE.test(v) ? new 
 export const shortDate = (iso: string) =>
   new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
 
-/** 2026-10-05T06:02:11Z -> "2026-10-05 06:02 UTC" */
-export const utc = (iso: string) => `${iso.slice(0, 10)} ${iso.slice(11, 16)} UTC`;
+/** 2026-10-05T06:02:11Z -> "2026-10-05 14:02 SGT". Stored times are UTC; Singapore is UTC+8 with no daylight saving. */
+export const sgt = (iso: string) => {
+  const t = Date.parse(iso);
+  return Number.isNaN(t) ? iso : `${new Date(t + 8 * 3600e3).toISOString().slice(0, 16).replace("T", " ")} SGT`;
+};
 
 export const csvCell = (v: Cell) => {
   const s = v === null || v === undefined ? "" : String(v);

@@ -63,131 +63,131 @@
   "rows": [
     {
       "lag": "-8",
-      "own": 0.1491680809071225,
-      "edge": 0.081999246674466,
-      "low": -0.23426932650700386,
-      "high": 0.23426932650700386
+      "own": -0.119188092875432,
+      "edge": 0.2898341412405549,
+      "low": -0.3403060969895884,
+      "high": 0.3403060969895884
     },
     {
       "lag": "-7",
-      "own": 0.017770571343001265,
-      "edge": 0.06755325391278032,
-      "low": -0.23426932650700386,
-      "high": 0.23426932650700386
+      "own": 0.1313670243978999,
+      "edge": -0.10001939490720892,
+      "low": -0.3403060969895884,
+      "high": 0.3403060969895884
     },
     {
       "lag": "-6",
-      "own": 0.010786107727843289,
-      "edge": -0.2277182252429907,
-      "low": -0.23426932650700386,
-      "high": 0.23426932650700386
+      "own": -0.18458101431274251,
+      "edge": 0.05062912293691806,
+      "low": -0.3403060969895884,
+      "high": 0.3403060969895884
     },
     {
       "lag": "-5",
-      "own": -0.13795758313951126,
-      "edge": -0.16160874437376999,
-      "low": -0.23426932650700386,
-      "high": 0.23426932650700386
+      "own": -0.02881277952687447,
+      "edge": 0.06714794215515106,
+      "low": -0.3403060969895884,
+      "high": 0.3403060969895884
     },
     {
       "lag": "-4",
-      "own": -0.09997219079263975,
-      "edge": 0.055209732541413974,
-      "low": -0.23426932650700386,
-      "high": 0.23426932650700386
+      "own": 0.04814489272543006,
+      "edge": -0.10271234154861114,
+      "low": -0.3403060969895884,
+      "high": 0.3403060969895884
     },
     {
       "lag": "-3",
-      "own": 0.0654539030899834,
-      "edge": 0.09979816455644487,
-      "low": -0.23426932650700386,
-      "high": 0.23426932650700386
+      "own": 0.08324676667710398,
+      "edge": -0.13987012973777577,
+      "low": -0.3403060969895884,
+      "high": 0.3403060969895884
     },
     {
       "lag": "-2",
-      "own": 0.14335950011398554,
-      "edge": 0.062363672528748956,
-      "low": -0.23426932650700386,
-      "high": 0.23426932650700386
+      "own": 0.10374134423283651,
+      "edge": 0.06123949105265995,
+      "low": -0.3403060969895884,
+      "high": 0.3403060969895884
     },
     {
       "lag": "-1",
-      "own": 0.037465021169477516,
-      "edge": -0.03439481433048301,
-      "low": -0.23426932650700386,
-      "high": 0.23426932650700386
+      "own": 0.031619278783180625,
+      "edge": -0.05756484792718854,
+      "low": -0.3403060969895884,
+      "high": 0.3403060969895884
     },
     {
       "lag": "0",
-      "own": 0.11309598854589474,
-      "edge": 0.10292010548012352,
-      "low": -0.23426932650700386,
-      "high": 0.23426932650700386
+      "own": -0.0023486901535682025,
+      "edge": 0.011313557933535948,
+      "low": -0.3403060969895884,
+      "high": 0.3403060969895884
     },
     {
       "lag": "+1",
-      "own": 0.04669759927186671,
-      "edge": 0.052213805761545024,
-      "low": -0.23426932650700386,
-      "high": 0.23426932650700386
+      "own": 0.20801220266794335,
+      "edge": 0.0033168786582115743,
+      "low": -0.3403060969895884,
+      "high": 0.3403060969895884
     },
     {
       "lag": "+2",
-      "own": 0.06251851459193648,
-      "edge": 0.003774073242681325,
-      "low": -0.23426932650700386,
-      "high": 0.23426932650700386
+      "own": -0.07070904101335332,
+      "edge": -0.06463804675750415,
+      "low": -0.3403060969895884,
+      "high": 0.3403060969895884
     },
     {
       "lag": "+3",
-      "own": -0.22573918267921345,
-      "edge": 0.007527505663393,
-      "low": -0.23426932650700386,
-      "high": 0.23426932650700386
+      "own": 0.1658197124362262,
+      "edge": -0.04742057793208426,
+      "low": -0.3403060969895884,
+      "high": 0.3403060969895884
     },
     {
       "lag": "+4",
-      "own": -0.06782279949368278,
-      "edge": 0.06030334500241527,
-      "low": -0.23426932650700386,
-      "high": 0.23426932650700386
+      "own": 0.2987010229125742,
+      "edge": -0.03458905385071247,
+      "low": -0.3403060969895884,
+      "high": 0.3403060969895884
     },
     {
       "lag": "+5",
-      "own": -0.10131558643765401,
-      "edge": 0.24787792969660716,
-      "low": -0.23426932650700386,
-      "high": 0.23426932650700386
+      "own": -0.04766401572382751,
+      "edge": -0.24872472124543382,
+      "low": -0.3403060969895884,
+      "high": 0.3403060969895884
     },
     {
       "lag": "+6",
-      "own": 0.0011554740183671165,
-      "edge": 0.018471679802921553,
-      "low": -0.23426932650700386,
-      "high": 0.23426932650700386
+      "own": 0.13270154521440572,
+      "edge": -0.019603063437625454,
+      "low": -0.3403060969895884,
+      "high": 0.3403060969895884
     },
     {
       "lag": "+7",
-      "own": -0.017194853222057892,
-      "edge": 0.0331854268089287,
-      "low": -0.23426932650700386,
-      "high": 0.23426932650700386
+      "own": 0.18385749210821056,
+      "edge": -0.04559370583154941,
+      "low": -0.3403060969895884,
+      "high": 0.3403060969895884
     },
     {
       "lag": "+8",
-      "own": -0.054864245843683615,
-      "edge": 0.270937248819517,
-      "low": -0.23426932650700386,
-      "high": 0.23426932650700386
+      "own": 0.12732081552313113,
+      "edge": -0.3503630614444929,
+      "low": -0.3403060969895884,
+      "high": 0.3403060969895884
     }
   ],
   "takeaway": [
-    "Own signals: PyPI downloads → Wikipedia: company article. Could be luck: the closest match is 3 weeks later (correlation -0.23, 184 weeks); in the first half of the history it was -0.43 and in the second half +0.02.",
-    "Beyond OpenAI: Wikipedia: product article (vs OpenAI) → PyPI downloads (vs OpenAI). Could be luck: the closest match is 8 weeks later (correlation +0.27, 129 weeks); in the first half of the history it was +0.31 and in the second half +0.22."
+    "Own signals: Commits written with Claude Code → Coding-agent CLI downloads. Could be luck: the closest match is 4 weeks later (correlation +0.30, 77 weeks); in the first half of the history it was +0.41 and in the second half +0.17.",
+    "Beyond OpenAI: Coding-agent CLI downloads (vs OpenAI) → npm downloads (vs OpenAI). Could be luck: the closest match is 8 weeks later (correlation -0.35, 60 weeks); in the first half of the history it was -0.56 and in the second half -0.16."
   ],
   "assumptions": [
-    "The closest pair of 30 own and 20 beyond-OpenAI pairs tested.",
-    "A lead is one signal moving first and another following some weeks later, for example Wikipedia views jumping before SDK downloads do. Each bar is how closely the second signal's week-to-week changes matched the first's that many weeks earlier.",
+    "The closest pair of 12 own and 6 beyond-OpenAI pairs tested.",
+    "A lead is one signal moving first and another following some weeks later, for example coding-agent CLI downloads picking up before SDK downloads do. Each bar is how closely the second signal's week-to-week changes matched the first's that many weeks earlier.",
     "Weekly growth has its own last two weeks removed, so a series that merely persists is not mistaken for a leader, and weeks are ranked, so one extreme week cannot decide the result.",
     "The grey band is what luck alone reaches for the best of 8 lags: 1,500 surrogate series with the same autocorrelation and random timing (fixed seed). It is corrected for how many pairs were tried before a pair is called anything but luck.",
     "Possible: survives the correction only. Holds up: survives it, holds in both halves of the history, and has at least 120 weeks. Could be luck: does not survive it.",
@@ -226,18 +226,6 @@
       "manual": null
     },
     {
-      "source": "wikipedia_pageviews",
-      "label": "Wikimedia pageviews (English Wikipedia)",
-      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/Claude_%28language_model%29/daily/20260927/20261004",
-      "method": "api",
-      "tier": "platform",
-      "cadence": "daily",
-      "as_of": "2026-10-04",
-      "retrieved_at": "2026-10-05T07:07:58Z",
-      "freshness": "fresh",
-      "manual": null
-    },
-    {
       "source": "github_coauthored_commits",
       "label": "GitHub commit search: public commits co-authored by Claude",
       "url": "https://github.com/search?type=commits&q=%22Co-Authored-By%3A+Claude%22+committer-date%3A2026-09-28..2026-10-04",
@@ -251,5 +239,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-07T03:33:47Z"
+  "generated_at": "2026-10-07T09:36:23Z"
 }

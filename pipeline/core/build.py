@@ -165,7 +165,7 @@ def build(*, root: Path = ROOT, now: datetime | None = None) -> tuple[list[Path]
     return written, errors
 
 
-def main(argv=None) -> int:
+def main() -> int:
     written, errors = build()
     print("wrote data/registry.json")
     for path in written:

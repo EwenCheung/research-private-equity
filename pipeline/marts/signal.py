@@ -25,9 +25,6 @@ PROFILE = range(-8, 9)  # the lag chart also shows y leading x and the same week
 OFFSETS = range(-4, 13)  # weeks from a release
 AR = 2
 MIN_WEEKS, MIN_PAIRS, MIN_EVENTS = 60, 40, 6
-RECENT = (
-    8  # periods of 13 weeks shown against OpenAI: the launch years' triple-digit growth would flatten everything after
-)
 FINDING, HYPOTHESIS, UNSUPPORTED = "Holds up", "Possible", "Could be luck"
 WHO = {ME: "Anthropic", PEER: "OpenAI"}
 VERSION = re.compile(r"(?i)^(gpt-?\d+(?:\.\d+)?|o\d+|gpt-oss)")
@@ -44,14 +41,10 @@ LABEL = {
     "pypi": "PyPI downloads",
     "npm": "npm downloads",
     "cli": "Coding-agent CLI downloads",
-    "wiki_company": "Wikipedia: company article",
-    "wiki_product": "Wikipedia: product article",
     "commits": "Commits written with Claude Code",
 }
-OWN = ["pypi", "npm", "cli", "wiki_company", "wiki_product", "commits"]
-BOTH = ["pypi", "npm", "cli", "wiki_company", "wiki_product"]  # the series OpenAI has too
+BOTH = ["pypi", "npm", "cli"]  # the series OpenAI has too
 USAGE = ["pypi_downloads", "npm_downloads"]
-ATTENTION = ["wikipedia_pageviews"]
 SPIKE_NOTE = (
     "Download spikes are removed as on the Developer Adoption page (a day above 10 times the median around it). "
     "A week left with 5 or 6 clean days is scaled to 7; with fewer it is dropped."
@@ -67,15 +60,11 @@ def week_end(d) -> pd.Timestamp:
     return pd.Timestamp(d).to_period("W-SUN").end_time.normalize()
 
 
-def day_label(d) -> str:
-    return pd.Timestamp(d).strftime("%-d %b %Y")
-
-
 def month_label(d) -> str:
     return pd.Timestamp(d).strftime("%b %Y")
 
 
-# ---- weekly series, built from the same rows and spike rule as the Developer Adoption and Consumer & Attention pages ----
+# ---- weekly series, built from the same rows and spike rule as the Developer Adoption page ----
 
 
 def weekly(daily: pd.Series, min_days: int = 5) -> pd.Series:
@@ -95,12 +84,6 @@ def downloads(ctx, metric: str, role: str, ent: str) -> pd.Series | None:
     return weekly(df[~df["spike"]].groupby("as_of")["value"].sum())
 
 
-def wiki(ctx, kind: str, ent: str) -> pd.Series | None:
-    df = dims(ctx.obs(metric="wiki_pageviews", entity=ent), "title", "kind")
-    df = latest(df[df["kind"] == kind], keys=("entity", "title", "as_of"))
-    return None if df.empty else weekly(df.groupby("as_of")["value"].sum(), min_days=7)
-
-
 def commits(ctx) -> pd.Series | None:
     df = latest(ctx.obs(metric="coauthored_commits", entity=ME), keys=("entity", "as_of"))
     if df.empty:
@@ -115,8 +98,6 @@ def panel(ctx, ent: str) -> dict[str, pd.Series]:
         "pypi": downloads(ctx, "pypi_downloads", "sdk", ent),
         "npm": downloads(ctx, "npm_downloads", "sdk", ent),
         "cli": downloads(ctx, "npm_downloads", "cli", ent),
-        "wiki_company": wiki(ctx, "company", ent),
-        "wiki_product": wiki(ctx, "product", ent),
         "commits": commits(ctx) if ent == ME else None,
     }
     return {k: v for k, v in found.items() if v is not None and len(v) >= MIN_WEEKS}
@@ -272,7 +253,7 @@ def tested(ctx) -> list[dict]:
 
 
 def pair_name(t: dict) -> str:
-    """ "Wikipedia: product article → PyPI downloads"; (vs OpenAI) marks Anthropic's growth minus OpenAI's, which is what is left once the market's moves cancel."""
+    """ "PyPI downloads → Coding-agent CLI downloads"; (vs OpenAI) marks Anthropic's growth minus OpenAI's, which is what is left once the market's moves cancel."""
     sfx = " (vs OpenAI)" if t["basis"] == "relative" else ""
     return f"{LABEL[t['x']]}{sfx} → {LABEL[t['y']]}{sfx}"
 
@@ -637,7 +618,7 @@ def releases(ctx):
 
 
 LEAD_ASSUMPTIONS = [
-    "A lead is one signal moving first and another following some weeks later, for example Wikipedia views jumping before SDK downloads do. Each bar is how closely the second signal's week-to-week changes matched the first's that many weeks earlier.",
+    "A lead is one signal moving first and another following some weeks later, for example coding-agent CLI downloads picking up before SDK downloads do. Each bar is how closely the second signal's week-to-week changes matched the first's that many weeks earlier.",
     "Weekly growth has its own last two weeks removed, so a series that merely persists is not mistaken for a leader, and weeks are ranked, so one extreme week cannot decide the result.",
     "The grey band is what luck alone reaches for the best of 8 lags: 1,500 surrogate series with the same autocorrelation and random timing (fixed seed). It is corrected for how many pairs were tried before a pair is called anything but luck.",
     f"{HYPOTHESIS}: survives the correction only. {FINDING}: survives it, holds in both halves of the history, and has at least 120 weeks. {UNSUPPORTED}: does not survive it.",
@@ -645,7 +626,7 @@ LEAD_ASSUMPTIONS = [
 ]
 
 
-@mart(id="signal.tested", sources=[*USAGE, *ATTENTION, "github_coauthored_commits"])
+@mart(id="signal.tested", sources=[*USAGE, "github_coauthored_commits"])
 def tested_pairs(ctx):
     title = "Every pair of signals we tested, closest match first"
     sub = (
@@ -705,7 +686,7 @@ def tested_pairs(ctx):
         "assumptions": [
             f"The {len(shown)} closest of {len(results)} pairs are drawn; the weakest of all is {min(abs(t['r']) / t['ceiling'] for t in results):.1f} times what luck reaches.",
             "Pairs are every ordered pair of Anthropic's own signals, and of its growth relative to OpenAI's (marked vs OpenAI), tested for a lead of 1 to 8 weeks.",
-            "Pairs from the same source (the two Wikipedia articles, the two download counts) share noise and can look related for that reason alone.",
+            "Pairs from the same source (the PyPI, npm and CLI download counts) share noise and can look related for that reason alone.",
             *LEAD_ASSUMPTIONS,
         ],
         "badges": ["arithmetic"],
@@ -895,16 +876,14 @@ def model_table(ctx):
 DIMENSIONS = {
     "SDK downloads": lambda ctx, ent: sdk(ctx, ent),
     "Coding-agent CLI downloads": lambda ctx, ent: downloads(ctx, "npm_downloads", "cli", ent),
-    "Wikipedia: product article": lambda ctx, ent: wiki(ctx, "product", ent),
-    "Wikipedia: company article": lambda ctx, ent: wiki(ctx, "company", ent),
 }
 
 
-@mart(id="signal.market_or_own", sources=[*USAGE, *ATTENTION])
+@mart(id="signal.market_or_own", sources=[*USAGE])
 def market_or_own(ctx):
     title = "Is Anthropic's growth the market's or its own?"
     sub = (
-        "Dots: each company's growth over the latest 13 weeks against the 13 weeks before, in four dimensions. "
+        "Dots: each company's growth over the latest 13 weeks against the 13 weeks before, in two dimensions. "
         "Bars: Anthropic minus OpenAI, the part that is Anthropic's own once the market (OpenAI) is taken out."
     )
     rows = []
@@ -950,8 +929,8 @@ def market_or_own(ctx):
         ],
         "assumptions": [
             "OpenAI stands in for the market: what both share is market growth, and the difference is Anthropic's own. A negative bar means OpenAI grew faster, or fell less.",
-            "Each dimension is a weekly series summed over the latest 13 complete weeks and compared with the 13 before: SDK downloads (PyPI plus npm), coding-agent CLI downloads (npm), and English Wikipedia views of the company article and of the product article.",
-            "The Briefing compares every signal over 3 months; this page takes the same view across four dimensions and splits it into market and own.",
+            "Each dimension is a weekly series summed over the latest 13 complete weeks and compared with the 13 before: SDK downloads (PyPI plus npm), and coding-agent CLI downloads (npm).",
+            "The Briefing compares every signal over 3 months; this page takes the same view across two dimensions and splits it into market and own.",
             SPIKE_NOTE,
             *BASE_NOTES,
         ],
@@ -1057,7 +1036,7 @@ def release_effect(ctx):
     }
 
 
-@mart(id="signal.lead_lag", sources=[*USAGE, *ATTENTION, "github_coauthored_commits"])
+@mart(id="signal.lead_lag", sources=[*USAGE, "github_coauthored_commits"])
 def lead_lag(ctx):
     title = "Does one signal move before another? The closest candidates"
     results = tested(ctx)

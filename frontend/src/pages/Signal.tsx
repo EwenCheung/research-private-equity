@@ -15,7 +15,7 @@ const SECTIONS: { title: string; note: string; charts: string[] }[] = [
   },
   {
     title: "Does one public signal move before another?",
-    note: "A lead means one signal moves first and another follows some weeks later, for example Wikipedia views jumping before SDK downloads do. If one did, it would work as an early warning. We tested every pair of Anthropic's own signals, and of its growth beyond OpenAI's.",
+    note: "A lead means one signal moves first and another follows some weeks later, for example coding-agent CLI downloads picking up before SDK downloads do. If one did, it would work as an early warning. We tested every pair of Anthropic's own signals, and of its growth beyond OpenAI's.",
     charts: ["signal.lead_lag", "signal.tested"],
   },
   {

@@ -7,8 +7,6 @@ import pandas as pd
 from pipeline.core import mart
 from pipeline.core.frames import dims, latest
 
-COMPANY_TIER, PRESS_TIER = "Company-stated", "Press-reported"
-NEW_VEHICLE, AMENDMENT = "New vehicle (Form D)", "Amendment (Form D/A)"
 FAMILIES = [  # registrant name starts with / contains -> the fund family a reader knows
     (r"^(fidelity|variable insurance products)", "Fidelity"),
     (r"t\.? rowe price", "T. Rowe Price"),

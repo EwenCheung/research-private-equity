@@ -1,5 +1,6 @@
 """Helpers every mart shares: snapshot dedupe, dims as columns, period roll-ups, and number formats for takeaways."""
 
+import calendar
 from datetime import date
 
 import pandas as pd
@@ -37,10 +38,10 @@ def roll(df: pd.DataFrame, period: str, how: str = "sum", by=("entity",)) -> pd.
     return out.groupby([*by, "as_of"], as_index=False)["value"].agg(how)
 
 
-def drop_partial(df: pd.DataFrame, period: str, today: date) -> pd.DataFrame:
-    """Drop rows in the still-running period, so a half month never reads as a fall. Say so in the assumptions."""
-    current = period_start(pd.Series([today.isoformat()]), period).iloc[0]
-    return df[df["as_of"] < current]
+def month_label(iso: str) -> str:
+    """'2026-09-01' -> 'Sep 2026'."""
+    d = date.fromisoformat(iso)
+    return f"{calendar.month_abbr[d.month]} {d.year}"
 
 
 def num(x: float) -> str:

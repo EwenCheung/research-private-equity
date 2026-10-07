@@ -26,7 +26,7 @@ Every number in the system is one observation row. The schema is `contracts/obse
 Tiers, from most to least direct:
 - **company-stated:** the company's own channel (its job board, newsroom, status page, pricing page).
 - **filing:** SEC, DOL or other government records.
-- **platform:** third-party telemetry (npm, PyPI, GitHub, App Store, Wikimedia, Trends).
+- **platform:** third-party telemetry (npm, PyPI, GitHub, Hacker News, App Store, Trends).
 - **press:** media reports.
 - **vendor:** licensed alt-data (YipitData, M Science).
 - **derived:** computed by us.
@@ -178,7 +178,7 @@ def open_roles(ctx):                   # ctx.obs(...) -> pandas DataFrame of obs
   - `latest()`: one row per key, the newest retrieval. Use it on every snapshot source.
   - `dims()`: dims as columns.
   - `roll()`: totals or averages per week, month or quarter.
-  - `drop_partial()`: drops the still-running period.
+  - `month_label()`: "2026-09-01" as "Sep 2026".
   - `num`, `usd`, `pct`, `change`: number formats for takeaways.
 - NaN in rows is written as `null`. The file is always valid JSON.
 - `ctx.names` maps each slug to its display name from `config/companies/`. Label series with it ("Anthropic", not "anthropic"),
@@ -201,7 +201,7 @@ The router loads `import.meta.glob("./pages/*.tsx")`, and the nav is sorted by `
 | 10 | AI Analysis |
 | 20 | Hiring |
 | 30 | Developer Adoption |
-| 40 | Consumer & Attention |
+| 40 | Customers |
 | 50 | Product |
 | 70 | Capital |
 | 80 | Signal |

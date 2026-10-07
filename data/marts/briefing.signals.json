@@ -129,30 +129,6 @@
       "versus": "Ahead by 55 pts, 1.0× OpenAI's level"
     },
     {
-      "family": "Consumer attention",
-      "signal": "Wikipedia views of the Claude article",
-      "latest": "514K",
-      "based": "Jul to Sep 2026",
-      "chg": -0.2958648630503914,
-      "prev": -0.02739643882274868,
-      "yoy": 1.51557781073633,
-      "reading": "Down",
-      "oai_chg": -0.1373135030665992,
-      "versus": "Behind by 16 pts, 0.1× OpenAI's level"
-    },
-    {
-      "family": "Consumer attention",
-      "signal": "Wikipedia views of the Anthropic article",
-      "latest": "727K",
-      "based": "Jul to Sep 2026",
-      "chg": -0.32856242503100413,
-      "prev": -0.22230806436196093,
-      "yoy": 1.0643009347387562,
-      "reading": "Down",
-      "oai_chg": -0.052021026946082356,
-      "versus": "Behind by 28 pts, 1.1× OpenAI's level"
-    },
-    {
       "family": "Build-out",
       "signal": "Open roles on Anthropic's job board",
       "latest": "458",
@@ -242,18 +218,6 @@
       "manual": null
     },
     {
-      "source": "wikipedia_pageviews",
-      "label": "Wikimedia pageviews (English Wikipedia)",
-      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/Claude_%28language_model%29/daily/20260927/20261004",
-      "method": "api",
-      "tier": "platform",
-      "cadence": "daily",
-      "as_of": "2026-10-04",
-      "retrieved_at": "2026-10-05T07:07:58Z",
-      "freshness": "fresh",
-      "manual": null
-    },
-    {
       "source": "hn_who_is_hiring",
       "label": "Hacker News 'Who is hiring?' threads (Algolia)",
       "url": "https://news.ycombinator.com/item?id=49522897",
@@ -286,7 +250,7 @@
       "cadence": "daily",
       "as_of": "2026-10-05",
       "retrieved_at": "2026-10-05T04:12:39Z",
-      "freshness": "fresh",
+      "freshness": "aging",
       "manual": null
     },
     {
@@ -327,5 +291,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-07T03:33:47Z"
+  "generated_at": "2026-10-07T09:36:23Z"
 }

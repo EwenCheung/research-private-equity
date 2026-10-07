@@ -502,6 +502,56 @@ def test_the_refresh_button_runs_the_refresh_on_the_file_the_api_serves(world, l
     assert client.post("/api/refresh").status_code == 202
     while client.get("/api/refresh").json()["running"]:
         time.sleep(0.02)
-    assert called == [
-        (server.ROOT, live.resolve(), {"rebuild_web": False})
-    ]  # no Node needed on the machine that serves
+    ((root, db, kw),) = called
+    assert (root, db, kw["rebuild_web"]) == (
+        server.ROOT,
+        live.resolve(),
+        False,
+    )  # no Node needed on the machine that serves
+    assert callable(kw["progress"])
+
+
+def test_a_refresh_shows_each_source_as_it_goes_for_the_command_line_and_the_dashboard(world, live, monkeypatch):
+    def collect(source_ids, root, on_progress, **kw):
+        for event in (
+            ("pypi_downloads", 0, 2, "running"),
+            ("pypi_downloads", 1, 2, "running"),
+            ("pypi_downloads", 2, 2, "running"),
+            ("pypi_downloads", 2, 2, "done"),
+            ("hn_stories", 0, 2, "running"),
+            ("hn_stories", 2, 2, "failed"),
+        ):
+            on_progress(*event)
+        return (
+            {"pypi_downloads": snapshot(root, "pypi_downloads"), "hn_stories": None},
+            ["hn_stories/anthropic: boom"],
+            [],
+        )
+
+    fake_run(monkeypatch, collect)
+    lines, snapshots = [], []
+    offline.refresh(world, live, log=lambda *a, **k: lines.append(" ".join(map(str, a))), progress=snapshots.append)
+    total = len(snapshots[0]["sources"])
+    assert lines[1:7] == [
+        f"data collected (0/{total}):",
+        "  collect pypi_downloads 50%…",
+        "  collect pypi_downloads 100%…",
+        "  collect pypi_downloads DONE",
+        f"data collected (1/{total}):",
+        "  collect hn_stories FAILED",
+    ]
+    collecting = [s for s in snapshots if s["stage"] == "Collecting sources"]
+    last = {x["id"]: x for x in collecting[-1]["sources"]}
+    assert (last["pypi_downloads"]["state"], last["pypi_downloads"]["percent"]) == ("done", 100)
+    assert last["hn_stories"]["state"] == "failed" and last["npm_downloads"]["state"] == "waiting"
+    assert collecting[-1]["finished"] == 2 and collecting[0]["finished"] == 0
+    assert [s["stage"] for s in snapshots][-3:] == [
+        "Rebuilding the charts",
+        "Packing the new file",
+        "Checking the new file",
+    ]
+
+
+def test_times_in_messages_are_singapore_time():
+    assert offline.when("2026-10-07T07:08:39Z") == "2026-10-07 15:08 SGT"
+    assert offline.when("2026-10-07T20:00:00Z") == "2026-10-08 04:00 SGT"  # across midnight

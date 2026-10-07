@@ -23,7 +23,7 @@ import sqlite3
 import subprocess
 import sys
 import tempfile
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta, timezone
 from pathlib import Path
 
 import httpx
@@ -363,6 +363,7 @@ def build_web(root: Path) -> None:
         )
 
 
+STATE_WORD = {"done": "DONE", "failed": "FAILED", "skipped": "SKIPPED", "empty": "NO ROWS"}
 PROBES = ("https://api.github.com", "https://pypi.org", "https://registry.npmjs.org")
 
 
@@ -396,8 +397,12 @@ def plan(root: Path, only: list[str] | None, skip: list[str] | None) -> tuple[li
     return ids, left_out
 
 
+SGT = timezone(timedelta(hours=8), "SGT")  # Singapore: UTC+8, no daylight saving
+
+
 def when(stamp: str) -> str:
-    return stamp.replace("T", " ")[:16] + " UTC"
+    """2026-10-07T07:08:39Z -> '2026-10-07 15:08 SGT'. Stored times stay UTC; people read Singapore time."""
+    return datetime.fromisoformat(stamp).astimezone(SGT).strftime("%Y-%m-%d %H:%M SGT")
 
 
 def packed_at(db: Path) -> str:
@@ -463,6 +468,7 @@ def refresh(
     include_manual: bool = False,
     rebuild_web: bool = True,
     log=print,
+    progress=None,
 ) -> dict:
     """Fetch every source again, rebuild the charts and replace the SQLite file, without ever making it worse. Returns a report.
 
@@ -472,6 +478,9 @@ def refresh(
       * a failed build, a damaged file, or a lost raw snapshot or chart: the whole refresh is rolled back, the file stays.
       * otherwise the file is replaced, and the one it replaced is kept as <file>.previous.
     The first file ever written has nothing to protect, so it is always written.
+
+    `log` receives the progress lines the command line prints; `progress(snapshot)` receives the same as data for the dashboard:
+    {stage, finished, total, sources: [{id, label, state, percent}]}.
     """
     from pipeline.core import build as builder
     from pipeline.core import collect as collector
@@ -494,6 +503,29 @@ def refresh(
     def done(state: str, message: str) -> dict:
         return {**report, "state": state, "message": message}
 
+    steps = {
+        sid: {"id": sid, "label": registry.SOURCES[sid].meta.get("label") or sid, "state": "waiting", "percent": 0}
+        for sid in ids
+    }
+
+    def announce(stage: str) -> None:
+        if progress:
+            finished = sum(s["state"] not in ("waiting", "running") for s in steps.values())
+            progress(
+                {"stage": stage, "finished": finished, "total": len(ids), "sources": [dict(s) for s in steps.values()]}
+            )
+
+    def on_progress(sid: str, done: int, total: int, state: str) -> None:
+        steps[sid] = {**steps[sid], "state": state, "percent": round(100 * done / total) if total else 100}
+        if state == "running" and done == 0:
+            finished = sum(s["state"] not in ("waiting", "running") for s in steps.values())
+            log(f"data collected ({finished}/{len(ids)}):")
+        elif state == "running":
+            log(f"  collect {sid} {steps[sid]['percent']}%…")
+        else:
+            log(f"  collect {sid} {STATE_WORD[state]}")
+        announce("Collecting sources")
+
     kept = f"The dashboard keeps the data from {when(before)}." if before else ""
     log(f"calling {len(ids)} sources once: {', '.join(ids)}")
     if not only and left_out:
@@ -503,7 +535,8 @@ def refresh(
 
     if live and (n := restore_missing(live, root)):
         log(f"put back {n} raw snapshots that the file holds and this checkout lacked")
-    written, errors, skipped = collector.collect(source_ids=ids, root=root)
+    announce("Collecting sources")
+    written, errors, skipped = collector.collect(source_ids=ids, root=root, on_progress=on_progress)
     for e in errors:
         report["failed"].setdefault(e.partition("/")[0].partition(":")[0], []).append(e)
     for sid in report["failed"]:
@@ -516,18 +549,22 @@ def refresh(
     report["unchanged"] = [sid for sid, path in written.items() if not path]
     report["skipped"] = skipped
     for sid, path in written.items():
-        log(f"  {sid}: " + (f"wrote {path.relative_to(root)}" if path else "no rows"))
+        if path:
+            log(f"  {sid}: wrote {path.relative_to(root)}")
     for s in skipped:
         log(f"  SKIP {s}")
     for e in errors:
         log(f"  ERROR {e}", file=sys.stderr)
 
+    announce("Rebuilding the charts")
     if rebuild_web:
         build_web(root)
     _, build_errors = builder.build(root=root)
+    announce("Packing the new file")
     stage = db.with_name(db.name + ".new")
     try:
         counts = pack(root, stage, include_manual, web_from=live)
+        announce("Checking the new file")
         problems, added = compare(stage, live)
         report["problems"] = [f"build: {e}" for e in build_errors] + problems
         for p in report["problems"]:

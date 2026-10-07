@@ -55,6 +55,8 @@ Nothing runs on a schedule (R19); Hot Pick and analysis run on demand.
 |---|---|---|---|
 | 4.1 | Bull / Bear / Neutral reporters, gates, page, `/run-analysis` (on demand) | `p4/ai-analysis` | ☐ |
 | 4.2 | Offline SQLite store: fetch every source once, serve the dashboard from one file, Refresh data button with rollback, parallel fetch, retry failed | `p4/offline-store` | ✓ merged (#36, #37) |
+| 4.3 | Wikipedia removed from every page; Consumer & Attention becomes Customers (spec R28) | `p4/prune-wikipedia` | ✓ merged (#39) |
+| 4.4 | Cleanup: unused code and constants, one `month_label`, four unused dependencies | `p4/cleanup-dead-code`, `p4/core-cleanup`, `p4/deps-unused` | ✓ merged (#40, #41, #42) |
 
 ## Phase 5: Team release ☐
 | # | Implementation | Branch | Status |

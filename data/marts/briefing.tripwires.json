@@ -177,13 +177,13 @@
     },
     {
       "source": "status_incidents",
-      "label": "Claude and OpenAI status pages",
-      "url": "https://status.claude.com/incidents/bhphxz3vr58g",
+      "label": "Claude status page",
+      "url": "https://status.claude.com/incidents/k0h22tsvnydg",
       "method": "api",
       "tier": "company-stated",
       "cadence": "daily",
-      "as_of": "2026-10-05",
-      "retrieved_at": "2026-10-06T09:46:53Z",
+      "as_of": "2026-10-01",
+      "retrieved_at": "2026-10-05T07:19:13Z",
       "freshness": "fresh",
       "manual": null
     },
@@ -201,5 +201,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-07T03:03:08Z"
+  "generated_at": "2026-10-06T08:33:23Z"
 }

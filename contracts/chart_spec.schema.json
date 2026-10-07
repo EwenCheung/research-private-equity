@@ -16,7 +16,7 @@
     "subtitle": { "type": "string" },
     "kind": { "enum": ["line", "area", "bar", "stacked_bar", "scatter", "table", "stat", "timeline", "combo"] },
     "panels": {
-      "description": "Only for kind 'combo': extra panels stacked under the main one, sharing its x axis, each with its own y axis. encoding.y describes panel 0; panels[0] is panel 1, and so on. A layer joins a panel through its 'panel' number.",
+      "description": "Only for kind 'combo': extra panels stacked under the main one, each with its own y axis and, unless it names its own x, sharing the main x axis. encoding.y describes panel 0; panels[0] is panel 1, and so on. A layer joins a panel through its 'panel' number.",
       "type": "array",
       "minItems": 1,
       "items": {
@@ -25,7 +25,8 @@
         "additionalProperties": false,
         "properties": {
           "label": { "type": "string", "minLength": 1 },
-          "format": { "enum": ["int", "float", "pct", "usd", "usd_compact", "multiple", "date", "text"] }
+          "format": { "enum": ["int", "float", "pct", "usd", "usd_compact", "multiple", "date", "text"] },
+          "x": { "description": "This panel's own x axis, when it is not the main one (for example one column per model under a timeline). A rule is drawn only in panels that share the main x axis.", "$ref": "#/$defs/channel" }
         }
       }
     },

@@ -49,7 +49,7 @@ export interface ChartSpec {
   subtitle: string;
   kind: Kind;
   layers?: Layer[];
-  panels?: { label: string; format?: Format }[];
+  panels?: { label: string; format?: Format; x?: Field }[];
   encoding: { x?: Field; y?: Field; color?: Field; facet?: Field };
   columns: Column[];
   rows: Record<string, string | number | null>[];

@@ -228,3 +228,13 @@ def test_extra_panels_stack_under_the_main_one_and_a_layer_must_name_a_panel_tha
     m["panels"] = [{"label": "x"}]
     with pytest.raises(ContractError):
         validate("chart_spec", m)  # panels belong to combined charts only
+
+
+def test_a_panel_may_have_its_own_x_axis_but_it_must_be_a_column():
+    m = combo()
+    m["panels"] = [{"label": "Score", "x": {"field": "release", "type": "ordinal", "label": "Model"}}]
+    m["layers"].append({"mark": "point", "name": "Score", "y": "downloads", "panel": 1})
+    validate("chart_spec", m)
+    m["panels"][0]["x"]["field"] = "nope"
+    with pytest.raises(ContractError, match="is not a column"):
+        validate("chart_spec", m)

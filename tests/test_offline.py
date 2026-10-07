@@ -230,7 +230,7 @@ def test_an_offline_server_can_rebuild_every_chart_from_the_file_alone(tmp_path,
         assert (a["id"], a["status"], a["as_of"], a["rows"]) == (b["id"], b["status"], b["as_of"], b["rows"])
 
 
-def test_wikipedia_is_left_out_of_a_fetch_by_default_and_called_only_when_named(world, tmp_path, monkeypatch):
+def test_sources_in_the_skip_list_are_left_out_of_a_fetch_and_called_only_when_named(world, tmp_path, monkeypatch):
     from pipeline.core import build as builder
     from pipeline.core import collect as collector
 
@@ -238,11 +238,11 @@ def test_wikipedia_is_left_out_of_a_fetch_by_default_and_called_only_when_named(
     monkeypatch.setattr(collector, "collect", lambda **kw: called.append(sorted(kw["source_ids"])) or ({}, [], []))
     monkeypatch.setattr(builder, "build", lambda **kw: ([], []))
     (world / "config").mkdir()
-    shutil.copy(ROOT / "config" / "offline.yaml", world / "config" / "offline.yaml")
+    (world / "config" / "offline.yaml").write_text("skip: [npm_downloads]\n")
     assert offline.fetch(world, tmp_path / "a.sqlite") == 0
-    assert "wikipedia_pageviews" not in called[0] and "pypi_downloads" in called[0]
-    offline.fetch(world, tmp_path / "b.sqlite", only=["wikipedia_pageviews"])
-    assert called[1] == ["wikipedia_pageviews"]
+    assert "npm_downloads" not in called[0] and "pypi_downloads" in called[0]
+    offline.fetch(world, tmp_path / "b.sqlite", only=["npm_downloads"])
+    assert called[1] == ["npm_downloads"]
 
 
 def with_dashboard(world):

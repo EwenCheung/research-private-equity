@@ -19,8 +19,6 @@ All public, every row with provenance. Weeks are complete Monday-to-Sunday weeks
 
 | Signal | Anthropic | OpenAI | Cadence | Starts | Weeks (Anthropic) |
 |---|---|---|---|---|---|
-| Wikipedia views, company article | yes | yes | daily | 2023-02 | 191 |
-| Wikipedia views, product article (Claude / ChatGPT) | yes | yes | daily | 2024-02 | 139 |
 | PyPI SDK downloads | yes | yes | daily | 2023-02 | 189 |
 | npm SDK downloads | yes | yes | daily | 2023-02 | 190 |
 | npm CLI downloads (Claude Code / Codex) | yes | yes | daily | 2025-03 | 83 |
@@ -52,6 +50,8 @@ Levels all trend up together, so any two of them correlate. In a test against An
 **Power.** After the corrections a pair needs roughly |r| ≥ 0.3 at 190 weeks and ≥ 0.4 at 80 weeks to count. Smaller relationships may exist and cannot be seen with this much history; the page says so rather than reporting weak ones.
 
 ## 4. What the tests found (real data, weekly, n 60-190)
+
+**Update, 2026-10-07: Wikipedia is removed (spec R28).** The tests below were run when the monitor still held the two Wikipedia series, so their pair counts and the Wikipedia findings describe that earlier setup. With four series left (PyPI, npm, CLI, commits) the built engine tests 18 pairs, and none survives the correction either: the closest is the CLI to npm pair, relative to OpenAI, at 1.0 times what luck reaches.
 
 **Correction, 2026-10-07.** My first probe (reported on 2026-10-06) used Pearson correlation and a null made by rotating one series. A series of 190 weeks can be rotated only about 160 distinct ways, so the smallest p-value it could honestly give was about 0.006, and the thousands of "draws" were repeats; the p-values it printed (0.001 and below) were far too small, and a correction across many pairs cannot pass anything at that resolution. Its results, "34 pairs pass" and "2 of 26 leads survive" (Anthropic npm to PyPI at 3 weeks, relative Wikipedia product views to relative CLI at 4 weeks), are **withdrawn**. The built engine (section 3) replaces them.
 

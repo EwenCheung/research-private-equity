@@ -1,6 +1,0 @@
-wiki_pageviews:
-  label: Wikipedia pageviews
-  unit: views per day
-  definition: Human (non-bot) views of an English Wikipedia article on one UTC day, summed over every title the topic has had.
-  aggregation: sum
-  higher_is: good

@@ -45,12 +45,6 @@
       "threshold": "change at or below -15%"
     },
     {
-      "rule": "Claude article views sit more than 50% below their 12-month peak",
-      "status": "Clear",
-      "now": "44% below the 12-month peak",
-      "threshold": "50% or more below the 12-month peak"
-    },
-    {
       "rule": "Status-page incidents rise more than 50% in three months",
       "status": "Clear",
       "now": "-31% (Jul to Sep 2026)",
@@ -64,7 +58,7 @@
     }
   ],
   "takeaway": [
-    "1 of 6 tripwires fired: Hacker News job posts naming Claude fall three months in a row."
+    "1 of 5 tripwires fired: Hacker News job posts naming Claude fall three months in a row."
   ],
   "assumptions": [
     "The rules are in config/tripwires.yaml in plain terms: edit them there. Each names a signal from config/briefing.yaml.",
@@ -116,18 +110,6 @@
       "manual": null
     },
     {
-      "source": "wikipedia_pageviews",
-      "label": "Wikimedia pageviews (English Wikipedia)",
-      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/Claude_%28language_model%29/daily/20260927/20261004",
-      "method": "api",
-      "tier": "platform",
-      "cadence": "daily",
-      "as_of": "2026-10-04",
-      "retrieved_at": "2026-10-05T07:07:58Z",
-      "freshness": "fresh",
-      "manual": null
-    },
-    {
       "source": "hn_who_is_hiring",
       "label": "Hacker News 'Who is hiring?' threads (Algolia)",
       "url": "https://news.ycombinator.com/item?id=49522897",
@@ -160,7 +142,7 @@
       "cadence": "daily",
       "as_of": "2026-10-05",
       "retrieved_at": "2026-10-05T04:12:39Z",
-      "freshness": "fresh",
+      "freshness": "aging",
       "manual": null
     },
     {
@@ -201,5 +183,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-07T03:33:47Z"
+  "generated_at": "2026-10-07T08:39:29Z"
 }

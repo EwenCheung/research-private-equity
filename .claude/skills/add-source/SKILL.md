@@ -13,7 +13,7 @@ automatically: there is no registry file to edit. Copy the nearest existing page
 - **Is it allowed?** Read the provider's terms. If they forbid scraping, stop and tell the user (that is why OpenRouter is not collected).
 - **What does it cost?** A paid or keyed source needs the user's approval; make the key optional with `env_key(...)` so a missing key is `SKIP`.
 - **Can the past be recovered?** If the provider keeps no history, set `backfillable=False` and start collecting now: every uncollected day is lost.
-- **Which page owns it?** One of Hiring, Developer Adoption, Attention, Product, Customers, Capital. Attention and Customers charts share the Consumer & Attention page. Only edit that page's own files (see CLAUDE.md).
+- **Which page owns it?** One of Hiring, Developer Adoption, Product, Customers, Capital. Only edit that page's own files (see CLAUDE.md).
 
 ## 2. Check the endpoint by hand first
 Call it with `curl` and read real output. Confirm the fields, the date format, the rate limit, and how a missing company looks. Many bugs in

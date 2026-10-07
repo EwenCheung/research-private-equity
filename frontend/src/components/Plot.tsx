@@ -283,7 +283,7 @@ function comboPlot(spec: ChartSpec, series: string[], colors: string[], c: Ink, 
     } else if (l.mark === "rule") {
       const stroke = l.series ? paint(l) : c.ink3;
       marks.push(Plot.ruleX(rows, { x: xv, stroke, strokeWidth: 1.5, strokeOpacity: 0.8, title: (r: Row) => String(r[l.label!]) }));
-      if (rows.length <= 16)
+      if (rows.length <= 30)
         marks.push(Plot.text(rows, { x: xv, text: (r: Row) => String(r[l.label!]), frameAnchor: "top", rotate: -90, textAnchor: "end", dx: -5, fontSize: 10, fill: c.ink3 }));
     } else if (l.mark === "line") {
       marks.push(Plot.line(rows, { x: xv, y: num(l.y), stroke: paint(l), strokeWidth: 2, strokeLinejoin: "round", strokeLinecap: "round", z: l.series ? (r: Row) => String(r[l.series!]) : undefined }));

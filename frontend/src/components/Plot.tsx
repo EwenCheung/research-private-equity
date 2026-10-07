@@ -11,12 +11,32 @@ const SLOTS = ["--s1", "--s2", "--s3", "--s4", "--s5", "--s6", "--s7", "--s8"];
 const valueField = (l: Layer) => (l.mark === "band" ? l.y_low : l.mark === "rule" ? l.label : l.y)!;
 const drawn = (spec: ChartSpec, l: Layer) => spec.rows.filter((r) => r[valueField(l)] != null);
 
+/** A band, and a rule that is not split by series, are drawn in neutral ink: they have no tick box. */
+const neutral = (l: Layer) => l.mark === "band" || (l.mark === "rule" && !l.series);
+
+/** The rows a layer draws once the unticked entries are removed: the whole layer when its own name is unticked, and the
+ *  rows of any unticked series of a split layer. */
+function visibleRows(spec: ChartSpec, l: Layer, hidden: Set<string>) {
+  if (!neutral(l) && hidden.has(l.name)) return [];
+  return drawn(spec, l).filter((r) => !l.series || !hidden.has(String(r[l.series])));
+}
+
+/** Whether anything but a neutral band or rule is still drawn. */
+const anyDrawn = (spec: ChartSpec, hidden: Set<string>) => (spec.layers ?? []).some((l) => !neutral(l) && visibleRows(spec, l, hidden).length);
+
+/** The dimensions of a combined chart: layers whose name is not a company or a series value, so they stand for a different
+ *  measure drawn with a different mark (a gap as bars, a second measure as dots, releases as lines). */
+function comboDimensions(spec: ChartSpec): Layer[] {
+  const values = new Set(comboSeries(spec));
+  return (spec.layers ?? []).filter((l) => !neutral(l) && (l.series ? !values.has(l.name) : !(l.name in NAME_SLOT)));
+}
+
 /** Legend entries of a combined chart: one per layer, or one per value of a layer's series field. A band, and a rule
  *  that is not split by series, are drawn in neutral ink and stay out of the legend. */
 function comboSeries(spec: ChartSpec): string[] {
   const names: string[] = [];
   for (const l of spec.layers ?? []) {
-    if (l.mark === "band" || (l.mark === "rule" && !l.series)) continue;
+    if (neutral(l)) continue;
     for (const n of l.series ? drawn(spec, l).map((r) => String(r[l.series!])) : [l.name]) if (!names.includes(n)) names.push(n);
   }
   return names;
@@ -29,32 +49,34 @@ export function seriesOf(spec: ChartSpec): string[] {
   return f ? [...new Set(spec.rows.map((r) => String(r[f])))] : [];
 }
 
-/** The legend doubles as a set of tick boxes: a ticked series is drawn, an unticked one is not. At least one stays ticked. */
-export function Legend({
-  series,
-  colors,
-  hidden,
-  onToggle,
-}: {
-  series: string[];
-  colors: string[];
-  hidden: Set<string>;
-  onToggle: (s: string) => void;
-}) {
-  if (series.length < 2) return null;
-  const onlyOne = series.length - hidden.size === 1;
+const GLYPH: Record<string, string> = { line: "▬", bar: "▮", point: "●", rule: "┃", area: "▬" };
+
+export interface LegendGroup {
+  title: string | null;
+  entries: { name: string; color?: string; mark?: string; locked: boolean }[];
+}
+
+/** The legend doubles as tick boxes, in up to two groups: the companies (or other series) and the dimensions, the different
+ *  measures drawn with different marks. A ticked entry is drawn, an unticked one is not, and at least one stays ticked. */
+export function Legend({ groups, hidden, onToggle }: { groups: LegendGroup[]; hidden: Set<string>; onToggle: (s: string) => void }) {
+  if (!groups.length) return null;
   return (
-    <div className="legend" role="group" aria-label="Series shown">
-      {series.map((s, i) => {
-        const on = !hidden.has(s);
-        return (
-          <label key={s} className={on ? "" : "off"} title={on && onlyOne ? "At least one stays ticked" : undefined}>
-            <input type="checkbox" checked={on} disabled={on && onlyOne} onChange={() => onToggle(s)} />
-            <i style={{ background: colors[i] }} />
-            {s}
-          </label>
-        );
-      })}
+    <div className="legend" role="group" aria-label="Shown on the chart">
+      {groups.map((g) => (
+        <div key={g.title ?? "all"} className="legend-group">
+          {g.title && <span className="legend-title">{g.title}</span>}
+          {g.entries.map((e) => {
+            const on = !hidden.has(e.name);
+            return (
+              <label key={e.name} className={on ? "" : "off"} title={on && e.locked ? "At least one stays ticked" : undefined}>
+                <input type="checkbox" checked={on} disabled={on && e.locked} onChange={() => onToggle(e.name)} />
+                {e.color ? <i style={{ background: e.color }} /> : <b className="glyph">{GLYPH[e.mark ?? ""] ?? "▬"}</b>}
+                {e.name}
+              </label>
+            );
+          })}
+        </div>
+      ))}
     </div>
   );
 }
@@ -124,13 +146,26 @@ export default function ChartPlot({ spec }: { spec: ChartSpec }) {
   const { ref, width } = useWidth();
   const { series, colors } = useSeriesColors(spec);
   const [hidden, setHidden] = useState<Set<string>>(new Set());
-  const toggle = (s: string) =>
+  const combo = spec.kind === "combo";
+  const dimensions = combo ? comboDimensions(spec) : [];
+  const dimNames = new Set(dimensions.map((l) => l.name));
+  const kept = (h: Set<string>) => (combo ? anyDrawn(spec, h) : series.some((n) => !h.has(n)));
+  const toggle = (name: string) =>
     setHidden((h) => {
       const next = new Set(h);
-      if (next.has(s)) next.delete(s);
-      else if (series.length - next.size > 1) next.add(s);
-      return next;
+      if (next.has(name)) next.delete(name);
+      else next.add(name);
+      return kept(next) ? next : h;
     });
+  const locked = (name: string) => !kept(new Set([...hidden, name]));
+  const entries = series.filter((n) => !dimNames.has(n));
+  const groups: LegendGroup[] = [];
+  if (entries.length >= (dimensions.length ? 1 : 2))
+    groups.push({
+      title: dimensions.length || entries.every((n) => n in NAME_SLOT) ? (entries.every((n) => n in NAME_SLOT) ? "Companies" : "Series") : null,
+      entries: entries.map((n) => ({ name: n, color: colors[series.indexOf(n)], locked: locked(n) })),
+    });
+  if (dimensions.length) groups.push({ title: "Dimensions", entries: dimensions.map((l) => ({ name: l.name, mark: l.mark, locked: locked(l.name) })) });
 
   useEffect(() => {
     const el = ref.current;
@@ -158,7 +193,7 @@ export default function ChartPlot({ spec }: { spec: ChartSpec }) {
 
   return (
     <>
-      <Legend series={series} colors={colors} hidden={hidden} onToggle={toggle} />
+      <Legend groups={groups} hidden={hidden} onToggle={toggle} />
       <div ref={ref} role="img" aria-label={`${spec.title}. Use the table view for exact values.`} />
     </>
   );
@@ -313,11 +348,7 @@ function comboPlot(spec: ChartSpec, series: string[], colors: string[], c: Ink, 
   const front = ["band", "bar", "rule", "line", "point"];
   const marks: NonNullable<Plot.PlotOptions["marks"]> = [];
 
-  // A layer named in the legend goes when its name is unticked; a split layer drops the rows of the unticked series.
-  const shown = (l: Layer) => {
-    if (!l.series && l.mark !== "band" && l.mark !== "rule" && hidden.has(l.name)) return [];
-    return drawn(spec, l).filter((r) => !l.series || !hidden.has(String(r[l.series])));
-  };
+  const shown = (l: Layer) => visibleRows(spec, l, hidden);
 
   for (const l of [...layers].sort((a, b) => front.indexOf(a.mark) - front.indexOf(b.mark))) {
     const rows = shown(l);

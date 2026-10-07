@@ -1,0 +1,401 @@
+{
+  "title": "Do model releases move SDK growth? Both companies, both sets of releases",
+  "subtitle": "Each mark is how much faster than a normal week a company's SDK downloads grew in each week around a release (0 = a normal week). Lines: around Anthropic's releases. Dots: around OpenAI's. Grey: the range a normal week reaches by luck. A company's own release should lift its own mark; a lift in both is the market.",
+  "kind": "combo",
+  "layers": [
+    {
+      "mark": "band",
+      "name": "Normal week",
+      "y_low": "low",
+      "y_high": "high"
+    },
+    {
+      "mark": "line",
+      "name": "Around Anthropic's releases",
+      "y": "around_a",
+      "series": "company"
+    },
+    {
+      "mark": "point",
+      "name": "Around OpenAI's releases",
+      "y": "around_o",
+      "series": "company"
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "week",
+      "type": "ordinal",
+      "label": "Weeks from the release"
+    },
+    "y": {
+      "field": "around_a",
+      "type": "quantitative",
+      "label": "Growth above a normal week",
+      "format": "pct"
+    }
+  },
+  "columns": [
+    {
+      "field": "week",
+      "label": "Weeks from release",
+      "format": "text"
+    },
+    {
+      "field": "company",
+      "label": "Company measured",
+      "format": "text"
+    },
+    {
+      "field": "around_a",
+      "label": "Around Anthropic's releases",
+      "format": "pct"
+    },
+    {
+      "field": "around_o",
+      "label": "Around OpenAI's releases",
+      "format": "pct"
+    },
+    {
+      "field": "low",
+      "label": "Normal-week range, low",
+      "format": "pct"
+    },
+    {
+      "field": "high",
+      "label": "Normal-week range, high",
+      "format": "pct"
+    }
+  ],
+  "rows": [
+    {
+      "week": "-4",
+      "company": "Anthropic",
+      "around_a": 0.017722834044967592,
+      "around_o": 0.03616986763639882,
+      "low": -0.11033543272239928,
+      "high": 0.11758503129205332
+    },
+    {
+      "week": "-4",
+      "company": "OpenAI",
+      "around_a": 0.03364801580746419,
+      "around_o": 0.035057847461482654,
+      "low": null,
+      "high": null
+    },
+    {
+      "week": "-3",
+      "company": "Anthropic",
+      "around_a": 6.72033700131261e-05,
+      "around_o": 0.031076924843699373,
+      "low": -0.0932820070232844,
+      "high": 0.1207418753125642
+    },
+    {
+      "week": "-3",
+      "company": "OpenAI",
+      "around_a": 0.010093610006153043,
+      "around_o": 0.0379440483549275,
+      "low": null,
+      "high": null
+    },
+    {
+      "week": "-2",
+      "company": "Anthropic",
+      "around_a": 0.006892413357972749,
+      "around_o": 0.01103195820971841,
+      "low": -0.08067444262763548,
+      "high": 0.07911175118770522
+    },
+    {
+      "week": "-2",
+      "company": "OpenAI",
+      "around_a": -0.009866399644586823,
+      "around_o": -0.027890541113925055,
+      "low": null,
+      "high": null
+    },
+    {
+      "week": "-1",
+      "company": "Anthropic",
+      "around_a": 0.010789451652878375,
+      "around_o": 0.009921008212510275,
+      "low": -0.07909318968421192,
+      "high": 0.07903342798153946
+    },
+    {
+      "week": "-1",
+      "company": "OpenAI",
+      "around_a": 0.021838083703502122,
+      "around_o": 0.021498375632057233,
+      "low": null,
+      "high": null
+    },
+    {
+      "week": "0",
+      "company": "Anthropic",
+      "around_a": 0.001667307482678175,
+      "around_o": 0.02159162682179648,
+      "low": -0.07890211503222788,
+      "high": 0.07347128736728767
+    },
+    {
+      "week": "0",
+      "company": "OpenAI",
+      "around_a": -0.01103684876252126,
+      "around_o": 0.007626521839791085,
+      "low": null,
+      "high": null
+    },
+    {
+      "week": "+1",
+      "company": "Anthropic",
+      "around_a": 0.015813938064066328,
+      "around_o": -0.02138213122674149,
+      "low": -0.080106286423133,
+      "high": 0.07476993169931631
+    },
+    {
+      "week": "+1",
+      "company": "OpenAI",
+      "around_a": 0.01807261087423361,
+      "around_o": -0.02442424351754319,
+      "low": null,
+      "high": null
+    },
+    {
+      "week": "+2",
+      "company": "Anthropic",
+      "around_a": -0.000892916572533077,
+      "around_o": -0.024712812752798737,
+      "low": -0.08174610255926604,
+      "high": 0.07291335932540248
+    },
+    {
+      "week": "+2",
+      "company": "OpenAI",
+      "around_a": -0.006043503484187182,
+      "around_o": -0.046841543197264926,
+      "low": null,
+      "high": null
+    },
+    {
+      "week": "+3",
+      "company": "Anthropic",
+      "around_a": -0.0114408839587564,
+      "around_o": 0.061007435484796375,
+      "low": -0.08272480606397961,
+      "high": 0.07324985795301983
+    },
+    {
+      "week": "+3",
+      "company": "OpenAI",
+      "around_a": 0.00573675666573226,
+      "around_o": 0.04195208856788603,
+      "low": null,
+      "high": null
+    },
+    {
+      "week": "+4",
+      "company": "Anthropic",
+      "around_a": -0.04215833829893981,
+      "around_o": 0.022774743562384014,
+      "low": -0.08015263877588402,
+      "high": 0.07438236191101066
+    },
+    {
+      "week": "+4",
+      "company": "OpenAI",
+      "around_a": -0.0420520081798838,
+      "around_o": 0.044351497344541,
+      "low": null,
+      "high": null
+    },
+    {
+      "week": "+5",
+      "company": "Anthropic",
+      "around_a": -0.008419301990534894,
+      "around_o": 0.008003251175520497,
+      "low": -0.07655277270075814,
+      "high": 0.07515829129752677
+    },
+    {
+      "week": "+5",
+      "company": "OpenAI",
+      "around_a": 0.0159973359049215,
+      "around_o": -0.023967728946754013,
+      "low": null,
+      "high": null
+    },
+    {
+      "week": "+6",
+      "company": "Anthropic",
+      "around_a": -0.0025988968938593995,
+      "around_o": -0.03733021037558757,
+      "low": -0.08133269413002667,
+      "high": 0.07582235559363654
+    },
+    {
+      "week": "+6",
+      "company": "OpenAI",
+      "around_a": -0.027701957159312604,
+      "around_o": -0.050185330378251736,
+      "low": null,
+      "high": null
+    },
+    {
+      "week": "+7",
+      "company": "Anthropic",
+      "around_a": 0.037989373687886616,
+      "around_o": 0.05142214851823424,
+      "low": -0.07853674350864126,
+      "high": 0.07647855270152751
+    },
+    {
+      "week": "+7",
+      "company": "OpenAI",
+      "around_a": 0.04677187369291041,
+      "around_o": 0.007850314430423031,
+      "low": null,
+      "high": null
+    },
+    {
+      "week": "+8",
+      "company": "Anthropic",
+      "around_a": -0.020876398838143108,
+      "around_o": 0.051893620390383664,
+      "low": -0.08097386212361793,
+      "high": 0.0729719401836405
+    },
+    {
+      "week": "+8",
+      "company": "OpenAI",
+      "around_a": -0.04067947070791804,
+      "around_o": 0.0512620470331808,
+      "low": null,
+      "high": null
+    },
+    {
+      "week": "+9",
+      "company": "Anthropic",
+      "around_a": 0.020160023029072043,
+      "around_o": -0.028651914071818115,
+      "low": -0.07855539977542954,
+      "high": 0.07414840636878042
+    },
+    {
+      "week": "+9",
+      "company": "OpenAI",
+      "around_a": 0.014459954333450594,
+      "around_o": -0.016879130850965488,
+      "low": null,
+      "high": null
+    },
+    {
+      "week": "+10",
+      "company": "Anthropic",
+      "around_a": -0.03481904782393639,
+      "around_o": 0.006718067168266312,
+      "low": -0.08259674571695055,
+      "high": 0.07833615748844482
+    },
+    {
+      "week": "+10",
+      "company": "OpenAI",
+      "around_a": -0.02660656374595215,
+      "around_o": 0.01863970932823058,
+      "low": null,
+      "high": null
+    },
+    {
+      "week": "+11",
+      "company": "Anthropic",
+      "around_a": -0.029972902177229543,
+      "around_o": 0.0335996536532864,
+      "low": -0.0854608079443722,
+      "high": 0.07884640796995748
+    },
+    {
+      "week": "+11",
+      "company": "OpenAI",
+      "around_a": -0.031227163378802547,
+      "around_o": 0.009449437802645712,
+      "low": null,
+      "high": null
+    },
+    {
+      "week": "+12",
+      "company": "Anthropic",
+      "around_a": 0.010275579193849534,
+      "around_o": 0.0061610512438092235,
+      "low": -0.07493793575531688,
+      "high": 0.072677802984154
+    },
+    {
+      "week": "+12",
+      "company": "OpenAI",
+      "around_a": -0.0031831203412670886,
+      "around_o": 0.001847784850019539,
+      "low": null,
+      "high": null
+    }
+  ],
+  "takeaway": [
+    "Over the weeks +4 to +8 after 11 Anthropic releases, Anthropic's growth added up to +19% against +22% in a normal five weeks (p 0.50); OpenAI's added up to +9% against +14% (p 0.25).",
+    "Over the weeks +4 to +8 after 11 OpenAI releases, OpenAI's growth added up to +15% against +12% in a normal five weeks (p 0.47); Anthropic's added up to +30% against +20% (p 0.17)."
+  ],
+  "assumptions": [
+    "Growth is the weekly log change in PyPI plus npm downloads. A normal week is the average of the same weeks around randomly chosen weeks from the same stretch of history (3,000 draws, fixed seed), subtracted from each mark so all start from zero.",
+    "The grey band is the range that normal weeks reach 95% of the time, taking the widest across the four. With a dozen releases per company, only a large and quick effect would show.",
+    "A release is the first listing of a numbered model line on OpenRouter's public list, by the same rule for both companies.",
+    "Weeks run Monday to Sunday and only complete weeks are used.",
+    "Correlation is not cause. A lead shows what moved first, not why."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "signal.release_effect",
+  "page": "signal",
+  "as_of": "2026-10-04",
+  "sources": [
+    {
+      "source": "pypi_downloads",
+      "label": "PyPI downloads (ClickHouse public PyPI dataset)",
+      "url": "https://sql-clickhouse.clickhouse.com/",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "npm_downloads",
+      "label": "npm registry download counts",
+      "url": "https://api.npmjs.org/downloads/range/2025-09-29:2026-10-04/@anthropic-ai/sdk",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "model_releases",
+      "label": "OpenRouter's public list of models",
+      "url": "https://openrouter.ai/openai/gpt-6.1-sol-pro",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-09-29",
+      "retrieved_at": "2026-10-07T01:56:18Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-07T03:21:57Z"
+}

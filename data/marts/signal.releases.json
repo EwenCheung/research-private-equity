@@ -1,0 +1,1706 @@
+{
+  "title": "Model releases over weekly growth in SDK downloads, Anthropic and OpenAI",
+  "subtitle": "Top: weekly growth in each company's SDK downloads (PyPI plus npm, 4-week average); each faint vertical line is a new model line, in its company's colour (hover for its name). Below, one column per new model in release order. Middle: its Artificial Analysis Intelligence Index (higher is smarter). Bottom: how much its score (bar) and its price per task (dot) changed on the previous model of its kind (Opus after Opus, GPT after GPT).",
+  "kind": "combo",
+  "panels": [
+    {
+      "label": "Intelligence Index",
+      "format": "float",
+      "x": {
+        "field": "model",
+        "type": "ordinal",
+        "label": "New model line, in release order"
+      }
+    },
+    {
+      "label": "Change on previous model",
+      "format": "pct",
+      "x": {
+        "field": "model",
+        "type": "ordinal",
+        "label": "New model line, in release order"
+      }
+    }
+  ],
+  "layers": [
+    {
+      "mark": "line",
+      "name": "Anthropic",
+      "y": "anthropic"
+    },
+    {
+      "mark": "line",
+      "name": "OpenAI",
+      "y": "openai"
+    },
+    {
+      "mark": "rule",
+      "name": "Release",
+      "label": "release",
+      "series": "company"
+    },
+    {
+      "mark": "point",
+      "name": "Intelligence Index of the model",
+      "y": "index",
+      "series": "company",
+      "panel": 1
+    },
+    {
+      "mark": "bar",
+      "name": "Score change on previous model",
+      "y": "d_index",
+      "series": "company",
+      "panel": 2
+    },
+    {
+      "mark": "point",
+      "name": "Price per task change",
+      "y": "d_price",
+      "panel": 2
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "week",
+      "type": "temporal",
+      "label": "Week ending"
+    },
+    "y": {
+      "field": "anthropic",
+      "type": "quantitative",
+      "label": "Average weekly growth",
+      "format": "pct"
+    }
+  },
+  "columns": [
+    {
+      "field": "week",
+      "label": "Week ending",
+      "format": "date"
+    },
+    {
+      "field": "anthropic",
+      "label": "Anthropic SDK growth",
+      "format": "pct"
+    },
+    {
+      "field": "openai",
+      "label": "OpenAI SDK growth",
+      "format": "pct"
+    },
+    {
+      "field": "release",
+      "label": "Release caption",
+      "format": "text"
+    },
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "model",
+      "label": "New model (listed)",
+      "format": "text"
+    },
+    {
+      "field": "index",
+      "label": "Intelligence Index",
+      "format": "float"
+    },
+    {
+      "field": "d_index",
+      "label": "Score change on previous model",
+      "format": "pct"
+    },
+    {
+      "field": "d_price",
+      "label": "Price per task change",
+      "format": "pct"
+    }
+  ],
+  "rows": [
+    {
+      "week": "2025-03-02",
+      "anthropic": 0.03468631581379452,
+      "openai": 0.0156880673638714,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-03-09",
+      "anthropic": 0.05263878166869008,
+      "openai": 0.019457851840334356,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-03-16",
+      "anthropic": 0.03155095919380173,
+      "openai": 0.010076482026954523,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-03-23",
+      "anthropic": 0.04110265312533942,
+      "openai": 0.04447289802230544,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-03-30",
+      "anthropic": 0.02438414296044601,
+      "openai": 0.04551495047422502,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-04-06",
+      "anthropic": -0.020960844399023223,
+      "openai": 0.016429285479233304,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-04-13",
+      "anthropic": 0.005670864816359189,
+      "openai": 0.0284193690124285,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-04-20",
+      "anthropic": -0.0027453185913239777,
+      "openai": 0.014305345437864948,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-04-20",
+      "anthropic": null,
+      "openai": null,
+      "release": "GPT-4.1 (13), o4 (17)",
+      "company": "OpenAI",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-04-20",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "OpenAI",
+      "model": "GPT-4.1 (Apr 2025)",
+      "index": 12.7,
+      "d_index": 0.8142857142857143,
+      "d_price": null
+    },
+    {
+      "week": "2025-04-20",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "OpenAI",
+      "model": "o4 (Apr 2025)",
+      "index": 16.7,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-04-27",
+      "anthropic": 0.006151656590759586,
+      "openai": 0.0006067880905637883,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-05-04",
+      "anthropic": 0.013102926163755977,
+      "openai": 0.009379752426144276,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-05-11",
+      "anthropic": 0.008200752780762516,
+      "openai": 0.013571266034651325,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-05-18",
+      "anthropic": 0.02547001374656414,
+      "openai": 0.022171689489769837,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-05-25",
+      "anthropic": 0.024248025843858694,
+      "openai": 0.03186879311306024,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-05-25",
+      "anthropic": null,
+      "openai": null,
+      "release": "Sonnet 4 (19)",
+      "company": "Anthropic",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-05-25",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "Anthropic",
+      "model": "Sonnet 4 (May 2025)",
+      "index": 18.9,
+      "d_index": 0.23529411764705865,
+      "d_price": null
+    },
+    {
+      "week": "2025-06-01",
+      "anthropic": 0.028076182711787655,
+      "openai": 0.015274007931239977,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-06-08",
+      "anthropic": 0.05211665173724803,
+      "openai": 0.00972551038819998,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-06-15",
+      "anthropic": 0.04307143806744886,
+      "openai": 0.009099712573465776,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-06-22",
+      "anthropic": 0.049187205086704884,
+      "openai": 0.007128812837178991,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-06-29",
+      "anthropic": 0.07469083554561948,
+      "openai": 0.055571993619388534,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-07-06",
+      "anthropic": 0.02767576884290964,
+      "openai": 0.02528188486168334,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-07-13",
+      "anthropic": 0.03612961895762426,
+      "openai": 0.03395987151355562,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-07-20",
+      "anthropic": 0.04100168863095735,
+      "openai": 0.029000211493388776,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-07-27",
+      "anthropic": 0.04641793141307177,
+      "openai": 0.012475455007895124,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-08-03",
+      "anthropic": 0.09599833198639068,
+      "openai": 0.05336782069154717,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-08-10",
+      "anthropic": 0.09875124484388664,
+      "openai": 0.04067863670856365,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-08-10",
+      "anthropic": null,
+      "openai": null,
+      "release": "Opus 4.1 (23)",
+      "company": "Anthropic",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-08-10",
+      "anthropic": null,
+      "openai": null,
+      "release": "gpt-oss (12), GPT-5 (25)",
+      "company": "OpenAI",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-08-10",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "Anthropic",
+      "model": "Opus 4.1 (Aug 2025)",
+      "index": 22.8,
+      "d_index": 0.10679611650485432,
+      "d_price": null
+    },
+    {
+      "week": "2025-08-10",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "OpenAI",
+      "model": "gpt-oss (Aug 2025)",
+      "index": 11.6,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-08-10",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "OpenAI",
+      "model": "GPT-5 (Aug 2025)",
+      "index": 24.9,
+      "d_index": 1.59375,
+      "d_price": null
+    },
+    {
+      "week": "2025-08-17",
+      "anthropic": 0.11402947938986914,
+      "openai": 0.043959443797815835,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-08-24",
+      "anthropic": 0.07646313765067095,
+      "openai": 0.041922196424891096,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-08-31",
+      "anthropic": 0.05958490231895519,
+      "openai": 0.02226295071587048,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-09-07",
+      "anthropic": 0.02503647619759396,
+      "openai": 0.01707334476183475,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-09-14",
+      "anthropic": -0.02063235169455467,
+      "openai": 0.020472094802216796,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-09-21",
+      "anthropic": -0.02391131464738397,
+      "openai": 0.013624104458582226,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-09-28",
+      "anthropic": -0.027229952805763832,
+      "openai": 0.017368327264449403,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-10-05",
+      "anthropic": 0.012141458734915827,
+      "openai": 0.03669144312655013,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-10-05",
+      "anthropic": null,
+      "openai": null,
+      "release": "Sonnet 4.5 (21)",
+      "company": "Anthropic",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-10-05",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "Anthropic",
+      "model": "Sonnet 4.5 (Oct 2025)",
+      "index": 20.7,
+      "d_index": 0.09523809523809534,
+      "d_price": 0.1785814812760771
+    },
+    {
+      "week": "2025-10-12",
+      "anthropic": 0.009033326954537825,
+      "openai": 0.02031277587406793,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-10-19",
+      "anthropic": 0.0292159852131641,
+      "openai": 0.03168020492039907,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-10-19",
+      "anthropic": null,
+      "openai": null,
+      "release": "Haiku 4.5 (17)",
+      "company": "Anthropic",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-10-19",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "Anthropic",
+      "model": "Haiku 4.5 (Oct 2025)",
+      "index": 16.9,
+      "d_index": 0.8988764044943818,
+      "d_price": null
+    },
+    {
+      "week": "2025-10-26",
+      "anthropic": 0.03220864661070274,
+      "openai": 0.025234077209334477,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-11-02",
+      "anthropic": 0.030502676290794607,
+      "openai": 0.019984309221609695,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-11-09",
+      "anthropic": 0.03346553381975113,
+      "openai": 0.03488953856501724,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-11-16",
+      "anthropic": 0.029308095562636482,
+      "openai": 0.020678872610894673,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-11-16",
+      "anthropic": null,
+      "openai": null,
+      "release": "GPT-5.1 (25)",
+      "company": "OpenAI",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-11-16",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "OpenAI",
+      "model": "GPT-5.1 (Nov 2025)",
+      "index": 24.7,
+      "d_index": -0.008032128514056214,
+      "d_price": null
+    },
+    {
+      "week": "2025-11-23",
+      "anthropic": 0.03345397671810925,
+      "openai": 0.027384302041534383,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-11-30",
+      "anthropic": -0.010078339293979473,
+      "openai": -0.01869913686592307,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-11-30",
+      "anthropic": null,
+      "openai": null,
+      "release": "Opus 4.5 (29)",
+      "company": "Anthropic",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-11-30",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "Anthropic",
+      "model": "Opus 4.5 (Nov 2025)",
+      "index": 29.1,
+      "d_index": 0.2763157894736843,
+      "d_price": null
+    },
+    {
+      "week": "2025-12-07",
+      "anthropic": 0.06173436799081189,
+      "openai": 0.010179846390849366,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-12-14",
+      "anthropic": 0.031829557939501964,
+      "openai": 0.0025679714714326274,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-12-14",
+      "anthropic": null,
+      "openai": null,
+      "release": "GPT-5.2 (30)",
+      "company": "OpenAI",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-12-14",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "OpenAI",
+      "model": "GPT-5.2 (Dec 2025)",
+      "index": 30.4,
+      "d_index": 0.23076923076923084,
+      "d_price": -0.39742487393329573
+    },
+    {
+      "week": "2025-12-21",
+      "anthropic": 0.016598139237712046,
+      "openai": -0.001056414395784187,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2025-12-28",
+      "anthropic": -0.03994692617898827,
+      "openai": -0.05184130441860801,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-01-04",
+      "anthropic": -0.10498159732806465,
+      "openai": -0.09566061433417518,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-01-11",
+      "anthropic": 0.009256882188006403,
+      "openai": 0.004868147265500485,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-01-18",
+      "anthropic": 0.026205265932724497,
+      "openai": 0.011675283602279197,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-01-25",
+      "anthropic": 0.12416455586637509,
+      "openai": 0.10492668282526993,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-02-01",
+      "anthropic": 0.18977898516624142,
+      "openai": 0.14099929447251158,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-02-08",
+      "anthropic": 0.10454433786762081,
+      "openai": 0.05475047590510098,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-02-08",
+      "anthropic": null,
+      "openai": null,
+      "release": "Opus 4.6 (32)",
+      "company": "Anthropic",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-02-08",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "Anthropic",
+      "model": "Opus 4.6 (Feb 2026)",
+      "index": 31.9,
+      "d_index": 0.09621993127147754,
+      "d_price": -0.1164988967840932
+    },
+    {
+      "week": "2026-02-15",
+      "anthropic": 0.09981232573471688,
+      "openai": 0.06517488338694687,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-02-22",
+      "anthropic": 0.08233030760349623,
+      "openai": 0.05088677799867265,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-02-22",
+      "anthropic": null,
+      "openai": null,
+      "release": "Sonnet 4.6 (30)",
+      "company": "Anthropic",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-02-22",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "Anthropic",
+      "model": "Sonnet 4.6 (Feb 2026)",
+      "index": 30.1,
+      "d_index": 0.45410628019323673,
+      "d_price": 0.954801458748034
+    },
+    {
+      "week": "2026-03-01",
+      "anthropic": 0.08450790409249108,
+      "openai": 0.07823482001646966,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-03-01",
+      "anthropic": null,
+      "openai": null,
+      "release": "GPT-5.3 (32)",
+      "company": "OpenAI",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-03-01",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "OpenAI",
+      "model": "GPT-5.3 (Mar 2026)",
+      "index": 32.5,
+      "d_index": 0.06907894736842102,
+      "d_price": null
+    },
+    {
+      "week": "2026-03-08",
+      "anthropic": 0.07466964007028187,
+      "openai": 0.06703379648488382,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-03-08",
+      "anthropic": null,
+      "openai": null,
+      "release": "GPT-5.4 (39)",
+      "company": "OpenAI",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-03-08",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "OpenAI",
+      "model": "GPT-5.4 (Mar 2026)",
+      "index": 39.0,
+      "d_index": 0.19999999999999996,
+      "d_price": null
+    },
+    {
+      "week": "2026-03-15",
+      "anthropic": 0.09348957631766627,
+      "openai": 0.0638557462762465,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-03-22",
+      "anthropic": 0.11505622730387274,
+      "openai": 0.06674166308870964,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-03-29",
+      "anthropic": 0.08023704305175273,
+      "openai": 0.03260378039484724,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-04-05",
+      "anthropic": 0.09093049865076108,
+      "openai": 0.02515842964976231,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-04-12",
+      "anthropic": 0.07870018800745665,
+      "openai": 0.02209925516476877,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-04-19",
+      "anthropic": 0.08216710267292879,
+      "openai": 0.03941763313491179,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-04-19",
+      "anthropic": null,
+      "openai": null,
+      "release": "Opus 4.7 (41)",
+      "company": "Anthropic",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-04-19",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "Anthropic",
+      "model": "Opus 4.7 (Apr 2026)",
+      "index": 40.7,
+      "d_index": 0.27586206896551735,
+      "d_price": -0.7002417739209661
+    },
+    {
+      "week": "2026-04-26",
+      "anthropic": 0.09423730286236635,
+      "openai": 0.047573131142437254,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-04-26",
+      "anthropic": null,
+      "openai": null,
+      "release": "GPT-5.5 (38)",
+      "company": "OpenAI",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-04-26",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "OpenAI",
+      "model": "GPT-5.5 (Apr 2026)",
+      "index": 38.4,
+      "d_index": -0.015384615384615441,
+      "d_price": 1.1077460990835322
+    },
+    {
+      "week": "2026-05-03",
+      "anthropic": 0.08382671846157148,
+      "openai": 0.06308106887341393,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-05-10",
+      "anthropic": 0.059535018834575563,
+      "openai": 0.04685989341747984,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-05-17",
+      "anthropic": 0.047736425995198326,
+      "openai": 0.03987775807921216,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-05-24",
+      "anthropic": 0.03935191144676944,
+      "openai": 0.03738286444528667,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-05-31",
+      "anthropic": 0.04063861271863111,
+      "openai": 0.009268325340720453,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-05-31",
+      "anthropic": null,
+      "openai": null,
+      "release": "Opus 4.8 (42)",
+      "company": "Anthropic",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-05-31",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "Anthropic",
+      "model": "Opus 4.8 (May 2026)",
+      "index": 41.8,
+      "d_index": 0.027027027027026973,
+      "d_price": -0.09953020908309307
+    },
+    {
+      "week": "2026-06-07",
+      "anthropic": 0.039908905408038646,
+      "openai": 0.03863533291784061,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-06-14",
+      "anthropic": 0.06364921935008513,
+      "openai": 0.0512264828843506,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-06-14",
+      "anthropic": null,
+      "openai": null,
+      "release": "Fable 5 (50)",
+      "company": "Anthropic",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-06-14",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "Anthropic",
+      "model": "Fable 5 (Jun 2026)",
+      "index": 49.6,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-06-21",
+      "anthropic": 0.044708830231450246,
+      "openai": 0.02835643505906311,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-06-28",
+      "anthropic": 0.027954335377189964,
+      "openai": 0.0340575857089528,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-07-05",
+      "anthropic": 0.027706606984319728,
+      "openai": 0.013786329526554281,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-07-05",
+      "anthropic": null,
+      "openai": null,
+      "release": "Sonnet 5 (38)",
+      "company": "Anthropic",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-07-05",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "Anthropic",
+      "model": "Sonnet 5 (Jul 2026)",
+      "index": 38.2,
+      "d_index": 0.2691029900332227,
+      "d_price": -0.7304445952481277
+    },
+    {
+      "week": "2026-07-12",
+      "anthropic": -0.0008591445467994839,
+      "openai": -0.0043997005241049065,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-07-12",
+      "anthropic": null,
+      "openai": null,
+      "release": "GPT-5.6 (47)",
+      "company": "OpenAI",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-07-12",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "OpenAI",
+      "model": "GPT-5.6 (Jul 2026)",
+      "index": 47.0,
+      "d_index": 0.22395833333333348,
+      "d_price": -0.804576299014994
+    },
+    {
+      "week": "2026-07-19",
+      "anthropic": 0.03148686837079494,
+      "openai": 0.00826803059675174,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-07-26",
+      "anthropic": 0.03394476837785253,
+      "openai": 0.020797527841365102,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-07-26",
+      "anthropic": null,
+      "openai": null,
+      "release": "Opus 5 (51)",
+      "company": "Anthropic",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-07-26",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "Anthropic",
+      "model": "Opus 5 (Jul 2026)",
+      "index": 50.8,
+      "d_index": 0.21531100478468912,
+      "d_price": -0.3521129531168058
+    },
+    {
+      "week": "2026-08-02",
+      "anthropic": 0.05884313154283635,
+      "openai": 0.05180037463089283,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-08-09",
+      "anthropic": 0.06744794366230936,
+      "openai": 0.06754788320891056,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-08-16",
+      "anthropic": 0.033702605634943684,
+      "openai": 0.03879299699004165,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-08-23",
+      "anthropic": 0.04894909995132333,
+      "openai": 0.04623028644999128,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-08-30",
+      "anthropic": -0.017115574678795705,
+      "openai": -0.06323557693379711,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-09-06",
+      "anthropic": -0.04257472069892085,
+      "openai": -0.09125342522319553,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-09-06",
+      "anthropic": null,
+      "openai": null,
+      "release": "Fable 5.1 (53)",
+      "company": "Anthropic",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-09-06",
+      "anthropic": null,
+      "openai": null,
+      "release": "GPT-6 (53)",
+      "company": "OpenAI",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-09-06",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "Anthropic",
+      "model": "Fable 5.1 (Sep 2026)",
+      "index": 53.4,
+      "d_index": 0.0766129032258065,
+      "d_price": -0.2556973638260863
+    },
+    {
+      "week": "2026-09-06",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "OpenAI",
+      "model": "GPT-6 (Sep 2026)",
+      "index": 52.7,
+      "d_index": 0.12127659574468086,
+      "d_price": 0.8752479781167259
+    },
+    {
+      "week": "2026-09-13",
+      "anthropic": -0.05992074310679055,
+      "openai": -0.08447171422346358,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-09-20",
+      "anthropic": -0.0513081692362366,
+      "openai": -0.07464485053085163,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-09-27",
+      "anthropic": 0.038626746342670486,
+      "openai": 0.021918406526637096,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-09-27",
+      "anthropic": null,
+      "openai": null,
+      "release": "Opus 5.5 (58)",
+      "company": "Anthropic",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-09-27",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "Anthropic",
+      "model": "Opus 5.5 (Sep 2026)",
+      "index": 57.6,
+      "d_index": 0.13385826771653542,
+      "d_price": -0.5852054146397239
+    },
+    {
+      "week": "2026-10-04",
+      "anthropic": 0.07399649674566047,
+      "openai": 0.05031590469834823,
+      "release": null,
+      "company": null,
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-10-04",
+      "anthropic": null,
+      "openai": null,
+      "release": "Sonnet 5.5 (56)",
+      "company": "Anthropic",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-10-04",
+      "anthropic": null,
+      "openai": null,
+      "release": "GPT-6.1 (52)",
+      "company": "OpenAI",
+      "model": null,
+      "index": null,
+      "d_index": null,
+      "d_price": null
+    },
+    {
+      "week": "2026-10-04",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "Anthropic",
+      "model": "Sonnet 5.5 (Oct 2026)",
+      "index": 56.0,
+      "d_index": 0.46596858638743455,
+      "d_price": -0.8476846903122601
+    },
+    {
+      "week": "2026-10-04",
+      "anthropic": null,
+      "openai": null,
+      "release": null,
+      "company": "OpenAI",
+      "model": "GPT-6.1 (Oct 2026)",
+      "index": 51.8,
+      "d_index": -0.017077798861480198,
+      "d_price": -0.8114698130610972
+    }
+  ],
+  "takeaway": [
+    "Since Mar 2025 Anthropic listed 15 new model lines and OpenAI 12. Of 24 that can be compared with an earlier model of the same kind, 20 scored higher, 4 about the same and 0 lower; of the 15 with a price for both, 10 cost less per task.",
+    "The two growth lines move together (match +0.74 over 84 weeks), so the swings are mostly the market's."
+  ],
+  "assumptions": [
+    "A release is the first time a numbered model line (Opus 4.1, GPT-5, o3) appears on OpenRouter's public list, the same rule for both companies; a variant such as Mini, Pro or Codex is not a new release. The date is when OpenRouter listed it, which can run a few days after the announcement.",
+    "Each growth line is the average of the last four weekly growth rates. The chart starts 12 weeks before Anthropic's first listed release: earlier weeks are launch-era growth that would flatten the rest.",
+    "A model line is a numbered release (Opus 4.5, GPT-5.2). Each line is scored by its best-scoring model in Artificial Analysis's Intelligence Index, relayed by OpenRouter; the table names that model.",
+    "Price per task is what one GPQA Diamond question (graduate-level science) cost OpenRouter to run on that model, reasoning tokens included, in US cents. It is not a general business task, and a model OpenRouter has not evaluated has none.",
+    "Each model is compared with the previous line of the same kind (Opus after Opus, GPT after GPT, o after o). A line with no earlier one, or whose earlier line has no score, or where one best model is a Mini or Nano and the other is not, is not compared.",
+    "Scores and prices are as collected on the dates shown, not as at each release. A score within 3%, or a price within 10%, of the earlier model reads as the same.",
+    "Weeks run Monday to Sunday and only complete weeks are used.",
+    "Correlation is not cause. A lead shows what moved first, not why.",
+    "Download spikes are removed as on the Developer Adoption page (a day above 10 times the median around it). A week left with 5 or 6 clean days is scaled to 7; with fewer it is dropped."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "signal.releases",
+  "page": "signal",
+  "as_of": "2026-10-06",
+  "sources": [
+    {
+      "source": "pypi_downloads",
+      "label": "PyPI downloads (ClickHouse public PyPI dataset)",
+      "url": "https://sql-clickhouse.clickhouse.com/",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "npm_downloads",
+      "label": "npm registry download counts",
+      "url": "https://api.npmjs.org/downloads/range/2025-09-29:2026-10-04/@anthropic-ai/sdk",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "model_releases",
+      "label": "OpenRouter's public list of models",
+      "url": "https://openrouter.ai/openai/gpt-6.1-sol-pro",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-09-29",
+      "retrieved_at": "2026-10-07T01:56:18Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "openrouter_benchmarks",
+      "label": "OpenRouter benchmark feed (Artificial Analysis Intelligence Index and OpenRouter's own evaluation)",
+      "url": "https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-10-06",
+      "retrieved_at": "2026-10-06T03:57:28Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "arena_text_leaderboard",
+      "label": "Arena text leaderboard",
+      "url": "https://arena.ai/leaderboard/text?styleControl=off",
+      "method": "scrape",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-10-02",
+      "retrieved_at": "2026-10-07T02:49:05Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-07T03:21:57Z"
+}

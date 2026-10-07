@@ -8,15 +8,19 @@ import json
 import os
 import re
 import time
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Annotated
 
 from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from itsdangerous import BadSignature, URLSafeTimedSerializer
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, StringConstraints
 
+from app.db_store import DbStore
+from app.refresh import Refresher
 from contracts import freshness as freshness_rule
 from pipeline.core.companies import load_companies
 
@@ -32,14 +36,38 @@ class Login(BaseModel):
     password: str
 
 
-def create_app(data_dir: Path | None = None, frontend_dir: Path | None = None) -> FastAPI:
+class RefreshRequest(BaseModel):
+    only: list[Annotated[str, StringConstraints(pattern=r"^[a-z0-9_]+$", max_length=64)]] = Field(
+        default=[], max_length=64
+    )
+
+
+def refresh_everything(db: Path, progress: Callable[[dict], None], only: list[str] | None) -> dict:
+    """What the refresh button runs: every source again (or just `only`), then a new SQLite file that replaces this one only if it is sound."""
+    from pipeline import offline  # imported on the first press: reading the file needs no collectors
+
+    return offline.refresh(ROOT, db, only=only, rebuild_web=False, progress=progress)
+
+
+def create_app(
+    data_dir: Path | None = None,
+    frontend_dir: Path | None = None,
+    db: Path | None = None,
+    refresh: Callable[[Path, Callable[[dict], None], list[str] | None], dict] | None = None,
+) -> FastAPI:
     """data_dir (or DATA_DIR) is the pipeline's data/: marts/ plus registry.json, written by `pipeline.build`.
 
     Unset means the Phase 0 fixtures. Their clock is pinned to the registry's generated_at so the Sample page keeps
     showing every freshness state; with real data, freshness is recomputed against the current time on every request.
+
+    db (or DATA_DB) is the offline SQLite file written by `python -m pipeline.offline`: the charts and the registry are read from it
+    instead of from data_dir, so a machine with no internet needs nothing else. With a file, the dashboard's Refresh button fetches
+    every source again and swaps in a new file (`refresh` is that job; the default is pipeline.offline.refresh).
     """
+    store = DbStore(db or os.environ["DATA_DB"]) if db or os.environ.get("DATA_DB") else None
     data_dir = Path(data_dir or os.environ.get("DATA_DIR") or FIXTURES)
-    pinned_clock = data_dir.resolve() == FIXTURES.resolve()
+    refresher = Refresher(store.path, refresh or refresh_everything) if store else None
+    pinned_clock = not store and data_dir.resolve() == FIXTURES.resolve()
     marts_dir, registry_file = data_dir / "marts", data_dir / "registry.json"
     frontend_dir = Path(frontend_dir or os.environ.get("FRONTEND_DIR") or ROOT / "frontend" / "dist")
 
@@ -101,9 +129,9 @@ def create_app(data_dir: Path | None = None, frontend_dir: Path | None = None) -
     # --- data (all behind the session) ---
     def load_registry() -> dict[str, dict]:
         """Sources from registry.json with freshness recomputed now, so a stalled pipeline shows without a rebuild."""
-        if not registry_file.is_file():
+        reg = store.registry() if store else json.loads(registry_file.read_text()) if registry_file.is_file() else None
+        if not reg:
             return {}
-        reg = json.loads(registry_file.read_text())
         now = datetime.fromisoformat(reg["generated_at"]) if pinned_clock else datetime.now(UTC)
         return {
             s["id"]: {
@@ -122,7 +150,7 @@ def create_app(data_dir: Path | None = None, frontend_dir: Path | None = None) -
         return mart
 
     def load_marts() -> list[dict]:
-        return [json.loads(p.read_text()) for p in sorted(marts_dir.glob("*.json"))]
+        return store.charts() if store else [json.loads(p.read_text()) for p in sorted(marts_dir.glob("*.json"))]
 
     @app.get("/api/marts", dependencies=[Depends(require_session)])
     def list_marts():
@@ -131,13 +159,33 @@ def create_app(data_dir: Path | None = None, frontend_dir: Path | None = None) -
     @app.get("/api/marts/{mart_id}", dependencies=[Depends(require_session)])
     def get_mart(mart_id: str):
         path = marts_dir / f"{mart_id}.json"
-        if not MART_ID.match(mart_id) or not path.is_file():  # the pattern also blocks path traversal
+        valid = MART_ID.match(mart_id)  # the pattern also blocks path traversal
+        mart = (
+            (store.chart(mart_id) if store else json.loads(path.read_text()) if path.is_file() else None)
+            if valid
+            else None
+        )
+        if mart is None:
             raise HTTPException(404, "No such chart")
-        return live(json.loads(path.read_text()), load_registry())
+        return live(mart, load_registry())
 
     @app.get("/api/freshness", dependencies=[Depends(require_session)])
     def freshness():
         return {sid: {k: s[k] for k in ("freshness", "retrieved_at", "as_of")} for sid, s in load_registry().items()}
+
+    # --- the Refresh button: only when serving from a SQLite file ---
+    if refresher:
+
+        @app.get("/api/refresh", dependencies=[Depends(require_session)])
+        def refresh_status():
+            data = {k: v for k, v in store.meta().items() if k in ("packed_at", "observations", "charts")}
+            return {**refresher.status(), "data": data}
+
+        @app.post("/api/refresh", status_code=202, dependencies=[Depends(require_session)])
+        def refresh_start(body: RefreshRequest | None = None):
+            if not refresher.start(body.only if body else None):
+                raise HTTPException(409, "A refresh is already running")
+            return refresh_status()
 
     @app.get("/api/companies", dependencies=[Depends(require_session)])
     def companies():

@@ -54,6 +54,7 @@ Nothing runs on a schedule (R19); Hot Pick and analysis run on demand.
 | # | Implementation | Branch | Status |
 |---|---|---|---|
 | 4.1 | Bull / Bear / Neutral reporters, gates, page, `/run-analysis` (on demand) | `p4/ai-analysis` | ☐ |
+| 4.2 | Offline SQLite store: fetch every source once, serve the dashboard from one file, Refresh data button with rollback, parallel fetch, retry failed | `p4/offline-store` | ✓ merged (#36, #37) |
 
 ## Phase 5: Team release ☐
 | # | Implementation | Branch | Status |

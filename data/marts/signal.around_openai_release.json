@@ -1,0 +1,241 @@
+{
+  "title": "OpenAI's and Anthropic's SDK growth around an OpenAI model release",
+  "subtitle": "Bars: OpenAI's average weekly growth in each week around its releases. Line: Anthropic's over the same weeks, as the market. Shaded: the middle 95% of random weeks for OpenAI.",
+  "kind": "combo",
+  "layers": [
+    {
+      "mark": "band",
+      "name": "Random weeks",
+      "y_low": "low",
+      "y_high": "high"
+    },
+    {
+      "mark": "bar",
+      "name": "OpenAI",
+      "y": "growth"
+    },
+    {
+      "mark": "line",
+      "name": "Anthropic",
+      "y": "other"
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "week",
+      "type": "ordinal",
+      "label": "Weeks from the release"
+    },
+    "y": {
+      "field": "growth",
+      "type": "quantitative",
+      "label": "Average weekly growth",
+      "format": "pct"
+    }
+  },
+  "columns": [
+    {
+      "field": "week",
+      "label": "Weeks from release",
+      "format": "text"
+    },
+    {
+      "field": "growth",
+      "label": "OpenAI average growth",
+      "format": "pct"
+    },
+    {
+      "field": "other",
+      "label": "Anthropic average growth",
+      "format": "pct"
+    },
+    {
+      "field": "low",
+      "label": "Random weeks, low",
+      "format": "pct"
+    },
+    {
+      "field": "high",
+      "label": "Random weeks, high",
+      "format": "pct"
+    }
+  ],
+  "rows": [
+    {
+      "week": "-4",
+      "growth": 0.06364001253852533,
+      "other": 0.08042502510516462,
+      "low": -0.026585583291775034,
+      "high": 0.08095014339135909
+    },
+    {
+      "week": "-3",
+      "growth": 0.06576265135351003,
+      "other": 0.08198026231313917,
+      "low": -0.027895296395689856,
+      "high": 0.07948037533743145
+    },
+    {
+      "week": "-2",
+      "growth": -0.0013778636773270523,
+      "other": 0.05314147536296203,
+      "low": -0.028220285828244582,
+      "high": 0.07965211459648827
+    },
+    {
+      "week": "-1",
+      "growth": 0.04807133545770173,
+      "other": 0.05237141951957402,
+      "low": -0.029745196264853103,
+      "high": 0.07878715438335814
+    },
+    {
+      "week": "0",
+      "growth": 0.0337423808146422,
+      "other": 0.06444515593896162,
+      "low": -0.025489122551562587,
+      "high": 0.07766811105138495
+    },
+    {
+      "week": "+1",
+      "growth": 0.0008480774649106075,
+      "other": 0.020006441662045207,
+      "low": -0.028806753699887645,
+      "high": 0.07718779413854446
+    },
+    {
+      "week": "+2",
+      "growth": -0.022262613250678406,
+      "other": 0.017574669277675137,
+      "low": -0.029951796553590326,
+      "high": 0.07586904886483284
+    },
+    {
+      "week": "+3",
+      "growth": 0.06780606333260973,
+      "other": 0.10279474089198247,
+      "low": -0.026885939971868094,
+      "high": 0.07673478137813496
+    },
+    {
+      "week": "+4",
+      "growth": 0.06929107426802358,
+      "other": 0.06273271513875028,
+      "low": -0.028419457947147266,
+      "high": 0.0759352149222385
+    },
+    {
+      "week": "+5",
+      "growth": 0.0018834715939082258,
+      "other": 0.04991598688862841,
+      "low": -0.027500451833656875,
+      "high": 0.0771698802594114
+    },
+    {
+      "week": "+6",
+      "growth": -0.025223764233139757,
+      "other": 0.00405541285301099,
+      "low": -0.029568600932029076,
+      "high": 0.07698222994454323
+    },
+    {
+      "week": "+7",
+      "growth": 0.030710660691023763,
+      "other": 0.08943029226102649,
+      "low": -0.032527755075184024,
+      "high": 0.07508360334894575
+    },
+    {
+      "week": "+8",
+      "growth": 0.07334763424872003,
+      "other": 0.08895701525183629,
+      "low": -0.03500564595196307,
+      "high": 0.07486710996247453
+    },
+    {
+      "week": "+9",
+      "growth": 0.004396551844263705,
+      "other": 0.007386758765679957,
+      "low": -0.03634420108216525,
+      "high": 0.07276654220983818
+    },
+    {
+      "week": "+10",
+      "growth": 0.04007424902653366,
+      "other": 0.04246885329437333,
+      "low": -0.035866229946345196,
+      "high": 0.07312698635381348
+    },
+    {
+      "week": "+11",
+      "growth": 0.03359435506808191,
+      "other": 0.0718328341396791,
+      "low": -0.033477374175403425,
+      "high": 0.07642364027595336
+    },
+    {
+      "week": "+12",
+      "growth": 0.02547649554726241,
+      "other": 0.042688227922258744,
+      "low": -0.03003700752501113,
+      "high": 0.0733611042049094
+    }
+  ],
+  "takeaway": [
+    "Across 11 OpenAI releases, no week fell outside what a random week shows.",
+    "In the weeks +4 to +8 OpenAI grew +15% after a release against +12% for random weeks (p 0.47); Anthropic grew +30% over the same weeks."
+  ],
+  "assumptions": [
+    "11 OpenAI releases had a full window. With so few, only a large and quick effect would show.",
+    "Growth is the weekly log change in PyPI plus npm downloads. If the bars and the line rise together after a release, that is the market (or the launch lifting both); if only the bars rise, it is the company's own.",
+    "The shaded band is the middle 95% of the same average taken over randomly chosen weeks from the same stretch of history as the releases (3,000 draws, fixed seed).",
+    "Weeks run Monday to Sunday and only complete weeks are used.",
+    "Correlation is not cause. A lead shows what moved first, not why."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "signal.around_openai_release",
+  "page": "signal",
+  "as_of": "2026-10-04",
+  "sources": [
+    {
+      "source": "pypi_downloads",
+      "label": "PyPI downloads (ClickHouse public PyPI dataset)",
+      "url": "https://sql-clickhouse.clickhouse.com/",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "npm_downloads",
+      "label": "npm registry download counts",
+      "url": "https://api.npmjs.org/downloads/range/2025-09-29:2026-10-04/@anthropic-ai/sdk",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "daily",
+      "as_of": "2026-10-04",
+      "retrieved_at": "2026-10-05T03:57:46Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "model_releases",
+      "label": "OpenRouter's public list of models",
+      "url": "https://openrouter.ai/openai/gpt-6.1-sol-pro",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-09-29",
+      "retrieved_at": "2026-10-07T01:56:18Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-07T02:25:52Z"
+}

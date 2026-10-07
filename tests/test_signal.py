@@ -6,7 +6,7 @@ import pandas as pd
 import pytest
 
 from pipeline.core import registry
-from pipeline.core.build import build_mart
+from pipeline.core.build import Ctx, build_mart
 from pipeline.marts import signal as sig
 from pipeline.sources import signal as src
 
@@ -126,6 +126,43 @@ def test_blocks_count_back_from_the_latest_week():
     assert sig.blocks(level).tolist() == [sum(range(5, 18)), sum(range(18, 31))]
 
 
+def test_a_release_is_a_new_numbered_model_line_not_a_variant():
+    assert [
+        sig.family(n)
+        for n in (
+            "GPT-5 Mini",
+            "GPT-5.1-Codex",
+            "o3 Pro",
+            "o4 Mini High",
+            "gpt-oss-120b",
+            "GPT Audio",
+            "Claude Opus 4.1",
+        )
+    ] == [
+        "GPT-5",
+        "GPT-5.1",
+        "o3",
+        "o4",
+        "gpt-oss",
+        None,
+        "Opus 4.1",
+    ]
+
+
+def test_only_the_first_listing_of_a_line_counts_as_its_release():
+    rows = [
+        obs("model_releases", "model_release", d, 1, "openai", model=f"openai/{n}", name=n)
+        for d, n in (
+            ("2025-08-07", "GPT-5"),
+            ("2025-08-07", "GPT-5 Mini"),
+            ("2025-10-06", "GPT-5 Pro"),
+            ("2025-11-13", "GPT-5.1"),
+        )
+    ]
+    got = sig.release_weeks(Ctx(rows, {}), "openai")
+    assert got == {pd.Timestamp("2025-08-10"): ["GPT-5"], pd.Timestamp("2025-11-16"): ["GPT-5.1"]}
+
+
 # ---- the sources ----
 
 
@@ -205,6 +242,21 @@ def world(jump=False) -> dict[str, list[dict]]:
         )
         for i, d in enumerate(pd.date_range("2025-03-03", "2026-09-21", freq="7D"))
     ]
+    for i, d in enumerate(
+        pd.date_range("2024-02-04", periods=20, freq="40D")
+    ):  # OpenAI: a line, its Mini variant, and an unversioned name
+        for name in (f"GPT-{i}", f"GPT-{i} Mini", "GPT Audio"):
+            rows["model_releases"].append(
+                obs(
+                    "model_releases",
+                    "model_release",
+                    d.date().isoformat(),
+                    1,
+                    "openai",
+                    model=f"openai/{name}",
+                    name=name,
+                )
+            )
     for d in pd.date_range("2025-05-25", periods=12, freq="40D"):
         rows["model_releases"].append(
             obs(
@@ -253,9 +305,13 @@ def test_a_chart_without_its_data_says_it_is_waiting_not_that_nothing_was_found(
 def test_the_release_chart_marks_each_release_week_once_and_names_it():
     spec = build_mart(registry.MARTS["signal.releases"], world(), NOW)
     marked = [r for r in spec["rows"] if r["release"]]
-    assert len(marked) == 12 and all(r["company"] == "Anthropic" for r in marked)
-    assert all(r["downloads"] > 0 for r in spec["rows"])
-    assert spec["rows"][0]["week"] >= "2025-03-01"  # starts 12 weeks before the first release, not at launch
+    mine = [r for r in marked if r["company"] == "Anthropic"]
+    theirs = [r for r in marked if r["company"] == "OpenAI"]
+    assert len(mine) == 12 and 0 < len(theirs) < 20  # the Mini variants and the unversioned name are not releases
+    assert all(r["release"].startswith("GPT-") and "Mini" not in r["release"] for r in theirs)
+    assert spec["rows"][0]["week"] >= "2025-03-01"  # starts 12 weeks before the first Anthropic release, not at launch
+    growth = [r for r in spec["rows"] if not r["release"]]
+    assert all(r["anthropic"] is not None or r["openai"] is not None for r in growth)
 
 
 def test_a_planted_lead_reaches_the_tested_chart_and_the_nulls_stay_not_supported():
@@ -275,3 +331,26 @@ def test_a_planted_lead_reaches_the_tested_chart_and_the_nulls_stay_not_supporte
         and top["verdict"] != sig.UNSUPPORTED
     )
     assert sum(r["verdict"] == sig.UNSUPPORTED for r in spec["rows"]) >= len(spec["rows"]) // 2
+
+
+def test_every_comparison_chart_carries_openai_so_a_move_reads_as_company_or_market():
+    for mart_id, releaser in (("signal.around_release", "Anthropic"), ("signal.around_openai_release", "OpenAI")):
+        spec = build_mart(registry.MARTS[mart_id], world(), NOW)
+        drawn = {layer["name"] for layer in spec["layers"] if layer["mark"] in ("bar", "line")}
+        assert drawn == {"Anthropic", "OpenAI"} and releaser in spec["title"]
+        assert all(r["other"] is not None for r in spec["rows"])
+        assert "over the same weeks" in spec["takeaway"][1]  # the other company, as the market
+    for mart_id in ("signal.releases", "signal.valuation"):
+        spec = build_mart(registry.MARTS[mart_id], world(), NOW)
+        assert {layer["name"] for layer in spec["layers"] if layer["mark"] == "line"} == {"Anthropic", "OpenAI"}
+    steps = build_mart(registry.MARTS["signal.valuation_steps"], world(), NOW)
+    assert {"Anthropic", "OpenAI"} <= {r["signal"] for r in steps["rows"]}
+    gap = build_mart(registry.MARTS["signal.vs_openai"], world(), NOW)
+    assert "Anthropic's own" in gap["takeaway"][1] or "market outgrew" in gap["takeaway"][1]
+
+
+def test_both_lead_charts_name_a_pair_and_say_what_a_lead_is():
+    for mart_id, edge in (("signal.lead_lag", False), ("signal.lead_lag_edge", True)):
+        spec = build_mart(registry.MARTS[mart_id], world(), NOW)
+        assert ("(vs OpenAI)" in spec["subtitle"]) == edge
+        assert any("A lead is one signal moving first" in a for a in spec["assumptions"])

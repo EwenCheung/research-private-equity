@@ -9,6 +9,8 @@ surrogate series give by chance (same autocorrelation, random timing), and corre
 A fixed seed makes every run identical.
 """
 
+import re
+
 import numpy as np
 import pandas as pd
 
@@ -26,7 +28,9 @@ MIN_WEEKS, MIN_PAIRS, MIN_EVENTS = 60, 40, 6
 RECENT = (
     8  # periods of 13 weeks shown against OpenAI: the launch years' triple-digit growth would flatten everything after
 )
-FINDING, HYPOTHESIS, UNSUPPORTED = "Finding", "Hypothesis", "Not supported"
+FINDING, HYPOTHESIS, UNSUPPORTED = "Holds up", "Possible", "Could be luck"
+WHO = {ME: "Anthropic", PEER: "OpenAI"}
+VERSION = re.compile(r"(?i)^(gpt-?\d+(?:\.\d+)?|o\d+|gpt-oss)")
 LABEL = {
     "pypi": "PyPI downloads",
     "npm": "npm downloads",
@@ -259,24 +263,46 @@ def tested(ctx) -> list[dict]:
 
 
 def pair_name(t: dict) -> str:
-    rel = "relative to OpenAI: " if t["basis"] == "relative" else ""
-    return f"{rel}{LABEL[t['x']]} → {LABEL[t['y']]}"
+    """ "Wikipedia: product article → PyPI downloads"; (vs OpenAI) marks Anthropic's growth minus OpenAI's, which is what is left once the market's moves cancel."""
+    sfx = " (vs OpenAI)" if t["basis"] == "relative" else ""
+    return f"{LABEL[t['x']]}{sfx} → {LABEL[t['y']]}{sfx}"
 
 
 # ---- events ----
 
 
+def family(name: str) -> str | None:
+    """The numbered model line a listed name belongs to, so "GPT-5 Mini" and "GPT-5 Pro" are GPT-5, or None when the name has no version."""
+    name = name.removeprefix("Claude ")
+    m = VERSION.match(name)
+    return m.group(1) if m else name if re.search(r"\d", name) else None
+
+
 def release_weeks(ctx, ent: str) -> dict[pd.Timestamp, list[str]]:
-    """The weeks a company released a model, with each model's name."""
+    """The weeks a company first listed a new model line, with each line's name; a variant of a line already listed is not a release."""
     df = latest(dims(ctx.obs(metric="model_release", entity=ent), "model", "name"), keys=("entity", "model"))
+    seen: set[str] = set()
     out: dict[pd.Timestamp, list[str]] = {}
-    for r in df.itertuples():
-        out.setdefault(week_end(r.as_of), []).append(str(r.name).removeprefix("Claude "))
+    for r in df.sort_values(["as_of", "name"]).itertuples():
+        key = family(str(r.name))
+        if key and key.lower() not in seen:
+            seen.add(key.lower())
+            out.setdefault(week_end(r.as_of), []).append(key)
     return dict(sorted(out.items()))
 
 
-def event_profile(g: pd.Series, events: list, seed: int = SEED, draws: int = 3000) -> dict | None:
-    """Average growth in each week around the events, against the average of the same weeks around randomly chosen weeks."""
+def smoothed(level: pd.Series) -> pd.Series:
+    """Average weekly growth over the last four weeks, so a one-week blip is spread over a month."""
+    return np.expm1(growth(level).rolling(4, min_periods=4).mean()).dropna()
+
+
+def event_profile(
+    g: pd.Series, events: list, other: pd.Series | None = None, seed: int = SEED, draws: int = 3000
+) -> dict | None:
+    """Average growth in each week around the events, against the average of the same weeks around randomly chosen weeks.
+
+    `other` is a second company's growth, averaged over the same weeks as a market check.
+    """
     idx = pd.date_range(g.index.min(), g.index.max(), freq="W-SUN")
     a, pos = g.reindex(idx).to_numpy(), {d: i for i, d in enumerate(idx)}
     off = np.array(list(OFFSETS))
@@ -294,7 +320,7 @@ def event_profile(g: pd.Series, events: list, seed: int = SEED, draws: int = 300
     month = (off >= 4) & (off <= 8)
     c_obs, c_null = obs[month].sum(), null[:, month].sum(axis=1)
     c_mid = c_null.mean()
-    return {
+    out = {
         "events": len(ev),
         "obs": obs,
         "low": np.percentile(null, 2.5, axis=0),
@@ -303,6 +329,10 @@ def event_profile(g: pd.Series, events: list, seed: int = SEED, draws: int = 300
         "month_random": c_mid,
         "p": float((1 + (abs(c_null - c_mid) >= abs(c_obs - c_mid)).sum()) / (draws + 1)),
     }
+    if other is not None:
+        market = np.nanmean(other.reindex(idx).to_numpy()[ev[:, None] + off[None, :]], axis=0)
+        out |= {"other": market, "other_month": market[month].sum()}
+    return out
 
 
 def blocks(level: pd.Series, size: int = 13) -> pd.Series:
@@ -347,51 +377,155 @@ def empty(title: str, subtitle: str) -> dict:
 
 @mart(id="signal.releases", sources=[*USAGE, "model_releases"])
 def releases(ctx):
-    title = "Claude model releases over weekly growth in SDK downloads"
-    sub = "Weekly growth in Anthropic's SDK downloads (PyPI plus npm, 4-week average); each line is a model Anthropic released."
-    level, rel = sdk(ctx, ME), release_weeks(ctx, ME)
-    if level is None or not rel:
+    title = "Model releases over weekly growth in SDK downloads, Anthropic and OpenAI"
+    sub = (
+        "Weekly growth in each company's SDK downloads (PyPI plus npm, 4-week average). "
+        "Each vertical line is a new model line the company listed, in the company's colour."
+    )
+    a, o = sdk(ctx, ME), sdk(ctx, PEER)
+    rel = {ME: release_weeks(ctx, ME), PEER: release_weeks(ctx, PEER)}
+    if a is None or o is None or not rel[ME]:
         return empty(title, sub)
-    named = {w: ", ".join(n) for w, n in rel.items() if level.index.min() <= w <= level.index.max()}
-    smooth = np.expm1(growth(level).rolling(4, min_periods=4).mean()).dropna()
-    start = min(rel) - pd.Timedelta(weeks=12)
+    sa, so = smoothed(a), smoothed(o)
+    start = min(rel[ME]) - pd.Timedelta(weeks=12)
+    weeks = sorted(w for w in set(sa.index) | set(so.index) if w >= start)
     rows = [
         {
             "week": w.date().isoformat(),
-            "growth": float(g),
-            "downloads": int(level[w]),
-            "release": named.get(w),
-            "company": "Anthropic" if w in named else None,
+            "anthropic": float(sa[w]) if w in sa.index else None,
+            "openai": float(so[w]) if w in so.index else None,
+            "release": None,
+            "company": None,
         }
-        for w, g in smooth[smooth.index >= start].items()
+        for w in weeks
     ]
+    count = {}
+    for ent in (ME, PEER):
+        shown = {w: n for w, n in rel[ent].items() if start <= w <= weeks[-1]}
+        count[ent] = sum(len(n) for n in shown.values())
+        rows += [
+            {
+                "week": w.date().isoformat(),
+                "anthropic": None,
+                "openai": None,
+                "release": ", ".join(n),
+                "company": WHO[ent],
+            }
+            for w, n in shown.items()
+        ]
+    rows.sort(key=lambda r: r["week"])
+    both = pd.concat([sa[sa.index >= start], so[so.index >= start]], axis=1, join="inner").dropna()
+    together = float(ranked(both.iloc[:, 0]).corr(ranked(both.iloc[:, 1])))
+    how = (
+        "mostly the market's"
+        if together >= 0.6
+        else "partly the market's"
+        if together >= 0.3
+        else "mostly each company's own"
+    )
     return {
         "title": title,
         "subtitle": sub,
         "kind": "combo",
         "layers": [
-            {"mark": "line", "name": "Anthropic", "y": "growth"},
-            {"mark": "rule", "name": "Anthropic release", "label": "release", "series": "company"},
+            {"mark": "line", "name": "Anthropic", "y": "anthropic"},
+            {"mark": "line", "name": "OpenAI", "y": "openai"},
+            {"mark": "rule", "name": "Release", "label": "release", "series": "company"},
         ],
         "encoding": {
             "x": {"field": "week", "type": "temporal", "label": "Week ending"},
-            "y": {"field": "growth", "type": "quantitative", "label": "Average weekly growth", "format": "pct"},
+            "y": {"field": "anthropic", "type": "quantitative", "label": "Average weekly growth", "format": "pct"},
         },
         "columns": [
             col("week", "Week ending", "date"),
-            col("growth", "Growth, 4-week average", "pct"),
-            col("downloads", "SDK downloads that week", "int"),
-            col("release", "Model released", "text"),
+            col("anthropic", "Anthropic SDK growth", "pct"),
+            col("openai", "OpenAI SDK growth", "pct"),
+            col("release", "Model line released", "text"),
             col("company", "Company", "text"),
         ],
         "rows": rows,
         "takeaway": [
-            f"{sum(len(n) for n in rel.values())} Anthropic models were listed in {len(named)} weeks since {month_label(min(rel))}; each is drawn over the growth line so you can judge it."
+            (
+                f"Since {month_label(start)} Anthropic listed {count[ME]} new model lines and OpenAI {count[PEER]}. "
+                "A jump in both lines is the market; a jump in one is that company's own."
+            ),
+            f"The two growth lines move together (match {together:+.2f} over {len(both)} weeks), so the swings are {how}.",
         ],
         "assumptions": [
-            "A release is the date OpenRouter listed the model, which can run a few days after Anthropic's announcement, and its list starts in May 2025.",
-            "The line is the average of the last four weekly growth rates, so a one-week blip is spread over a month. The chart starts 12 weeks before the first release: earlier weeks are launch-era growth that would flatten the rest.",
+            "A release is the first time a numbered model line (Opus 4.1, GPT-5, o3) appears on OpenRouter's public list, the same rule for both companies; a variant such as Mini, Pro or Codex is not a new release. The date is when OpenRouter listed it, which can run a few days after the announcement.",
+            "Each line is the average of the last four weekly growth rates. The chart starts 12 weeks before Anthropic's first listed release: earlier weeks are launch-era growth that would flatten the rest.",
             SPIKE_NOTE,
+            *BASE_NOTES,
+        ],
+        "badges": ["arithmetic"],
+    }
+
+
+def around_chart(ctx, who: str, other: str) -> dict:
+    name, rival = WHO[who], WHO[other]
+    article = "an" if name[0] in "AEIOU" else "a"
+    title = f"{name}'s and {rival}'s SDK growth around {article} {name} model release"
+    sub = (
+        f"Bars: {name}'s average weekly growth in each week around its releases. Line: {rival}'s over the same weeks, as the market. "
+        f"Shaded: the middle 95% of random weeks for {name}."
+    )
+    mine, theirs = sdk(ctx, who), sdk(ctx, other)
+    rel = release_weeks(ctx, who)
+    result = (
+        event_profile(growth(mine), list(rel), other=growth(theirs))
+        if mine is not None and theirs is not None
+        else None
+    )
+    if result is None:
+        return empty(title, sub)
+    rows = [
+        {
+            "week": "0" if k == 0 else f"{k:+d}",
+            "growth": float(g),
+            "other": float(m),
+            "low": float(lo),
+            "high": float(hi),
+        }
+        for k, g, m, lo, hi in zip(OFFSETS, result["obs"], result["other"], result["low"], result["high"], strict=True)
+    ]
+    outside = [r["week"] for r in rows if not r["low"] <= r["growth"] <= r["high"]]
+    return {
+        "title": title,
+        "subtitle": sub,
+        "kind": "combo",
+        "layers": [
+            {"mark": "band", "name": "Random weeks", "y_low": "low", "y_high": "high"},
+            {"mark": "bar", "name": name, "y": "growth"},
+            {"mark": "line", "name": rival, "y": "other"},
+        ],
+        "encoding": {
+            "x": {"field": "week", "type": "ordinal", "label": "Weeks from the release"},
+            "y": {"field": "growth", "type": "quantitative", "label": "Average weekly growth", "format": "pct"},
+        },
+        "columns": [
+            col("week", "Weeks from release", "text"),
+            col("growth", f"{name} average growth", "pct"),
+            col("other", f"{rival} average growth", "pct"),
+            col("low", "Random weeks, low", "pct"),
+            col("high", "Random weeks, high", "pct"),
+        ],
+        "rows": rows,
+        "takeaway": [
+            f"Across {result['events']} {name} releases, "
+            + (
+                "no week fell outside what a random week shows."
+                if not outside
+                else f"weeks {', '.join(outside)} fell outside what a random week shows."
+            ),
+            (
+                f"In the weeks +4 to +8 {name} grew {pct(result['month'])} after a release against {pct(result['month_random'])} for random weeks "
+                f"(p {result['p']:.2f}); {rival} grew {pct(result['other_month'])} over the same weeks."
+            ),
+        ],
+        "assumptions": [
+            f"{result['events']} {name} releases had a full window. With so few, only a large and quick effect would show.",
+            "Growth is the weekly log change in PyPI plus npm downloads. If the bars and the line rise together after a release, that is the market (or the launch lifting both); if only the bars rise, it is the company's own.",
+            "The shaded band is the middle 95% of the same average taken over randomly chosen weeks from the same stretch of history as the releases (3,000 draws, fixed seed).",
             *BASE_NOTES,
         ],
         "badges": ["arithmetic"],
@@ -400,62 +534,19 @@ def releases(ctx):
 
 @mart(id="signal.around_release", sources=[*USAGE, "model_releases"])
 def around_release(ctx):
-    title = "Average weekly growth in SDK downloads around a model release"
-    sub = "Weeks before and after each Anthropic release, against what a randomly chosen week would show (shaded: the middle 95% of random weeks)."
-    level, rel = sdk(ctx, ME), release_weeks(ctx, ME)
-    result = event_profile(growth(level), list(rel)) if level is not None else None
-    if result is None:
-        return empty(title, sub)
-    off = list(OFFSETS)
-    rows = [
-        {"week": "0" if k == 0 else f"{k:+d}", "growth": float(g), "low": float(lo), "high": float(hi)}
-        for k, g, lo, hi in zip(off, result["obs"], result["low"], result["high"], strict=True)
-    ]
-    outside = [r["week"] for r in rows if not r["low"] <= r["growth"] <= r["high"]]
-    month = f"In the weeks +4 to +8 growth added up to {pct(result['month'])} after a release against {pct(result['month_random'])} for random weeks (p {result['p']:.2f})."
-    return {
-        "title": title,
-        "subtitle": sub,
-        "kind": "combo",
-        "layers": [
-            {"mark": "band", "name": "Random weeks", "y_low": "low", "y_high": "high"},
-            {"mark": "bar", "name": "After a release", "y": "growth"},
-        ],
-        "encoding": {
-            "x": {"field": "week", "type": "ordinal", "label": "Weeks from the release"},
-            "y": {"field": "growth", "type": "quantitative", "label": "Average weekly growth", "format": "pct"},
-        },
-        "columns": [
-            col("week", "Weeks from release", "text"),
-            col("growth", "Average growth", "pct"),
-            col("low", "Random weeks, low", "pct"),
-            col("high", "Random weeks, high", "pct"),
-        ],
-        "rows": rows,
-        "takeaway": [
-            f"Across {result['events']} releases, "
-            + (
-                "no week fell outside what a random week shows."
-                if not outside
-                else f"weeks {', '.join(outside)} fell outside what a random week shows."
-            ),
-            month,
-        ],
-        "assumptions": [
-            f"{result['events']} releases had a full window. With so few, only a large and quick effect would show.",
-            "Growth is the weekly log change in PyPI plus npm downloads.",
-            "The shaded band is the middle 95% of the same average taken over randomly chosen weeks from the same stretch of history as the releases (3,000 draws, fixed seed).",
-            *BASE_NOTES,
-        ],
-        "badges": ["arithmetic"],
-    }
+    return around_chart(ctx, ME, PEER)
+
+
+@mart(id="signal.around_openai_release", sources=[*USAGE, "model_releases"])
+def around_openai_release(ctx):
+    return around_chart(ctx, PEER, ME)
 
 
 @mart(id="signal.vs_openai", sources=USAGE)
 def vs_openai(ctx):
     title, sub = (
         "Anthropic's SDK downloads against OpenAI's",
-        "Growth over each 13 weeks against the 13 weeks before, for both companies; the bar is Anthropic minus OpenAI.",
+        "Growth over each 13 weeks against the 13 weeks before, for both companies; the bar is Anthropic minus OpenAI, so it is Anthropic's own part once the market is taken out.",
     )
     a, o = sdk(ctx, ME), sdk(ctx, PEER)
     if a is None or o is None:
@@ -471,6 +562,11 @@ def vs_openai(ctx):
         return empty(title, sub)
     ahead = sum(r["gap"] > 0 for r in rows)
     now = rows[-1]
+    split = (
+        f"Of Anthropic's {pct(now['anthropic'])}, {pct(now['openai'])} is what OpenAI also saw (the market) and {now['gap'] * 100:.0f} points are Anthropic's own."
+        if now["gap"] > 0
+        else f"OpenAI grew {-now['gap'] * 100:.0f} points more than Anthropic, so the market outgrew it."
+    )
     return {
         "title": title,
         "subtitle": sub,
@@ -495,10 +591,12 @@ def vs_openai(ctx):
             (
                 f"In the 13 weeks to {now['period']} Anthropic's SDK downloads grew {pct(now['anthropic'])} and OpenAI's {pct(now['openai'])}; "
                 f"Anthropic grew faster in {ahead} of {len(rows)} periods."
-            )
+            ),
+            split,
         ],
         "assumptions": [
             "A positive bar means Anthropic grew faster, or fell less, than OpenAI. Anthropic can be shrinking and still be ahead of a market that shrank more.",
+            "OpenAI stands in for the market: what both companies share is market growth, and the difference is Anthropic's own.",
             SPIKE_NOTE,
             f"The latest {RECENT} blocks of 13 weeks are shown, counted back from the latest complete week, so they do not line up with calendar quarters.",
             *BASE_NOTES,
@@ -507,60 +605,85 @@ def vs_openai(ctx):
     }
 
 
-@mart(id="signal.lead_lag", sources=[*USAGE, *ATTENTION, "github_coauthored_commits"])
-def lead_lag(ctx):
-    title = "The strongest candidate for a lead, week by week"
-    results = tested(ctx)
+LEAD_ASSUMPTIONS = [
+    "A lead is one signal moving first and another following some weeks later, for example Wikipedia views jumping before SDK downloads do. Each bar is how closely the second signal's week-to-week changes matched the first's that many weeks earlier.",
+    "Weekly growth has its own last two weeks removed, so a series that merely persists is not mistaken for a leader, and weeks are ranked, so one extreme week cannot decide the result.",
+    "The grey band is what luck alone reaches for the best of 8 lags: 1,500 surrogate series with the same autocorrelation and random timing (fixed seed). It is corrected for how many pairs were tried before a pair is called anything but luck.",
+    f"{HYPOTHESIS}: survives the correction only. {FINDING}: survives it, holds in both halves of the history, and has at least 120 weeks. {UNSUPPORTED}: does not survive it.",
+    *BASE_NOTES,
+]
+
+
+def lead_chart(ctx, basis: str) -> dict:
+    own = basis == "own"
+    title = (
+        "Does one of Anthropic's signals move before another? The closest candidate"
+        if own
+        else "Does one signal move before another once OpenAI is taken out? The closest candidate"
+    )
+    results = [t for t in tested(ctx) if t["basis"] == basis]
     if not results:
         return empty(title, "Needs about a year of weekly history for two series.")
     t = results[0]
-    sub = f"{pair_name(t)}: correlation of weekly growth at each lag. The shaded band is what chance alone gives for the best of 8 lags."
     rows = [
         {"lag": f"{k:+d}" if k else "0", "r": r, "low": -t["ceiling"], "high": t["ceiling"]}
         for k, r in profile(t["xs"], t["ys"])
         if not np.isnan(r)
     ]
+    outside = sum(not -t["ceiling"] <= r["r"] <= t["ceiling"] for r in rows)
     first, second = (f"{t['r1']:+.2f}", f"{t['r2']:+.2f}") if not np.isnan(t["r1"]) else ("n/a", "n/a")
+    edge = "" if own else " (vs OpenAI means Anthropic's growth minus OpenAI's, so the market's moves cancel.)"
     return {
         "title": title,
-        "subtitle": sub,
+        "subtitle": (
+            f"{pair_name(t)}. Each bar asks: when the first signal moved, did the second move the same way that many weeks later? "
+            f"Right of 0 the first signal moves first. A bar outside the grey band would be more than luck.{edge}"
+        ),
         "kind": "combo",
         "layers": [
-            {"mark": "band", "name": "Chance", "y_low": "low", "y_high": "high"},
-            {"mark": "bar", "name": "Correlation", "y": "r"},
+            {"mark": "band", "name": "Luck", "y_low": "low", "y_high": "high"},
+            {"mark": "bar", "name": "Match", "y": "r"},
         ],
         "encoding": {
-            "x": {"field": "lag", "type": "ordinal", "label": "Weeks (positive: the first series leads)"},
-            "y": {"field": "r", "type": "quantitative", "label": "Correlation of weekly growth", "format": "float"},
+            "x": {"field": "lag", "type": "ordinal", "label": "Weeks later (right of 0: the first signal moves first)"},
+            "y": {"field": "r", "type": "quantitative", "label": "How closely they match", "format": "float"},
         },
         "columns": [
-            col("lag", "Lag, weeks", "text"),
-            col("r", "Correlation", "float"),
-            col("low", "Chance, low", "float"),
-            col("high", "Chance, high", "float"),
+            col("lag", "Weeks later", "text"),
+            col("r", "Match (correlation)", "float"),
+            col("low", "Luck, low", "float"),
+            col("high", "Luck, high", "float"),
         ],
         "rows": rows,
         "takeaway": [
             (
-                f"{t['verdict']}: the best lead is {t['lag']} weeks (r {t['r']:+.2f}, {t['n']} weeks, corrected p {t['q']:.2f}); "
-                f"in the first half of the history r was {first} and in the second half {second}."
-            )
+                f"{t['verdict']}: the closest match is {t['lag']} weeks later (correlation {t['r']:+.2f}, {t['n']} weeks); "
+                f"{outside} of {len(rows)} bars {'leaves' if outside == 1 else 'leave'} the grey band, and with this many tries a few are expected by luck."
+            ),
+            f"In the first half of the history the match was {first} and in the second half {second}.",
         ],
-        "assumptions": [
-            f"The best of {len(results)} pairs tested, so a strong-looking bar is expected somewhere; the correction for that is in the verdict.",
-            "The chance band comes from 1,500 surrogate series with the same autocorrelation and random timing (fixed seed).",
-            "Finding: survives the correction, holds in both halves of the history, and has at least 120 weeks. Hypothesis: survives the correction only. Not supported: does not.",
-            "Weekly growth has its own last two weeks removed, so a series that merely persists is not mistaken for a leader.",
-            *BASE_NOTES,
-        ],
+        "assumptions": [f"The closest of {len(results)} pairs tested on this basis.", *LEAD_ASSUMPTIONS],
         "badges": ["arithmetic"],
     }
 
 
+@mart(id="signal.lead_lag", sources=[*USAGE, *ATTENTION, "github_coauthored_commits"])
+def lead_lag(ctx):
+    return lead_chart(ctx, "own")
+
+
+@mart(id="signal.lead_lag_edge", sources=[*USAGE, *ATTENTION, "github_coauthored_commits"])
+def lead_lag_edge(ctx):
+    return lead_chart(ctx, "relative")
+
+
 @mart(id="signal.tested", sources=[*USAGE, *ATTENTION, "github_coauthored_commits"])
 def tested_pairs(ctx):
-    title = "Every lead we tested, strongest first"
-    sub = "Each bar is the best lagged correlation of a pair, as a multiple of what chance gives (1 = the 95% line; shaded is within chance). Hover a bar, or open the table, to see the pair."
+    title = "Every pair of signals we tested, closest match first"
+    sub = (
+        "Each bar is one pair of signals: how closely the second followed the first within 8 weeks, as a multiple of what luck alone reaches "
+        "(1 = luck's upper range, shaded). Hover a bar, or open the table, to see the pair."
+    )
     results = tested(ctx)
     if not results:
         return empty(title, sub)
@@ -584,7 +707,7 @@ def tested_pairs(ctx):
         "subtitle": sub,
         "kind": "combo",
         "layers": [
-            {"mark": "band", "name": "Within chance", "y_low": "low", "y_high": "high"},
+            {"mark": "band", "name": "Within luck", "y_low": "low", "y_high": "high"},
             {"mark": "bar", "name": "Strength", "y": "strength", "series": "verdict"},
         ],
         "encoding": {
@@ -592,30 +715,30 @@ def tested_pairs(ctx):
             "y": {
                 "field": "strength",
                 "type": "quantitative",
-                "label": "Multiple of the chance line",
+                "label": "Multiple of what luck reaches",
                 "format": "float",
             },
         },
         "columns": [
             col("rank", "Rank", "text"),
-            col("pair", "Pair (leader → follower, best lead)", "text"),
-            col("strength", "Multiple of chance line", "float"),
-            col("r", "Correlation", "float"),
+            col("pair", "Pair (first signal → second signal, best lead)", "text"),
+            col("strength", "Multiple of what luck reaches", "float"),
+            col("r", "Match (correlation)", "float"),
             col("q", "Corrected p", "float"),
             col("verdict", "Verdict", "text"),
-            col("low", "Within chance, from", "float"),
-            col("high", "Within chance, to", "float"),
+            col("low", "Within luck, from", "float"),
+            col("high", "Within luck, to", "float"),
         ],
         "rows": rows,
         "takeaway": [
-            f"{len(results)} pairs were tested: {counts[FINDING]} Findings, {counts[HYPOTHESIS]} Hypotheses and {counts[UNSUPPORTED]} Not supported.",
-            f"The strongest is {pair_name(results[0])}, {abs(results[0]['r']) / results[0]['ceiling']:.1f} times the chance line.",
+            f"{len(results)} pairs were tested: {counts[FINDING]} hold up, {counts[HYPOTHESIS]} are possible and {counts[UNSUPPORTED]} could be luck.",
+            f"The closest is {pair_name(results[0])}, {abs(results[0]['r']) / results[0]['ceiling']:.1f} times what luck reaches.",
         ],
         "assumptions": [
-            f"The {len(shown)} strongest of {len(results)} pairs are drawn; the weakest of all is {min(abs(t['r']) / t['ceiling'] for t in results):.1f} times the chance line.",
-            "Pairs are every ordered pair of Anthropic's own series, and of its growth relative to OpenAI's, tested for a lead of 1 to 8 weeks.",
+            f"The {len(shown)} closest of {len(results)} pairs are drawn; the weakest of all is {min(abs(t['r']) / t['ceiling'] for t in results):.1f} times what luck reaches.",
+            "Pairs are every ordered pair of Anthropic's own signals, and of its growth relative to OpenAI's (marked vs OpenAI), tested for a lead of 1 to 8 weeks.",
             "Pairs from the same source (the two Wikipedia articles, the two download counts) share noise and can look related for that reason alone.",
-            *BASE_NOTES,
+            *LEAD_ASSUMPTIONS,
         ],
         "badges": ["arithmetic"],
     }
@@ -635,57 +758,69 @@ def mean4(level: pd.Series, when) -> float | None:
 
 @mart(id="signal.valuation", sources=[*USAGE, "signal_funding_rounds"])
 def valuation(ctx):
-    title = "Anthropic's funding-round valuations over SDK downloads"
+    title = "Anthropic's valuation at each round over SDK downloads, with OpenAI's downloads"
     sub = (
-        "Post-money valuation at each announced round and weekly SDK downloads, both rebased to 100 at the first round."
+        "Anthropic's post-money valuation at each announced round, and both companies' weekly SDK downloads, all rebased to 100 at the first round. "
+        "OpenAI's valuation is not shown: we hold no cited figures for it."
     )
-    level, r = sdk(ctx, ME), rounds(ctx)
-    if level is None or len(r) < 2:
+    level, rival, r = sdk(ctx, ME), sdk(ctx, PEER), rounds(ctx)
+    if level is None or rival is None or len(r) < 2:
         return empty(title, sub)
-    base_v, base_s = float(r["value"].iloc[0]), mean4(level, r["as_of"].iloc[0])
-    if not base_s:
+    base_v, base_a, base_o = (
+        float(r["value"].iloc[0]),
+        mean4(level, r["as_of"].iloc[0]),
+        mean4(rival, r["as_of"].iloc[0]),
+    )
+    if not base_a or not base_o:
         return empty(title, sub)
     start = week_end(r["as_of"].iloc[0])
-    rows = []
     marks = {
         week_end(a): (f"{n} ${v / 1e9:g}B", v / base_v * 100)
         for a, n, v in zip(r["as_of"], r["round"], r["value"], strict=True)
     }
+    rows = []
     for w in level.index[level.index >= start]:
-        s = mean4(level, w)
+        a, o = mean4(level, w), mean4(rival, w)
         row = {
             "date": w.date().isoformat(),
-            "signal": s / base_s * 100 if s else None,
+            "anthropic": a / base_a * 100 if a else None,
+            "openai": o / base_o * 100 if o else None,
             "round": None,
             "valuation": None,
         }
         if w in marks:
             row["round"], row["valuation"] = marks[w]
         rows.append(row)
-    last = next(x for x in reversed(rows) if x["signal"])
+    last = next(x for x in reversed(rows) if x["anthropic"] and x["openai"])
     top = r.iloc[-1]
+    at_top = next(x for x in rows if x["round"] and x["round"].startswith(top["round"]))  # the week of the latest round
     return {
         "title": title,
         "subtitle": sub,
         "kind": "combo",
         "layers": [
-            {"mark": "line", "name": "SDK downloads", "y": "signal"},
+            {"mark": "line", "name": "Anthropic", "y": "anthropic"},
+            {"mark": "line", "name": "OpenAI", "y": "openai"},
             {"mark": "rule", "name": "Funding round", "label": "round"},
-            {"mark": "point", "name": "Valuation", "y": "valuation"},
+            {"mark": "point", "name": "Anthropic's valuation", "y": "valuation"},
         ],
         "encoding": {
             "x": {"field": "date", "type": "temporal", "label": "Week ending"},
-            "y": {"field": "signal", "type": "quantitative", "label": "Rebased to 100", "format": "int"},
+            "y": {"field": "anthropic", "type": "quantitative", "label": "Rebased to 100", "format": "int"},
         },
         "columns": [
             col("date", "Week ending", "date"),
-            col("signal", "SDK downloads (rebased)", "float"),
+            col("anthropic", "Anthropic SDK downloads (rebased)", "float"),
+            col("openai", "OpenAI SDK downloads (rebased)", "float"),
             col("round", "Funding round", "text"),
-            col("valuation", "Valuation (rebased)", "float"),
+            col("valuation", "Anthropic's valuation (rebased)", "float"),
         ],
         "rows": rows,
         "takeaway": [
-            f"From {r['round'].iloc[0]} to {top['round']} the announced valuation rose {top['value'] / base_v:.1f}x while four-week SDK downloads rose {last['signal'] / 100:.1f}x."
+            (
+                f"From {r['round'].iloc[0]} to {top['round']} Anthropic's announced valuation rose {top['value'] / base_v:.1f}x while its SDK downloads rose "
+                f"{at_top['anthropic'] / 100:.1f}x and OpenAI's {at_top['openai'] / 100:.1f}x; by the latest week they were up {last['anthropic'] / 100:.1f}x and {last['openai'] / 100:.1f}x."
+            )
         ],
         "assumptions": [
             f"Only {len(r)} rounds state a valuation, so this is a picture of what moved in the same period, not a measure of what drives valuation.",
@@ -699,33 +834,54 @@ def valuation(ctx):
 
 @mart(id="signal.valuation_steps", sources=[*USAGE, *ATTENTION, "signal_funding_rounds"])
 def valuation_steps(ctx):
-    title = "How much each signal grew when the valuation stepped up"
-    sub = "Bars: the valuation multiple from one round to the next. Dots: how much each signal grew over the same interval."
+    title = "How much each signal grew when Anthropic's valuation stepped up"
+    sub = (
+        "Bars: Anthropic's valuation multiple from one round to the next. Dots: how much Anthropic's and OpenAI's SDK downloads, "
+        "and Anthropic's Wikipedia views, grew over the same interval."
+    )
     r = rounds(ctx)
     levels = {
-        "SDK downloads": sdk(ctx, ME),
+        "Anthropic": sdk(ctx, ME),
+        "OpenAI": sdk(ctx, PEER),
         "Wikipedia: company article": wiki(ctx, "company", ME),
         "Wikipedia: product article": wiki(ctx, "product", ME),
     }
     levels = {k: v for k, v in levels.items() if v is not None}
-    if len(r) < 2 or not levels:
+    if len(r) < 2 or "Anthropic" not in levels:
         return empty(title, sub)
+
+    def grew(k: str, i: int, j: int) -> float | None:
+        a, b = mean4(levels[k], r["as_of"].iloc[i]), mean4(levels[k], r["as_of"].iloc[j])
+        return a / b if a and b else None
+
     rows = []
     for i in range(1, len(r)):
         step = f"{r['round'].iloc[i - 1]} to {r['round'].iloc[i]}"
-        base = {"step": step, "valuation": float(r["value"].iloc[i] / r["value"].iloc[i - 1])}
-        grown = {k: (mean4(v, r["as_of"].iloc[i]), mean4(v, r["as_of"].iloc[i - 1])) for k, v in levels.items()}
-        pts = [(k, a / b) for k, (a, b) in grown.items() if a and b]
-        rows.append({**base, "signal": None, "growth": None})
-        rows += [{"step": step, "valuation": None, "signal": k, "growth": g} for k, g in pts]
+        rows.append(
+            {
+                "step": step,
+                "valuation": float(r["value"].iloc[i] / r["value"].iloc[i - 1]),
+                "signal": None,
+                "growth": None,
+            }
+        )
+        rows += [
+            {"step": step, "valuation": None, "signal": k, "growth": g} for k in levels if (g := grew(k, i, i - 1))
+        ]
     steps = [x for x in rows if x["valuation"] is not None]
     most = max(steps, key=lambda s: s["valuation"])
+    total = {k: grew(k, len(r) - 1, 0) for k in ("Anthropic", "OpenAI") if k in levels}
+    takeaway = [f"The valuation stepped up most from {most['step']} ({most['valuation']:.1f}x)."]
+    if all(total.values()) and len(total) == 2:
+        takeaway.append(
+            f"From {r['round'].iloc[0]} to {r['round'].iloc[-1]} Anthropic's SDK downloads grew {total['Anthropic']:.1f}x and OpenAI's {total['OpenAI']:.1f}x."
+        )
     return {
         "title": title,
         "subtitle": sub,
         "kind": "combo",
         "layers": [
-            {"mark": "bar", "name": "Valuation", "y": "valuation"},
+            {"mark": "bar", "name": "Anthropic's valuation", "y": "valuation"},
             {"mark": "point", "name": "Signal", "y": "growth", "series": "signal"},
         ],
         "encoding": {
@@ -739,10 +895,10 @@ def valuation_steps(ctx):
             col("growth", "Signal growth", "multiple"),
         ],
         "rows": rows,
-        "takeaway": [f"The valuation stepped up most from {most['step']} ({most['valuation']:.1f}x)."],
+        "takeaway": takeaway,
         "assumptions": [
             f"{len(steps)} intervals: far too few to say which signal tracks the valuation. This shows the figures side by side and no more.",
-            "A signal's growth is the four-week average ending at the later round divided by the same average at the earlier round.",
+            "A signal's growth is the four-week average ending at the later round divided by the same average at the earlier round. Anthropic and OpenAI are their SDK downloads (PyPI plus npm).",
             *BASE_NOTES,
         ],
         "badges": ["arithmetic"],

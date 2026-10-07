@@ -1,6 +1,6 @@
 {
-  "title": "Average weekly growth in SDK downloads around a model release",
-  "subtitle": "Weeks before and after each Anthropic release, against what a randomly chosen week would show (shaded: the middle 95% of random weeks).",
+  "title": "Anthropic's and OpenAI's SDK growth around an Anthropic model release",
+  "subtitle": "Bars: Anthropic's average weekly growth in each week around its releases. Line: OpenAI's over the same weeks, as the market. Shaded: the middle 95% of random weeks for Anthropic.",
   "kind": "combo",
   "layers": [
     {
@@ -11,8 +11,13 @@
     },
     {
       "mark": "bar",
-      "name": "After a release",
+      "name": "Anthropic",
       "y": "growth"
+    },
+    {
+      "mark": "line",
+      "name": "OpenAI",
+      "y": "other"
     }
   ],
   "encoding": {
@@ -36,7 +41,12 @@
     },
     {
       "field": "growth",
-      "label": "Average growth",
+      "label": "Anthropic average growth",
+      "format": "pct"
+    },
+    {
+      "field": "other",
+      "label": "OpenAI average growth",
       "format": "pct"
     },
     {
@@ -54,113 +64,130 @@
     {
       "week": "-4",
       "growth": 0.06177934208744353,
+      "other": 0.06283618875168852,
       "low": -0.004964902510864746,
       "high": 0.09518211054419672
     },
     {
       "week": "-3",
       "growth": 0.043480092222045415,
+      "other": 0.037251407112009687,
       "low": -0.006989359710506358,
       "high": 0.09154284696928242
     },
     {
       "week": "-2",
       "growth": 0.051421648655134274,
+      "other": 0.018508360697463,
       "low": -0.00539267750922309,
       "high": 0.0921144776325643
     },
     {
       "week": "-1",
       "growth": 0.054618417485240815,
+      "other": 0.04986502983104302,
       "low": -0.0060872409569273965,
       "high": 0.09268233857821306
     },
     {
       "week": "0",
       "growth": 0.045117687595920615,
+      "other": 0.015853743816698473,
       "low": -0.006735143858314488,
       "high": 0.09420805025698199
     },
     {
       "week": "+1",
       "growth": 0.06142607977899462,
+      "other": 0.04658678978280697,
       "low": -0.004504966573593452,
       "high": 0.0936235164054753
     },
     {
       "week": "+2",
       "growth": 0.04486247250257672,
+      "other": 0.022842396523395016,
       "low": -0.003029245968989007,
       "high": 0.09626711211943036
     },
     {
       "week": "+3",
       "growth": 0.0354690996593307,
+      "other": 0.03635139068379154,
       "low": -0.004615553525672766,
       "high": 0.09675703998582215
     },
     {
       "week": "+4",
       "growth": 0.004551129796873968,
+      "other": -0.01151380810043308,
       "low": -0.002708962833421525,
       "high": 0.09648832866607486
     },
     {
       "week": "+5",
       "growth": 0.03688159128149706,
+      "other": 0.0443503080843283,
       "low": -0.0050048414875311946,
       "high": 0.09497100940042578
     },
     {
       "week": "+6",
       "growth": 0.04401051160548681,
+      "other": 0.0027625594603974753,
       "low": -0.0027828818718858813,
       "high": 0.09629144120971725
     },
     {
       "week": "+7",
       "growth": 0.07986596004997973,
+      "other": 0.0717274824648432,
       "low": -0.011708891006737682,
       "high": 0.09174142967786668
     },
     {
       "week": "+8",
       "growth": 0.020909757879535397,
+      "other": -0.016229481112710366,
       "low": -0.009533326351383938,
       "high": 0.09410644190151327
     },
     {
       "week": "+9",
       "growth": 0.05916572596820932,
+      "other": 0.03724989900430551,
       "low": -0.017208704333750338,
       "high": 0.09176866863115897
     },
     {
       "week": "+10",
       "growth": 0.0032460014029622123,
+      "other": -0.004950463894740732,
       "low": -0.016508215809972554,
       "high": 0.08977930777163569
     },
     {
       "week": "+11",
       "growth": 0.013040391173276721,
+      "other": -0.006089136149553037,
       "low": -0.010811503315154024,
       "high": 0.0942185203250084
     },
     {
       "week": "+12",
       "growth": 0.05329170219030679,
+      "other": 0.021468407063512596,
       "low": -0.00967683055587887,
       "high": 0.09472675200775296
     }
   ],
   "takeaway": [
-    "Across 11 releases, no week fell outside what a random week shows.",
-    "In the weeks +4 to +8 growth added up to +19% after a release against +22% for random weeks (p 0.50)."
+    "Across 11 Anthropic releases, no week fell outside what a random week shows.",
+    "In the weeks +4 to +8 Anthropic grew +19% after a release against +22% for random weeks (p 0.50); OpenAI grew +9% over the same weeks."
   ],
   "assumptions": [
-    "11 releases had a full window. With so few, only a large and quick effect would show.",
-    "Growth is the weekly log change in PyPI plus npm downloads.",
+    "11 Anthropic releases had a full window. With so few, only a large and quick effect would show.",
+    "Growth is the weekly log change in PyPI plus npm downloads. If the bars and the line rise together after a release, that is the market (or the launch lifting both); if only the bars rise, it is the company's own.",
     "The shaded band is the middle 95% of the same average taken over randomly chosen weeks from the same stretch of history as the releases (3,000 draws, fixed seed).",
     "Weeks run Monday to Sunday and only complete weeks are used.",
     "Correlation is not cause. A lead shows what moved first, not why."
@@ -210,5 +237,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-07T02:06:42Z"
+  "generated_at": "2026-10-07T02:25:52Z"
 }

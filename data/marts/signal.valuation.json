@@ -1,12 +1,17 @@
 {
-  "title": "Anthropic's funding-round valuations over SDK downloads",
-  "subtitle": "Post-money valuation at each announced round and weekly SDK downloads, both rebased to 100 at the first round.",
+  "title": "Anthropic's valuation at each round over SDK downloads, with OpenAI's downloads",
+  "subtitle": "Anthropic's post-money valuation at each announced round, and both companies' weekly SDK downloads, all rebased to 100 at the first round. OpenAI's valuation is not shown: we hold no cited figures for it.",
   "kind": "combo",
   "layers": [
     {
       "mark": "line",
-      "name": "SDK downloads",
-      "y": "signal"
+      "name": "Anthropic",
+      "y": "anthropic"
+    },
+    {
+      "mark": "line",
+      "name": "OpenAI",
+      "y": "openai"
     },
     {
       "mark": "rule",
@@ -15,7 +20,7 @@
     },
     {
       "mark": "point",
-      "name": "Valuation",
+      "name": "Anthropic's valuation",
       "y": "valuation"
     }
   ],
@@ -26,7 +31,7 @@
       "label": "Week ending"
     },
     "y": {
-      "field": "signal",
+      "field": "anthropic",
       "type": "quantitative",
       "label": "Rebased to 100",
       "format": "int"
@@ -39,8 +44,13 @@
       "format": "date"
     },
     {
-      "field": "signal",
-      "label": "SDK downloads (rebased)",
+      "field": "anthropic",
+      "label": "Anthropic SDK downloads (rebased)",
+      "format": "float"
+    },
+    {
+      "field": "openai",
+      "label": "OpenAI SDK downloads (rebased)",
       "format": "float"
     },
     {
@@ -50,512 +60,595 @@
     },
     {
       "field": "valuation",
-      "label": "Valuation (rebased)",
+      "label": "Anthropic's valuation (rebased)",
       "format": "float"
     }
   ],
   "rows": [
     {
       "date": "2025-03-09",
-      "signal": 100.0,
+      "anthropic": 100.0,
+      "openai": 100.0,
       "round": "Series E $61.5B",
       "valuation": 100.0
     },
     {
       "date": "2025-03-16",
-      "signal": 103.10869278042001,
+      "anthropic": 103.10869278042001,
+      "openai": 101.0375155640266,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-03-23",
-      "signal": 107.17043677167275,
+      "anthropic": 107.17043677167275,
+      "openai": 105.52835980109332,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-03-30",
-      "signal": 109.68000147585279,
+      "anthropic": 109.68000147585279,
+      "openai": 110.36601750312205,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-04-06",
-      "signal": 107.36754313702146,
+      "anthropic": 107.36754313702146,
+      "openai": 112.1305745438365,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-04-13",
-      "signal": 107.97619905816586,
+      "anthropic": 107.97619905816586,
+      "openai": 115.26117023235054,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-04-20",
-      "signal": 107.67770190159041,
+      "anthropic": 107.67770190159041,
+      "openai": 116.90466341396007,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-04-27",
-      "signal": 108.35610520370733,
+      "anthropic": 108.35610520370733,
+      "openai": 116.9767246004185,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-05-04",
-      "signal": 109.7538830228103,
+      "anthropic": 109.7538830228103,
+      "openai": 118.04070784605942,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-05-11",
-      "signal": 110.65762800670743,
+      "anthropic": 110.65762800670743,
+      "openai": 119.67630429783517,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-05-18",
-      "signal": 113.51486273420551,
+      "anthropic": 113.51486273420551,
+      "openai": 122.40435015454345,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-05-25",
-      "signal": 116.33054835266452,
+      "anthropic": 116.33054835266452,
+      "openai": 126.3798551820001,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-06-01",
-      "signal": 119.55712413485354,
+      "anthropic": 119.55712413485354,
+      "openai": 128.19431146730724,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-06-08",
-      "signal": 125.89311136072516,
+      "anthropic": 125.89311136072516,
+      "openai": 129.42425456900196,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-06-15",
-      "signal": 131.3783494616434,
+      "anthropic": 131.3783494616434,
+      "openai": 130.6228787824854,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-06-22",
-      "signal": 137.9024708754304,
+      "anthropic": 137.9024708754304,
+      "openai": 131.59446025749705,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-06-29",
-      "signal": 148.17929625974298,
+      "anthropic": 148.17929625974298,
+      "openai": 139.042991894441,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-07-06",
-      "signal": 152.1547191615852,
+      "anthropic": 152.1547191615852,
+      "openai": 142.44471595527054,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-07-13",
-      "signal": 157.54529375212684,
+      "anthropic": 157.54529375212684,
+      "openai": 147.25856591028753,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-07-20",
-      "signal": 164.0554864346382,
+      "anthropic": 164.0554864346382,
+      "openai": 151.460091709592,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-07-27",
-      "signal": 172.22498368375082,
+      "anthropic": 172.22498368375082,
+      "openai": 153.40686602633562,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-08-03",
-      "signal": 189.2457154889196,
+      "anthropic": 189.2457154889196,
+      "openai": 161.6807924554913,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-08-10",
-      "signal": 207.8777792356846,
+      "anthropic": 207.8777792356846,
+      "openai": 168.3374441627296,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-08-17",
-      "signal": 231.56447583776315,
+      "anthropic": 231.56447583776315,
+      "openai": 175.63878439201787,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-08-24",
-      "signal": 248.43533301262676,
+      "anthropic": 248.43533301262676,
+      "openai": 182.82223951728315,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-08-31",
-      "signal": 262.88007932856993,
+      "anthropic": 262.88007932856993,
+      "openai": 186.87925892247006,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-09-07",
-      "signal": 269.05186311228164,
+      "anthropic": 269.05186311228164,
+      "openai": 190.04280676487357,
       "round": "Series F $183B",
       "valuation": 297.5609756097561
     },
     {
       "date": "2025-09-14",
-      "signal": 263.64861930339896,
+      "anthropic": 263.64861930339896,
+      "openai": 193.94252011420758,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-09-21",
-      "signal": 257.550346621664,
+      "anthropic": 257.550346621664,
+      "openai": 196.5800231763848,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-09-28",
-      "signal": 250.2427711181237,
+      "anthropic": 250.2427711181237,
+      "openai": 200.01129492560185,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-10-05",
-      "signal": 253.4838683435575,
+      "anthropic": 253.4838683435575,
+      "openai": 207.50247329246187,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-10-12",
-      "signal": 255.7593859089101,
+      "anthropic": 255.7593859089101,
+      "openai": 211.6975585076284,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-10-19",
-      "signal": 263.0838018412745,
+      "anthropic": 263.0838018412745,
+      "openai": 218.34871636054612,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-10-26",
-      "signal": 271.54518750850633,
+      "anthropic": 271.54518750850633,
+      "openai": 223.75255924659493,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-11-02",
-      "signal": 280.3281564635129,
+      "anthropic": 280.3281564635129,
+      "openai": 228.34921934994742,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-11-09",
-      "signal": 289.391952349514,
+      "anthropic": 289.391952349514,
+      "openai": 236.33009371480966,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-11-16",
-      "signal": 297.637620495565,
+      "anthropic": 297.637620495565,
+      "openai": 241.16827650705162,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-11-23",
-      "signal": 307.6328632411224,
+      "anthropic": 307.6328632411224,
+      "openai": 247.66812843944868,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-11-30",
-      "signal": 304.55322816499114,
+      "anthropic": 304.55322816499114,
+      "openai": 243.27521901316865,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-12-07",
-      "signal": 324.44541978491816,
+      "anthropic": 324.44541978491816,
+      "openai": 245.84939462819543,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-12-14",
-      "signal": 334.5352593607557,
+      "anthropic": 334.5352593607557,
+      "openai": 246.48403433425403,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-12-21",
-      "signal": 340.05141479976595,
+      "anthropic": 340.05141479976595,
+      "openai": 246.21631356230745,
       "round": null,
       "valuation": null
     },
     {
       "date": "2025-12-28",
-      "signal": 328.8451281409937,
+      "anthropic": 328.8451281409937,
+      "openai": 235.4738032414242,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-01-04",
-      "signal": 295.39359075357476,
+      "anthropic": 295.39359075357476,
+      "openai": 214.00357917163683,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-01-11",
-      "signal": 298.609453266921,
+      "anthropic": 298.609453266921,
+      "openai": 215.22328066302313,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-01-18",
-      "signal": 308.04567971875224,
+      "anthropic": 308.04567971875224,
+      "openai": 218.22635153165913,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-01-25",
-      "signal": 345.82193998924674,
+      "anthropic": 345.82193998924674,
+      "openai": 240.4312222653423,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-02-01",
-      "signal": 405.96124508336163,
+      "anthropic": 405.96124508336163,
+      "openai": 270.5645900069752,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-02-08",
-      "signal": 449.36918035565833,
+      "anthropic": 449.36918035565833,
+      "openai": 285.63203329930906,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-02-15",
-      "signal": 493.8250970695505,
+      "anthropic": 493.8250970695505,
+      "openai": 304.64971302409157,
       "round": "Series G $380B",
       "valuation": 617.8861788617886
     },
     {
       "date": "2026-02-22",
-      "signal": 531.4419104114377,
+      "anthropic": 531.4419104114377,
+      "openai": 319.46822907181246,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-03-01",
-      "signal": 577.4618458339869,
+      "anthropic": 577.4618458339869,
+      "openai": 345.3111802944897,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-03-08",
-      "signal": 621.6198803299717,
+      "anthropic": 621.6198803299717,
+      "openai": 368.5630636716085,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-03-15",
-      "signal": 681.9784518081826,
+      "anthropic": 681.9784518081826,
+      "openai": 392.50237477926817,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-03-22",
-      "signal": 757.6780315976232,
+      "anthropic": 757.6780315976232,
+      "openai": 416.770677633309,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-03-29",
-      "signal": 817.7420993161512,
+      "anthropic": 817.7420993161512,
+      "openai": 430.3736693998475,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-04-05",
-      "signal": 891.2113261922901,
+      "anthropic": 891.2113261922901,
+      "openai": 441.0029859450905,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-04-12",
-      "signal": 962.2884935121376,
+      "anthropic": 962.2884935121376,
+      "openai": 450.9759898816527,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-04-19",
-      "signal": 1041.9121080756931,
+      "anthropic": 1041.9121080756931,
+      "openai": 468.79729152511766,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-04-26",
-      "signal": 1139.9764219178662,
+      "anthropic": 1139.9764219178662,
+      "openai": 491.87250790813295,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-05-03",
-      "signal": 1234.9088012615282,
+      "anthropic": 1234.9088012615282,
+      "openai": 523.0180207356087,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-05-10",
-      "signal": 1305.671194072347,
+      "anthropic": 1305.671194072347,
+      "openai": 546.9652113313339,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-05-17",
-      "signal": 1365.9558395502029,
+      "anthropic": 1365.9558395502029,
+      "openai": 568.0242035553122,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-05-24",
-      "signal": 1420.0788662546183,
+      "anthropic": 1420.0788662546183,
+      "openai": 589.5324755052077,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-05-31",
-      "signal": 1479.644211304484,
+      "anthropic": 1479.644211304484,
+      "openai": 594.9267319681395,
       "round": "Series H $965B",
       "valuation": 1569.1056910569107
     },
     {
       "date": "2026-06-07",
-      "signal": 1537.7058534974562,
+      "anthropic": 1537.7058534974562,
+      "openai": 618.3514766108909,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-06-14",
-      "signal": 1636.8850363269462,
+      "anthropic": 1636.8850363269462,
+      "openai": 650.5224200903215,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-06-21",
-      "signal": 1709.2159302306886,
+      "anthropic": 1709.2159302306886,
+      "openai": 669.1645020018555,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-06-28",
-      "signal": 1756.366856406116,
+      "anthropic": 1756.366856406116,
+      "openai": 690.5076840212744,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-07-05",
-      "signal": 1802.6562979610485,
+      "anthropic": 1802.6562979610485,
+      "openai": 699.8806524805473,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-07-12",
-      "signal": 1801.099984507991,
+      "anthropic": 1801.099984507991,
+      "openai": 696.7754586188864,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-07-19",
-      "signal": 1860.59566367478,
+      "anthropic": 1860.59566367478,
+      "openai": 702.6744020135501,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-07-26",
-      "signal": 1925.1002479684612,
+      "anthropic": 1925.1002479684612,
+      "openai": 717.2840199326753,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-08-02",
-      "signal": 2039.9682128570935,
+      "anthropic": 2039.9682128570935,
+      "openai": 756.6543123127809,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-08-09",
-      "signal": 2174.7843510111406,
+      "anthropic": 2174.7843510111406,
+      "openai": 808.8007517912512,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-08-16",
-      "signal": 2247.1128518403075,
+      "anthropic": 2247.1128518403075,
+      "openai": 838.7395038580886,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-08-23",
-      "signal": 2355.8191460932017,
+      "anthropic": 2355.8191460932017,
+      "openai": 875.3649490620957,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-08-30",
-      "signal": 2318.3286396719454,
+      "anthropic": 2318.3286396719454,
+      "openai": 825.8721979638381,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-09-06",
-      "signal": 2224.614083384646,
+      "anthropic": 2224.614083384646,
+      "openai": 753.7916928878694,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-09-13",
-      "signal": 2097.0593632895398,
+      "anthropic": 2097.0593632895398,
+      "openai": 690.7336389609163,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-09-20",
-      "signal": 1978.372318098734,
+      "anthropic": 1978.372318098734,
+      "openai": 631.6503016423835,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-09-27",
-      "signal": 2064.208865474461,
+      "anthropic": 2064.208865474461,
+      "openai": 646.6664804555702,
       "round": null,
       "valuation": null
     },
     {
       "date": "2026-10-04",
-      "signal": 2227.139036373326,
+      "anthropic": 2227.139036373326,
+      "openai": 680.2041271745925,
       "round": null,
       "valuation": null
     }
   ],
   "takeaway": [
-    "From Series E to Series H the announced valuation rose 15.7x while four-week SDK downloads rose 22.3x."
+    "From Series E to Series H Anthropic's announced valuation rose 15.7x while its SDK downloads rose 14.8x and OpenAI's 5.9x; by the latest week they were up 22.3x and 6.8x."
   ],
   "assumptions": [
     "Only 4 rounds state a valuation, so this is a picture of what moved in the same period, not a measure of what drives valuation.",
@@ -613,5 +706,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-07T02:06:42Z"
+  "generated_at": "2026-10-07T02:25:52Z"
 }

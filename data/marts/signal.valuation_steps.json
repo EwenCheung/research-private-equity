@@ -1,11 +1,11 @@
 {
-  "title": "How much each signal grew when the valuation stepped up",
-  "subtitle": "Bars: the valuation multiple from one round to the next. Dots: how much each signal grew over the same interval.",
+  "title": "How much each signal grew when Anthropic's valuation stepped up",
+  "subtitle": "Bars: Anthropic's valuation multiple from one round to the next. Dots: how much Anthropic's and OpenAI's SDK downloads, and Anthropic's Wikipedia views, grew over the same interval.",
   "kind": "combo",
   "layers": [
     {
       "mark": "bar",
-      "name": "Valuation",
+      "name": "Anthropic's valuation",
       "y": "valuation"
     },
     {
@@ -60,8 +60,14 @@
     {
       "step": "Series E to Series F",
       "valuation": null,
-      "signal": "SDK downloads",
+      "signal": "Anthropic",
       "growth": 2.6905186311228166
+    },
+    {
+      "step": "Series E to Series F",
+      "valuation": null,
+      "signal": "OpenAI",
+      "growth": 1.9004280676487357
     },
     {
       "step": "Series E to Series F",
@@ -84,8 +90,14 @@
     {
       "step": "Series F to Series G",
       "valuation": null,
-      "signal": "SDK downloads",
+      "signal": "Anthropic",
       "growth": 1.8354271602403502
+    },
+    {
+      "step": "Series F to Series G",
+      "valuation": null,
+      "signal": "OpenAI",
+      "growth": 1.6030583751639331
     },
     {
       "step": "Series F to Series G",
@@ -108,8 +120,14 @@
     {
       "step": "Series G to Series H",
       "valuation": null,
-      "signal": "SDK downloads",
+      "signal": "Anthropic",
       "growth": 2.9962920477006265
+    },
+    {
+      "step": "Series G to Series H",
+      "valuation": null,
+      "signal": "OpenAI",
+      "growth": 1.9528222300379878
     },
     {
       "step": "Series G to Series H",
@@ -125,11 +143,12 @@
     }
   ],
   "takeaway": [
-    "The valuation stepped up most from Series E to Series F (3.0x)."
+    "The valuation stepped up most from Series E to Series F (3.0x).",
+    "From Series E to Series H Anthropic's SDK downloads grew 14.8x and OpenAI's 5.9x."
   ],
   "assumptions": [
     "3 intervals: far too few to say which signal tracks the valuation. This shows the figures side by side and no more.",
-    "A signal's growth is the four-week average ending at the later round divided by the same average at the earlier round.",
+    "A signal's growth is the four-week average ending at the later round divided by the same average at the earlier round. Anthropic and OpenAI are their SDK downloads (PyPI plus npm).",
     "Weeks run Monday to Sunday and only complete weeks are used.",
     "Correlation is not cause. A lead shows what moved first, not why."
   ],
@@ -194,5 +213,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-07T02:06:42Z"
+  "generated_at": "2026-10-07T02:25:52Z"
 }

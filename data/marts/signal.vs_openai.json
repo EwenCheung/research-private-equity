@@ -1,6 +1,6 @@
 {
   "title": "Anthropic's SDK downloads against OpenAI's",
-  "subtitle": "Growth over each 13 weeks against the 13 weeks before, for both companies; the bar is Anthropic minus OpenAI.",
+  "subtitle": "Growth over each 13 weeks against the 13 weeks before, for both companies; the bar is Anthropic minus OpenAI, so it is Anthropic's own part once the market is taken out.",
   "kind": "combo",
   "layers": [
     {
@@ -105,10 +105,12 @@
     }
   ],
   "takeaway": [
-    "In the 13 weeks to Oct 2026 Anthropic's SDK downloads grew +44% and OpenAI's +22%; Anthropic grew faster in 8 of 8 periods."
+    "In the 13 weeks to Oct 2026 Anthropic's SDK downloads grew +44% and OpenAI's +22%; Anthropic grew faster in 8 of 8 periods.",
+    "Of Anthropic's +44%, +22% is what OpenAI also saw (the market) and 22 points are Anthropic's own."
   ],
   "assumptions": [
     "A positive bar means Anthropic grew faster, or fell less, than OpenAI. Anthropic can be shrinking and still be ahead of a market that shrank more.",
+    "OpenAI stands in for the market: what both companies share is market growth, and the difference is Anthropic's own.",
     "Download spikes are removed as on the Developer Adoption page (a day above 10 times the median around it). A week left with 5 or 6 clean days is scaled to 7; with fewer it is dropped.",
     "The latest 8 blocks of 13 weeks are shown, counted back from the latest complete week, so they do not line up with calendar quarters.",
     "Weeks run Monday to Sunday and only complete weeks are used.",
@@ -147,5 +149,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-07T02:06:42Z"
+  "generated_at": "2026-10-07T02:25:52Z"
 }

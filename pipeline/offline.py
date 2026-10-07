@@ -350,6 +350,9 @@ def main(argv=None) -> int:
                 "--skip", nargs="+", metavar="ID", help="leave these sources out (the Internet Archive ones are slow)"
             )
     args = ap.parse_args(argv)
+    sys.stdout.reconfigure(
+        line_buffering=True
+    )  # a long fetch shows its progress as it goes, also when redirected to a file
     root = args.root.resolve()
     db = args.db or root / DEFAULT_DB
     if args.cmd == "fetch":

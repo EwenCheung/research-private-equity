@@ -47,9 +47,11 @@ The dashboard shows the data in the file until you press **Refresh data** on the
 
 | Step | Where | Command |
 |---|---|---|
-| 1. Call everything once, rebuild, pack | online | `uv run python -m pipeline.offline fetch` |
-| 2. Copy the repo and `data/offline/signal-monitor.sqlite` | any way you like | `scp`, a USB stick, `git bundle` |
-| 3. Show the dashboard from the file | sandbox | `uv run python -m pipeline.offline serve --db signal-monitor.sqlite` |
+| 1. Call everything once, rebuild, pack | online | `uv run python -m pipeline.offline fetch` (or **Refresh data** on the dashboard) |
+| 2. Commit the file so others get the same data | online | a `chore(data)` PR with `data/offline/signal-monitor.sqlite` |
+| 3. Get the repo and show the dashboard from the file | sandbox | `git pull`, then `uv run python -m pipeline.offline serve` |
+
+The file is committed (`data/offline/signal-monitor.sqlite`, a few MB), so a clone has the same dataset and a machine that cannot refresh still shows it. A refresh replaces the file in place, so `git status` shows it changed: commit it when you want others to have the new data. Each commit adds a full copy of the file to the repository's history, so commit it when the data is worth sharing, not after every press.
 
 - `fetch` reads your `.env` for keys (a source that needs a missing key is skipped and named, never fatal), builds the frontend if Node is there, rebuilds the charts and packs. `--only ID ...` and `--skip ID ...` pick sources; the Internet Archive ones are slow. `config/offline.yaml` lists sources a fetch leaves out by default (none today); `--only ID` calls one anyway.
 - `serve` needs `DASHBOARD_PASSWORD` and `SESSION_SECRET` (in `.env` or the environment) and nothing else: the API reads the charts and registry from the file (`DATA_DB`) and the page comes out of the file too. No collector runs and no `data/` folder is needed.
@@ -59,7 +61,7 @@ The dashboard shows the data in the file until you press **Refresh data** on the
   - a failed build, a damaged file, or a raw snapshot or chart that would be lost or changed rolls the whole refresh back;
   - otherwise the old file is kept as `<file>.previous` and the report of the run as `<file>.refresh.json`.
 - Other commands: `pack` makes the file from what is already in `data/` without calling anything; `restore` unpacks the raw snapshots, ledgers, charts and registry into `data/` (so `pipeline.build` runs offline too, and a raw file that differs is never overwritten); `check` says whether the file and `data/` still agree.
-- The file holds every collector snapshot byte for byte, and every observation as a row. Query it with any SQLite tool, for example `sqlite3 data/offline/signal-monitor.sqlite "select entity, metric, max(as_of) from observations group by 1, 2"`.
+- The file holds every collector snapshot byte for byte, the ledgers, the charts, the registry and the dashboard. The `observations` table (every row, for SQL) is left empty by default because it would make the file about ten times bigger: add `--with-rows` to `pack` or `fetch` for a local file you can query, for example `sqlite3 signal-monitor.sqlite "select entity, metric, max(as_of) from observations group by 1, 2"`, and do not commit that one.
 - Vendor files in `data/manual/` stay out unless you pass `--include-manual`: licensed data stays private.
 - The sandbox still needs Python 3.11 with the project's packages (`uv sync` needs a package index, so install them while one is reachable, or copy a `.venv` built on the same operating system). Two things on the page reach for the internet and are blank or in system fonts there: the two live leaderboard embeds on Product & Reliability, and the web fonts.
 

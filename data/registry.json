@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-07T03:33:47Z",
+  "generated_at": "2026-10-07T09:36:23Z",
   "sources": [
     {
       "id": "ai_feeds",
@@ -319,22 +319,6 @@
       "retrieved_at": "2026-10-05T06:59:56Z",
       "as_of": "2026-09-23",
       "row_count": 13865,
-      "readable": true
-    },
-    {
-      "id": "wikipedia_pageviews",
-      "page": "attention",
-      "label": "Wikimedia pageviews (English Wikipedia)",
-      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/Claude_%28language_model%29/daily/20260927/20261004",
-      "method": "api",
-      "tier": "platform",
-      "cadence": "daily",
-      "sla_days": 3,
-      "backfillable": true,
-      "caveats": "Human (non-bot) views of each company's and product's English Wikipedia articles. Pages are renamed over time, so each topic sums every title it has had. Reader interest in the topic, not use of the product.",
-      "retrieved_at": "2026-10-05T07:07:58Z",
-      "as_of": "2026-10-04",
-      "row_count": 19218,
       "readable": true
     }
   ]

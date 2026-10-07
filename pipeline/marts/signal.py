@@ -31,6 +31,15 @@ RECENT = (
 FINDING, HYPOTHESIS, UNSUPPORTED = "Holds up", "Possible", "Could be luck"
 WHO = {ME: "Anthropic", PEER: "OpenAI"}
 VERSION = re.compile(r"(?i)^(gpt-?\d+(?:\.\d+)?|o\d+|gpt-oss)")
+CLAUDE = (
+    re.compile(r"claude-(?P<tier>opus|sonnet|haiku|fable)-(?P<maj>\d)(?:[.-](?P<min>\d)(?!\d))?"),
+    re.compile(r"claude-(?P<maj>\d)(?:[.-](?P<min>\d)(?!\d))?-(?P<tier>opus|sonnet|haiku|fable)"),
+)
+SAME_SCORE, SAME_PRICE = (
+    0.03,
+    0.10,
+)  # a change in the Intelligence Index within 3%, or in price per task within 10%, reads as the same
+BENCH = ["openrouter_benchmarks", "arena_text_leaderboard"]
 LABEL = {
     "pypi": "PyPI downloads",
     "npm": "npm downloads",
@@ -347,6 +356,132 @@ def blocks(level: pd.Series, size: int = 13) -> pd.Series:
     return pd.Series(v, index=level.index[len(level) - n * size :][size - 1 :: size])
 
 
+# ---- how good and how costly each model line is ----
+
+
+def line_of(text: str) -> tuple[str, tuple[int, int], str] | None:
+    """(tier, version, label) of the model line a benchmark or Arena name belongs to, or None.
+
+    "claude-4.1-opus-20250805" and "claude-opus-4-1-thinking" are both ("opus", (4, 1), "Opus 4.1"); "gpt-5.2-high" is
+    ("GPT", (5, 2), "GPT-5.2"). Tiers are compared like with like: Opus with Opus, GPT with GPT, o with o.
+    """
+    t = text.lower().removeprefix("openai/").removeprefix("anthropic/").replace("_", "-")
+    for pattern in CLAUDE:
+        if m := pattern.search(t):
+            ver = (int(m["maj"]), int(m["min"] or 0))
+            return m["tier"], ver, f"{m['tier'].title()} {ver[0]}" + (f".{ver[1]}" if m["min"] else "")
+    if t.startswith("gpt-oss"):
+        return "gpt-oss", (0, 0), "gpt-oss"
+    if m := re.match(r"gpt-(\d+)o(?![a-z])", t):
+        return "GPT-4o", (int(m[1]), 0), f"GPT-{m[1]}o"
+    if m := re.match(r"gpt-(\d+)(?:\.(\d+))?(?![\d.])", t):
+        return "GPT", (int(m[1]), int(m[2] or 0)), f"GPT-{m[1]}" + (f".{m[2]}" if m[2] else "")
+    if m := re.match(r"o(\d+)(?!\d)", t):
+        return "o", (int(m[1]), 0), f"o{m[1]}"
+    return None
+
+
+def scorecard(ctx, ent: str) -> dict[str, dict]:
+    """For each model line of a company, its best model's scores, keyed by the line's label in lower case.
+
+    The best model is the one with the highest Intelligence Index. Its accuracy and cost per task on GPQA Diamond are
+    OpenRouter's own evaluation of that same model; Arena's score is the best of the line's variants (reasoning levels).
+    """
+    cards: dict[str, dict] = {}
+    index = latest(
+        dims(ctx.obs(metric="openrouter_aa_intelligence_index", entity=ent), "model", "permaslug"),
+        keys=("entity", "permaslug"),
+    )
+    for r in index.itertuples():
+        line = line_of(r.permaslug)
+        if line and (line[2].lower() not in cards or r.value > cards[line[2].lower()]["index"]):
+            cards[line[2].lower()] = {
+                "tier": line[0],
+                "version": line[1],
+                "label": line[2],
+                "index": float(r.value),
+                "permaslug": r.permaslug,
+                "model": r.model,
+            }
+    evals = dims(ctx.obs(metric="openrouter_eval_accuracy", entity=ent), "permaslug", "benchmark", "cost_per_task_usd")
+    evals = latest(evals[evals["benchmark"] == "gpqa_diamond"], keys=("entity", "permaslug"))
+    by_slug = {r.permaslug: r for r in evals.itertuples()}
+    for card in cards.values():
+        if card["permaslug"] in by_slug:
+            e = by_slug[card["permaslug"]]
+            card["accuracy"], card["cost"] = float(e.value), float(e.cost_per_task_usd)
+    arena = latest(dims(ctx.obs(metric="arena_text_score", entity=ent), "model"), keys=("entity", "model"))
+    for r in arena.itertuples():
+        line = line_of(r.model)
+        if line and line[2].lower() in cards:
+            card = cards[line[2].lower()]
+            card["arena"] = max(card.get("arena", 0.0), float(r.value))
+    return cards
+
+
+def small(card: dict) -> bool:
+    """Whether the line's best model is a cut-down one (Mini, Nano): not like for like with a full-size model."""
+    return bool(re.search(r"\b(mini|nano)\b", card["model"], re.IGNORECASE))
+
+
+def previous_in_tier(cards: dict[str, dict], card: dict) -> dict | None:
+    """The line just before this one in the same tier, if it has a score and is the same size of model."""
+    before = [c for c in cards.values() if c["tier"] == card["tier"] and c["version"] < card["version"]]
+    prev = max(before, key=lambda c: c["version"]) if before else None
+    return prev if prev is None or small(prev) == small(card) else None
+
+
+def change(new: float | None, old: float | None) -> float | None:
+    return new / old - 1 if new and old else None
+
+
+def verdict_of(d_index: float | None, d_price: float | None, earlier: bool = False) -> str:
+    if d_index is None:
+        return "No like-for-like comparison" if earlier else "First in its line"
+    score = "Higher score" if d_index > SAME_SCORE else "Lower score" if d_index < -SAME_SCORE else "Same score"
+    if d_price is None:
+        return f"{score}, price unknown"
+    return f"{score}, {'pricier' if d_price > SAME_PRICE else 'cheaper' if d_price < -SAME_PRICE else 'same price'}"
+
+
+def new_models(ctx, since: pd.Timestamp) -> list[dict]:
+    """Every release from `since` on, both companies, in date order, with its scores and its change on the line before."""
+    out = []
+    for ent in (ME, PEER):
+        cards = scorecard(ctx, ent)
+        for week, keys in release_weeks(ctx, ent).items():
+            for key in keys if week >= since else []:
+                card = cards.get(key.lower())
+                prev = previous_in_tier(cards, card) if card else None
+                d_index = change(card["index"], prev["index"]) if card and prev else None
+                d_price = change(card.get("cost"), prev.get("cost")) if card and prev else None
+                out.append(
+                    {
+                        "week": week,
+                        "company": WHO[ent],
+                        "release": key,
+                        "index": card["index"] if card else None,
+                        "arena": card.get("arena") if card else None,
+                        "accuracy": card.get("accuracy") if card else None,
+                        "cost": card.get("cost") if card else None,
+                        "model": card["model"] if card else None,
+                        "after": prev["label"] if prev else None,
+                        "d_index": d_index,
+                        "d_price": d_price,
+                        "verdict": verdict_of(
+                            d_index,
+                            d_price,
+                            earlier=any(
+                                c["tier"] == card["tier"] and c["version"] < card["version"] for c in cards.values()
+                            ),
+                        )
+                        if card
+                        else "No score yet",
+                    }
+                )
+    return sorted(out, key=lambda m: (m["week"], m["company"]))
+
+
 # ---- chart helpers ----
 
 
@@ -380,12 +515,13 @@ def empty(title: str, subtitle: str) -> dict:
 # ---- charts ----
 
 
-@mart(id="signal.releases", sources=[*USAGE, "model_releases"])
+@mart(id="signal.releases", sources=[*USAGE, "model_releases", "openrouter_benchmarks"])
 def releases(ctx):
     title = "Model releases over weekly growth in SDK downloads, Anthropic and OpenAI"
     sub = (
         "Weekly growth in each company's SDK downloads (PyPI plus npm, 4-week average). "
-        "Each vertical line is a new model line the company listed, in the company's colour."
+        "Each vertical line is a new model line the company listed, in the company's colour; the number in brackets is its Artificial Analysis Intelligence Index "
+        "(higher is smarter, best model in the line)."
     )
     a, o = sdk(ctx, ME), sdk(ctx, PEER)
     rel = {ME: release_weeks(ctx, ME), PEER: release_weeks(ctx, PEER)}
@@ -408,12 +544,13 @@ def releases(ctx):
     for ent in (ME, PEER):
         shown = {w: n for w, n in rel[ent].items() if start <= w <= weeks[-1]}
         count[ent] = sum(len(n) for n in shown.values())
+        cards = scorecard(ctx, ent)
         rows += [
             {
                 "week": w.date().isoformat(),
                 "anthropic": None,
                 "openai": None,
-                "release": ", ".join(n),
+                "release": ", ".join(f"{k} ({cards[k.lower()]['index']:.0f})" if k.lower() in cards else k for k in n),
                 "company": WHO[ent],
             }
             for w, n in shown.items()
@@ -911,5 +1048,196 @@ def valuation_steps(ctx):
             "A signal's growth is the four-week average ending at the later round divided by the same average at the earlier round. Anthropic and OpenAI are their SDK downloads (PyPI plus npm).",
             *BASE_NOTES,
         ],
+        "badges": ["arithmetic"],
+    }
+
+
+# ---- did each new model improve? ----
+
+MODEL_NOTES = [
+    "A model line is a numbered release (Opus 4.5, GPT-5.2). Each line is scored by its best-scoring model in Artificial Analysis's Intelligence Index, relayed by OpenRouter; the table names that model.",
+    "Price per task is what one GPQA Diamond question (graduate-level science) cost OpenRouter to run on that model, reasoning tokens included, in US cents. It is not a general business task, and a model OpenRouter has not evaluated has none.",
+    "Each model is compared with the previous line of the same kind (Opus after Opus, GPT after GPT, o after o). A line with no earlier one, or whose earlier line has no score, or where one best model is a Mini or Nano and the other is not, is not compared.",
+    "Scores and prices are as collected on the dates shown, not as at each release. A score within 3%, or a price within 10%, of the earlier model reads as the same.",
+    *BASE_NOTES,
+]
+
+
+def since_first_release(ctx) -> pd.Timestamp | None:
+    rel = release_weeks(ctx, ME)
+    return min(rel) - pd.Timedelta(weeks=12) if rel else None
+
+
+def cents(x: float | None) -> float | None:
+    return None if x is None else x * 100
+
+
+@mart(id="signal.model_scores", sources=["model_releases", *BENCH])
+def model_scores(ctx):
+    title = "How well did each new model score?"
+    sub = (
+        "Artificial Analysis Intelligence Index of the best model in each new model line, in release order. Higher is smarter. "
+        "Hover a bar for the Arena score, the accuracy and the price per task."
+    )
+    start = since_first_release(ctx)
+    models = [m for m in new_models(ctx, start) if m["index"] is not None] if start is not None else []
+    if not models:
+        return empty(title, sub)
+    rows = [
+        {
+            "release": m["release"],
+            "company": m["company"],
+            "listed": m["week"].date().isoformat(),
+            "index": m["index"],
+            "arena": m["arena"],
+            "accuracy": m["accuracy"],
+            "cents": cents(m["cost"]),
+        }
+        for m in models
+    ]
+    best = max(models, key=lambda m: m["index"])
+    latest_of = {
+        c: [m for m in models if m["company"] == c][-1]
+        for c in ("Anthropic", "OpenAI")
+        if any(m["company"] == c for m in models)
+    }
+    return {
+        "title": title,
+        "subtitle": sub,
+        "kind": "combo",
+        "layers": [{"mark": "bar", "name": "Intelligence Index", "y": "index", "series": "company"}],
+        "encoding": {
+            "x": {"field": "release", "type": "ordinal", "label": "Model line, in release order"},
+            "y": {"field": "index", "type": "quantitative", "label": "Intelligence Index", "format": "float"},
+        },
+        "columns": [
+            col("release", "Model line", "text"),
+            col("company", "Company", "text"),
+            col("listed", "Listed", "date"),
+            col("index", "Intelligence Index", "float"),
+            col("arena", "Arena score (human preference)", "int"),
+            col("accuracy", "GPQA Diamond accuracy", "pct"),
+            col("cents", "Price per task, US cents", "float"),
+        ],
+        "rows": rows,
+        "takeaway": [
+            f"The highest score is {best['release']} ({best['company']}) at {best['index']:.0f}.",
+            "The latest releases: "
+            + "; ".join(f"{c}'s {m['release']} scores {m['index']:.0f}" for c, m in latest_of.items())
+            + ".",
+        ],
+        "assumptions": MODEL_NOTES,
+        "badges": [],
+    }
+
+
+def comparable(models: list[dict]) -> list[dict]:
+    return [m for m in models if m["d_index"] is not None]
+
+
+@mart(id="signal.model_change", sources=["model_releases", *BENCH])
+def model_change(ctx):
+    title = "Did each new model improve on the one before it?"
+    sub = (
+        "Bars: change in Intelligence Index against the previous model line of the same kind, above 0 is smarter. "
+        "Dots: change in price per task against the same model, below 0 is cheaper."
+    )
+    start = since_first_release(ctx)
+    models = comparable(new_models(ctx, start)) if start is not None else []
+    if not models:
+        return empty(title, sub)
+    rows = [
+        {
+            "release": m["release"],
+            "company": m["company"],
+            "after": m["after"],
+            "d_index": m["d_index"],
+            "d_price": m["d_price"],
+        }
+        for m in models
+    ]
+    up = sum(m["d_index"] > SAME_SCORE for m in models)
+    down = sum(m["d_index"] < -SAME_SCORE for m in models)
+    priced = [m for m in models if m["d_price"] is not None]
+    cheaper = sum(m["d_price"] < -SAME_PRICE for m in priced)
+    return {
+        "title": title,
+        "subtitle": sub,
+        "kind": "combo",
+        "layers": [
+            {"mark": "bar", "name": "Intelligence Index change", "y": "d_index", "series": "company"},
+            {"mark": "point", "name": "Price per task change", "y": "d_price"},
+        ],
+        "encoding": {
+            "x": {"field": "release", "type": "ordinal", "label": "Model line, in release order"},
+            "y": {"field": "d_index", "type": "quantitative", "label": "Change on the previous model", "format": "pct"},
+        },
+        "columns": [
+            col("release", "Model line", "text"),
+            col("company", "Company", "text"),
+            col("after", "Compared with", "text"),
+            col("d_index", "Intelligence Index change", "pct"),
+            col("d_price", "Price per task change", "pct"),
+        ],
+        "rows": rows,
+        "takeaway": [
+            f"Of {len(models)} releases that can be compared with an earlier model, {up} scored higher, {len(models) - up - down} about the same and {down} lower.",
+            f"Of the {len(priced)} with a price per task for both models, {cheaper} cost less per task and {sum(m['d_price'] > SAME_PRICE for m in priced)} cost more.",
+        ],
+        "assumptions": MODEL_NOTES,
+        "badges": ["arithmetic"],
+    }
+
+
+@mart(id="signal.model_table", sources=["model_releases", *BENCH])
+def model_table(ctx):
+    title = "Every new model: score, human preference and price per task"
+    sub = "Newest first. Verdict compares the model with the previous line of the same kind, on score and on price per task."
+    start = since_first_release(ctx)
+    models = list(reversed(new_models(ctx, start))) if start is not None else []
+    if not models:
+        return empty(title, sub)
+    rows = [
+        {
+            "release": m["release"],
+            "company": m["company"],
+            "listed": m["week"].date().isoformat(),
+            "verdict": m["verdict"],
+            "after": m["after"],
+            "index": m["index"],
+            "d_index": m["d_index"],
+            "arena": m["arena"],
+            "accuracy": m["accuracy"],
+            "cents": cents(m["cost"]),
+            "d_price": m["d_price"],
+            "model": m["model"],
+        }
+        for m in models
+    ]
+    scored = comparable(models)
+    return {
+        "title": title,
+        "subtitle": sub,
+        "kind": "table",
+        "encoding": {},
+        "columns": [
+            col("release", "Model line", "text"),
+            col("company", "Company", "text"),
+            col("listed", "Listed", "date"),
+            col("verdict", "Verdict", "text"),
+            col("after", "Compared with", "text"),
+            col("index", "Intelligence Index", "float"),
+            col("d_index", "Index change", "pct"),
+            col("arena", "Arena score", "int"),
+            col("accuracy", "GPQA accuracy", "pct"),
+            col("cents", "Price per task, US cents", "float"),
+            col("d_price", "Price change", "pct"),
+            col("model", "Model scored", "text"),
+        ],
+        "rows": rows,
+        "takeaway": [
+            f"{len(models)} new model lines since {month_label(start)}; {len(scored)} can be compared with an earlier line, and {sum(m['verdict'].startswith('Higher') for m in scored)} of those scored higher."
+        ],
+        "assumptions": MODEL_NOTES,
         "badges": ["arithmetic"],
     }

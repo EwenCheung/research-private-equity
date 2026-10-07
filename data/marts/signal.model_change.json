@@ -1,0 +1,286 @@
+{
+  "title": "Did each new model improve on the one before it?",
+  "subtitle": "Bars: change in Intelligence Index against the previous model line of the same kind, above 0 is smarter. Dots: change in price per task against the same model, below 0 is cheaper.",
+  "kind": "combo",
+  "layers": [
+    {
+      "mark": "bar",
+      "name": "Intelligence Index change",
+      "y": "d_index",
+      "series": "company"
+    },
+    {
+      "mark": "point",
+      "name": "Price per task change",
+      "y": "d_price"
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "release",
+      "type": "ordinal",
+      "label": "Model line, in release order"
+    },
+    "y": {
+      "field": "d_index",
+      "type": "quantitative",
+      "label": "Change on the previous model",
+      "format": "pct"
+    }
+  },
+  "columns": [
+    {
+      "field": "release",
+      "label": "Model line",
+      "format": "text"
+    },
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "after",
+      "label": "Compared with",
+      "format": "text"
+    },
+    {
+      "field": "d_index",
+      "label": "Intelligence Index change",
+      "format": "pct"
+    },
+    {
+      "field": "d_price",
+      "label": "Price per task change",
+      "format": "pct"
+    }
+  ],
+  "rows": [
+    {
+      "release": "GPT-4.1",
+      "company": "OpenAI",
+      "after": "GPT-4",
+      "d_index": 0.8142857142857143,
+      "d_price": null
+    },
+    {
+      "release": "Sonnet 4",
+      "company": "Anthropic",
+      "after": "Sonnet 3.7",
+      "d_index": 0.23529411764705865,
+      "d_price": null
+    },
+    {
+      "release": "Opus 4.1",
+      "company": "Anthropic",
+      "after": "Opus 4",
+      "d_index": 0.10679611650485432,
+      "d_price": null
+    },
+    {
+      "release": "GPT-5",
+      "company": "OpenAI",
+      "after": "GPT-4.5",
+      "d_index": 1.59375,
+      "d_price": null
+    },
+    {
+      "release": "Sonnet 4.5",
+      "company": "Anthropic",
+      "after": "Sonnet 4",
+      "d_index": 0.09523809523809534,
+      "d_price": 0.1785814812760771
+    },
+    {
+      "release": "Haiku 4.5",
+      "company": "Anthropic",
+      "after": "Haiku 3.5",
+      "d_index": 0.8988764044943818,
+      "d_price": null
+    },
+    {
+      "release": "GPT-5.1",
+      "company": "OpenAI",
+      "after": "GPT-5",
+      "d_index": -0.008032128514056214,
+      "d_price": null
+    },
+    {
+      "release": "Opus 4.5",
+      "company": "Anthropic",
+      "after": "Opus 4.1",
+      "d_index": 0.2763157894736843,
+      "d_price": null
+    },
+    {
+      "release": "GPT-5.2",
+      "company": "OpenAI",
+      "after": "GPT-5.1",
+      "d_index": 0.23076923076923084,
+      "d_price": -0.39742487393329573
+    },
+    {
+      "release": "Opus 4.6",
+      "company": "Anthropic",
+      "after": "Opus 4.5",
+      "d_index": 0.09621993127147754,
+      "d_price": -0.1164988967840932
+    },
+    {
+      "release": "Sonnet 4.6",
+      "company": "Anthropic",
+      "after": "Sonnet 4.5",
+      "d_index": 0.45410628019323673,
+      "d_price": 0.954801458748034
+    },
+    {
+      "release": "GPT-5.3",
+      "company": "OpenAI",
+      "after": "GPT-5.2",
+      "d_index": 0.06907894736842102,
+      "d_price": null
+    },
+    {
+      "release": "GPT-5.4",
+      "company": "OpenAI",
+      "after": "GPT-5.3",
+      "d_index": 0.19999999999999996,
+      "d_price": null
+    },
+    {
+      "release": "Opus 4.7",
+      "company": "Anthropic",
+      "after": "Opus 4.6",
+      "d_index": 0.27586206896551735,
+      "d_price": -0.7002417739209661
+    },
+    {
+      "release": "GPT-5.5",
+      "company": "OpenAI",
+      "after": "GPT-5.4",
+      "d_index": -0.015384615384615441,
+      "d_price": 1.1077460990835322
+    },
+    {
+      "release": "Opus 4.8",
+      "company": "Anthropic",
+      "after": "Opus 4.7",
+      "d_index": 0.027027027027026973,
+      "d_price": -0.09953020908309307
+    },
+    {
+      "release": "Sonnet 5",
+      "company": "Anthropic",
+      "after": "Sonnet 4.6",
+      "d_index": 0.2691029900332227,
+      "d_price": -0.7304445952481277
+    },
+    {
+      "release": "GPT-5.6",
+      "company": "OpenAI",
+      "after": "GPT-5.5",
+      "d_index": 0.22395833333333348,
+      "d_price": -0.804576299014994
+    },
+    {
+      "release": "Opus 5",
+      "company": "Anthropic",
+      "after": "Opus 4.8",
+      "d_index": 0.21531100478468912,
+      "d_price": -0.3521129531168058
+    },
+    {
+      "release": "Fable 5.1",
+      "company": "Anthropic",
+      "after": "Fable 5",
+      "d_index": 0.0766129032258065,
+      "d_price": -0.2556973638260863
+    },
+    {
+      "release": "GPT-6",
+      "company": "OpenAI",
+      "after": "GPT-5.6",
+      "d_index": 0.12127659574468086,
+      "d_price": 0.8752479781167259
+    },
+    {
+      "release": "Opus 5.5",
+      "company": "Anthropic",
+      "after": "Opus 5",
+      "d_index": 0.13385826771653542,
+      "d_price": -0.5852054146397239
+    },
+    {
+      "release": "Sonnet 5.5",
+      "company": "Anthropic",
+      "after": "Sonnet 5",
+      "d_index": 0.46596858638743455,
+      "d_price": -0.8476846903122601
+    },
+    {
+      "release": "GPT-6.1",
+      "company": "OpenAI",
+      "after": "GPT-6",
+      "d_index": -0.017077798861480198,
+      "d_price": -0.8114698130610972
+    }
+  ],
+  "takeaway": [
+    "Of 24 releases that can be compared with an earlier model, 20 scored higher, 4 about the same and 0 lower.",
+    "Of the 15 with a price per task for both models, 10 cost less per task and 4 cost more."
+  ],
+  "assumptions": [
+    "A model line is a numbered release (Opus 4.5, GPT-5.2). Each line is scored by its best-scoring model in Artificial Analysis's Intelligence Index, relayed by OpenRouter; the table names that model.",
+    "Price per task is what one GPQA Diamond question (graduate-level science) cost OpenRouter to run on that model, reasoning tokens included, in US cents. It is not a general business task, and a model OpenRouter has not evaluated has none.",
+    "Each model is compared with the previous line of the same kind (Opus after Opus, GPT after GPT, o after o). A line with no earlier one, or whose earlier line has no score, or where one best model is a Mini or Nano and the other is not, is not compared.",
+    "Scores and prices are as collected on the dates shown, not as at each release. A score within 3%, or a price within 10%, of the earlier model reads as the same.",
+    "Weeks run Monday to Sunday and only complete weeks are used.",
+    "Correlation is not cause. A lead shows what moved first, not why."
+  ],
+  "badges": [
+    "arithmetic"
+  ],
+  "id": "signal.model_change",
+  "page": "signal",
+  "as_of": "2026-10-06",
+  "sources": [
+    {
+      "source": "model_releases",
+      "label": "OpenRouter's public list of models",
+      "url": "https://openrouter.ai/openai/gpt-6.1-sol-pro",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-09-29",
+      "retrieved_at": "2026-10-07T01:56:18Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "openrouter_benchmarks",
+      "label": "OpenRouter benchmark feed (Artificial Analysis Intelligence Index and OpenRouter's own evaluation)",
+      "url": "https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-10-06",
+      "retrieved_at": "2026-10-06T03:57:28Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "arena_text_leaderboard",
+      "label": "Arena text leaderboard",
+      "url": "https://arena.ai/leaderboard/text?styleControl=off",
+      "method": "scrape",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-10-02",
+      "retrieved_at": "2026-10-07T02:49:05Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-07T02:53:11Z"
+}

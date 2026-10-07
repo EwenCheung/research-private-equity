@@ -1,6 +1,6 @@
 {
   "title": "Model releases over weekly growth in SDK downloads, Anthropic and OpenAI",
-  "subtitle": "Weekly growth in each company's SDK downloads (PyPI plus npm, 4-week average). Each vertical line is a new model line the company listed, in the company's colour.",
+  "subtitle": "Weekly growth in each company's SDK downloads (PyPI plus npm, 4-week average). Each vertical line is a new model line the company listed, in the company's colour; the number in brackets is its Artificial Analysis Intelligence Index (higher is smarter, best model in the line).",
   "kind": "combo",
   "layers": [
     {
@@ -121,7 +121,7 @@
       "week": "2025-04-20",
       "anthropic": null,
       "openai": null,
-      "release": "GPT-4.1, o4",
+      "release": "GPT-4.1 (13), o4 (17)",
       "company": "OpenAI"
     },
     {
@@ -163,7 +163,7 @@
       "week": "2025-05-25",
       "anthropic": null,
       "openai": null,
-      "release": "Sonnet 4",
+      "release": "Sonnet 4 (19)",
       "company": "Anthropic"
     },
     {
@@ -247,14 +247,14 @@
       "week": "2025-08-10",
       "anthropic": null,
       "openai": null,
-      "release": "Opus 4.1",
+      "release": "Opus 4.1 (23)",
       "company": "Anthropic"
     },
     {
       "week": "2025-08-10",
       "anthropic": null,
       "openai": null,
-      "release": "gpt-oss, GPT-5",
+      "release": "gpt-oss (12), GPT-5 (25)",
       "company": "OpenAI"
     },
     {
@@ -317,7 +317,7 @@
       "week": "2025-10-05",
       "anthropic": null,
       "openai": null,
-      "release": "Sonnet 4.5",
+      "release": "Sonnet 4.5 (21)",
       "company": "Anthropic"
     },
     {
@@ -338,7 +338,7 @@
       "week": "2025-10-19",
       "anthropic": null,
       "openai": null,
-      "release": "Haiku 4.5",
+      "release": "Haiku 4.5 (17)",
       "company": "Anthropic"
     },
     {
@@ -373,7 +373,7 @@
       "week": "2025-11-16",
       "anthropic": null,
       "openai": null,
-      "release": "GPT-5.1",
+      "release": "GPT-5.1 (25)",
       "company": "OpenAI"
     },
     {
@@ -394,7 +394,7 @@
       "week": "2025-11-30",
       "anthropic": null,
       "openai": null,
-      "release": "Opus 4.5",
+      "release": "Opus 4.5 (29)",
       "company": "Anthropic"
     },
     {
@@ -415,7 +415,7 @@
       "week": "2025-12-14",
       "anthropic": null,
       "openai": null,
-      "release": "GPT-5.2",
+      "release": "GPT-5.2 (30)",
       "company": "OpenAI"
     },
     {
@@ -478,7 +478,7 @@
       "week": "2026-02-08",
       "anthropic": null,
       "openai": null,
-      "release": "Opus 4.6",
+      "release": "Opus 4.6 (32)",
       "company": "Anthropic"
     },
     {
@@ -499,7 +499,7 @@
       "week": "2026-02-22",
       "anthropic": null,
       "openai": null,
-      "release": "Sonnet 4.6",
+      "release": "Sonnet 4.6 (30)",
       "company": "Anthropic"
     },
     {
@@ -513,7 +513,7 @@
       "week": "2026-03-01",
       "anthropic": null,
       "openai": null,
-      "release": "GPT-5.3",
+      "release": "GPT-5.3 (32)",
       "company": "OpenAI"
     },
     {
@@ -527,7 +527,7 @@
       "week": "2026-03-08",
       "anthropic": null,
       "openai": null,
-      "release": "GPT-5.4",
+      "release": "GPT-5.4 (39)",
       "company": "OpenAI"
     },
     {
@@ -576,7 +576,7 @@
       "week": "2026-04-19",
       "anthropic": null,
       "openai": null,
-      "release": "Opus 4.7",
+      "release": "Opus 4.7 (41)",
       "company": "Anthropic"
     },
     {
@@ -590,7 +590,7 @@
       "week": "2026-04-26",
       "anthropic": null,
       "openai": null,
-      "release": "GPT-5.5",
+      "release": "GPT-5.5 (38)",
       "company": "OpenAI"
     },
     {
@@ -632,7 +632,7 @@
       "week": "2026-05-31",
       "anthropic": null,
       "openai": null,
-      "release": "Opus 4.8",
+      "release": "Opus 4.8 (42)",
       "company": "Anthropic"
     },
     {
@@ -653,7 +653,7 @@
       "week": "2026-06-14",
       "anthropic": null,
       "openai": null,
-      "release": "Fable 5",
+      "release": "Fable 5 (50)",
       "company": "Anthropic"
     },
     {
@@ -681,7 +681,7 @@
       "week": "2026-07-05",
       "anthropic": null,
       "openai": null,
-      "release": "Sonnet 5",
+      "release": "Sonnet 5 (38)",
       "company": "Anthropic"
     },
     {
@@ -695,7 +695,7 @@
       "week": "2026-07-12",
       "anthropic": null,
       "openai": null,
-      "release": "GPT-5.6",
+      "release": "GPT-5.6 (47)",
       "company": "OpenAI"
     },
     {
@@ -716,7 +716,7 @@
       "week": "2026-07-26",
       "anthropic": null,
       "openai": null,
-      "release": "Opus 5",
+      "release": "Opus 5 (51)",
       "company": "Anthropic"
     },
     {
@@ -765,14 +765,14 @@
       "week": "2026-09-06",
       "anthropic": null,
       "openai": null,
-      "release": "Fable 5.1",
+      "release": "Fable 5.1 (53)",
       "company": "Anthropic"
     },
     {
       "week": "2026-09-06",
       "anthropic": null,
       "openai": null,
-      "release": "GPT-6",
+      "release": "GPT-6 (53)",
       "company": "OpenAI"
     },
     {
@@ -800,7 +800,7 @@
       "week": "2026-09-27",
       "anthropic": null,
       "openai": null,
-      "release": "Opus 5.5",
+      "release": "Opus 5.5 (58)",
       "company": "Anthropic"
     },
     {
@@ -814,14 +814,14 @@
       "week": "2026-10-04",
       "anthropic": null,
       "openai": null,
-      "release": "Sonnet 5.5",
+      "release": "Sonnet 5.5 (56)",
       "company": "Anthropic"
     },
     {
       "week": "2026-10-04",
       "anthropic": null,
       "openai": null,
-      "release": "GPT-6.1",
+      "release": "GPT-6.1 (52)",
       "company": "OpenAI"
     }
   ],
@@ -841,7 +841,7 @@
   ],
   "id": "signal.releases",
   "page": "signal",
-  "as_of": "2026-10-04",
+  "as_of": "2026-10-06",
   "sources": [
     {
       "source": "pypi_downloads",
@@ -878,8 +878,20 @@
       "retrieved_at": "2026-10-07T01:56:18Z",
       "freshness": "fresh",
       "manual": null
+    },
+    {
+      "source": "openrouter_benchmarks",
+      "label": "OpenRouter benchmark feed (Artificial Analysis Intelligence Index and OpenRouter's own evaluation)",
+      "url": "https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-10-06",
+      "retrieved_at": "2026-10-06T03:57:28Z",
+      "freshness": "fresh",
+      "manual": null
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-07T02:48:02Z"
+  "generated_at": "2026-10-07T02:53:11Z"
 }

@@ -265,7 +265,10 @@ def world(jump=False) -> dict[str, list[dict]]:
                     name=name,
                 )
             )
-    for d in pd.date_range("2025-05-25", periods=12, freq="40D"):
+    for i, d in enumerate(
+        pd.date_range("2025-05-25", periods=12, freq="40D")
+    ):  # Anthropic: Opus 4.1, Sonnet 4.2, Opus 4.3 ...
+        tier, ver = ("Opus", "Sonnet")[i % 2], f"{4 + i // 4}.{i % 4 + 1}"
         rows["model_releases"].append(
             obs(
                 "model_releases",
@@ -273,9 +276,31 @@ def world(jump=False) -> dict[str, list[dict]]:
                 d.date().isoformat(),
                 1,
                 "anthropic",
-                model=f"anthropic/claude-m{d.month}{d.day}",
-                name=f"Anthropic: Claude Model {d.month}-{d.day}".split(": ", 1)[1],
+                model=f"anthropic/claude-{tier.lower()}-{ver}",
+                name=f"Claude {tier} {ver}",
             )
+        )
+        slug = f"anthropic/claude-{tier.lower()}-{ver}-20260101"
+        scores(
+            rows,
+            "anthropic",
+            slug,
+            f"Claude {tier} {ver} (Max)",
+            f"claude-{tier.lower()}-{ver.replace('.', '-')}-high",
+            20 + 2 * i,
+            1400 + 5 * i,
+            0.5 - 0.02 * i,
+        )
+    for i in range(10, 20):  # OpenAI's GPT-10 ... GPT-19, each scored; GPT-19 has no price
+        scores(
+            rows,
+            "openai",
+            f"openai/gpt-{i}-2025-01-01",
+            f"GPT-{i} (High)",
+            f"gpt-{i}-high",
+            15 + i,
+            1380 + 4 * i,
+            None if i == 19 else 0.3,
         )
     for d, name, value in (
         ("2025-03-03", "Series E", 61.5e9),
@@ -289,6 +314,40 @@ def world(jump=False) -> dict[str, list[dict]]:
     return rows
 
 
+def scores(rows, ent, slug, name, arena_name, index, arena, cost):
+    """One model's Intelligence Index, GPQA Diamond accuracy and cost, and Arena score, as the two benchmark sources hold them."""
+    rows["openrouter_benchmarks"].append(
+        obs(
+            "openrouter_benchmarks",
+            "openrouter_aa_intelligence_index",
+            "2026-10-06",
+            index,
+            ent,
+            model=name,
+            permaslug=slug,
+        )
+    )
+    if cost is not None:
+        rows["openrouter_benchmarks"].append(
+            obs(
+                "openrouter_benchmarks",
+                "openrouter_eval_accuracy",
+                "2026-10-03",
+                0.8,
+                ent,
+                model=name,
+                permaslug=slug,
+                benchmark="gpqa_diamond",
+                cost_per_task_usd=cost,
+                tasks=198,
+                stddev=0.02,
+            )
+        )
+    rows["arena_text_leaderboard"].append(
+        obs("arena_text_leaderboard", "arena_text_score", "2026-10-02", arena, ent, model=arena_name)
+    )
+
+
 def registry_sources() -> list[str]:
     registry.discover()
     return list(registry.SOURCES)
@@ -299,7 +358,11 @@ def registry_sources() -> list[str]:
 )
 def test_every_signal_chart_is_a_valid_chart_spec_with_rows(mart_id):
     spec = build_mart(registry.MARTS[mart_id], world(), NOW, {"anthropic": "Anthropic", "openai": "OpenAI"})
-    assert spec["status"] == "ok" and spec["rows"] and spec["kind"] == "combo"
+    assert (
+        spec["status"] == "ok"
+        and spec["rows"]
+        and spec["kind"] == ("table" if mart_id == "signal.model_table" else "combo")
+    )
     assert len(spec["takeaway"]) <= 2 and all(isinstance(t, str) and t for t in spec["takeaway"])
     json.dumps(spec)  # no NaN reaches the browser
 
@@ -317,6 +380,7 @@ def test_the_release_chart_marks_each_release_week_once_and_names_it():
     theirs = [r for r in marked if r["company"] == "OpenAI"]
     assert len(mine) == 12 and 0 < len(theirs) < 20  # the Mini variants and the unversioned name are not releases
     assert all(r["release"].startswith("GPT-") and "Mini" not in r["release"] for r in theirs)
+    assert any("(" in r["release"] for r in mine + theirs)  # a scored model's caption carries its Intelligence Index
     assert spec["rows"][0]["week"] >= "2025-03-01"  # starts 12 weeks before the first Anthropic release, not at launch
     growth = [r for r in spec["rows"] if not r["release"]]
     assert all(r["anthropic"] is not None or r["openai"] is not None for r in growth)
@@ -364,3 +428,180 @@ def test_both_lead_charts_name_a_pair_and_say_what_a_lead_is():
         spec = build_mart(registry.MARTS[mart_id], world(), NOW)
         assert ("(vs OpenAI)" in spec["subtitle"]) == edge
         assert any("A lead is one signal moving first" in a for a in spec["assumptions"])
+
+
+@pytest.mark.parametrize(
+    "text, expected",
+    [
+        ("anthropic/claude-4.1-opus-20250805", ("opus", (4, 1), "Opus 4.1")),
+        ("anthropic/claude-opus-5.5-20260921", ("opus", (5, 5), "Opus 5.5")),
+        ("anthropic/claude-5-fable-20260609", ("fable", (5, 0), "Fable 5")),
+        ("claude-opus-4-1-20250805-thinking-16k", ("opus", (4, 1), "Opus 4.1")),
+        ("claude-sonnet-4-20250514", ("sonnet", (4, 0), "Sonnet 4")),  # the date is not a minor version
+        ("claude-3-5-sonnet-20241022", ("sonnet", (3, 5), "Sonnet 3.5")),
+        ("openai/gpt-5.2-20251211", ("GPT", (5, 2), "GPT-5.2")),
+        ("gpt-5.2-chat-latest-20260210", ("GPT", (5, 2), "GPT-5.2")),
+        ("gpt-4.1-mini-2025-04-14", ("GPT", (4, 1), "GPT-4.1")),
+        ("gpt-5-high", ("GPT", (5, 0), "GPT-5")),
+        ("openai/o3-2025-04-16", ("o", (3, 0), "o3")),
+        ("openai/gpt-4o-2024-05-13", ("GPT-4o", (4, 0), "GPT-4o")),
+        ("openai/gpt-oss-120b", ("gpt-oss", (0, 0), "gpt-oss")),
+        ("anthropic/claude-instant-1", None),
+    ],
+)
+def test_benchmark_and_arena_names_are_matched_to_the_model_line_they_belong_to(text, expected):
+    assert sig.line_of(text) == expected
+
+
+def test_a_line_takes_its_best_model_with_that_models_own_cost_and_the_best_arena_variant():
+    rows = [
+        obs(
+            "openrouter_benchmarks",
+            "openrouter_aa_intelligence_index",
+            "2026-10-06",
+            20.0,
+            "openai",
+            model="GPT-5",
+            permaslug="openai/gpt-5-2025-08-07",
+        ),
+        obs(
+            "openrouter_benchmarks",
+            "openrouter_aa_intelligence_index",
+            "2026-10-06",
+            25.0,
+            "openai",
+            model="GPT-5 Codex",
+            permaslug="openai/gpt-5-codex",
+        ),
+        obs(
+            "openrouter_benchmarks",
+            "openrouter_eval_accuracy",
+            "2026-10-03",
+            0.85,
+            "openai",
+            model="GPT-5",
+            permaslug="openai/gpt-5-2025-08-07",
+            benchmark="gpqa_diamond",
+            cost_per_task_usd=0.21,
+        ),
+        obs(
+            "openrouter_benchmarks",
+            "openrouter_eval_accuracy",
+            "2026-10-03",
+            0.9,
+            "openai",
+            model="GPT-5 Codex",
+            permaslug="openai/gpt-5-codex",
+            benchmark="gpqa_diamond",
+            cost_per_task_usd=0.5,
+        ),
+        obs(
+            "openrouter_benchmarks",
+            "openrouter_eval_accuracy",
+            "2026-10-03",
+            0.5,
+            "openai",
+            model="GPT-5 Codex",
+            permaslug="openai/gpt-5-codex",
+            benchmark="tau_bench_verified_airline",
+            cost_per_task_usd=9.0,
+        ),
+        obs("arena_text_leaderboard", "arena_text_score", "2026-10-02", 1400.0, "openai", model="gpt-5-chat"),
+        obs("arena_text_leaderboard", "arena_text_score", "2026-10-02", 1435.0, "openai", model="gpt-5-high"),
+    ]
+    card = sig.scorecard(Ctx(rows, {}), "openai")["gpt-5"]
+    assert (card["index"], card["accuracy"], card["cost"], card["arena"]) == (
+        25.0,
+        0.9,
+        0.5,
+        1435.0,
+    )  # the GPQA row, not the airline one
+
+
+def models(*specs):
+    """Anthropic lines as (name, index, cost); each is listed in its own week."""
+    rows = []
+    for i, (name, index, cost) in enumerate(specs):
+        d = (pd.Timestamp("2025-06-01") + pd.Timedelta(weeks=3 * i)).date().isoformat()
+        tier, ver = name.split()
+        rows.append(
+            obs(
+                "model_releases",
+                "model_release",
+                d,
+                1,
+                "anthropic",
+                model=f"anthropic/claude-{tier.lower()}-{ver}",
+                name=f"Claude {name}",
+            )
+        )
+        scores(
+            {"openrouter_benchmarks": rows, "arena_text_leaderboard": rows},
+            "anthropic",
+            f"anthropic/claude-{tier.lower()}-{ver}-20260101",
+            f"Claude {name}",
+            f"claude-{tier.lower()}-{ver}",
+            index,
+            1400,
+            cost,
+        )
+    return Ctx(rows, {})
+
+
+def test_each_model_is_compared_with_the_previous_line_of_its_own_kind_and_called_plainly():
+    ctx = models(
+        ("Opus 4.1", 20, 0.50),
+        ("Sonnet 4.2", 10, 0.10),
+        ("Opus 4.3", 25, 0.30),
+        ("Sonnet 4.4", 9.8, 0.30),
+        ("Opus 4.5", 25.4, 0.31),
+    )
+    got = {m["release"]: (m["after"], m["verdict"]) for m in sig.new_models(ctx, pd.Timestamp("2025-01-01"))}
+    assert got == {
+        "Opus 4.1": (None, "First in its line"),
+        "Sonnet 4.2": (None, "First in its line"),
+        "Opus 4.3": ("Opus 4.1", "Higher score, cheaper"),  # +25% on the score, -40% on price
+        "Sonnet 4.4": ("Sonnet 4.2", "Same score, pricier"),  # -2%, +200%
+        "Opus 4.5": ("Opus 4.3", "Same score, same price"),  # +1.6%, +3.3%
+    }
+
+
+def test_a_mini_model_is_not_compared_with_a_full_size_one():
+    rows = [
+        obs("model_releases", "model_release", "2025-06-01", 1, "openai", model="openai/o3", name="o3"),
+        obs("model_releases", "model_release", "2025-07-01", 1, "openai", model="openai/o4-mini", name="o4 Mini"),
+    ]
+    scores(
+        {"openrouter_benchmarks": rows, "arena_text_leaderboard": rows},
+        "openai",
+        "openai/o3-2025-04-16",
+        "o3",
+        "o3-2025-04-16",
+        20.0,
+        1390,
+        0.2,
+    )
+    scores(
+        {"openrouter_benchmarks": rows, "arena_text_leaderboard": rows},
+        "openai",
+        "openai/o4-mini-2025-04-16",
+        "o4-mini (High)",
+        "o4-mini-high",
+        16.0,
+        1380,
+        0.1,
+    )
+    got = {m["release"]: m["verdict"] for m in sig.new_models(Ctx(rows, {}), pd.Timestamp("2025-01-01"))}
+    assert got == {"o3": "First in its line", "o4": "No like-for-like comparison"}
+
+
+def test_the_change_chart_says_how_many_improved_and_how_many_dropped():
+    spec = build_mart(registry.MARTS["signal.model_change"], world(), NOW)
+    assert "scored higher" in spec["takeaway"][0] and "cost less per task" in spec["takeaway"][1]
+    assert {layer["mark"] for layer in spec["layers"]} == {
+        "bar",
+        "point",
+    }  # two different measures, two different marks
+    table = build_mart(registry.MARTS["signal.model_table"], world(), NOW)
+    assert table["rows"][0]["listed"] > table["rows"][-1]["listed"]  # newest first
+    assert any(r["verdict"] == "First in its line" for r in table["rows"])

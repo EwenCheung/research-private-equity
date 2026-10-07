@@ -11,10 +11,12 @@ and what moved when the announced valuation did. Every chart draws both series w
 
 ## Steps
 1. **Refresh the inputs.** The weekly series come from the daily sources, so run `/refresh-data` first when they are more than a few days old. Then
-   `uv run python -m pipeline.collect --source model_releases` for the release list (weekly).
+   `uv run python -m pipeline.collect --source model_releases arena_text_leaderboard openrouter_benchmarks` for the release list, Arena's human-preference scores
+   and the Intelligence Index with OpenRouter's own task costs (weekly). The benchmarks source needs `OPENROUTER_API_KEY` in `.env`; without it the source is skipped and
+   the last snapshot stays on the page, so say so rather than presenting old scores as new.
 2. **A new funding round?** The valuation yardstick is the cited ledger `data/ledgers/signal_funding_rounds.csv`. Add a row only from Anthropic's own
    announcement: `round_post_money_usd`, the announcement date, the link, a verbatim quote as `evidence`, and who entered it. Never estimate a valuation.
-3. **Build.** `uv run python -m pipeline.build` rebuilds the ten `signal.*` charts with everything else.
+3. **Build.** `uv run python -m pipeline.build` rebuilds the twelve `signal.*` charts with everything else.
 4. **Read the page** (Signal in the sidebar) or `data/marts/signal.*.json`. Report what each chart says in its own words: the takeaway, the label and the number of
    pairs tested. If nothing is supported, say so plainly: it is a result.
 5. **Commit on a branch and open a PR**, never straight to `main`: `chore(data): refresh signal inputs`, with the raw snapshots in their own commit.

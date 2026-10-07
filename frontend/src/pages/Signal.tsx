@@ -14,6 +14,11 @@ const SECTIONS: { title: string; note: string; charts: string[] }[] = [
     charts: ["signal.releases", "signal.around_release", "signal.around_openai_release"],
   },
   {
+    title: "Did each new model improve on the one before it?",
+    note: "Score from Artificial Analysis's Intelligence Index, human preference from Arena, and the price of a task from OpenRouter's own tests. Each model is compared with the previous one of its kind, so a model that scored lower or cost more shows up as a drop.",
+    charts: ["signal.model_scores", "signal.model_change", "signal.model_table"],
+  },
+  {
     title: "Does one public signal move before another?",
     note: "A lead means one signal moves first and another follows some weeks later, for example Wikipedia views jumping before SDK downloads do. If one did, it would work as an early warning. We tested every pair of Anthropic's own signals, and of its growth beyond OpenAI's.",
     charts: ["signal.lead_lag", "signal.lead_lag_edge", "signal.tested"],

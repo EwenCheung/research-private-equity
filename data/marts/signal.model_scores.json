@@ -1,0 +1,364 @@
+{
+  "title": "How well did each new model score?",
+  "subtitle": "Artificial Analysis Intelligence Index of the best model in each new model line, in release order. Higher is smarter. Hover a bar for the Arena score, the accuracy and the price per task.",
+  "kind": "combo",
+  "layers": [
+    {
+      "mark": "bar",
+      "name": "Intelligence Index",
+      "y": "index",
+      "series": "company"
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "release",
+      "type": "ordinal",
+      "label": "Model line, in release order"
+    },
+    "y": {
+      "field": "index",
+      "type": "quantitative",
+      "label": "Intelligence Index",
+      "format": "float"
+    }
+  },
+  "columns": [
+    {
+      "field": "release",
+      "label": "Model line",
+      "format": "text"
+    },
+    {
+      "field": "company",
+      "label": "Company",
+      "format": "text"
+    },
+    {
+      "field": "listed",
+      "label": "Listed",
+      "format": "date"
+    },
+    {
+      "field": "index",
+      "label": "Intelligence Index",
+      "format": "float"
+    },
+    {
+      "field": "arena",
+      "label": "Arena score (human preference)",
+      "format": "int"
+    },
+    {
+      "field": "accuracy",
+      "label": "GPQA Diamond accuracy",
+      "format": "pct"
+    },
+    {
+      "field": "cents",
+      "label": "Price per task, US cents",
+      "format": "float"
+    }
+  ],
+  "rows": [
+    {
+      "release": "GPT-4.1",
+      "company": "OpenAI",
+      "listed": "2025-04-20",
+      "index": 12.7,
+      "arena": 1415.0,
+      "accuracy": 0.6464646666666667,
+      "cents": 1.5368191919191918
+    },
+    {
+      "release": "o4",
+      "company": "OpenAI",
+      "listed": "2025-04-20",
+      "index": 16.7,
+      "arena": 1391.0,
+      "accuracy": null,
+      "cents": null
+    },
+    {
+      "release": "Sonnet 4",
+      "company": "Anthropic",
+      "listed": "2025-05-25",
+      "index": 18.9,
+      "arena": 1402.0,
+      "accuracy": 0.7668349999999999,
+      "cents": 26.70539015151515
+    },
+    {
+      "release": "Opus 4.1",
+      "company": "Anthropic",
+      "listed": "2025-08-10",
+      "index": 22.8,
+      "arena": 1450.0,
+      "accuracy": null,
+      "cents": null
+    },
+    {
+      "release": "gpt-oss",
+      "company": "OpenAI",
+      "listed": "2025-08-10",
+      "index": 11.6,
+      "arena": 1352.0,
+      "accuracy": 0.7255892500000001,
+      "cents": 0.8037106691919192
+    },
+    {
+      "release": "GPT-5",
+      "company": "OpenAI",
+      "listed": "2025-08-10",
+      "index": 24.9,
+      "arena": 1435.0,
+      "accuracy": null,
+      "cents": null
+    },
+    {
+      "release": "Sonnet 4.5",
+      "company": "Anthropic",
+      "listed": "2025-10-05",
+      "index": 20.7,
+      "arena": 1457.0,
+      "accuracy": 0.8210436999999998,
+      "cents": 31.47447828282829
+    },
+    {
+      "release": "Haiku 4.5",
+      "company": "Anthropic",
+      "listed": "2025-10-19",
+      "index": 16.9,
+      "arena": 1414.0,
+      "accuracy": 0.7286196,
+      "cents": 19.021829797979798
+    },
+    {
+      "release": "GPT-5.1",
+      "company": "OpenAI",
+      "listed": "2025-11-16",
+      "index": 24.7,
+      "arena": 1456.0,
+      "accuracy": 0.863636,
+      "cents": 22.125699158249155
+    },
+    {
+      "release": "Opus 4.5",
+      "company": "Anthropic",
+      "listed": "2025-11-30",
+      "index": 29.1,
+      "arena": 1474.0,
+      "accuracy": 0.8617657777777777,
+      "cents": 84.53705723905725
+    },
+    {
+      "release": "GPT-5.2",
+      "company": "OpenAI",
+      "listed": "2025-12-14",
+      "index": 30.4,
+      "arena": 1476.0,
+      "accuracy": 0.878788,
+      "cents": 13.332395959595958
+    },
+    {
+      "release": "Opus 4.6",
+      "company": "Anthropic",
+      "listed": "2026-02-08",
+      "index": 31.9,
+      "arena": 1505.0,
+      "accuracy": 0.8602692222222225,
+      "cents": 74.68858333333334
+    },
+    {
+      "release": "Sonnet 4.6",
+      "company": "Anthropic",
+      "listed": "2026-02-22",
+      "index": 30.1,
+      "arena": 1472.0,
+      "accuracy": 0.636738,
+      "cents": 61.526356060606055
+    },
+    {
+      "release": "GPT-5.3",
+      "company": "OpenAI",
+      "listed": "2026-03-01",
+      "index": 32.5,
+      "arena": 1450.0,
+      "accuracy": null,
+      "cents": null
+    },
+    {
+      "release": "GPT-5.4",
+      "company": "OpenAI",
+      "listed": "2026-03-08",
+      "index": 39.0,
+      "arena": 1475.0,
+      "accuracy": 0.902918,
+      "cents": 14.672305387205387
+    },
+    {
+      "release": "Opus 4.7",
+      "company": "Anthropic",
+      "listed": "2026-04-19",
+      "index": 40.7,
+      "arena": 1501.0,
+      "accuracy": 0.8942841547799696,
+      "cents": 22.388517248356095
+    },
+    {
+      "release": "GPT-5.5",
+      "company": "OpenAI",
+      "listed": "2026-04-26",
+      "index": 38.4,
+      "arena": 1481.0,
+      "accuracy": 0.9371493333333333,
+      "cents": 30.925494444444446
+    },
+    {
+      "release": "Opus 4.8",
+      "company": "Anthropic",
+      "listed": "2026-05-31",
+      "index": 41.8,
+      "arena": 1482.0,
+      "accuracy": 0.8974932222222222,
+      "cents": 20.160183445566776
+    },
+    {
+      "release": "Fable 5",
+      "company": "Anthropic",
+      "listed": "2026-06-14",
+      "index": 49.6,
+      "arena": 1504.0,
+      "accuracy": 0.8545453999999999,
+      "cents": 17.536612575757573
+    },
+    {
+      "release": "Sonnet 5",
+      "company": "Anthropic",
+      "listed": "2026-07-05",
+      "index": 38.2,
+      "arena": 1462.0,
+      "accuracy": 0.8354408285280729,
+      "cents": 16.58476181082448
+    },
+    {
+      "release": "GPT-5.6",
+      "company": "OpenAI",
+      "listed": "2026-07-12",
+      "index": 47.0,
+      "arena": 1484.0,
+      "accuracy": 0.9208750000000001,
+      "cents": 6.043574579124578
+    },
+    {
+      "release": "Opus 5",
+      "company": "Anthropic",
+      "listed": "2026-07-26",
+      "index": 50.8,
+      "arena": 1490.0,
+      "accuracy": 0.8746725555555557,
+      "cents": 13.061521717171717
+    },
+    {
+      "release": "Fable 5.1",
+      "company": "Anthropic",
+      "listed": "2026-09-06",
+      "index": 53.4,
+      "arena": 1501.0,
+      "accuracy": 0.8993264,
+      "cents": 13.052546969696968
+    },
+    {
+      "release": "GPT-6",
+      "company": "OpenAI",
+      "listed": "2026-09-06",
+      "index": 52.7,
+      "arena": 1477.0,
+      "accuracy": 0.944444,
+      "cents": 11.333201010101009
+    },
+    {
+      "release": "Opus 5.5",
+      "company": "Anthropic",
+      "listed": "2026-09-27",
+      "index": 57.6,
+      "arena": 1504.0,
+      "accuracy": 0.9023569999999999,
+      "cents": 5.417848484848485
+    },
+    {
+      "release": "Sonnet 5.5",
+      "company": "Anthropic",
+      "listed": "2026-10-04",
+      "index": 56.0,
+      "arena": 1471.0,
+      "accuracy": 0.920875,
+      "cents": 2.5261131313131315
+    },
+    {
+      "release": "GPT-6.1",
+      "company": "OpenAI",
+      "listed": "2026-10-04",
+      "index": 51.8,
+      "arena": 1483.0,
+      "accuracy": 0.944444,
+      "cents": 2.136650505050505
+    }
+  ],
+  "takeaway": [
+    "The highest score is Opus 5.5 (Anthropic) at 58.",
+    "The latest releases: Anthropic's Sonnet 5.5 scores 56; OpenAI's GPT-6.1 scores 52."
+  ],
+  "assumptions": [
+    "A model line is a numbered release (Opus 4.5, GPT-5.2). Each line is scored by its best-scoring model in Artificial Analysis's Intelligence Index, relayed by OpenRouter; the table names that model.",
+    "Price per task is what one GPQA Diamond question (graduate-level science) cost OpenRouter to run on that model, reasoning tokens included, in US cents. It is not a general business task, and a model OpenRouter has not evaluated has none.",
+    "Each model is compared with the previous line of the same kind (Opus after Opus, GPT after GPT, o after o). A line with no earlier one, or whose earlier line has no score, or where one best model is a Mini or Nano and the other is not, is not compared.",
+    "Scores and prices are as collected on the dates shown, not as at each release. A score within 3%, or a price within 10%, of the earlier model reads as the same.",
+    "Weeks run Monday to Sunday and only complete weeks are used.",
+    "Correlation is not cause. A lead shows what moved first, not why."
+  ],
+  "badges": [],
+  "id": "signal.model_scores",
+  "page": "signal",
+  "as_of": "2026-10-06",
+  "sources": [
+    {
+      "source": "model_releases",
+      "label": "OpenRouter's public list of models",
+      "url": "https://openrouter.ai/openai/gpt-6.1-sol-pro",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-09-29",
+      "retrieved_at": "2026-10-07T01:56:18Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "openrouter_benchmarks",
+      "label": "OpenRouter benchmark feed (Artificial Analysis Intelligence Index and OpenRouter's own evaluation)",
+      "url": "https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks",
+      "method": "api",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-10-06",
+      "retrieved_at": "2026-10-06T03:57:28Z",
+      "freshness": "fresh",
+      "manual": null
+    },
+    {
+      "source": "arena_text_leaderboard",
+      "label": "Arena text leaderboard",
+      "url": "https://arena.ai/leaderboard/text?styleControl=off",
+      "method": "scrape",
+      "tier": "platform",
+      "cadence": "weekly",
+      "as_of": "2026-10-02",
+      "retrieved_at": "2026-10-07T02:49:05Z",
+      "freshness": "fresh",
+      "manual": null
+    }
+  ],
+  "status": "ok",
+  "generated_at": "2026-10-07T02:53:11Z"
+}

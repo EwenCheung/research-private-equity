@@ -1,16 +1,16 @@
 {
   "title": "Anthropic's and OpenAI's SDK growth around an Anthropic model release",
-  "subtitle": "Bars: Anthropic's average weekly growth in each week around its releases. Line: OpenAI's over the same weeks, as the market. Shaded: the middle 95% of random weeks for Anthropic.",
+  "subtitle": "Each line is how much faster than a normal week that company's SDK downloads grew, in each week around Anthropic's releases (0 = a normal week). OpenAI is the market check. Grey: the range a normal week reaches by luck; a line outside it would be unusual.",
   "kind": "combo",
   "layers": [
     {
       "mark": "band",
-      "name": "Random weeks",
+      "name": "Normal week",
       "y_low": "low",
       "y_high": "high"
     },
     {
-      "mark": "bar",
+      "mark": "line",
       "name": "Anthropic",
       "y": "growth"
     },
@@ -29,7 +29,7 @@
     "y": {
       "field": "growth",
       "type": "quantitative",
-      "label": "Average weekly growth",
+      "label": "Growth above a normal week",
       "format": "pct"
     }
   },
@@ -41,154 +41,198 @@
     },
     {
       "field": "growth",
-      "label": "Anthropic average growth",
+      "label": "Anthropic growth above a normal week",
       "format": "pct"
     },
     {
       "field": "other",
-      "label": "OpenAI average growth",
+      "label": "OpenAI growth above a normal week",
       "format": "pct"
     },
     {
       "field": "low",
-      "label": "Random weeks, low",
+      "label": "Normal-week range, low",
       "format": "pct"
     },
     {
       "field": "high",
-      "label": "Random weeks, high",
+      "label": "Normal-week range, high",
+      "format": "pct"
+    },
+    {
+      "field": "avg",
+      "label": "Anthropic average weekly growth",
+      "format": "pct"
+    },
+    {
+      "field": "avg_other",
+      "label": "OpenAI average weekly growth",
       "format": "pct"
     }
   ],
   "rows": [
     {
       "week": "-4",
-      "growth": 0.06177934208744353,
-      "other": 0.06283618875168852,
-      "low": -0.004964902510864746,
-      "high": 0.09518211054419672
+      "growth": 0.017722834044967592,
+      "other": 0.03364801580746419,
+      "low": -0.04902141055334069,
+      "high": 0.051125602501720775,
+      "avg": 0.06177934208744353,
+      "avg_other": 0.06283618875168852
     },
     {
       "week": "-3",
-      "growth": 0.043480092222045415,
-      "other": 0.037251407112009687,
-      "low": -0.006989359710506358,
-      "high": 0.09154284696928242
+      "growth": 6.72033700131261e-05,
+      "other": 0.010093610006153043,
+      "low": -0.050402248562538644,
+      "high": 0.04812995811725013,
+      "avg": 0.043480092222045415,
+      "avg_other": 0.037251407112009687
     },
     {
       "week": "-2",
-      "growth": 0.051421648655134274,
-      "other": 0.018508360697463,
-      "low": -0.00539267750922309,
-      "high": 0.0921144776325643
+      "growth": 0.006892413357972749,
+      "other": -0.009866399644586823,
+      "low": -0.04992191280638462,
+      "high": 0.04758524233540278,
+      "avg": 0.051421648655134274,
+      "avg_other": 0.018508360697463
     },
     {
       "week": "-1",
-      "growth": 0.054618417485240815,
-      "other": 0.04986502983104302,
-      "low": -0.0060872409569273965,
-      "high": 0.09268233857821306
+      "growth": 0.010789451652878375,
+      "other": 0.021838083703502122,
+      "low": -0.04991620678928984,
+      "high": 0.04885337274585062,
+      "avg": 0.054618417485240815,
+      "avg_other": 0.04986502983104302
     },
     {
       "week": "0",
-      "growth": 0.045117687595920615,
-      "other": 0.015853743816698473,
-      "low": -0.006735143858314488,
-      "high": 0.09420805025698199
+      "growth": 0.001667307482678175,
+      "other": -0.01103684876252126,
+      "low": -0.05018552397155693,
+      "high": 0.05075767014373955,
+      "avg": 0.045117687595920615,
+      "avg_other": 0.015853743816698473
     },
     {
       "week": "+1",
-      "growth": 0.06142607977899462,
-      "other": 0.04658678978280697,
-      "low": -0.004504966573593452,
-      "high": 0.0936235164054753
+      "growth": 0.015813938064066328,
+      "other": 0.01807261087423361,
+      "low": -0.05011710828852174,
+      "high": 0.048011374690547004,
+      "avg": 0.06142607977899462,
+      "avg_other": 0.04658678978280697
     },
     {
       "week": "+2",
-      "growth": 0.04486247250257672,
-      "other": 0.022842396523395016,
-      "low": -0.003029245968989007,
-      "high": 0.09626711211943036
+      "growth": -0.000892916572533077,
+      "other": -0.006043503484187182,
+      "low": -0.0487846350440988,
+      "high": 0.05051172304432056,
+      "avg": 0.04486247250257672,
+      "avg_other": 0.022842396523395016
     },
     {
       "week": "+3",
-      "growth": 0.0354690996593307,
-      "other": 0.03635139068379154,
-      "low": -0.004615553525672766,
-      "high": 0.09675703998582215
+      "growth": -0.0114408839587564,
+      "other": 0.00573675666573226,
+      "low": -0.05152553714375986,
+      "high": 0.04984705636773505,
+      "avg": 0.0354690996593307,
+      "avg_other": 0.03635139068379154
     },
     {
       "week": "+4",
-      "growth": 0.004551129796873968,
-      "other": -0.01151380810043308,
-      "low": -0.002708962833421525,
-      "high": 0.09648832866607486
+      "growth": -0.04215833829893981,
+      "other": -0.0420520081798838,
+      "low": -0.0494184309292353,
+      "high": 0.04977886057026108,
+      "avg": 0.004551129796873968,
+      "avg_other": -0.01151380810043308
     },
     {
       "week": "+5",
-      "growth": 0.03688159128149706,
-      "other": 0.0443503080843283,
-      "low": -0.0050048414875311946,
-      "high": 0.09497100940042578
+      "growth": -0.008419301990534894,
+      "other": 0.0159973359049215,
+      "low": -0.050305734759563146,
+      "high": 0.04967011612839383,
+      "avg": 0.03688159128149706,
+      "avg_other": 0.0443503080843283
     },
     {
       "week": "+6",
-      "growth": 0.04401051160548681,
-      "other": 0.0027625594603974753,
-      "low": -0.0027828818718858813,
-      "high": 0.09629144120971725
+      "growth": -0.0025988968938593995,
+      "other": -0.027701957159312604,
+      "low": -0.04939229037123209,
+      "high": 0.04968203271037104,
+      "avg": 0.04401051160548681,
+      "avg_other": 0.0027625594603974753
     },
     {
       "week": "+7",
-      "growth": 0.07986596004997973,
-      "other": 0.0717274824648432,
-      "low": -0.011708891006737682,
-      "high": 0.09174142967786668
+      "growth": 0.037989373687886616,
+      "other": 0.04677187369291041,
+      "low": -0.05358547736883079,
+      "high": 0.049864843315773566,
+      "avg": 0.07986596004997973,
+      "avg_other": 0.0717274824648432
     },
     {
       "week": "+8",
-      "growth": 0.020909757879535397,
-      "other": -0.016229481112710366,
-      "low": -0.009533326351383938,
-      "high": 0.09410644190151327
+      "growth": -0.020876398838143108,
+      "other": -0.04067947070791804,
+      "low": -0.05131948306906244,
+      "high": 0.05232028518383476,
+      "avg": 0.020909757879535397,
+      "avg_other": -0.016229481112710366
     },
     {
       "week": "+9",
-      "growth": 0.05916572596820932,
-      "other": 0.03724989900430551,
-      "low": -0.017208704333750338,
-      "high": 0.09176866863115897
+      "growth": 0.020160023029072043,
+      "other": 0.014459954333450594,
+      "low": -0.056214407272887616,
+      "high": 0.05276296569202169,
+      "avg": 0.05916572596820932,
+      "avg_other": 0.03724989900430551
     },
     {
       "week": "+10",
-      "growth": 0.0032460014029622123,
-      "other": -0.004950463894740732,
-      "low": -0.016508215809972554,
-      "high": 0.08977930777163569
+      "growth": -0.03481904782393639,
+      "other": -0.02660656374595215,
+      "low": -0.054573265036871155,
+      "high": 0.05171425854473709,
+      "avg": 0.0032460014029622123,
+      "avg_other": -0.004950463894740732
     },
     {
       "week": "+11",
-      "growth": 0.013040391173276721,
-      "other": -0.006089136149553037,
-      "low": -0.010811503315154024,
-      "high": 0.0942185203250084
+      "growth": -0.029972902177229543,
+      "other": -0.031227163378802547,
+      "low": -0.053824796665660285,
+      "high": 0.05120522697450213,
+      "avg": 0.013040391173276721,
+      "avg_other": -0.006089136149553037
     },
     {
       "week": "+12",
-      "growth": 0.05329170219030679,
-      "other": 0.021468407063512596,
-      "low": -0.00967683055587887,
-      "high": 0.09472675200775296
+      "growth": 0.010275579193849534,
+      "other": -0.0031831203412670886,
+      "low": -0.05269295355233612,
+      "high": 0.05171062901129571,
+      "avg": 0.05329170219030679,
+      "avg_other": 0.021468407063512596
     }
   ],
   "takeaway": [
-    "Across 11 Anthropic releases, no week fell outside what a random week shows.",
-    "In the weeks +4 to +8 Anthropic grew +19% after a release against +22% for random weeks (p 0.50); OpenAI grew +9% over the same weeks."
+    "Across 11 Anthropic releases, Anthropic stayed inside the normal-week range in every week.",
+    "Over the weeks +4 to +8 Anthropic's growth added up to +19% against +22% in a normal five weeks (p 0.50); OpenAI's added up to +9% against +14% (p 0.25)."
   ],
   "assumptions": [
     "11 Anthropic releases had a full window. With so few, only a large and quick effect would show.",
-    "Growth is the weekly log change in PyPI plus npm downloads. If the bars and the line rise together after a release, that is the market (or the launch lifting both); if only the bars rise, it is the company's own.",
-    "The shaded band is the middle 95% of the same average taken over randomly chosen weeks from the same stretch of history as the releases (3,000 draws, fixed seed).",
+    "Growth is the weekly log change in PyPI plus npm downloads. A normal week is the average of the same weeks around randomly chosen weeks from the same stretch of history (3,000 draws, fixed seed), subtracted from each line so both start from zero.",
+    "The grey band is the range that normal weeks reach 95% of the time, taking the wider of the two companies'. If both lines rise together after a release, that is the market (or the launch lifting both); if only the releasing company's rises, it is its own.",
     "Weeks run Monday to Sunday and only complete weeks are used.",
     "Correlation is not cause. A lead shows what moved first, not why."
   ],
@@ -237,5 +281,5 @@
     }
   ],
   "status": "ok",
-  "generated_at": "2026-10-07T02:25:52Z"
+  "generated_at": "2026-10-07T02:48:02Z"
 }

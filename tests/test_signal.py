@@ -116,6 +116,14 @@ def test_the_event_study_sees_a_planted_jump_a_month_after_and_not_when_there_is
     assert sig.event_profile(g, events)["p"] > 0.05
 
 
+def test_the_other_company_is_measured_over_the_same_weeks_as_a_market_check():
+    g, events = event_series(0.4)
+    market = pd.Series(np.random.default_rng(9).normal(0.02, 0.05, len(g)), index=g.index)  # no release effect
+    hit = sig.event_profile(g, events, other=market)
+    assert hit["other"]["p"] > 0.05 and hit["p"] < 0.01  # the release moved only the releasing company
+    assert len(hit["other"]["obs"]) == len(hit["obs"]) == len(list(sig.OFFSETS))
+
+
 def test_the_event_study_refuses_too_few_events():
     g, events = event_series(0.0)
     assert sig.event_profile(g, events[:3]) is None
@@ -336,10 +344,12 @@ def test_a_planted_lead_reaches_the_tested_chart_and_the_nulls_stay_not_supporte
 def test_every_comparison_chart_carries_openai_so_a_move_reads_as_company_or_market():
     for mart_id, releaser in (("signal.around_release", "Anthropic"), ("signal.around_openai_release", "OpenAI")):
         spec = build_mart(registry.MARTS[mart_id], world(), NOW)
-        drawn = {layer["name"] for layer in spec["layers"] if layer["mark"] in ("bar", "line")}
-        assert drawn == {"Anthropic", "OpenAI"} and releaser in spec["title"]
+        drawn = [(layer["mark"], layer["name"]) for layer in spec["layers"] if layer["mark"] in ("bar", "line")]
+        assert (
+            sorted(drawn) == [("line", "Anthropic"), ("line", "OpenAI")] and releaser in spec["title"]
+        )  # one measure, one mark
         assert all(r["other"] is not None for r in spec["rows"])
-        assert "over the same weeks" in spec["takeaway"][1]  # the other company, as the market
+        assert "Anthropic" in spec["takeaway"][1] and "OpenAI" in spec["takeaway"][1]
     for mart_id in ("signal.releases", "signal.valuation"):
         spec = build_mart(registry.MARTS[mart_id], world(), NOW)
         assert {layer["name"] for layer in spec["layers"] if layer["mark"] == "line"} == {"Anthropic", "OpenAI"}

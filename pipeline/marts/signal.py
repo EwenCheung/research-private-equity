@@ -299,39 +299,44 @@ def smoothed(level: pd.Series) -> pd.Series:
 def event_profile(
     g: pd.Series, events: list, other: pd.Series | None = None, seed: int = SEED, draws: int = 3000
 ) -> dict | None:
-    """Average growth in each week around the events, against the average of the same weeks around randomly chosen weeks.
+    """Average growth in each week around the events, against what an ordinary week shows.
 
-    `other` is a second company's growth, averaged over the same weeks as a market check.
+    The ordinary week is the average of the same weeks around randomly chosen weeks (3,000 draws from the same stretch of
+    history). `other` is a second company's growth taken over the same event weeks and the same random weeks, as a market check.
     """
     idx = pd.date_range(g.index.min(), g.index.max(), freq="W-SUN")
-    a, pos = g.reindex(idx).to_numpy(), {d: i for i, d in enumerate(idx)}
+    pos = {d: i for i, d in enumerate(idx)}
     off = np.array(list(OFFSETS))
     lo, hi = -off.min(), off.max()
-    ev = np.array(sorted({pos[w] for w in events if w in pos and lo <= pos[w] < len(a) - hi}))
+    ev = np.array(sorted({pos[w] for w in events if w in pos and lo <= pos[w] < len(idx) - hi}))
     if len(ev) < MIN_EVENTS:
         return None
     rng = np.random.default_rng(seed)
     ok = np.arange(
-        max(lo, ev.min() - lo), len(a) - hi
+        max(lo, ev.min() - lo), len(idx) - hi
     )  # random weeks come from the same stretch of history as the releases
     picks = ok[rng.random((draws, len(ok))).argsort(axis=1)[:, : len(ev)]]
-    null = np.nanmean(a[picks[:, :, None] + off[None, None, :]], axis=1)
-    obs = np.nanmean(a[ev[:, None] + off[None, :]], axis=0)
     month = (off >= 4) & (off <= 8)
-    c_obs, c_null = obs[month].sum(), null[:, month].sum(axis=1)
-    c_mid = c_null.mean()
-    out = {
-        "events": len(ev),
-        "obs": obs,
-        "low": np.percentile(null, 2.5, axis=0),
-        "high": np.percentile(null, 97.5, axis=0),
-        "month": c_obs,
-        "month_random": c_mid,
-        "p": float((1 + (abs(c_null - c_mid) >= abs(c_obs - c_mid)).sum()) / (draws + 1)),
-    }
+
+    def around(s: pd.Series) -> dict:
+        a = s.reindex(idx).to_numpy()
+        null = np.nanmean(a[picks[:, :, None] + off[None, None, :]], axis=1)
+        obs = np.nanmean(a[ev[:, None] + off[None, :]], axis=0)
+        c_obs, c_null = obs[month].sum(), null[:, month].sum(axis=1)
+        c_mid = c_null.mean()
+        return {
+            "obs": obs,
+            "normal": null.mean(axis=0),
+            "low": np.percentile(null, 2.5, axis=0),
+            "high": np.percentile(null, 97.5, axis=0),
+            "month": c_obs,
+            "month_random": c_mid,
+            "p": float((1 + (abs(c_null - c_mid) >= abs(c_obs - c_mid)).sum()) / (draws + 1)),
+        }
+
+    out = {"events": len(ev), **around(g)}
     if other is not None:
-        market = np.nanmean(other.reindex(idx).to_numpy()[ev[:, None] + off[None, :]], axis=0)
-        out |= {"other": market, "other_month": market[month].sum()}
+        out["other"] = around(other)
     return out
 
 
@@ -466,8 +471,8 @@ def around_chart(ctx, who: str, other: str) -> dict:
     article = "an" if name[0] in "AEIOU" else "a"
     title = f"{name}'s and {rival}'s SDK growth around {article} {name} model release"
     sub = (
-        f"Bars: {name}'s average weekly growth in each week around its releases. Line: {rival}'s over the same weeks, as the market. "
-        f"Shaded: the middle 95% of random weeks for {name}."
+        f"Each line is how much faster than a normal week that company's SDK downloads grew, in each week around {name}'s releases (0 = a normal week). "
+        f"{rival} is the market check. Grey: the range a normal week reaches by luck; a line outside it would be unusual."
     )
     mine, theirs = sdk(ctx, who), sdk(ctx, other)
     rel = release_weeks(ctx, who)
@@ -478,15 +483,18 @@ def around_chart(ctx, who: str, other: str) -> dict:
     )
     if result is None:
         return empty(title, sub)
+    a, b = result, result["other"]
     rows = [
         {
             "week": "0" if k == 0 else f"{k:+d}",
-            "growth": float(g),
-            "other": float(m),
-            "low": float(lo),
-            "high": float(hi),
+            "growth": float(a["obs"][i] - a["normal"][i]),
+            "other": float(b["obs"][i] - b["normal"][i]),
+            "low": float(min(a["low"][i] - a["normal"][i], b["low"][i] - b["normal"][i])),
+            "high": float(max(a["high"][i] - a["normal"][i], b["high"][i] - b["normal"][i])),
+            "avg": float(a["obs"][i]),
+            "avg_other": float(b["obs"][i]),
         }
-        for k, g, m, lo, hi in zip(OFFSETS, result["obs"], result["other"], result["low"], result["high"], strict=True)
+        for i, k in enumerate(OFFSETS)
     ]
     outside = [r["week"] for r in rows if not r["low"] <= r["growth"] <= r["high"]]
     return {
@@ -494,38 +502,40 @@ def around_chart(ctx, who: str, other: str) -> dict:
         "subtitle": sub,
         "kind": "combo",
         "layers": [
-            {"mark": "band", "name": "Random weeks", "y_low": "low", "y_high": "high"},
-            {"mark": "bar", "name": name, "y": "growth"},
+            {"mark": "band", "name": "Normal week", "y_low": "low", "y_high": "high"},
+            {"mark": "line", "name": name, "y": "growth"},
             {"mark": "line", "name": rival, "y": "other"},
         ],
         "encoding": {
             "x": {"field": "week", "type": "ordinal", "label": "Weeks from the release"},
-            "y": {"field": "growth", "type": "quantitative", "label": "Average weekly growth", "format": "pct"},
+            "y": {"field": "growth", "type": "quantitative", "label": "Growth above a normal week", "format": "pct"},
         },
         "columns": [
             col("week", "Weeks from release", "text"),
-            col("growth", f"{name} average growth", "pct"),
-            col("other", f"{rival} average growth", "pct"),
-            col("low", "Random weeks, low", "pct"),
-            col("high", "Random weeks, high", "pct"),
+            col("growth", f"{name} growth above a normal week", "pct"),
+            col("other", f"{rival} growth above a normal week", "pct"),
+            col("low", "Normal-week range, low", "pct"),
+            col("high", "Normal-week range, high", "pct"),
+            col("avg", f"{name} average weekly growth", "pct"),
+            col("avg_other", f"{rival} average weekly growth", "pct"),
         ],
         "rows": rows,
         "takeaway": [
             f"Across {result['events']} {name} releases, "
             + (
-                "no week fell outside what a random week shows."
+                f"{name} stayed inside the normal-week range in every week."
                 if not outside
-                else f"weeks {', '.join(outside)} fell outside what a random week shows."
+                else f"{name} left the normal-week range in weeks {', '.join(outside)}."
             ),
             (
-                f"In the weeks +4 to +8 {name} grew {pct(result['month'])} after a release against {pct(result['month_random'])} for random weeks "
-                f"(p {result['p']:.2f}); {rival} grew {pct(result['other_month'])} over the same weeks."
+                f"Over the weeks +4 to +8 {name}'s growth added up to {pct(a['month'])} against {pct(a['month_random'])} in a normal five weeks "
+                f"(p {a['p']:.2f}); {rival}'s added up to {pct(b['month'])} against {pct(b['month_random'])} (p {b['p']:.2f})."
             ),
         ],
         "assumptions": [
             f"{result['events']} {name} releases had a full window. With so few, only a large and quick effect would show.",
-            "Growth is the weekly log change in PyPI plus npm downloads. If the bars and the line rise together after a release, that is the market (or the launch lifting both); if only the bars rise, it is the company's own.",
-            "The shaded band is the middle 95% of the same average taken over randomly chosen weeks from the same stretch of history as the releases (3,000 draws, fixed seed).",
+            "Growth is the weekly log change in PyPI plus npm downloads. A normal week is the average of the same weeks around randomly chosen weeks from the same stretch of history (3,000 draws, fixed seed), subtracted from each line so both start from zero.",
+            "The grey band is the range that normal weeks reach 95% of the time, taking the wider of the two companies'. If both lines rise together after a release, that is the market (or the launch lifting both); if only the releasing company's rises, it is its own.",
             *BASE_NOTES,
         ],
         "badges": ["arithmetic"],

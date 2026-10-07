@@ -1,4 +1,5 @@
 import json
+import sqlite3
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
@@ -131,3 +132,80 @@ def test_companies_put_the_target_first_then_its_peers(authed):
     names = [c["name"] for c in authed.get("/api/companies").json()]
     assert names[0] == "Anthropic"
     assert names[1:] == ["OpenAI", "Google DeepMind", "xAI", "Mistral AI", "Cohere"]
+
+
+# ---- the offline SQLite file (DATA_DB) ----
+
+
+def offline_db(path, registry=None, version=1):
+    """A file shaped like the one `python -m pipeline.offline pack` writes, from the fixture charts and registry."""
+    con = sqlite3.connect(path)
+    con.executescript(
+        "CREATE TABLE charts (id TEXT PRIMARY KEY, spec TEXT NOT NULL);"
+        "CREATE TABLE files (path TEXT PRIMARY KEY, kind TEXT NOT NULL, content BLOB NOT NULL);"
+    )
+    con.executemany(
+        "INSERT INTO charts VALUES (?, ?)", [(i, (FIXTURES / "marts" / f"{i}.json").read_text()) for i in MART_IDS]
+    )
+    reg = registry if registry is not None else (FIXTURES / "registry.json").read_text()
+    con.execute("INSERT INTO files VALUES ('data/registry.json', 'registry', ?)", (reg.encode(),))
+    con.execute(f"PRAGMA user_version = {version}")
+    con.commit()
+    con.close()
+    return path
+
+
+@pytest.fixture
+def from_file(monkeypatch, tmp_path):
+    monkeypatch.setenv("DASHBOARD_PASSWORD", PASSWORD)
+    monkeypatch.setenv("SESSION_SECRET", "test-secret")
+    c = TestClient(create_app(frontend_dir=tmp_path, db=offline_db(tmp_path / "offline.sqlite")))
+    c.post("/api/login", json={"password": PASSWORD})
+    return c
+
+
+def test_the_api_serves_charts_and_registry_from_the_sqlite_file_alone(from_file):
+    assert [m["id"] for m in from_file.get("/api/marts").json()] == MART_IDS
+    body = from_file.get(f"/api/marts/{MART_IDS[0]}").json()
+    contracts.validate("chart_spec", body)
+    assert body["id"] == MART_IDS[0]
+    assert {s["id"] for s in from_file.get("/api/registry").json()} == {
+        s["id"] for s in json.loads((FIXTURES / "registry.json").read_text())["sources"]
+    }
+    assert from_file.get("/api/marts/no.such_chart").status_code == 404
+    assert from_file.get("/api/marts/..%2Fetc").status_code == 404
+
+
+def test_freshness_from_the_file_is_judged_by_todays_clock_not_pinned_to_the_pack_date(monkeypatch, tmp_path):
+    monkeypatch.setenv("DASHBOARD_PASSWORD", PASSWORD)
+    monkeypatch.setenv("SESSION_SECRET", "test-secret")
+    reg = json.loads((FIXTURES / "registry.json").read_text())
+    long_ago = (datetime.now(UTC) - timedelta(days=10)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    for s in reg["sources"]:
+        if s["id"] in ("greenhouse_jobs", "ashby_jobs"):
+            s["retrieved_at"] = long_ago
+    c = TestClient(create_app(frontend_dir=tmp_path, db=offline_db(tmp_path / "o.sqlite", registry=json.dumps(reg))))
+    c.post("/api/login", json={"password": PASSWORD})
+    assert (
+        c.get("/api/freshness").json()["greenhouse_jobs"]["freshness"] == "stale"
+    )  # sla_days 2, ten days without a collection
+    assert {s["freshness"] for s in c.get("/api/marts/sample.open_roles").json()["sources"]} == {"stale"}
+
+
+def test_the_sqlite_file_is_read_only_behind_the_session(monkeypatch, tmp_path):
+    monkeypatch.setenv("DASHBOARD_PASSWORD", PASSWORD)
+    monkeypatch.setenv("SESSION_SECRET", "test-secret")
+    monkeypatch.setenv("DATA_DB", str(offline_db(tmp_path / "offline.sqlite")))
+    c = TestClient(create_app(frontend_dir=tmp_path))  # DATA_DB in the environment is enough
+    assert c.get("/api/marts").status_code == 401
+    c.post("/api/login", json={"password": PASSWORD})
+    assert len(c.get("/api/marts").json()) == len(MART_IDS)
+    con = sqlite3.connect(tmp_path / "offline.sqlite")
+    assert con.execute("SELECT COUNT(*) FROM charts").fetchone()[0] == len(MART_IDS)  # untouched
+
+
+def test_a_missing_or_wrong_version_sqlite_file_stops_the_app_with_a_clear_message(monkeypatch, tmp_path):
+    with pytest.raises(FileNotFoundError, match="does not exist"):
+        create_app(frontend_dir=tmp_path, db=tmp_path / "nope.sqlite")
+    with pytest.raises(RuntimeError, match="another schema version"):
+        create_app(frontend_dir=tmp_path, db=offline_db(tmp_path / "old.sqlite", version=99))

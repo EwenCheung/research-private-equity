@@ -167,6 +167,7 @@ button {
   color: var(--ink-3);
 }
 .refresh button {
+  align-self: flex-start;
   padding: 7px 12px;
   border: 1px solid var(--axis);
   border-radius: 7px;

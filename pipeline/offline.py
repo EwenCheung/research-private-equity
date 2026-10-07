@@ -4,10 +4,11 @@
     uv run python -m pipeline.offline pack      write the SQLite file from what is already in data/ (no network)
     uv run python -m pipeline.offline restore   rebuild data/ from the SQLite file (no network)
     uv run python -m pipeline.offline check     compare the SQLite file with data/
+    uv run python -m pipeline.offline serve     show the dashboard from the SQLite file alone (no network, no data/ folder)
 
 The file holds the collectors' raw snapshots byte for byte (the source of truth, so a restore is exact), every observation as a row
-you can query with SQL, the cited ledgers, the charts and the registry. After a restore, `python -m pipeline.build` and the API
-run from those files alone: no collector is called. Vendor files in data/manual are left out unless you ask, because licensed data
+you can query with SQL, the cited ledgers, the charts, the registry and the built dashboard. `serve` runs the dashboard from the file
+alone. After a `restore`, `python -m pipeline.build` and the API also run from the unpacked files: no collector is called. Vendor files in data/manual are left out unless you ask, because licensed data
 stays private.
 """
 
@@ -16,9 +17,11 @@ import gzip
 import hashlib
 import json
 import os
+import shutil
 import sqlite3
 import subprocess
 import sys
+import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -35,7 +38,7 @@ CREATE TABLE meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
 CREATE TABLE sources (id TEXT PRIMARY KEY, page TEXT, label TEXT, method TEXT, tier TEXT, cadence TEXT, url TEXT, caveats TEXT);
 CREATE TABLE files (
   path TEXT PRIMARY KEY,      -- relative to the repo root, for example data/raw/pypi_downloads/20261005T035703Z.jsonl.gz
-  kind TEXT NOT NULL,         -- raw, ledger, manual or registry
+  kind TEXT NOT NULL,         -- raw, ledger, manual, registry or web (the built dashboard)
   source TEXT,
   sha256 TEXT NOT NULL,
   size INTEGER NOT NULL,
@@ -162,6 +165,11 @@ def pack(root: Path = ROOT, db: Path | None = None, include_manual: bool = False
             )
             add_file(path, kind, path.stem, rows)
 
+    dist = root / "frontend" / "dist"
+    for path in sorted(p for p in dist.rglob("*") if p.is_file()) if dist.is_dir() else []:
+        add_file(path, "web", None, None, has_rows=False)
+    counts["web"] = sum(1 for _ in dist.rglob("*") if _.is_file()) if dist.is_dir() else 0
+
     registry_file = root / "data" / "registry.json"
     if registry_file.exists():
         add_file(registry_file, "registry", None, None, has_rows=False)
@@ -212,10 +220,10 @@ def open_db(db: Path) -> sqlite3.Connection:
 
 
 def target(root: Path, rel: str) -> Path:
-    """Where a stored path lands, refusing anything outside the repo's data folder."""
+    """Where a stored path lands, refusing anything outside the repo's data folder and the built dashboard."""
     path = (root / rel).resolve()
-    if not path.is_relative_to((root / "data").resolve()):
-        raise SystemExit(f"refusing to write {rel!r}: it is outside data/")
+    if not any(path.is_relative_to((root / part).resolve()) for part in ("data", "frontend/dist")):
+        raise SystemExit(f"refusing to write {rel!r}: it is outside data/ and frontend/dist/")
     return path
 
 
@@ -224,10 +232,11 @@ def restore(db: Path, root: Path = ROOT) -> dict:
     which a build regenerates, are replaced."""
     con = open_db(db)
     files = con.execute("SELECT path, kind, sha256, content FROM files ORDER BY path").fetchall()
+    regenerated = ("registry", "web")  # a build rewrites these, so a restore replaces them
     conflicts = [
         p
         for p, kind, digest, _ in files
-        if kind != "registry" and (t := target(root, p)).exists() and sha(t.read_bytes()) != digest
+        if kind not in regenerated and (t := target(root, p)).exists() and sha(t.read_bytes()) != digest
     ]
     if conflicts:
         raise SystemExit(
@@ -237,7 +246,7 @@ def restore(db: Path, root: Path = ROOT) -> dict:
     written = kept = 0
     for p, kind, digest, content in files:
         t = target(root, p)
-        if kind != "registry" and t.exists():
+        if kind not in regenerated and t.exists():
             kept += 1
             continue
         t.parent.mkdir(parents=True, exist_ok=True)
@@ -260,6 +269,8 @@ def check(db: Path, root: Path = ROOT) -> list[str]:
     for p, kind, digest, rows in con.execute("SELECT path, kind, sha256, rows FROM files"):
         stored[p] = kind
         t = root / p
+        if kind == "web" and not (root / "frontend" / "dist").is_dir():
+            continue  # a machine that only serves the file has no built dashboard on disk, and needs none
         if not t.exists():
             problems.append(f"missing on disk: {p}")
         elif sha(t.read_bytes()) != digest:
@@ -278,6 +289,63 @@ def check(db: Path, root: Path = ROOT) -> list[str]:
             problems.append(f"chart differs or is missing: {cid}")
     con.close()
     return problems
+
+
+def extract_web(db: Path, dest: Path) -> int:
+    """Write the dashboard stored in the file into `dest`, as the built frontend folder the API serves."""
+    con = open_db(db)
+    rows = con.execute("SELECT path, content FROM files WHERE kind = 'web'").fetchall()
+    con.close()
+    for rel, content in rows:
+        out = (dest / Path(rel).relative_to("frontend/dist")).resolve()
+        if not out.is_relative_to(dest.resolve()):
+            raise SystemExit(f"refusing to write {rel!r}: it is outside the dashboard folder")
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_bytes(content)
+    return len(rows)
+
+
+def serve(db: Path, root: Path = ROOT, host: str = "127.0.0.1", port: int = 8000) -> int:
+    """Show the dashboard from the SQLite file alone: the API reads the charts and registry from it, and the page comes out of it too."""
+    import uvicorn
+
+    load_env(root / ".env")
+    if not (os.environ.get("DASHBOARD_PASSWORD") and os.environ.get("SESSION_SECRET")):
+        raise SystemExit(
+            "set DASHBOARD_PASSWORD and SESSION_SECRET (in .env or the environment) to sign in to the dashboard"
+        )
+    open_db(db).close()
+    web = Path(tempfile.mkdtemp(prefix="signal-monitor-web-"))
+    try:
+        if not extract_web(db, web):
+            print(
+                "the file holds no dashboard (build the frontend before packing); serving the API only", file=sys.stderr
+            )
+        os.environ["DATA_DB"], os.environ["FRONTEND_DIR"] = str(Path(db).resolve()), str(web)
+        print(f"serving {db} on http://{host}:{port}  (no network needed)")
+        uvicorn.run("app.server:app", host=host, port=port, log_level="warning")
+    finally:
+        shutil.rmtree(web, ignore_errors=True)
+    return 0
+
+
+def build_web(root: Path) -> None:
+    """Build the dashboard so the file can carry it; without Node the file still holds the data."""
+    if not shutil.which("npm") or not (root / "frontend" / "node_modules").is_dir():
+        print(
+            "note: npm or frontend/node_modules is missing, so the file will hold the data but not the dashboard",
+            file=sys.stderr,
+        )
+        return
+    done = subprocess.run(
+        ["npm", "--prefix", "frontend", "run", "build"], cwd=root, capture_output=True, text=True, check=False
+    )
+    if done.returncode:
+        print(
+            "note: the frontend build failed, so the file will hold the data but not the dashboard:\n"
+            + done.stdout[-600:],
+            file=sys.stderr,
+        )
 
 
 def fetch(
@@ -317,6 +385,7 @@ def fetch(
         print(f"  SKIP {s}")
     for e in errors:
         print(f"  ERROR {e}", file=sys.stderr)
+    build_web(root)
     _, build_errors = builder.build(root=root)
     for e in build_errors:
         print(f"  BUILD ERROR {e}", file=sys.stderr)
@@ -342,6 +411,7 @@ def main(argv=None) -> int:
         ("pack", "pack what is in data/"),
         ("restore", "unpack into data/"),
         ("check", "compare the file with data/"),
+        ("serve", "show the dashboard from the file alone"),
     ):
         p = sub.add_parser(name, help=text)
         p.add_argument("--db", type=Path, help=f"the SQLite file (default {DEFAULT_DB})")
@@ -352,6 +422,9 @@ def main(argv=None) -> int:
                 action="store_true",
                 help="also pack data/manual (vendor files: licensed data stays private)",
             )
+        if name == "serve":
+            p.add_argument("--host", default="127.0.0.1")
+            p.add_argument("--port", type=int, default=8000)
         if name == "fetch":
             p.add_argument("--only", nargs="+", metavar="ID", help="call only these sources")
             p.add_argument(
@@ -373,6 +446,8 @@ def main(argv=None) -> int:
         for s in c["skipped"]:
             print(f"left out (vendor file; use --include-manual to pack it): {s}")
         return 0
+    if args.cmd == "serve":
+        return serve(db, root, args.host, args.port)
     if args.cmd == "restore":
         c = restore(db, root)
         print(

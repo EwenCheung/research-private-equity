@@ -1,8 +1,10 @@
 import gzip
 import json
+import os
 import shutil
 import socket
 import sqlite3
+from pathlib import Path
 
 import pytest
 
@@ -235,3 +237,85 @@ def test_wikipedia_is_left_out_of_a_fetch_by_default_and_called_only_when_named(
     assert "wikipedia_pageviews" not in called[0] and "pypi_downloads" in called[0]
     offline.fetch(world, tmp_path / "b.sqlite", only=["wikipedia_pageviews"])
     assert called[1] == ["wikipedia_pageviews"]
+
+
+def with_dashboard(world):
+    dist = world / "frontend" / "dist"
+    (dist / "assets").mkdir(parents=True)
+    (dist / "index.html").write_text("<div id=root>Signal Monitor</div>")
+    (dist / "assets" / "app.js").write_text("console.log('dashboard')")
+    return dist
+
+
+def test_the_built_dashboard_travels_in_the_file_and_comes_out_the_same(world, tmp_path):
+    with_dashboard(world)
+    db = tmp_path / "out.sqlite"
+    assert offline.pack(world, db)["web"] == 2
+    out = tmp_path / "web"
+    assert offline.extract_web(db, out) == 2
+    assert (out / "index.html").read_text() == "<div id=root>Signal Monitor</div>" and (
+        out / "assets" / "app.js"
+    ).exists()
+    server = tmp_path / "server"
+    offline.restore(db, server)
+    assert (server / "frontend" / "dist" / "index.html").exists()
+
+
+def test_a_machine_that_only_serves_the_file_has_no_dashboard_on_disk_and_check_does_not_mind(world, tmp_path):
+    with_dashboard(world)
+    db = tmp_path / "out.sqlite"
+    offline.pack(world, db)
+    shutil.rmtree(world / "frontend")
+    assert offline.check(db, world) == []
+
+
+def test_the_dashboard_is_served_from_the_file_alone_with_the_network_blocked(world, tmp_path, monkeypatch):
+    """Sign in, list the charts and load the page, all from the SQLite file; nothing else is read."""
+    from fastapi.testclient import TestClient
+
+    from app.server import create_app
+
+    with_dashboard(world)
+    db = tmp_path / "out.sqlite"
+    offline.pack(world, db)
+    web = tmp_path / "web"
+    offline.extract_web(db, web)
+    monkeypatch.setattr(socket.socket, "connect", lambda *a, **k: (_ for _ in ()).throw(AssertionError("network used")))
+    monkeypatch.setenv("DASHBOARD_PASSWORD", "pw")
+    monkeypatch.setenv("SESSION_SECRET", "s")
+    shutil.rmtree(world / "data")  # nothing but the file is left
+    client = TestClient(create_app(frontend_dir=web, db=db))
+    assert "Signal Monitor" in client.get("/").text
+    assert client.get("/api/marts").status_code == 401
+    client.post("/api/login", json={"password": "pw"})
+    assert [m["id"] for m in client.get("/api/marts").json()] == ["x.y"]
+
+
+def test_serve_needs_a_password_and_starts_the_app_on_the_file(world, tmp_path, monkeypatch):
+    import uvicorn
+
+    with_dashboard(world)
+    db = tmp_path / "out.sqlite"
+    offline.pack(world, db)
+    monkeypatch.delenv("DASHBOARD_PASSWORD", raising=False)
+    monkeypatch.delenv("SESSION_SECRET", raising=False)
+    with pytest.raises(SystemExit, match="DASHBOARD_PASSWORD"):
+        offline.serve(db, world)
+    monkeypatch.setenv("DASHBOARD_PASSWORD", "pw")
+    monkeypatch.setenv("SESSION_SECRET", "s")
+    started = {}
+    monkeypatch.setattr(
+        uvicorn,
+        "run",
+        lambda *a, **k: started.update(
+            args=a,
+            kwargs=k,
+            db=os.environ["DATA_DB"],
+            web=os.environ["FRONTEND_DIR"],
+            files=sorted(p.name for p in Path(os.environ["FRONTEND_DIR"]).iterdir()),
+        ),
+    )
+    assert offline.serve(db, world, port=8123) == 0
+    assert started["args"] == ("app.server:app",) and started["kwargs"]["port"] == 8123
+    assert started["db"] == str(db.resolve()) and started["files"] == ["assets", "index.html"]
+    assert not Path(started["web"]).exists()  # the temporary dashboard folder is cleaned up

@@ -166,6 +166,8 @@ export default function ChartPlot({ spec }: { spec: ChartSpec }) {
       entries: entries.map((n) => ({ name: n, color: colors[series.indexOf(n)], locked: locked(n) })),
     });
   if (dimensions.length) groups.push({ title: "Dimensions", entries: dimensions.map((l) => ({ name: l.name, mark: l.mark, locked: locked(l.name) })) });
+  // A group where every entry is locked (one series, one dimension) offers nothing to tick, so it is left out.
+  const offered = groups.filter((g) => g.entries.some((e) => !e.locked || hidden.has(e.name)));
 
   useEffect(() => {
     const el = ref.current;
@@ -193,7 +195,7 @@ export default function ChartPlot({ spec }: { spec: ChartSpec }) {
 
   return (
     <>
-      <Legend groups={groups} hidden={hidden} onToggle={toggle} />
+      <Legend groups={offered} hidden={hidden} onToggle={toggle} />
       <div ref={ref} role="img" aria-label={`${spec.title}. Use the table view for exact values.`} />
     </>
   );

@@ -30,6 +30,8 @@ interface Status {
 }
 
 const WORD = { waiting: "waiting", done: "DONE", failed: "FAILED", skipped: "SKIPPED", empty: "NO ROWS" };
+/** "pypi_downloads/anthropic: HTTPStatusError: Client error '401' for url 'https://…' For more…" -> "anthropic: HTTPStatusError: Client error '401'" */
+const shortError = (e: string) => e.replace(/^[^/]+\//, "").split(" for url")[0].slice(0, 160);
 const word = (s: Step) => (s.state === "running" ? `${s.percent}%…` : WORD[s.state]);
 
 /** The data is a snapshot in a SQLite file until this fetches every source again. It shows nothing when the API isn't serving from a file. */
@@ -118,8 +120,9 @@ export default function Refresh() {
               <>
                 <ul className="refresh-failed">
                   {failed.map(([id, errors]) => (
-                    <li key={id}>
-                      <code>{id}</code> {errors[0]}
+                    <li key={id} title={errors.join("\n")}>
+                      <code>{id}</code> {shortError(errors[0])}
+                      {errors.length > 1 ? ` (+${errors.length - 1} more)` : ""}
                     </li>
                   ))}
                 </ul>

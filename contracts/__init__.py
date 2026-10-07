@@ -46,6 +46,10 @@ def _chart_invariants(c: dict) -> list[str]:
         if channel["field"] not in fields:
             errs.append(f"encoding.{name}.field '{channel['field']}' is not a column")
     for i, layer in enumerate(c.get("layers", [])):
+        if layer.get("panel", 0) > len(c.get("panels", [])):
+            errs.append(
+                f"layers/{i}.panel {layer['panel']} has no panel {layer['panel']} (there are {1 + len(c.get('panels', []))})"
+            )
         needs = {"band": ("y_low", "y_high"), "rule": ("label",)}.get(layer["mark"], ("y",))
         for key in needs:
             if key not in layer:

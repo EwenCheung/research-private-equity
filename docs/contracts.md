@@ -86,6 +86,7 @@ The schema is `contracts/chart_spec.schema.json`. Files are written to `data/mar
 | `title`, `subtitle` | mart | |
 | `kind` | mart | `line` · `area` · `bar` · `stacked_bar` · `scatter` · `table` · `stat` · `timeline` · `combo` |
 | `layers` | mart | Only for `combo`, and required there: the marks drawn over one shared x axis (below) |
+| `panels` | mart | Only for `combo`, optional: extra panels stacked under the main one on the same x axis, each `{label, format}` with its own y axis (below) |
 | `encoding` | mart | `x`, `y`, `color`, `facet` → `{field, type, label, format}`. Every field must be a column |
 | `columns` | mart | Order and format of the table view and CSV. Formats: `int` `float` `pct` `usd` `usd_compact` `multiple` `date` `text` `url` |
 | `rows` | mart | Objects. Each row must have every column field |
@@ -108,13 +109,14 @@ Each entry in `sources` holds:
 
 | `mark` | Fields | Draws |
 |---|---|---|
-| `bar` | `y` | a bar per row; x becomes a set of categories in the order of the rows |
+| `bar` | `y` | a bar per row on a category axis (the rows' order); on a date or number axis a thick stick, since dates are unevenly spaced |
 | `line` | `y` | a line through the rows |
 | `point` | `y` | a dot per row |
 | `band` | `y_low`, `y_high` | a neutral shaded area, for a noise ceiling or confidence range |
 | `rule` | `label` | a vertical line at each row's x, captioned by `label` (a release, a funding round) |
 
 - A layer draws the rows whose value field (`y`, `y_low` or `label`) is not null, so one tidy table can feed several layers.
+- `panel` (a layer's number, 0 by default) puts a layer in the main panel or in `panels[panel - 1]`. `encoding.y` describes panel 0. The panels share the x axis, so a `rule` in panel 0 also runs through every other panel, and a measure on a different scale (a score under a growth line) is read at the same moment as the event. A panel whose layers are all unticked is left out.
 - `series` (any mark but `band`) splits a layer into one colour per value of that field. Without it, `name` is the legend entry. A series or layer named for a company takes that company's fixed colour. A `band`, and a `rule` without `series`, are neutral and not in the legend.
 - All layers share one y scale and unit, so two aspects with different units are rebased or expressed as the same unit by the mart. There is no second axis.
 - The table view and CSV list the columns as for any chart; the plot never hides a layer that fails a test, so the mart draws what it tested and says so in its subtitle and takeaway.

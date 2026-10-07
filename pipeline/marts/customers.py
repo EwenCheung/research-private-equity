@@ -6,7 +6,7 @@ from datetime import date
 import pandas as pd
 
 from pipeline.core import mart
-from pipeline.core.frames import dims, latest, pct, period_start
+from pipeline.core.frames import dims, latest, month_label, pct, period_start
 
 HN = ["hn_who_is_hiring"]
 SEC = ["sec_filings_naming"]
@@ -16,11 +16,6 @@ ANY = "any"
 
 def last_collected(ctx) -> str:
     return str(ctx.df["retrieved_at"].max())[:10]
-
-
-def month_label(iso: str) -> str:
-    d = date.fromisoformat(iso)
-    return f"{calendar.month_abbr[d.month]} {d.year}"
 
 
 def quarter_label(iso: str) -> str:

@@ -6,7 +6,7 @@ from datetime import date
 import pandas as pd
 
 from pipeline.core import mart
-from pipeline.core.frames import change, dims, latest, num, pct, roll
+from pipeline.core.frames import change, dims, latest, month_label, num, pct, roll
 
 DOWNLOADS = [
     "Downloads count every install, including CI and mirrors: read them as relative pull, not users.",
@@ -17,11 +17,6 @@ DOWNLOADS = [
 ]
 CHART_DATE = {"field": "month", "label": "Month", "format": "date"}
 SPIKE = 10  # a day above 10x its package's trailing 28-day median is a bulk-download anomaly, not adoption
-
-
-def month_label(iso: str) -> str:
-    d = date.fromisoformat(iso)
-    return f"{calendar.month_abbr[d.month]} {d.year}"
 
 
 def flag_spikes(df: pd.DataFrame) -> pd.DataFrame:

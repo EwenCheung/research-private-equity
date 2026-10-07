@@ -6,16 +6,11 @@ from datetime import UTC, date, datetime
 import pandas as pd
 
 from pipeline.core import mart
-from pipeline.core.frames import dims, latest
+from pipeline.core.frames import dims, latest, month_label
 
 IMPACTS = ["minor", "major", "critical"]
 MONTH = {"field": "month", "label": "Month", "format": "date"}
 STATUS_NOTE = "Incidents are the ones the company chose to post, with its own impact rating, so a company that posts more freely looks worse."
-
-
-def month_label(iso: str) -> str:
-    d = date.fromisoformat(iso)
-    return f"{calendar.month_abbr[d.month]} {d.year}"
 
 
 def incidents(ctx, entity: str) -> pd.DataFrame:

@@ -11,12 +11,13 @@ import time
 from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Annotated
 
 from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from itsdangerous import BadSignature, URLSafeTimedSerializer
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, StringConstraints
 
 from app.db_store import DbStore
 from app.refresh import Refresher
@@ -35,18 +36,24 @@ class Login(BaseModel):
     password: str
 
 
-def refresh_everything(db: Path, progress: Callable[[dict], None]) -> dict:
-    """What the refresh button runs: every source again, then a new SQLite file that replaces this one only if it is sound."""
+class RefreshRequest(BaseModel):
+    only: list[Annotated[str, StringConstraints(pattern=r"^[a-z0-9_]+$", max_length=64)]] = Field(
+        default=[], max_length=64
+    )
+
+
+def refresh_everything(db: Path, progress: Callable[[dict], None], only: list[str] | None) -> dict:
+    """What the refresh button runs: every source again (or just `only`), then a new SQLite file that replaces this one only if it is sound."""
     from pipeline import offline  # imported on the first press: reading the file needs no collectors
 
-    return offline.refresh(ROOT, db, rebuild_web=False, progress=progress)
+    return offline.refresh(ROOT, db, only=only, rebuild_web=False, progress=progress)
 
 
 def create_app(
     data_dir: Path | None = None,
     frontend_dir: Path | None = None,
     db: Path | None = None,
-    refresh: Callable[[Path, Callable[[dict], None]], dict] | None = None,
+    refresh: Callable[[Path, Callable[[dict], None], list[str] | None], dict] | None = None,
 ) -> FastAPI:
     """data_dir (or DATA_DIR) is the pipeline's data/: marts/ plus registry.json, written by `pipeline.build`.
 
@@ -175,8 +182,8 @@ def create_app(
             return {**refresher.status(), "data": data}
 
         @app.post("/api/refresh", status_code=202, dependencies=[Depends(require_session)])
-        def refresh_start():
-            if not refresher.start():
+        def refresh_start(body: RefreshRequest | None = None):
+            if not refresher.start(body.only if body else None):
                 raise HTTPException(409, "A refresh is already running")
             return refresh_status()
 

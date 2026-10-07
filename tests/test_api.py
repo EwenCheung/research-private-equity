@@ -233,7 +233,9 @@ def until_idle(c):
 
 
 def test_the_refresh_button_exists_only_behind_the_session_and_only_when_serving_from_a_file(monkeypatch, tmp_path):
-    c = refresh_client(monkeypatch, tmp_path, lambda db, progress: {"state": "ok", "swapped": True, "message": "done"})
+    c = refresh_client(
+        monkeypatch, tmp_path, lambda db, progress, only: {"state": "ok", "swapped": True, "message": "done"}
+    )
     assert TestClient(c.app).get("/api/refresh").status_code == 401  # a fresh client has no session
     assert TestClient(c.app).post("/api/refresh").status_code == 401
     status = c.get("/api/refresh").json()
@@ -251,7 +253,7 @@ def test_the_refresh_button_exists_only_behind_the_session_and_only_when_serving
 def test_a_refresh_runs_in_the_background_one_at_a_time_and_reports_how_it_ended(monkeypatch, tmp_path):
     gate = threading.Event()
 
-    def work(db, progress):
+    def work(db, progress, only):
         progress(
             {
                 "stage": "Collecting",
@@ -290,7 +292,7 @@ def test_a_refresh_runs_in_the_background_one_at_a_time_and_reports_how_it_ended
 def test_a_refresh_that_crashes_is_reported_not_lost_and_the_next_one_can_start(monkeypatch, tmp_path):
     calls = []
 
-    def work(db, progress):
+    def work(db, progress, only):
         calls.append(db)
         if len(calls) == 1:
             raise RuntimeError("collector blew up")
@@ -307,12 +309,34 @@ def test_a_refresh_that_crashes_is_reported_not_lost_and_the_next_one_can_start(
 
 def test_the_last_refresh_report_survives_a_restart(monkeypatch, tmp_path):
     c = refresh_client(
-        monkeypatch, tmp_path, lambda db, progress: {"state": "offline", "swapped": False, "message": "No internet"}
+        monkeypatch,
+        tmp_path,
+        lambda db, progress, only: {"state": "offline", "swapped": False, "message": "No internet"},
     )
     c.post("/api/refresh")
     until_idle(c)
     again = TestClient(
-        create_app(frontend_dir=tmp_path, db=tmp_path / "offline.sqlite", refresh=lambda db, progress: {})
+        create_app(frontend_dir=tmp_path, db=tmp_path / "offline.sqlite", refresh=lambda db, progress, only: {})
     )
     again.post("/api/login", json={"password": PASSWORD})
     assert again.get("/api/refresh").json()["last"]["message"] == "No internet"
+
+
+def test_retrying_hands_the_chosen_sources_to_the_job_and_rejects_nonsense(monkeypatch, tmp_path):
+    seen = []
+
+    def work(db, progress, only):
+        seen.append(only)
+        return {"state": "ok", "swapped": False, "message": "done"}
+
+    c = refresh_client(monkeypatch, tmp_path, work)
+    c.post("/api/refresh")  # no body: every source
+    until_idle(c)
+    assert c.post("/api/refresh", json={"only": ["pypi_downloads", "hn_stories"]}).status_code == 202
+    until_idle(c)
+    assert c.post("/api/refresh", json={"only": []}).status_code == 202  # an empty list is every source too
+    until_idle(c)
+    assert seen == [None, ["pypi_downloads", "hn_stories"], None]
+    assert c.post("/api/refresh", json={"only": ["../etc/passwd"]}).status_code == 422
+    assert c.post("/api/refresh", json={"only": "pypi_downloads"}).status_code == 422
+    assert len(seen) == 3  # nothing started for the rejected ones

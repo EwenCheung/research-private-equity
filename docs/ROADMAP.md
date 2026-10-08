@@ -59,6 +59,8 @@ Nothing runs on a schedule (R19); Hot Pick and analysis run on demand.
 | 4.4 | Cleanup: unused code and constants, one `month_label`, four unused dependencies | `p4/cleanup-dead-code`, `p4/core-cleanup`, `p4/deps-unused` | ✓ merged (#40, #41, #42) |
 | 4.5 | The SQLite dataset is committed (3.6 MB, rows table optional) so a clone shows the same data offline; README quick start | `p4/dataset-in-git` | ✓ merged (#44) |
 | 4.6 | Python 3.12 replaces 3.11 as the minimum | `p4/python-312` | ✓ merged (#46) |
+| 4.7 | The served app reads the committed SQLite file by default (no `DATA_DB` needed) | `p4/core-default-db` | ✓ merged (#49) |
+| 4.8 | `.env.example` lists every variable the project reads, with the real data paths | `p4/env-example` | ✓ merged (#48) |
 
 ## Phase 5: Team release ☐
 | # | Implementation | Branch | Status |

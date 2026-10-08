@@ -201,6 +201,25 @@ def test_load_env_reads_keys_without_overriding_what_is_set(tmp_path, monkeypatc
     monkeypatch.delenv("OFFLINE_TEST_A")
 
 
+def test_load_env_drops_trailing_comments_and_leaves_empty_values_empty(tmp_path, monkeypatch):
+    import os
+
+    (tmp_path / ".env").write_text(
+        "OFFLINE_TEST_C=   # an old-style example line\n"
+        "OFFLINE_TEST_D=real value  # why\n"
+        'OFFLINE_TEST_E="quoted # stays"\n'
+        "OFFLINE_TEST_F=\n"
+        "OFFLINE_TEST_G=a#b\n"
+    )
+    for k in "CDEFG":
+        monkeypatch.delenv(f"OFFLINE_TEST_{k}", raising=False)
+    offline.load_env(tmp_path / ".env")
+    got = {k: os.environ[f"OFFLINE_TEST_{k}"] for k in "CDEFG"}
+    for k in "CDEFG":
+        monkeypatch.delenv(f"OFFLINE_TEST_{k}")
+    assert got == {"C": "", "D": "real value", "E": "quoted # stays", "F": "", "G": "a#b"}
+
+
 def test_an_offline_server_can_rebuild_every_chart_from_the_file_alone(tmp_path, monkeypatch):
     """The point of the file: restore the real data into an empty place, block every network connection, and build.
 

@@ -46,7 +46,7 @@ Install the frontend packages once with `npm --prefix frontend ci` (Node 22). Th
 
 **1. Start the backend** (port 8000, reads the committed file)
 ```bash
-DATA_DB=data/offline/signal-monitor.sqlite uv run uvicorn app.server:app --port 8000 --env-file .env
+uv run uvicorn app.server:app --port 8000 --env-file .env
 ```
 
 **2. Start the frontend** (port 5173, reloads as you edit; it sends `/api` calls to the backend)
@@ -84,7 +84,7 @@ More detail on the file, the rollback rules and the sandbox: [Take everything to
    | `anthropics/knowledge-work-plugins` | finance, claude-for-financial-advisors, data |
    | `anthropics/claude-plugins-official` | playwright |
 
-3. Copy `.env.example` to `.env` and fill in only the keys for the phases you work on.
+3. Copy `.env.example` to `.env` and fill in what its comments say you need: at least `DASHBOARD_PASSWORD` and `SESSION_SECRET`; the rest is optional.
 4. Install the toolchain. You need [uv](https://docs.astral.sh/uv/) and Node 22:
    ```bash
    uv sync

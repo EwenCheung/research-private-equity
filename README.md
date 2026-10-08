@@ -46,7 +46,7 @@ Install the frontend packages once with `npm --prefix frontend ci` (Node 22). Th
 
 **1. Start the backend** (port 8000, reads the committed file)
 ```bash
-DATA_DB=data/offline/signal-monitor.sqlite uv run uvicorn app.server:app --port 8000 --env-file .env
+uv run uvicorn app.server:app --port 8000 --env-file .env
 ```
 
 **2. Start the frontend** (port 5173, reloads as you edit; it sends `/api` calls to the backend)

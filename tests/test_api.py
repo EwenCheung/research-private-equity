@@ -340,3 +340,35 @@ def test_retrying_hands_the_chosen_sources_to_the_job_and_rejects_nonsense(monke
     assert c.post("/api/refresh", json={"only": ["../etc/passwd"]}).status_code == 422
     assert c.post("/api/refresh", json={"only": "pypi_downloads"}).status_code == 422
     assert len(seen) == 3  # nothing started for the rejected ones
+
+
+def test_the_served_app_defaults_to_the_committed_sqlite_file_unless_the_environment_says_otherwise(
+    monkeypatch, tmp_path
+):
+    from app import server
+
+    monkeypatch.delenv("DATA_DB", raising=False)
+    monkeypatch.delenv("DATA_DIR", raising=False)
+    db = offline_db(tmp_path / "committed.sqlite")
+    monkeypatch.setattr(server, "DEFAULT_DB", db)
+    assert server.default_db() == db  # nothing set: the committed file
+    monkeypatch.setenv("DATA_DIR", "data")
+    assert server.default_db() is None  # files mode was asked for
+    monkeypatch.delenv("DATA_DIR")
+    monkeypatch.setenv("DATA_DB", "elsewhere.sqlite")
+    assert server.default_db() is None  # create_app reads DATA_DB itself
+    monkeypatch.delenv("DATA_DB")
+    monkeypatch.setattr(server, "DEFAULT_DB", tmp_path / "missing.sqlite")
+    assert server.default_db() is None  # no file: the fixtures, as before
+
+
+def test_the_default_app_in_this_repo_reads_the_committed_file_and_has_the_refresh_route(monkeypatch):
+    from app import server
+
+    monkeypatch.setenv("DASHBOARD_PASSWORD", PASSWORD)
+    monkeypatch.setenv("SESSION_SECRET", "test-secret")
+    assert server.DEFAULT_DB.is_file(), "data/offline/signal-monitor.sqlite is committed"
+    c = TestClient(server.create_app(db=server.default_db()))
+    c.post("/api/login", json={"password": PASSWORD})
+    assert c.get("/api/refresh").status_code == 200  # only exists when serving from a file
+    assert len(c.get("/api/marts").json()) >= 20

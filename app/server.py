@@ -26,6 +26,7 @@ from pipeline.core.companies import load_companies
 
 ROOT = Path(__file__).resolve().parent.parent
 FIXTURES = ROOT / "tests" / "fixtures"
+DEFAULT_DB = ROOT / "data" / "offline" / "signal-monitor.sqlite"  # the dataset committed to the repo
 COOKIE = "session"
 SESSION_MAX_AGE = 7 * 24 * 3600
 MART_ID = re.compile(r"^[a-z0-9_]+\.[a-z0-9_]+$")
@@ -57,7 +58,7 @@ def create_app(
 ) -> FastAPI:
     """data_dir (or DATA_DIR) is the pipeline's data/: marts/ plus registry.json, written by `pipeline.build`.
 
-    Unset means the Phase 0 fixtures. Their clock is pinned to the registry's generated_at so the Sample page keeps
+    Unset means the Phase 0 fixtures (the app uvicorn serves, `app`, defaults to the committed SQLite file instead: see default_db). Their clock is pinned to the registry's generated_at so the Sample page keeps
     showing every freshness state; with real data, freshness is recomputed against the current time on every request.
 
     db (or DATA_DB) is the offline SQLite file written by `python -m pipeline.offline`: the charts and the registry are read from it
@@ -216,4 +217,12 @@ def create_app(
     return app
 
 
-app = create_app()
+def default_db() -> Path | None:
+    """The committed SQLite file, when neither DATA_DB nor DATA_DIR says where else the data is and the file exists."""
+    if os.environ.get("DATA_DB") or os.environ.get("DATA_DIR"):
+        return None
+    return DEFAULT_DB if DEFAULT_DB.is_file() else None
+
+
+# What `uvicorn app.server:app` serves. create_app() on its own still defaults to the fixtures, which is what the tests build on.
+app = create_app(db=default_db())

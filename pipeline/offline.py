@@ -18,6 +18,7 @@ import gzip
 import hashlib
 import json
 import os
+import re
 import shutil
 import sqlite3
 import subprocess
@@ -69,6 +70,11 @@ def load_env(path: Path) -> None:
     for line in path.read_text().splitlines():
         key, sep, value = line.strip().partition("=")
         if sep and not key.startswith("#"):
+            value = value.strip()
+            if (
+                value[:1] not in "\"'"
+            ):  # unquoted: a trailing "# comment" is not part of the value (as in python-dotenv)
+                value = re.sub(r"(^|\s+)#.*", "", value)
             os.environ.setdefault(key.strip(), value.strip().strip("\"'"))
 
 

@@ -84,7 +84,7 @@ More detail on the file, the rollback rules and the sandbox: [Take everything to
    | `anthropics/knowledge-work-plugins` | finance, claude-for-financial-advisors, data |
    | `anthropics/claude-plugins-official` | playwright |
 
-3. Copy `.env.example` to `.env` and fill in only the keys for the phases you work on.
+3. Copy `.env.example` to `.env` and fill in what its comments say you need: at least `DASHBOARD_PASSWORD` and `SESSION_SECRET`; the rest is optional.
 4. Install the toolchain. You need [uv](https://docs.astral.sh/uv/) and Node 22:
    ```bash
    uv sync
